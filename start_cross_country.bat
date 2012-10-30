@@ -1,0 +1,1 @@
+..\bin\DssHost32.exe /p:50000 /t:50001 /s:"..\bin\DssHost32.security" /m:"CrossCountryEnvironment.Manifest.xml"
