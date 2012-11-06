@@ -29,6 +29,10 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         [DataMember]
         [Description("Steer angle")]
         public float SteerAngle { get; set; }
+
+        [DataMember]
+        [Description("Elapsed time since entity initialization")]
+        public double ElapsedTime { get; set; }
 	}
 	
 	[ServicePort]

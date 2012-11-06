@@ -8,6 +8,7 @@ using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
+using Microsoft.Robotics.Simulation;
 
 namespace Brumba.Simulation.SimulatedAckermanFourWheels
 {
@@ -43,6 +44,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         [DataMember]
         public float MaxSteerAngle { get; set; }
 
+        public double ElapsedTime { get; private set; }
+
         /// <summary>
         /// Only for deserialization
         /// </summary>
@@ -74,9 +77,9 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 CreateAndInsertPhysicsEntity(physicsEngine);
                 PhysicsEntity.SolverIterationCount = 64;
 
-                Wheels.ForEach(w => InitWheel(device, physicsEngine, w));
-
                 base.Initialize(device, physicsEngine);
+
+                Wheels.ForEach(w => InitWheel(device, physicsEngine, w));
             }
             catch(Exception ex)
             {
@@ -89,8 +92,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
         public override void Render(VisualEntity.RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)
         {
+            base.Render(renderMode, transforms, currentCamera);
             Wheels.ForEach(w => w.Render(renderMode, transforms, currentCamera));
-            base.Render(renderMode, transforms, currentCamera);            
         }
 
         public override void Update(FrameUpdate update)
@@ -101,6 +104,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             UpdateSteerAngle((float)update.ElapsedTime);
 
             Wheels.ForEach(w => w.Update(update));
+
+            ElapsedTime = update.ApplicationTime;
         }
 
         public override void Dispose()
@@ -108,6 +113,21 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             Wheels.ForEach(w => w.Dispose());
             base.Dispose();
         }
+
+        //public override void PreSerialize()
+        //{
+        //    PrepareJointsForSerialization();
+        //    Children.ForEach(ve => ve.PrepareJointsForSerialization());
+        //    base.PreSerialize();
+        //}
+
+        //public override void PostDeserialize()
+        //{
+        //    base.PostDeserialize();
+        //    Dictionary<string, Entity> entities = null;
+        //    Dictionary<string, Joint> joints = null;
+        //    this.RestoreJointConnectivity(out entities, out joints);
+        //}
         #endregion
 
         public void SetMotorPower(float power)

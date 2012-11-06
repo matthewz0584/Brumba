@@ -13,7 +13,7 @@ using SafwProxy = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
 using System.Threading;
 using Microsoft.Ccr.Core.Arbiters;
 
-namespace Brumba.Simulation
+namespace Brumba.Simulation.SimpleAckermanVehicle
 {
     [Contract(Contract.Identifier)]
     [DisplayName("SimpleAckermanVehicle")]

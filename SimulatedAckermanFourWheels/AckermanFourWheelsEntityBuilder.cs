@@ -29,7 +29,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                         DistanceBetweenWheels = 0.17f,
                         WheelRadius = 0.05f,
                         WheelWidth = 0.045f,
-                        WheelMass = 0.05f,
+                        WheelMass = 0.03f,
                         ChassisMass = 2f,
                         Clearance = 0.05f,
                         ChassisHeights = new float[] { 0.04f, 0.10f, 0.06f },
@@ -49,9 +49,9 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 //v.State.Flags = EntitySimulationModifiers.Kinematic;
 
                 _vehicle.ChassisParts = new List<BoxShape>();
-                _vehicle.ChassisParts.Add(BuildChassisPart(0, "ChassisBack", 0.2f));
+                _vehicle.ChassisParts.Add(BuildChassisPart(0, "ChassisBack", 0.1f));
                 _vehicle.ChassisParts.Add(BuildChassisPart(1, "ChassisMiddle", 0.5f));
-                _vehicle.ChassisParts.Add(BuildChassisPart(2, "ChassisFront", 0.3f));
+                _vehicle.ChassisParts.Add(BuildChassisPart(2, "ChassisFront", 0.4f));
 
                 _vehicle.WheelFl = BuildWheel(WheelFullName("WheelFrontLeft"), new Vector3(DistanceBetweenWheels / 2.0f, WheelRadius, WheelBase / 2.0f), false, true, true);
                 _vehicle.WheelFr = BuildWheel(WheelFullName("WheelFrontRight"), new Vector3(-DistanceBetweenWheels / 2.0f, WheelRadius, WheelBase / 2.0f), false, true, false);

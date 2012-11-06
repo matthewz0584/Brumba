@@ -7,12 +7,13 @@ using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Dss.Core.Attributes;
+using Microsoft.Robotics.Simulation;
+using Microsoft.Ccr.Core;
 
-namespace Brumba.Simulation
+namespace Brumba.Simulation.SimulatedAckermanFourWheels
 {
     [DataContract]
     public class CompositeWheel
-    //: VisualEntity
     {
         private WheelEntity Model { get; set; }
         private VisualEntity Body { get; set; }
@@ -28,7 +29,8 @@ namespace Brumba.Simulation
         public Vector3 Position { get; set; }
         [DataMember]
         public float Mass { get; set; }
-        public float Radius { get; private set; }
+        [DataMember]
+        public float Radius { get; set; }
         [DataMember]
         public float MaxSteerAngle { get; set; }
 
@@ -47,7 +49,6 @@ namespace Brumba.Simulation
 
         public CompositeWheel(string name, Vector3 position, float mass, string physicalMesh)
         {
-            var qq = new VisualEntity();
             Name = name;
             Position = position;
             Mass = mass;
@@ -58,33 +59,38 @@ namespace Brumba.Simulation
         public void Initialize(VisualEntity parent, GraphicsDevice device, PhysicsEngine physicsEngine)
         {
             Parent = parent;
-            //AddsShapeToParent = true;
-            //base.Initialize(device, physicsEngine);
-            Model = BuildModel();
-            Body = BuildBody();
 
+            //Build or rebuild model
+            Model = BuildModel();
             Model.Parent = parent;
             Model.Initialize(device, physicsEngine);
 
-            parent.InsertEntity(Body);
+            //Build body
+            if (!Parent.Children.Any(ve => ve.State.Name == (Name + " body")))
+            {
+                Body = BuildBody();
+                parent.InsertEntity(Body);
+            }
+            //Deserialize body
+            else
+            {
+                Body = Parent.Children.Where(ve => ve.State.Name == (Name + " body")).Single();
+            }
         }
 
         public void Render(VisualEntity.RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)
         {
             Model.Render(renderMode, transforms, currentCamera);
-            //base.Render(renderMode, transforms, currentCamera);
         }
 
         public void Update(FrameUpdate update)
         {
             Model.Update(update);
-            //base.Update(update);
         }
 
         public void Dispose()
         {
             Model.Dispose();
-            //base.Dispose();
         }
 
         public float AxleSpeed
@@ -115,7 +121,7 @@ namespace Brumba.Simulation
 
         private WheelEntity BuildModel()
         {
-            var wheel = new WheelEntity(new WheelShapeProperties(Name, Mass * 0.01f, Radius)
+            var wheel = new WheelEntity(new WheelShapeProperties(Name + " shape", Mass * 0.01f, Radius)
             {
                 LocalPose = new Pose(Position),
                 TireLateralForceFunction =
@@ -132,7 +138,7 @@ namespace Brumba.Simulation
             {
                 State =
                 {
-                    Name = Name,
+                    Name = Name + " model",
                     Assets = { Mesh = VisualMesh }
                 },
             };
@@ -179,6 +185,8 @@ namespace Brumba.Simulation
                 };
             }
 
+            //Magic!!! I don't know how simulator restores joint connectivity on deserialization.
+            //Deserialization stops working if connectors are swapped in ctor call.
             var connector1 = new EntityJointConnector(wheelBody, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3());
             var connector2 = new EntityJointConnector(Parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), Position);
 

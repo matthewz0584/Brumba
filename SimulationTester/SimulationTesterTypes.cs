@@ -7,25 +7,25 @@ using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using W3C.Soap;
 
-namespace Brumba.Simulation.SimpleAckermanVehicle
+namespace Brumba.Simulation.SimulationTester
 {
 	public sealed class Contract
 	{
 		[DataMember]
-		public const string Identifier = "http://schemas.tempuri.org/2012/10/simpleackermanvehicle.html";
+		public const string Identifier = "http://schemas.tempuri.org/2012/11/simulationtester.html";
 	}
 	
 	[DataContract]
-	public class SimpleAckermanVehicleState
+	public class SimulationTesterState
 	{
 	}
 	
 	[ServicePort]
-	public class SimpleAckermanVehicleOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+	public class SimulationTesterOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
 	{
 	}
 	
-	public class Get : Get<GetRequestType, PortSet<SimpleAckermanVehicleState, Fault>>
+	public class Get : Get<GetRequestType, PortSet<SimulationTesterState, Fault>>
 	{
 		public Get()
 		{
@@ -36,7 +36,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 		{
 		}
 		
-		public Get(GetRequestType body, PortSet<SimpleAckermanVehicleState, Fault> responsePort)
+		public Get(GetRequestType body, PortSet<SimulationTesterState, Fault> responsePort)
 			: base(body, responsePort)
 		{
 		}

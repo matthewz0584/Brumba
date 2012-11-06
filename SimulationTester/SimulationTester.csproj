@@ -4,15 +4,15 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BF9957AB-2A19-4904-B423-BD0A09D0EB01}</ProjectGuid>
+    <ProjectGuid>{105800AF-F412-413D-8D51-A417E39B6960}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>SimpleAckermanVehicle.Y2012.M10</AssemblyName>
-    <RootNamespace>Brumba.Simulation.SimpleAckermanVehicle</RootNamespace>
+    <AssemblyName>SimulationTester.Y2012.M11</AssemblyName>
+    <RootNamespace>Brumba.Simulation.SimulationTester</RootNamespace>
     <AssemblyOriginatorKeyFile>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
@@ -101,17 +101,14 @@
     <Reference Include="PhysicsEngine, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\PhysicsEngine.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="RoboticsCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\RoboticsCommon.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SimulatedAckermanFourWheels.Y2012.M10, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bd1b7cd2c79cfa47, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\SimulatedAckermanFourWheels.Y2012.M10.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SimulatedAckermanFourWheels.Y2012.M10.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bd1b7cd2c79cfa47, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -120,35 +117,39 @@
     <Reference Include="SimulationCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\SimulationCommon.dll</HintPath>
-      <Private>False</Private>
+    </Reference>
+    <Reference Include="SimulationCommon.proxy, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\SimulationCommon.proxy.dll</HintPath>
     </Reference>
     <Reference Include="SimulationEngine, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\SimulationEngine.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="SimulationEngine.proxy, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\SimulationEngine.proxy.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Xml.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CrossCountryGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleAckermanVehicleService.cs" />
-    <Compile Include="SimpleAckermanVehicleTypes.cs" />
+    <Compile Include="SimulationTester.cs" />
+    <Compile Include="SimulationTesterTypes.cs" />
     <AppDesigner Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SimpleAckermanVehicle.manifest.xml" />
+    <Content Include="SimulationTester.manifest.xml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
