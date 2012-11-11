@@ -19,14 +19,11 @@ using System.Diagnostics;
 using Xna = Microsoft.Xna.Framework;
 using System.Globalization;
 using Microsoft.Robotics.Simulation.Physics;
+using Microsoft.Robotics.Simulation;
+using Microsoft.Dss.Services.Serializer;
 
 namespace Brumba.Simulation.SimulationTester
 {
-    public class RetVal<T>
-    {
-        public T V { get; set; }
-    }
-
 	[Contract(Contract.Identifier)]
 	[DisplayName("SimulationTester")]
 	[Description("SimulationTester service (no description provided)")]
@@ -56,26 +53,16 @@ namespace Brumba.Simulation.SimulationTester
             SpawnIterator(Test1);
 		}
 
-        ITask Exec<T>(PortSet<T, Fault> portSet)
-        {
-            return Arbiter.Receive<T>(false, portSet, (T val) => {});
-        }
-
-        ITask Receive<T1, T2>(PortSet<T1, T2> portSet, RetVal<T1> retVal = null)
-        {
-            return Arbiter.Receive<T1>(false, portSet, (T1 val) => { if (retVal != null) retVal.V = val; });
-        }
-
         IEnumerator<ITask> SetUpSimulator()
         {
-            yield return Exec(_simEngine.UpdatePhysicsTimeStep(0.01f));
+            yield return ArbiterMy.Exec(_simEngine.UpdatePhysicsTimeStep(0.01f));
             //yield return Exec(_simEngine.UpdateSimulatorConfiguration(new EngineProxy.SimulatorConfiguration { Headless = true }));
             
             var simState = new RetVal<SimulationProxy.SimulationState>();
-            yield return Receive(_simEngine.Get(), simState);
+            yield return ArbiterMy.Receive(_simEngine.Get(), simState);
 
             //simState.V.RenderMode = SimulationProxy.RenderMode.None;
-            yield return Exec(_simEngine.Replace(simState.V));
+            yield return ArbiterMy.Exec(_simEngine.Replace(simState.V));
         }
 
         private SafwProxy.SimulatedAckermanFourWheelsOperations _vehiclePort;
@@ -95,7 +82,7 @@ namespace Brumba.Simulation.SimulationTester
 
 
             bool distanceCovered = false;
-            var estimatedTime = 2 * 50 / (AckermanFourWheelsEntity.Builder.Default.MaxVelocity * motorPower);
+            var estimatedTime = 2 * 50 / (AckermanFourWheelsEntity.Builder.Default.MaxVelocity * motorPower);//50 meters
             var startTime = 0.0;
             yield return Arbiter.Receive<SafwProxy.SimulatedAckermanFourWheelsState>(false, _vehiclePort.Get(), s => { startTime = s.ElapsedTime; } );
             while (!distanceCovered)
@@ -110,23 +97,29 @@ namespace Brumba.Simulation.SimulationTester
                     st => simState = st,
                     f => LogError(""));
 
-                var xVeh = XElement.Load(new XmlNodeReader((simState.SerializedEntities.XmlNodes.Where(xn => (xn as XmlElement).Name == "AckermanFourWheelsEntity").Single() as XmlElement)));
-
-                var simNs = XNamespace.Get(@"http://schemas.microsoft.com/robotics/2006/04/simulation.html");
-                Debug.Assert(xVeh.Element(simNs + "State").Element(simNs + "Name").Value == "testee");
-
-                var physNs = XNamespace.Get(@"http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html");
-                var x = float.Parse(xVeh.Element(simNs + "State").Element(simNs + "Pose").Element(physNs + "Position").Element(physNs + "X").Value, CultureInfo.GetCultureInfo("en-GB").NumberFormat);
-                var y = float.Parse(xVeh.Element(simNs + "State").Element(simNs + "Pose").Element(physNs + "Position").Element(physNs + "Y").Value, CultureInfo.GetCultureInfo("en-GB").NumberFormat);
-                var z = float.Parse(xVeh.Element(simNs + "State").Element(simNs + "Pose").Element(physNs + "Position").Element(physNs + "Z").Value, CultureInfo.GetCultureInfo("en-GB").NumberFormat);
-
-                if (new Xna.Vector3(x, y, z).Length() > 50)
-                    distanceCovered = true;
-                else
+                var rv = new RetVal<bool>();
+                yield return ArbiterMy.FromIteratorHandler(AssessTestProgress, simState, rv);
+                distanceCovered = rv.V;
+                
+                if (!distanceCovered)                
                     yield return Arbiter.Receive(false, TimeoutPort(100), dt => { });
             }
 
-            _mainPort.Post(new DsspDefaultDrop());
+
+
+            //_mainPort.Post(new DsspDefaultDrop());
+        }
+
+        private IEnumerator<ITask> AssessTestProgress(SimulationProxy.SimulationState simState, RetVal<bool> retVal)
+        {
+            var vehNode = simState.SerializedEntities.XmlNodes.Cast<XmlElement>().Where(xn => xn.Name == "AckermanFourWheelsEntity").Single();
+            var desRequest = new Deserialize(new XmlNodeReader(vehNode));
+            SerializerPort.Post(desRequest);
+
+            var desVeh = new RetVal<DeserializeResult>();
+            yield return ArbiterMy.ReceiveFaulty(desRequest.ResultPort, desVeh, LogError);
+
+            retVal.V = TypeConversion.ToXNA(((VisualEntity)DssTypeHelper.TransformFromProxy(desVeh.V.Instance)).State.Pose.Position).Length() > 50;
         }
 
         private void GenerateEnvironment()

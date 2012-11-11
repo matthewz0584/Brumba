@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AckermanFourWheelsCreator.cs" />
+    <Compile Include="ArbiterMy.cs" />
     <Compile Include="CrossCountryGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimulationTester.cs" />
