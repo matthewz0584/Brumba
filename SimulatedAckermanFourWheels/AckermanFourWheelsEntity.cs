@@ -114,20 +114,6 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             base.Dispose();
         }
 
-        //public override void PreSerialize()
-        //{
-        //    PrepareJointsForSerialization();
-        //    Children.ForEach(ve => ve.PrepareJointsForSerialization());
-        //    base.PreSerialize();
-        //}
-
-        //public override void PostDeserialize()
-        //{
-        //    base.PostDeserialize();
-        //    Dictionary<string, Entity> entities = null;
-        //    Dictionary<string, Joint> joints = null;
-        //    this.RestoreJointConnectivity(out entities, out joints);
-        //}
         #endregion
 
         public void SetMotorPower(float power)

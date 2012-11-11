@@ -13,7 +13,7 @@
     </AssemblyKeyContainerName>
     <AssemblyName>SimpleAckermanVehicle.Y2012.M10</AssemblyName>
     <RootNamespace>Brumba.Simulation.SimpleAckermanVehicle</RootNamespace>
-    <AssemblyOriginatorKeyFile>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -31,7 +31,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -132,6 +132,10 @@
       <HintPath>..\..\bin\SimulationEngine.proxy.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SimulationTester.Y2012.M11, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f2cffe10681f440e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\SimulationTester.Y2012.M11.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
@@ -158,6 +162,6 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>"C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"."  /referencepath:"C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\ "</PostBuildEvent>
+    <PostBuildEvent>"..\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"."  /referencepath:"..\..\bin\ "</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -12,6 +12,7 @@ using Brumba.Simulation.SimulatedAckermanFourWheels;
 using SafwProxy = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
 using System.Threading;
 using Microsoft.Ccr.Core.Arbiters;
+using Brumba.Simulation.SimulationTester;
 
 namespace Brumba.Simulation.SimpleAckermanVehicle
 {

@@ -9,7 +9,7 @@ using Microsoft.Ccr.Core;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 
-namespace Brumba.Simulation.SimulatedAckermanFourWheels
+namespace Brumba.Simulation.SimulationTester
 {
     public interface IServiceStarter
     {

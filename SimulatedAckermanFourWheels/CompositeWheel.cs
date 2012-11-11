@@ -185,10 +185,10 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 };
             }
 
-            //Magic!!! I don't know how simulator restores joint connectivity on deserialization.
-            //Deserialization stops working if connectors are swapped in ctor call.
-            var connector1 = new EntityJointConnector(wheelBody, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3());
-            var connector2 = new EntityJointConnector(Parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), Position);
+            var connector1 = new EntityJointConnector(wheelBody, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) 
+                                { EntityName = wheelBody.State.Name };
+            var connector2 = new EntityJointConnector(Parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), Position) 
+                                { EntityName = Parent.State.Name };
 
             wheelBody.ParentJoint = new Joint
             {

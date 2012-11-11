@@ -13,7 +13,7 @@
     </AssemblyKeyContainerName>
     <AssemblyName>SimulatedAckermanFourWheels.Y2012.M10</AssemblyName>
     <RootNamespace>Brumba.Simulation.SimulatedAckermanFourWheels</RootNamespace>
-    <AssemblyOriginatorKeyFile>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -31,7 +31,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\</OutputPath>
+    <OutputPath>$(MRDS_PATH)\bin\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -108,11 +108,6 @@
       <HintPath>..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SimulatedAckermanFourWheels.Y2012.M10.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bd1b7cd2c79cfa47, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\SimulatedAckermanFourWheels.Y2012.M10.Proxy.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="SimulationCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\SimulationCommon.dll</HintPath>
@@ -138,7 +133,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AckermanFourWheelsCreator.cs" />
     <Compile Include="AckermanFourWheelsEntity.cs" />
     <Compile Include="AckermanFourWheelsEntityBuilder.cs" />
     <Compile Include="CompositeWheel.cs" />
@@ -160,6 +154,6 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>"C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"."  /referencepath:"C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\ "</PostBuildEvent>
+    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"."  /referencepath:"..\bin\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
