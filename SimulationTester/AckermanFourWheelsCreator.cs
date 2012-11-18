@@ -20,12 +20,17 @@ namespace Brumba.Simulation.SimulationTester
 
     public class AckermanFourWheelsCreator
     {
-        public static DsspResponsePort<SafwPx.SimulatedAckermanFourWheelsOperations> Insert(IServiceStarter starter, string name, Vector3 position, AckermanFourWheelsEntity.Builder builder)
+        public static DsspResponsePort<SafwPx.SimulatedAckermanFourWheelsOperations> CreateVehicleAndService(IServiceStarter starter, string name, Vector3 position, AckermanFourWheelsEntity.Builder builder)
         {
             var sav = new AckermanFourWheelsEntity(name, position, builder);
             //sav.State.Flags = Microsoft.Robotics.Simulation.Physics.EntitySimulationModifiers.Kinematic;
             SimulationEngine.GlobalInstancePort.Insert(sav);
 
+            return StartService(starter, name);
+        }
+
+        public static DsspResponsePort<SafwPx.SimulatedAckermanFourWheelsOperations> StartService(IServiceStarter starter, string name)
+        {
             var res = new DsspResponsePort<SafwPx.SimulatedAckermanFourWheelsOperations>();
             starter.Activate(Arbiter.Choice(starter.CreateService(
                 new ServiceInfoType
