@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<SecuritySettings xmlns="http://schemas.microsoft.com/robotics/2008/02/security.html">
+   <AuthenticationRequired>false</AuthenticationRequired>
+   <OnlySignedAssemblies>false</OnlySignedAssemblies>
+   <Users />
+</SecuritySettings>
