@@ -58,44 +58,50 @@ namespace Brumba.Simulation.SimulationTester
 
         private IEnumerator<ITask> Test1()
         {
-            yield return new IterativeTask(SetUpSimulator);
+            yield return To.Exec(SetUpSimulator);
 
             SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort = null;
             yield return To.Exec(SetUpTest1Services, (SafwPxy.SimulatedAckermanFourWheelsOperations vp) => vehiclePort = vp);
 
+            yield return To.Exec(SetUpTest1Environment, true);
+
             int successful = 0;
             for (int i = 0; i < 100; ++i)
             {
-                yield return To.Exec(SetUpTest1Environment);
-
-                yield return To.Exec(TimeoutPort(50));
+                yield return To.Exec(SetUpTest1Environment, false);
 
                 double estimatedTime = 0;
                 yield return To.Exec(StartTest1, (double et) => estimatedTime = et, vehiclePort);
+//Console.WriteLine("Test Started");
 
                 bool test1Succeed = false;
                 double startTime = 0.0, elapsedTime = 0.0;
 
                 yield return Arbiter.Choice(vehiclePort.Get(), s => startTime = s.ElapsedTime, LogError);
+//Console.WriteLine("Time queried 1");
                 elapsedTime = startTime;
                 while (!test1Succeed && elapsedTime - startTime <= estimatedTime)
                 {
                     SimPxy.SimulationState simState = null;
+//Console.WriteLine("Simstate query");
                     yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
+//Console.WriteLine("Simstate queried");
 
                     yield return To.Exec(AssessTestProgress, (bool b) => test1Succeed = b, simState);
 
                     yield return Arbiter.Choice(vehiclePort.Get(), s => elapsedTime = s.ElapsedTime, LogError);
+//Console.WriteLine("Time queried 2");
 
                     if (!test1Succeed)
-                        yield return To.Exec(TimeoutPort(100));
+                        yield return To.Exec(TimeoutPort(50));
                 }
-                Console.WriteLine("{0} was {1}", i, test1Succeed);
+//yield return To.Exec(TimeoutPort(400));
+Console.WriteLine("{0} was {1}", i, test1Succeed);
                 
                 if (test1Succeed) ++successful;
             }
 
-            Console.WriteLine("test1 result - {0}", successful / 100);
+Console.WriteLine("test1 result - {0}", successful / 100);
             
             //_mainPort.Post(new DsspDefaultDrop());
         }
@@ -111,7 +117,7 @@ namespace Brumba.Simulation.SimulationTester
 
         IEnumerator<ITask> StartTest1(Action<double> @return, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
         {
-            float motorPower = 0.9f;
+            float motorPower = 1f;
             yield return To.Exec(vehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = motorPower }));
             @return(2 * 50 / (AckermanFourWheelsEntity.Builder.Default.MaxVelocity * motorPower));//50 meters
         }
@@ -139,7 +145,7 @@ namespace Brumba.Simulation.SimulationTester
             @return(new Xna.Vector3(pos.X, pos.Y, pos.Z).Length() > 50);
         }
 
-        private IEnumerator<ITask> SetUpTest1Environment()
+        private IEnumerator<ITask> SetUpTest1Environment(bool everything)
         {
             SimPxy.SimulationState simState = null;
             yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
@@ -148,11 +154,12 @@ namespace Brumba.Simulation.SimulationTester
             simState.Pause = true;
             yield return To.Exec(_simEngine.Replace(simState));
 
+//Console.WriteLine("Pause On");
+
             IEnumerable<EngPxy.VisualEntity> entities = null;
-            yield return To.Exec(DeserializaTopLevelEntities, (IEnumerable<EngPxy.VisualEntity> ens) => entities = ens, simState);
+            yield return To.Exec(DeserializaTopLevelEntities, (IEnumerable<EngPxy.VisualEntity> ens) => entities = ens, simState, everything);
             foreach (var entity in entities)
                 yield return To.Exec(_simEngine.DeleteSimulationEntity(entity));
-                //_simEngine.DeleteSimulationEntity(entity);
 
             yield return To.Exec(TimeoutPort(100));
             
@@ -162,28 +169,26 @@ namespace Brumba.Simulation.SimulationTester
             yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (Microsoft.Robotics.Simulation.Proxy.SimulationState)success);
 
             //IEnumerable<EngPxy.VisualEntity> entities = null;
-            yield return To.Exec(DeserializaTopLevelEntities, (IEnumerable<EngPxy.VisualEntity> ens) => entities = ens, simState);
+            yield return To.Exec(DeserializaTopLevelEntities, (IEnumerable<EngPxy.VisualEntity> ens) => entities = ens, simState, everything);
             foreach (var entity in entities)
                 yield return To.Exec(_simEngine.InsertSimulationEntity(entity));
-                //_simEngine.InsertSimulationEntity(entity);
 
             simState.Pause = false;
             simState.RenderMode = renderMode;
             yield return To.Exec(_simEngine.Replace(simState));
+//Console.WriteLine("Pause Off");
         }
 
-        private IEnumerator<ITask> DeserializaTopLevelEntities(Action<IEnumerable<EngPxy.VisualEntity>> @return, SimPxy.SimulationState simState)
+        private IEnumerator<ITask> DeserializaTopLevelEntities(Action<IEnumerable<EngPxy.VisualEntity>> @return, SimPxy.SimulationState simState, bool everything)
         {
             var entities = new List<EngPxy.VisualEntity>();
             foreach (var entityNode in simState.SerializedEntities.XmlNodes.Cast<XmlElement>())
             {
                 EngPxy.VisualEntity entity = null;
                 yield return To.Exec(DeserializeEntityFromXml, (EngPxy.VisualEntity e) => entity = e, entityNode);
+                if (!everything && !(entity is SafwPxy.AckermanFourWheelsEntity))
+                    continue;
                 if (entity.State.Name == "MainCamera")
-                    continue;
-                if (entity is EngPxy.LightSourceEntity)
-                    continue;
-                if (entity is EngPxy.SkyDomeEntity)
                     continue;
                 if (entity.ParentJoint != null)
                     continue;

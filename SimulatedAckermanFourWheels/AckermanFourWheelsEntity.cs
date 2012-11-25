@@ -92,8 +92,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
         public override void Render(VisualEntity.RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)
         {
-            base.Render(renderMode, transforms, currentCamera);
             Wheels.ForEach(w => w.Render(renderMode, transforms, currentCamera));
+            base.Render(renderMode, transforms, currentCamera);
         }
 
         public override void Update(FrameUpdate update)
@@ -142,7 +142,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             WheelFr.SteerAngle = WheelFl.SteerAngle = UpdateLinearValue(_targetSteerAngle, WheelFl.SteerAngle, deltaT / 0.1f * MaxSteerAngle);
         }
 
-        private float UpdateLinearValue(float targetValue, float currentValue, float delta)
+        private static float UpdateLinearValue(float targetValue, float currentValue, float delta)
         {
             return Math.Abs(targetValue - currentValue) > delta ? currentValue + Math.Sign(targetValue - currentValue) * delta : targetValue;
         }

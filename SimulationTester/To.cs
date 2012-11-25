@@ -9,11 +9,11 @@ namespace Brumba.Simulation.SimulationTester
 {
     public class To
     {
-        class ParamCall
+        class ActionCall
         {
             Func<IEnumerator<ITask>> _call;
 
-            public ParamCall(Func<IEnumerator<ITask>> call)
+            public ActionCall(Func<IEnumerator<ITask>> call)
             {
                 _call = call;
             }
@@ -24,12 +24,29 @@ namespace Brumba.Simulation.SimulationTester
             }
         }
 
-        class ParamCall<TRet>
+        class ActionCall<T1>
+        {
+            Func<T1, IEnumerator<ITask>> _call;
+            T1 _param1;
+
+            public ActionCall(Func<T1, IEnumerator<ITask>> call, T1 param1)
+            {
+                _call = call;
+                _param1 = param1;
+            }
+
+            public IEnumerator<ITask> Call()
+            {
+                return _call(_param1);
+            }
+        }
+
+        class FuncCall<TRet>
         {
             Func<Action<TRet>, IEnumerator<ITask>> _call;
             Action<TRet> _return;
 
-            public ParamCall(Func<Action<TRet>, IEnumerator<ITask>> call, Action<TRet> @return)
+            public FuncCall(Func<Action<TRet>, IEnumerator<ITask>> call, Action<TRet> @return)
             {
                 _call = call;
                 _return = @return;
@@ -41,13 +58,13 @@ namespace Brumba.Simulation.SimulationTester
             }
         }
 
-        class ParamCall<T1, TRet>
+        class FuncCall<T1, TRet>
         {
             Func<Action<TRet>, T1, IEnumerator<ITask>> _call;
             T1 _param1;
             Action<TRet> _return;
 
-            public ParamCall(Func<Action<TRet>, T1, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1)
+            public FuncCall(Func<Action<TRet>, T1, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1)
             {
                 _call = call;
                 _param1 = param1;
@@ -60,19 +77,50 @@ namespace Brumba.Simulation.SimulationTester
             }
         }
 
+        class FuncCall<T1, T2, TRet>
+        {
+            Func<Action<TRet>, T1, T2, IEnumerator<ITask>> _call;
+            T1 _param1;
+            T2 _param2;
+            Action<TRet> _return;
+
+            public FuncCall(Func<Action<TRet>, T1, T2, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1, T2 param2)
+            {
+                _call = call;
+                _param1 = param1;
+                _param2 = param2;
+                _return = @return;
+            }
+
+            public IEnumerator<ITask> Call()
+            {
+                return _call(_return, _param1, _param2);
+            }
+        }
+
+        public static ITask Exec<T1, T2, TRet>(Func<Action<TRet>, T1, T2, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1, T2 param2)
+        {
+            return Arbiter.FromIteratorHandler(new FuncCall<T1, T2, TRet>(call, @return, param1, param2).Call);
+        }
+
         public static ITask Exec<T1, TRet>(Func<Action<TRet>, T1, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1)
         {
-            return Arbiter.FromIteratorHandler(new ParamCall<T1, TRet>(call, @return, param1).Call);
+            return Arbiter.FromIteratorHandler(new FuncCall<T1, TRet>(call, @return, param1).Call);
         }
 
         public static ITask Exec<TRet>(Func<Action<TRet>, IEnumerator<ITask>> call, Action<TRet> @return)
         {
-            return Arbiter.FromIteratorHandler(new ParamCall<TRet>(call, @return).Call);
+            return Arbiter.FromIteratorHandler(new FuncCall<TRet>(call, @return).Call);
+        }
+
+        public static ITask Exec<T1>(Func<T1, IEnumerator<ITask>> call, T1 param1)
+        {
+            return Arbiter.FromIteratorHandler(new ActionCall<T1>(call, param1).Call);
         }
 
         public static ITask Exec(Func<IEnumerator<ITask>> call)
         {
-            return Arbiter.FromIteratorHandler(new ParamCall(call).Call);
+            return Arbiter.FromIteratorHandler(new ActionCall(call).Call);
         }
 
         public static ITask Exec<T1>(Port<T1> portSet)
@@ -82,7 +130,7 @@ namespace Brumba.Simulation.SimulationTester
 
         public static ITask Exec<T1, T2>(PortSet<T1, T2> portSet)
         {
-            return Arbiter.Choice(portSet, (T1 p1) => { }, (T2 p2) => { });
+            return Arbiter.Choice(portSet, (T1 p1) => { }, (T2 p2) => { Console.WriteLine("qqqqqqqqqqqqq"); });
         }
     }
 }

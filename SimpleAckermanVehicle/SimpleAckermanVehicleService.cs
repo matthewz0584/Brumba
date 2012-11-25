@@ -63,7 +63,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             //SimulationEngine.GlobalInstancePort.Insert(cme);
 
 
-            Activate(Arbiter.Choice(AckermanFourWheelsCreator.Insert(this, "SAV2", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Default),
+            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "SAV2", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Default),
                 ops4 =>
                 {
                     //ops4.SetMotorPower(new SafwProxy.MotorPowerRequest { Value = 0.2f });
