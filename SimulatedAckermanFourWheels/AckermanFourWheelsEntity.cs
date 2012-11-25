@@ -79,7 +79,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
                 base.Initialize(device, physicsEngine);
 
-                Wheels.ForEach(w => InitWheel(device, physicsEngine, w));
+                Wheels.ForEach(w => w.Initialize(this, device, physicsEngine));
             }
             catch(Exception ex)
             {
@@ -155,13 +155,6 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         private List<CompositeWheel> Wheels
         {
             get { return new List<CompositeWheel> { WheelFl, WheelFr, WheelRl, WheelRr }; }
-        }
-
-        private void InitWheel(GraphicsDevice device, PhysicsEngine physicsEngine, CompositeWheel wheel)
-        {
-            //Simulation bug: local pose orientation accumulates trash (maybe during simulation), value after deserialization is not equal to original one
-            //wheel.Wheel.State.LocalPose.Orientation = new Quaternion();
-            wheel.Initialize(this, device, physicsEngine);
         }
     }
 }
