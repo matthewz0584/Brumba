@@ -7,8 +7,14 @@ using W3C.Soap;
 
 namespace Brumba.Simulation.SimulationTester
 {
-    public class To
+    public static class To
     {
+        public static List<T> Addd<T>(this List<T> me, T toAdd)
+        {
+            me.Add(toAdd);
+            return me;
+        }
+
         class ActionCall
         {
             Func<IEnumerator<ITask>> _call;
@@ -38,6 +44,25 @@ namespace Brumba.Simulation.SimulationTester
             public IEnumerator<ITask> Call()
             {
                 return _call(_param1);
+            }
+        }
+
+        class ActionCall<T1, T2>
+        {
+            Func<T1, T2, IEnumerator<ITask>> _call;
+            T1 _param1;
+            T2 _param2;
+
+            public ActionCall(Func<T1, T2, IEnumerator<ITask>> call, T1 param1, T2 param2)
+            {
+                _call = call;
+                _param1 = param1;
+                _param2 = param2;
+            }
+
+            public IEnumerator<ITask> Call()
+            {
+                return _call(_param1, _param2);
             }
         }
 
@@ -98,9 +123,37 @@ namespace Brumba.Simulation.SimulationTester
             }
         }
 
+        class FuncCall<T1, T2, T3, TRet>
+        {
+            Func<Action<TRet>, T1, T2, T3, IEnumerator<ITask>> _call;
+            T1 _param1;
+            T2 _param2;
+            T3 _param3;
+            Action<TRet> _return;
+
+            public FuncCall(Func<Action<TRet>, T1, T2, T3, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1, T2 param2, T3 param3)
+            {
+                _call = call;
+                _param1 = param1;
+                _param2 = param2;
+                _param3 = param3;
+                _return = @return;
+            }
+
+            public IEnumerator<ITask> Call()
+            {
+                return _call(_return, _param1, _param2, _param3);
+            }
+        }
+
         public static ITask Exec<T1, T2, TRet>(Func<Action<TRet>, T1, T2, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1, T2 param2)
         {
             return Arbiter.FromIteratorHandler(new FuncCall<T1, T2, TRet>(call, @return, param1, param2).Call);
+        }
+
+        public static ITask Exec<T1, T2, T3, TRet>(Func<Action<TRet>, T1, T2, T3, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1, T2 param2, T3 param3)
+        {
+            return Arbiter.FromIteratorHandler(new FuncCall<T1, T2, T3, TRet>(call, @return, param1, param2, param3).Call);
         }
 
         public static ITask Exec<T1, TRet>(Func<Action<TRet>, T1, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1)
@@ -111,6 +164,11 @@ namespace Brumba.Simulation.SimulationTester
         public static ITask Exec<TRet>(Func<Action<TRet>, IEnumerator<ITask>> call, Action<TRet> @return)
         {
             return Arbiter.FromIteratorHandler(new FuncCall<TRet>(call, @return).Call);
+        }
+
+        public static ITask Exec<T1, T2>(Func<T1, T2, IEnumerator<ITask>> call, T1 param1, T2 param2)
+        {
+            return Arbiter.FromIteratorHandler(new ActionCall<T1, T2>(call, param1, param2).Call);
         }
 
         public static ITask Exec<T1>(Func<T1, IEnumerator<ITask>> call, T1 param1)

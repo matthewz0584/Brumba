@@ -1,11 +1,29 @@
-<?xml version="1.0" ?>
-<Manifest 
-    xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html"
-    xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html"
-    >
-    <CreateServiceList>
-        <ServiceRecordType>
-            <dssp:Contract>http://schemas.tempuri.org/2012/11/simulationtester.html</dssp:Contract>
-        </ServiceRecordType>
-    </CreateServiceList>
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:this="urn:uuid:cfe41e29-b447-40fd-9819-6e5144011ffa" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simulatedtimer="http://schemas.tempuri.org/2012/10/simulatedtimer.html" xmlns:simulationtester="http://schemas.tempuri.org/2012/11/simulationtester.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.tempuri.org/2012/11/simulationtester.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.tempuri.org/2012/10/simulatedtimer.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>simulationtester:SimTimer</dssp:Name>
+          <dssp:ServiceName>this:SimulatedTimerService</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:simulationtester</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.tempuri.org/2012/10/simulatedtimer.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/timer</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedTimerService</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
 </Manifest>

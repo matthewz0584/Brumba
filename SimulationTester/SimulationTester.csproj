@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AckermanFourWheelsCreator.cs" />
+    <Compile Include="SimulationTest.cs" />
     <Compile Include="To.cs" />
     <Compile Include="CrossCountryGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

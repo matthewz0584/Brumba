@@ -44,8 +44,6 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         [DataMember]
         public float MaxSteerAngle { get; set; }
 
-        public double ElapsedTime { get; private set; }
-
         /// <summary>
         /// Only for deserialization
         /// </summary>
@@ -104,8 +102,6 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             UpdateSteerAngle((float)update.ElapsedTime);
 
             Wheels.ForEach(w => w.Update(update));
-
-            ElapsedTime = update.ApplicationTime;
         }
 
         public override void Dispose()
