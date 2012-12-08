@@ -15,27 +15,65 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
     {
         public class Builder
         {
-            private static readonly MaterialProperties ChassisMaterial = new MaterialProperties("ChassisMaterial", 0.0f, 0.5f, 0.5f);
-
             private AckermanFourWheelsEntity _vehicle;
+            private IEnumerable<CompositeWheelProperties> _wheelsProperties;
+            private IEnumerable<BoxShapeProperties> _chassisPartsProperties;
 
             public static Builder Default
             {
                 get
                 {
+                    float wheelRadius = 0.05f, distanceBetweenWheels = 0.17f, wheelWidth = 0.045f, wheelBase = 0.25f;
+                    
                     return new Builder()
                     {
-                        WheelBase = 0.25f,
-                        DistanceBetweenWheels = 0.17f,
-                        WheelRadius = 0.05f,
-                        WheelWidth = 0.045f,
+                        WheelBase = wheelBase,
+                        DistanceBetweenWheels = distanceBetweenWheels,
+                        WheelRadius = wheelRadius,
+                        WheelWidth = wheelWidth,
                         WheelMass = 0.03f,
                         ChassisMass = 2f,
                         Clearance = 0.05f,
-                        ChassisHeights = new float[] { 0.04f, 0.10f, 0.06f },
+                        ChassisPartsProperties = new BoxShapeProperties[]
+                        {
+                            new BoxShapeProperties { Name = "ChassisBack", Dimensions = new Vector3(distanceBetweenWheels - wheelWidth, 0.04f, 2 * wheelRadius), MassDensity = { Mass = 0.1f } },
+                            new BoxShapeProperties { Name = "ChassisMiddle", Dimensions = new Vector3(distanceBetweenWheels - wheelWidth, 0.10f, 0.13f), MassDensity = { Mass = 0.5f } },
+                            new BoxShapeProperties { Name = "ChassisFront", Dimensions = new Vector3(distanceBetweenWheels - 2 * wheelWidth, 0.06f, 0.12f), MassDensity = { Mass = 0.4f } },
+                        },
+                        WheelsProperties = new CompositeWheelProperties[]
+                        {
+                            new CompositeWheelProperties { Name = "WheelFrontLeft", Position = new Vector3(distanceBetweenWheels / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = true},
+                            new CompositeWheelProperties { Name = "WheelFrontRight", Position = new Vector3(-distanceBetweenWheels / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = false},
+                            new CompositeWheelProperties { Name = "WheelRearLeft", Position = new Vector3(distanceBetweenWheels / 2.0f, wheelRadius, -wheelBase / 2.0f), Motorized = true, Steerable = false, Flipped = true},
+                            new CompositeWheelProperties { Name = "WheelRearRight", Position = new Vector3(-distanceBetweenWheels / 2.0f, wheelRadius, -wheelBase / 2.0f), Motorized = true, Steerable = false, Flipped = false}
+                        },
                         MaxVelocity = 4.16f, //15 km/h 
                         MaxSteerAngle = (float)Math.PI / 4
                     };
+                }
+            }
+
+            private void FillWheelsProperties()
+            {
+                foreach (var wp in WheelsProperties)
+                {
+                    wp.Mass = WheelMass;
+                    wp.MaxSteerAngle = MaxSteerAngle;
+                    wp.PhysicalMesh = "WheelShape3.obj";
+                    wp.VisualMesh = "CorobotWheel.obj";
+                    wp.Radius = 0.05f;
+                }
+            }
+
+            private void FillChassisPartsProperties()
+            {
+                var i = 0;
+                foreach (var chp in ChassisPartsProperties)
+                {
+                    chp.LocalPose.Position = new Vector3(0, chp.Dimensions.Y / 2.0f + Clearance, -WheelBase / 2.0f - WheelRadius + ChassisPartsProperties.Take(i++).Aggregate(0f, (a, p) => a + p.Dimensions.Z) + chp.Dimensions.Z / 2);
+                    chp.MassDensity.Mass = chp.MassDensity.Mass * ChassisMass;
+                    chp.Material = new MaterialProperties("ChassisMaterial", 0.0f, 0.5f, 0.5f);
+                    chp.DiffuseColor = new Vector4(1, 0, 0, 0);
                 }
             }
 
@@ -48,68 +86,56 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
                 //v.State.Flags = EntitySimulationModifiers.Kinematic;
 
-                _vehicle.ChassisParts = new List<BoxShape>();
-                _vehicle.ChassisParts.Add(BuildChassisPart(0, "ChassisBack", 0.1f));
-                _vehicle.ChassisParts.Add(BuildChassisPart(1, "ChassisMiddle", 0.5f));
-                _vehicle.ChassisParts.Add(BuildChassisPart(2, "ChassisFront", 0.4f));
+                _vehicle.ChassisParts = ChassisPartsProperties.Select(BuildChassisPart).ToList();
 
-                _vehicle.WheelFl = BuildWheel(WheelFullName("WheelFrontLeft"), new Vector3(DistanceBetweenWheels / 2.0f, WheelRadius, WheelBase / 2.0f), false, true, true);
-                _vehicle.WheelFr = BuildWheel(WheelFullName("WheelFrontRight"), new Vector3(-DistanceBetweenWheels / 2.0f, WheelRadius, WheelBase / 2.0f), false, true, false);
-                _vehicle.WheelRl = BuildWheel(WheelFullName("WheelRearLeft"), new Vector3(DistanceBetweenWheels / 2.0f, WheelRadius, -WheelBase / 2.0f), true, false, true);
-                _vehicle.WheelRr = BuildWheel(WheelFullName("WheelRearRight"), new Vector3(-DistanceBetweenWheels / 2.0f, WheelRadius, -WheelBase / 2.0f), true, false, false);
+                _vehicle.Wheels = WheelsProperties.Select(BuildWheel).ToList();
+            }
+
+            public float WheelRadius { get; set; }
+            public float WheelWidth { get; set; }
+            public float WheelMass { get; set; }
+            public IEnumerable<CompositeWheelProperties> WheelsProperties 
+            {
+                get { return _wheelsProperties; }
+                private set
+                {
+                    _wheelsProperties = value;
+                    FillWheelsProperties();
+                }
             }
 
             public float WheelBase { get; set; }
             public float DistanceBetweenWheels { get; set; }
-            public float WheelRadius { get; set; }
-            public float WheelWidth { get; set; }
-
-            public float[] ChassisHeights { get; set; }
             public float Clearance { get; set; }
-
             public float ChassisMass { get; set; }
-            public float WheelMass { get; set; }
+            public IEnumerable<BoxShapeProperties> ChassisPartsProperties
+            {
+                get { return _chassisPartsProperties; }
+                private set
+                {
+                    _chassisPartsProperties = value;
+                    FillChassisPartsProperties();
+                }
+            }
 
             public float MaxVelocity { get; set; }
             public float MaxSteerAngle { get; set; }
 
-            private BoxShape BuildChassisPart(int number, string name, float massFactor)
+            private BoxShape BuildChassisPart(BoxShapeProperties partProps)
             {
-                //Vehicle origin is the middle of wheel base
-                var position = new Vector3(0, ChassisHeights[number] / 2.0f + Clearance, -WheelBase / 2.0f - WheelRadius + ChassisLengths.Take(number).Aggregate(0f, (a, l) => a + l) + ChassisLengths[number] / 2);
-                var dimensions = new Vector3(ChassisWidth[number], ChassisHeights[number], ChassisLengths[number]);
-                return new BoxShape(new BoxShapeProperties(name, ChassisMass * massFactor, new Pose(position), dimensions)
-                {
-                    Material = ChassisMaterial,
-                    DiffuseColor = new Vector4(1, 0, 0, 0)
-                });
+                partProps.Name = VehiclePartName(partProps.Name);
+                return new BoxShape(partProps);
             }
 
-            private CompositeWheel BuildWheel(string name, Vector3 position, bool motorized, bool steerable, bool flipped)
+            private CompositeWheel BuildWheel(CompositeWheelProperties wheelProps)
             {
-                return new CompositeWheel(name, position, WheelMass, "WheelShape3.obj")
-                { 
-                    Motorized = motorized,
-                    Steerable = steerable,
-                    Flipped = flipped,
-                    VisualMesh = "CorobotWheel.obj",
-                    MaxSteerAngle = MaxSteerAngle
-                };
+                wheelProps.Name = VehiclePartName(wheelProps.Name);
+                return new CompositeWheel(wheelProps);
             }
 
-            private string WheelFullName(string wheelName)
+            private string VehiclePartName(string partName)
             {
-                return String.Format("{0} {1}", _vehicle.State.Name, wheelName);
-            }
-
-            private float[] ChassisWidth
-            {
-                get { return new float[] { DistanceBetweenWheels - WheelWidth, DistanceBetweenWheels - WheelWidth, DistanceBetweenWheels - 2 * WheelWidth }; }
-            }
-
-            private float[] ChassisLengths
-            {
-                get { return new float[] { 2 * WheelRadius, 0.13f, 0.12f }; }
+                return String.Format("{0} {1}", _vehicle.State.Name, partName);
             }
         }
     }

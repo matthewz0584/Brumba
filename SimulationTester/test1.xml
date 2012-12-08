@@ -495,70 +495,80 @@
         <physm:Y>0</physm:Y>
         <physm:Z>0</physm:Z>
       </MeshTranslation>
-      <WheelFl>
-        <Name>testee WheelFrontLeft</Name>
-        <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
-        <VisualMesh>CorobotWheel.obj</VisualMesh>
-        <Position>
-          <physm:X>0.085</physm:X>
-          <physm:Y>0.05</physm:Y>
-          <physm:Z>0.125</physm:Z>
-        </Position>
-        <Mass>0.03</Mass>
-        <Radius>0.05</Radius>
-        <MaxSteerAngle>0.7853982</MaxSteerAngle>
-        <Motorized>false</Motorized>
-        <Steerable>true</Steerable>
-        <Flipped>true</Flipped>
-      </WheelFl>
-      <WheelFr>
-        <Name>testee WheelFrontRight</Name>
-        <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
-        <VisualMesh>CorobotWheel.obj</VisualMesh>
-        <Position>
-          <physm:X>-0.085</physm:X>
-          <physm:Y>0.05</physm:Y>
-          <physm:Z>0.125</physm:Z>
-        </Position>
-        <Mass>0.03</Mass>
-        <Radius>0.05</Radius>
-        <MaxSteerAngle>0.7853982</MaxSteerAngle>
-        <Motorized>false</Motorized>
-        <Steerable>true</Steerable>
-        <Flipped>false</Flipped>
-      </WheelFr>
-      <WheelRl>
-        <Name>testee WheelRearLeft</Name>
-        <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
-        <VisualMesh>CorobotWheel.obj</VisualMesh>
-        <Position>
-          <physm:X>0.085</physm:X>
-          <physm:Y>0.05</physm:Y>
-          <physm:Z>-0.125</physm:Z>
-        </Position>
-        <Mass>0.03</Mass>
-        <Radius>0.05</Radius>
-        <MaxSteerAngle>0.7853982</MaxSteerAngle>
-        <Motorized>true</Motorized>
-        <Steerable>false</Steerable>
-        <Flipped>true</Flipped>
-      </WheelRl>
-      <WheelRr>
-        <Name>testee WheelRearRight</Name>
-        <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
-        <VisualMesh>CorobotWheel.obj</VisualMesh>
-        <Position>
-          <physm:X>-0.085</physm:X>
-          <physm:Y>0.05</physm:Y>
-          <physm:Z>-0.125</physm:Z>
-        </Position>
-        <Mass>0.03</Mass>
-        <Radius>0.05</Radius>
-        <MaxSteerAngle>0.7853982</MaxSteerAngle>
-        <Motorized>true</Motorized>
-        <Steerable>false</Steerable>
-        <Flipped>false</Flipped>
-      </WheelRr>
+      <Wheels>
+        <CompositeWheel>
+          <Props>
+            <Name>testee WheelFrontLeft</Name>
+            <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
+            <VisualMesh>CorobotWheel.obj</VisualMesh>
+            <Position>
+              <physm:X>0.085</physm:X>
+              <physm:Y>0.05</physm:Y>
+              <physm:Z>0.125</physm:Z>
+            </Position>
+            <Mass>0.03</Mass>
+            <Radius>0.05</Radius>
+            <MaxSteerAngle>0.7853982</MaxSteerAngle>
+            <Motorized>false</Motorized>
+            <Steerable>true</Steerable>
+            <Flipped>true</Flipped>
+          </Props>
+        </CompositeWheel>
+        <CompositeWheel>
+          <Props>
+            <Name>testee WheelFrontRight</Name>
+            <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
+            <VisualMesh>CorobotWheel.obj</VisualMesh>
+            <Position>
+              <physm:X>-0.085</physm:X>
+              <physm:Y>0.05</physm:Y>
+              <physm:Z>0.125</physm:Z>
+            </Position>
+            <Mass>0.03</Mass>
+            <Radius>0.05</Radius>
+            <MaxSteerAngle>0.7853982</MaxSteerAngle>
+            <Motorized>false</Motorized>
+            <Steerable>true</Steerable>
+            <Flipped>false</Flipped>
+          </Props>
+        </CompositeWheel>
+        <CompositeWheel>
+          <Props>
+            <Name>testee WheelRearLeft</Name>
+            <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
+            <VisualMesh>CorobotWheel.obj</VisualMesh>
+            <Position>
+              <physm:X>0.085</physm:X>
+              <physm:Y>0.05</physm:Y>
+              <physm:Z>-0.125</physm:Z>
+            </Position>
+            <Mass>0.03</Mass>
+            <Radius>0.05</Radius>
+            <MaxSteerAngle>0.7853982</MaxSteerAngle>
+            <Motorized>true</Motorized>
+            <Steerable>false</Steerable>
+            <Flipped>true</Flipped>
+          </Props>
+        </CompositeWheel>
+        <CompositeWheel>
+          <Props>
+            <Name>testee WheelRearRight</Name>
+            <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
+            <VisualMesh>CorobotWheel.obj</VisualMesh>
+            <Position>
+              <physm:X>-0.085</physm:X>
+              <physm:Y>0.05</physm:Y>
+              <physm:Z>-0.125</physm:Z>
+            </Position>
+            <Mass>0.03</Mass>
+            <Radius>0.05</Radius>
+            <MaxSteerAngle>0.7853982</MaxSteerAngle>
+            <Motorized>true</Motorized>
+            <Steerable>false</Steerable>
+            <Flipped>false</Flipped>
+          </Props>
+        </CompositeWheel>
+      </Wheels>
       <ChassisParts>
         <BoxShape>
           <phys:BoxState>

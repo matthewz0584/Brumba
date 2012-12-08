@@ -20,20 +20,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         private float _targetSteerAngle;
 
         [DataMember]
-        [Category("Wheels")]
-        public CompositeWheel WheelFl { get; set; }
-
-        [DataMember]
-        [Category("Wheels")]
-        public CompositeWheel WheelFr { get; set; }
-
-        [DataMember]
-        [Category("Wheels")]
-        public CompositeWheel WheelRl { get; set; }
-
-        [DataMember]
-        [Category("Wheels")]
-        public CompositeWheel WheelRr { get; set; }
+        public List<CompositeWheel> Wheels { get; set; }
 
         [DataMember]
         public List<BoxShape> ChassisParts { get; set; }
@@ -125,17 +112,20 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         public void Break()
         {
             SetMotorPower(0);
-            WheelRr.AxleSpeed = WheelRl.AxleSpeed = 0;
+            foreach (var w in Wheels.Where(w => w.Props.Motorized))
+                w.AxleSpeed = 0;
         }
 
         private void UpdateMotorAxleSpeed(float deltaT)
         {
-            WheelRr.AxleSpeed = WheelRl.AxleSpeed = UpdateLinearValue(_targetAxleSpeed, WheelRl.AxleSpeed, deltaT / 5 * MaxAxleSpeed);
+            foreach (var w in Wheels.Where(w => w.Props.Motorized))
+                w.AxleSpeed = UpdateLinearValue(_targetAxleSpeed, w.AxleSpeed, deltaT / 5 * MaxAxleSpeed);
         }
 
         private void UpdateSteerAngle(float deltaT)
         {
-            WheelFr.SteerAngle = WheelFl.SteerAngle = UpdateLinearValue(_targetSteerAngle, WheelFl.SteerAngle, deltaT / 0.1f * MaxSteerAngle);
+            foreach (var w in Wheels.Where(w => w.Props.Steerable))
+                w.SteerAngle = UpdateLinearValue(_targetSteerAngle, w.SteerAngle, deltaT / 0.1f * MaxSteerAngle);
         }
 
         private static float UpdateLinearValue(float targetValue, float currentValue, float delta)
@@ -145,12 +135,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
         private float MaxAxleSpeed
         {
-            get { return MaxVelocity / WheelRl.Radius; }
-        }
-
-        private List<CompositeWheel> Wheels
-        {
-            get { return new List<CompositeWheel> { WheelFl, WheelFr, WheelRl, WheelRr }; }
+            get { return MaxVelocity / Wheels.First().Props.Radius; }
         }
     }
 }

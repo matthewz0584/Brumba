@@ -13,11 +13,8 @@ using Microsoft.Ccr.Core;
 namespace Brumba.Simulation.SimulatedAckermanFourWheels
 {
     [DataContract]
-    public class CompositeWheel
+    public class CompositeWheelProperties
     {
-        private WheelEntity Model { get; set; }
-        private VisualEntity Body { get; set; }
-
         [DataMember]
         public string Name { get; set; }
         [DataMember]
@@ -40,6 +37,16 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         public bool Steerable { get; set; }
         [DataMember]
         public bool Flipped { get; set; }
+    }
+
+    [DataContract]
+    public class CompositeWheel
+    {
+        [DataMember]
+        public CompositeWheelProperties Props { get; set; }
+
+        private WheelEntity Model { get; set; }
+        private VisualEntity Body { get; set; }
 
         private VisualEntity Parent { get; set; }
 
@@ -47,13 +54,9 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         {
         }
 
-        public CompositeWheel(string name, Vector3 position, float mass, string physicalMesh)
+        public CompositeWheel(CompositeWheelProperties props)
         {
-            Name = name;
-            Position = position;
-            Mass = mass;
-            PhysicalMesh = physicalMesh;
-            Radius = 0.05f; //GetRadiusFromMesh(physicalMesh) * 10f / 9f
+            Props = props;
         }
 
         public void Initialize(VisualEntity parent, GraphicsDevice device, PhysicsEngine physicsEngine)
@@ -66,7 +69,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             Model.Initialize(device, physicsEngine);
 
             //Build body
-            if (!Parent.Children.Any(ve => ve.State.Name == (Name + " body")))
+            if (!Parent.Children.Any(ve => ve.State.Name == (Props.Name + " body")))
             {
                 Body = BuildBody();
                 parent.InsertEntity(Body);
@@ -74,7 +77,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             //Deserialize body
             else
             {
-                Body = Parent.Children.Where(ve => ve.State.Name == (Name + " body")).Single();
+                Body = Parent.Children.Where(ve => ve.State.Name == (Props.Name + " body")).Single();
             }
         }
 
@@ -121,9 +124,9 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
         private WheelEntity BuildModel()
         {
-            var wheel = new WheelEntity(new WheelShapeProperties(Name + " shape", Mass * 0.01f, Radius)
+            var wheel = new WheelEntity(new WheelShapeProperties(Props.Name + " shape", Props.Mass * 0.01f, Props.Radius)
             {
-                LocalPose = new Pose(Position),
+                LocalPose = new Pose(Props.Position),
                 TireLateralForceFunction =
                 {
                     AsymptoteValue = 0.001f,
@@ -138,33 +141,33 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             {
                 State =
                 {
-                    Name = Name + " model",
-                    Assets = { Mesh = VisualMesh }
+                    Name = Props.Name + " model",
+                    Assets = { Mesh = Props.VisualMesh }
                 },
             };
 
-            if (Motorized)
+            if (Props.Motorized)
                 wheel.WheelShape.WheelState.Flags |= WheelShapeBehavior.OverrideAxleSpeed;
-            if (Flipped)
+            if (Props.Flipped)
                 wheel.MeshRotation = new Vector3(0, 180, 0);
             return wheel;
         }
 
         private VisualEntity BuildBody()
         {
-            var wheelBody = new SimplifiedConvexMeshEnvironmentEntity(Position, PhysicalMesh, null)
+            var wheelBody = new SimplifiedConvexMeshEnvironmentEntity(Props.Position, Props.PhysicalMesh, null)
             {
                 State =
                 {
-                    Name = Name + " body",
-                    MassDensity = { Mass = Mass }
+                    Name = Props.Name + " body",
+                    MassDensity = { Mass = Props.Mass }
                 },
                 Material = new MaterialProperties("tire", 0.0f, 0.5f, 10.0f),
                 Flags = VisualEntityProperties.DisableRendering
             };
 
             JointAngularProperties jointAngularProps = null;
-            if (Motorized)
+            if (Props.Motorized)
             {
                 jointAngularProps = new JointAngularProperties
                 {
@@ -173,28 +176,28 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 };
             }
 
-            if (Steerable)
+            if (Props.Steerable)
             {
                 jointAngularProps = new JointAngularProperties
                 {
                     Swing1Mode = JointDOFMode.Free,
                     TwistMode = JointDOFMode.Limited,
                     TwistDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(1000000, 10000, 0), 100000000),
-                    UpperTwistLimit = new JointLimitProperties(MaxSteerAngle * 1.1f, 0, new SpringProperties()),
-                    LowerTwistLimit = new JointLimitProperties(-MaxSteerAngle * 1.1f, 0, new SpringProperties()),
+                    UpperTwistLimit = new JointLimitProperties(Props.MaxSteerAngle * 1.1f, 0, new SpringProperties()),
+                    LowerTwistLimit = new JointLimitProperties(-Props.MaxSteerAngle * 1.1f, 0, new SpringProperties()),
                 };
             }
 
             var connector1 = new EntityJointConnector(wheelBody, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) 
                                 { EntityName = wheelBody.State.Name };
-            var connector2 = new EntityJointConnector(Parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), Position) 
+            var connector2 = new EntityJointConnector(Parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), Props.Position) 
                                 { EntityName = Parent.State.Name };
 
             wheelBody.ParentJoint = new Joint
             {
                 State = new JointProperties(jointAngularProps, connector1, connector2)
                 {
-                    Name = Name + " joint",
+                    Name = Props.Name + " joint",
                     EnableCollisions = false
                 }
             };

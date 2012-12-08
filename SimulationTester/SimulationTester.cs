@@ -76,37 +76,55 @@ namespace Brumba.Simulation.SimulationTester
 
         IEnumerator<ITask> ExecuteTest(Test test, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
         {
+            Console.Write("Test ");
+
             int successful = 0;
             for (int i = 0; i < 10; ++i)
             {
-                yield return To.Exec(RestoreTest1Environment, test.ObjectsToRestore().Addd("timer"));
+                yield return To.Exec(RestoreTest1Environment, test.ObjectsToRestore());
 
                 yield return To.Exec(test.Start, vehiclePort);
 
-                bool test1Succeed = false;
+                bool testSucceed = false;
                 
                 double elapsedTime = 0.0;                
-                while (!test1Succeed && elapsedTime <= test.EstimatedTime * 2)
+                while (!testSucceed && elapsedTime <= test.EstimatedTime * 2)
                 {
                     SimPxy.SimulationState simState = null;
                     yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
 
                     IEnumerable<EngPxy.VisualEntity> simStateEntities = null;
                     yield return To.Exec(DeserializaTopLevelEntities, (IEnumerable<EngPxy.VisualEntity> ens) => simStateEntities = ens, simState);
-                    yield return To.Exec(test.AssessProgress, (bool b) => test1Succeed = b, simStateEntities, elapsedTime);
+                    yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, simStateEntities, elapsedTime);
 
                     yield return Arbiter.Choice(_timer.Get(), s => elapsedTime = s.ElapsedTime, LogError);
 
-                    if (!test1Succeed)
+                    if (!testSucceed)
                         yield return To.Exec(TimeoutPort(50));
                 }
                 //yield return To.Exec(TimeoutPort(400));
-                Console.WriteLine("{0} was {1}", i, test1Succeed);
+                PrintOutSingleTestResult(testSucceed);
 
-                if (test1Succeed) ++successful;
+                if (testSucceed) ++successful;
             }
 
-            Console.WriteLine("test1 result - {0}", (float)successful / 10);
+            Console.WriteLine(" {0}%", (float)successful / 10 * 100);
+        }
+
+        private void PrintOutSingleTestResult(bool testSucceed)
+        {
+            var consoleColor = Console.ForegroundColor;
+            if (testSucceed)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(".");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("x");
+            }
+            Console.ForegroundColor = consoleColor;
         }
 
         IEnumerator<ITask> SetUpTest1Services(Action<SafwPxy.SimulatedAckermanFourWheelsOperations> @return)
@@ -143,6 +161,7 @@ namespace Brumba.Simulation.SimulationTester
 
             IEnumerable<EngPxy.VisualEntity> entities = null;
             yield return To.Exec(DeserializaTopLevelEntities, (IEnumerable<EngPxy.VisualEntity> ens) => entities = ens, simState);
+            if (objectsToRestore != null) objectsToRestore.Add("timer");
             foreach (var entity in entities.Where(e => objectsToRestore == null || objectsToRestore.Contains(e.State.Name)))
                 yield return To.Exec(_simEngine.DeleteSimulationEntity(entity));
 
