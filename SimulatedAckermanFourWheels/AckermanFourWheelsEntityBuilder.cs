@@ -19,7 +19,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             private IEnumerable<CompositeWheelProperties> _wheelsProperties;
             private IEnumerable<BoxShapeProperties> _chassisPartsProperties;
 
-            public static Builder Default
+            public static Builder Simple
             {
                 get
                 {
@@ -34,6 +34,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                         WheelMass = 0.03f,
                         ChassisMass = 2f,
                         Clearance = 0.05f,
+                        MaxVelocity = 4.16f, //15 km/h 
+                        MaxSteerAngle = (float)Math.PI / 4,
                         ChassisPartsProperties = new BoxShapeProperties[]
                         {
                             new BoxShapeProperties { Name = "ChassisBack", Dimensions = new Vector3(distanceBetweenWheels - wheelWidth, 0.04f, 2 * wheelRadius), MassDensity = { Mass = 0.1f } },
@@ -47,9 +49,18 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                             new CompositeWheelProperties { Name = "WheelRearLeft", Position = new Vector3(distanceBetweenWheels / 2.0f, wheelRadius, -wheelBase / 2.0f), Motorized = true, Steerable = false, Flipped = true},
                             new CompositeWheelProperties { Name = "WheelRearRight", Position = new Vector3(-distanceBetweenWheels / 2.0f, wheelRadius, -wheelBase / 2.0f), Motorized = true, Steerable = false, Flipped = false}
                         },
-                        MaxVelocity = 4.16f, //15 km/h 
-                        MaxSteerAngle = (float)Math.PI / 4
                     };
+                }
+            }
+
+            public static Builder Simple4x4
+            {
+                get
+                {
+                    var builder = Simple;
+                    foreach (var wp in builder.WheelsProperties)
+                        wp.Motorized = true;
+                    return builder;
                 }
             }
 

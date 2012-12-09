@@ -166,26 +166,17 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 Flags = VisualEntityProperties.DisableRendering
             };
 
-            JointAngularProperties jointAngularProps = null;
+            JointAngularProperties jointAngularProps = new JointAngularProperties { Swing1Mode = JointDOFMode.Free };
+
             if (Props.Motorized)
-            {
-                jointAngularProps = new JointAngularProperties
-                {
-                    Swing1Mode = JointDOFMode.Free,
-                    SwingDrive = new JointDriveProperties(JointDriveMode.Velocity, new SpringProperties(), 1),
-                };
-            }
+                jointAngularProps.SwingDrive = new JointDriveProperties(JointDriveMode.Velocity, new SpringProperties(), 1);
 
             if (Props.Steerable)
             {
-                jointAngularProps = new JointAngularProperties
-                {
-                    Swing1Mode = JointDOFMode.Free,
-                    TwistMode = JointDOFMode.Limited,
-                    TwistDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(1000000, 10000, 0), 100000000),
-                    UpperTwistLimit = new JointLimitProperties(Props.MaxSteerAngle * 1.1f, 0, new SpringProperties()),
-                    LowerTwistLimit = new JointLimitProperties(-Props.MaxSteerAngle * 1.1f, 0, new SpringProperties()),
-                };
+                jointAngularProps.TwistMode = JointDOFMode.Limited;
+                jointAngularProps.TwistDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(1000000, 10000, 0), 100000000);
+                jointAngularProps.UpperTwistLimit = new JointLimitProperties(Props.MaxSteerAngle * 1.1f, 0, new SpringProperties());
+                jointAngularProps.LowerTwistLimit = new JointLimitProperties(-Props.MaxSteerAngle * 1.1f, 0, new SpringProperties());
             }
 
             var connector1 = new EntityJointConnector(wheelBody, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) 

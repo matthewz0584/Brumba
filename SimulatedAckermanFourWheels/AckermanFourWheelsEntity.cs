@@ -50,9 +50,9 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         {
             try
             {
-                //New from simulator Entity\New (not deserialization)
-                if (ChassisParts == null)
-                    _builder = Builder.Default;
+                //New from simulator Entity\New menu (not deserialization)
+                if (ChassisParts == null && _builder == null)
+                    _builder = Builder.Simple;
 
                 if (_builder != null)
                     _builder.Build(this);

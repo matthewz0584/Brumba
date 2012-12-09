@@ -34,9 +34,6 @@ namespace Brumba.Simulation.SimulationTester
 	[Description("SimulationTester service (no description provided)")]
 	partial class SimulationTesterService : DsspServiceBase, IServiceStarter
 	{
-        private const string TERRAIN_FILE = @"terrain_file.bmp";
-        private const string TERRAIN_PATH = @"store\media\";
-
 		[ServiceState]
 		SimulationTesterState _state = new SimulationTesterState();
 		
@@ -48,6 +45,8 @@ namespace Brumba.Simulation.SimulationTester
 
         [Partner("SimTimer", Contract = Brumba.Simulation.SimulatedTimer.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UsePartnerListEntry)]
         StPxy.SimulatedTimerOperations _timer = new StPxy.SimulatedTimerOperations();
+
+        private List<ISimulationTestFixture> _testFixtures = new List<ISimulationTestFixture>();
 		
 		public SimulationTesterService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
@@ -58,30 +57,63 @@ namespace Brumba.Simulation.SimulationTester
 		{
 			base.Start();
 
-            SpawnIterator(StartTests);
+            _testFixtures.Add(new SimpleAckermanVehTests());
+            _testFixtures.Add(new Simple4x4AckermanVehTests());
+
+            SpawnIterator(ExecuteTests);
 		}
 
-        private IEnumerator<ITask> StartTests()
+        private IEnumerator<ITask> ExecuteTests()
         {
             yield return To.Exec(SetUpSimulator);
 
             SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort = null;
             yield return To.Exec(SetUpTest1Services, (SafwPxy.SimulatedAckermanFourWheelsOperations vp) => vehiclePort = vp);
+            yield return To.Exec(TimeoutPort(50));
 
-            yield return To.Exec(RestoreTest1Environment, (List<string>)null);
+            Console.WriteLine();
+            foreach (var fixture in _testFixtures)
+            {
+                Console.WriteLine("Fixture {0}", fixture.GetType().Name);
+                yield return To.Exec(RestoreFixtureEnvironment, fixture.EnvironmentXmlFile, (List<string>)null);
 
-            yield return To.Exec(ExecuteTest, new Test1(), vehiclePort);
-            yield return To.Exec(ExecuteTest, new Test2(), vehiclePort);
+                foreach (var test in fixture.Tests)
+                {
+                    Console.Write("\t{0} ", test.GetType().Name);
+                    float result = 0;
+                    yield return To.Exec(ExecuteTest, (float r) => result = r, test, vehiclePort);
+                    Console.WriteLine(" {0}%", (float)result * 100);
+                }
+            }
         }
 
-        IEnumerator<ITask> ExecuteTest(Test test, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
+        IEnumerator<ITask> SetUpTest1Services(Action<SafwPxy.SimulatedAckermanFourWheelsOperations> @return)
         {
-            Console.Write("Test ");
+            SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort = null;
+            yield return Arbiter.Choice(AckermanFourWheelsCreator.StartService(this, "testee"), vp => vehiclePort = vp, LogError);
+            if (vehiclePort == null)
+                yield break;
+            @return(vehiclePort);
+        }
 
-            int successful = 0;
-            for (int i = 0; i < 10; ++i)
+        IEnumerator<ITask> SetUpSimulator()
+        {
+            yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(0.01f));
+            //yield return To.Exec(_simEngine.UpdateSimulatorConfiguration(new EngPxy.SimulatorConfiguration { Headless = true }));
+
+            SimPxy.SimulationState simState = null;
+            yield return Arbiter.Choice(_simEngine.Get(), s => simState = s, LogError);
+
+            //simState.RenderMode = SimPxy.RenderMode.None;
+            yield return To.Exec(_simEngine.Replace(simState));
+        }
+
+        IEnumerator<ITask> ExecuteTest(Action<float> @return, ISimulationTest test, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
+        {
+            int successful = 0, triesNumber = 2;
+            for (int i = 0; i < triesNumber; ++i)
             {
-                yield return To.Exec(RestoreTest1Environment, test.ObjectsToRestore());
+                yield return To.Exec(RestoreFixtureEnvironment, test.Fixture.EnvironmentXmlFile, test.Fixture.ObjectsToRestore);
 
                 yield return To.Exec(test.Start, vehiclePort);
 
@@ -108,7 +140,7 @@ namespace Brumba.Simulation.SimulationTester
                 if (testSucceed) ++successful;
             }
 
-            Console.WriteLine(" {0}%", (float)successful / 10 * 100);
+            @return((float)successful / triesNumber);
         }
 
         private void PrintOutSingleTestResult(bool testSucceed)
@@ -127,28 +159,7 @@ namespace Brumba.Simulation.SimulationTester
             Console.ForegroundColor = consoleColor;
         }
 
-        IEnumerator<ITask> SetUpTest1Services(Action<SafwPxy.SimulatedAckermanFourWheelsOperations> @return)
-        {
-            SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort = null;
-            yield return Arbiter.Choice(AckermanFourWheelsCreator.StartService(this, "testee"), vp => vehiclePort = vp, LogError);
-            if (vehiclePort == null)
-                yield break;
-            @return(vehiclePort);
-        }
-
-        IEnumerator<ITask> SetUpSimulator()
-        {
-            yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(0.01f));
-            //yield return To.Exec(_simEngine.UpdateSimulatorConfiguration(new EngPxy.SimulatorConfiguration { Headless = true }));
-
-            SimPxy.SimulationState simState = null;
-            yield return Arbiter.Choice(_simEngine.Get(), s => simState = s, LogError);
-
-            simState.RenderMode = SimPxy.RenderMode.None;
-            yield return To.Exec(_simEngine.Replace(simState));
-        }
-
-        private IEnumerator<ITask> RestoreTest1Environment(List<string> objectsToRestore)
+        private IEnumerator<ITask> RestoreFixtureEnvironment(string environmentXmlFile, IEnumerable<string> objectsToRestore)
         {
             SimPxy.SimulationState simState = null;
             yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
@@ -159,15 +170,15 @@ namespace Brumba.Simulation.SimulationTester
 
 //Console.WriteLine("Pause On");
 
+            if (objectsToRestore != null) objectsToRestore = objectsToRestore.ToList().Addd("timer");
+
             IEnumerable<EngPxy.VisualEntity> entities = null;
             yield return To.Exec(DeserializaTopLevelEntities, (IEnumerable<EngPxy.VisualEntity> ens) => entities = ens, simState);
-            if (objectsToRestore != null) objectsToRestore.Add("timer");
             foreach (var entity in entities.Where(e => objectsToRestore == null || objectsToRestore.Contains(e.State.Name)))
                 yield return To.Exec(_simEngine.DeleteSimulationEntity(entity));
 
-            var mountService = ServiceForwarder<MountServiceOperations>(ServicePaths.MountPoint + "/brumba/simulationtester/test1.xml");
             var get = new DsspDefaultGet();
-            mountService.Post(get);
+            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/brumba/simulationtester/{1}", ServicePaths.MountPoint, environmentXmlFile)).Post(get);
             yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (Microsoft.Robotics.Simulation.Proxy.SimulationState)success);
 
             //IEnumerable<EngPxy.VisualEntity> entities = null;
@@ -224,13 +235,6 @@ namespace Brumba.Simulation.SimulationTester
             Activate(choice);
         }
         #endregion
-
-        [ServiceHandler(ServiceHandlerBehavior.Teardown)]
-        public void DropHandler(DsspDefaultDrop drop)
-        {
-            base.DefaultDropHandler(drop);
-            _simEngine.DsspDefaultDrop();
-        }
 	}
 }
 
