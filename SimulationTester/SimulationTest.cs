@@ -24,7 +24,7 @@ namespace Brumba.Simulation.SimulationTester
             yield return To.Exec(Start, (double et) => EstimatedTime = et, vehiclePort);
         }
 
-        public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
+		public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
 
         protected abstract IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort);
     }

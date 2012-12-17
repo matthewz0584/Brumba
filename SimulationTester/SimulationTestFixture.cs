@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Brumba.Simulation.SimulationTester
 {
@@ -14,9 +11,9 @@ namespace Brumba.Simulation.SimulationTester
 
     public class SimulationTestFixture : ISimulationTestFixture
     {
-        IEnumerable<SimulationTest> _tests;
-        string _environmentXmlFile;
-        IEnumerable<string> _objectsToRestore;
+    	readonly IEnumerable<SimulationTest> _tests;
+    	readonly string _environmentXmlFile;
+    	readonly IEnumerable<string> _objectsToRestore;
 
         protected SimulationTestFixture(IEnumerable<SimulationTest> tests, string environmentXmlFile, IEnumerable<string> objectsToRestore)
         {

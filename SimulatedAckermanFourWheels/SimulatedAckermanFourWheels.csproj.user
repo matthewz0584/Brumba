@@ -6,7 +6,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartWorkingDirectory>C:\MRDS4\</StartWorkingDirectory>
     <StartAction>Program</StartAction>
-    <StartProgram>C:\MRDS4\bin\DssHost.exe</StartProgram>
+    <StartProgram>C:\MRDS4\bin\DssHost32.exe</StartProgram>
     <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\SimulatedAckermanFourWheels/SimulatedAckermanFourWheels.manifest.xml" /s:"brumba\config\DssHost32.security"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

@@ -3,7 +3,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\SimulationTester/SimulationTester.manifest.xml" /s:"brumba\config\DssHost32.security"</StartArguments>
-    <StartProgram>C:\MRDS4\bin\DssHost.exe</StartProgram>
+    <StartProgram>C:\MRDS4\bin\DssHost32.exe</StartProgram>
     <StartWorkingDirectory>C:\MRDS4\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>

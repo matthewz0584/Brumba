@@ -19,7 +19,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         private float _targetAxleSpeed;
         private float _targetSteerAngle;
 
-        [DataMember]
+        //[DataMember]
         public List<CompositeWheel> Wheels { get; set; }
 
         [DataMember]
@@ -55,7 +55,19 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                     _builder = Builder.Simple;
 
                 if (_builder != null)
+                {
                     _builder.Build(this);
+                    Wheels.ForEach(w =>
+                                    {
+                                        w.Parent = this;
+                                        w.Build();
+                                        InsertEntity(w);
+                                    });
+                }
+                else
+                {
+                	Wheels = new List<CompositeWheel>(Children.OfType<CompositeWheel>());
+                }
 
                 ChassisParts.ForEach(State.PhysicsPrimitives.Add);
 
@@ -63,8 +75,6 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 PhysicsEntity.SolverIterationCount = 64;
 
                 base.Initialize(device, physicsEngine);
-
-                Wheels.ForEach(w => w.Initialize(this, device, physicsEngine));
             }
             catch(Exception ex)
             {
@@ -75,26 +85,12 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             }
         }
 
-        public override void Render(VisualEntity.RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)
-        {
-            Wheels.ForEach(w => w.Render(renderMode, transforms, currentCamera));
-            base.Render(renderMode, transforms, currentCamera);
-        }
-
         public override void Update(FrameUpdate update)
         {
             base.Update(update);
 
             UpdateMotorAxleSpeed((float)update.ElapsedTime);
             UpdateSteerAngle((float)update.ElapsedTime);
-
-            Wheels.ForEach(w => w.Update(update));
-        }
-
-        public override void Dispose()
-        {
-            Wheels.ForEach(w => w.Dispose());
-            base.Dispose();
         }
 
         #endregion
@@ -125,7 +121,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         private void UpdateSteerAngle(float deltaT)
         {
             foreach (var w in Wheels.Where(w => w.Props.Steerable))
-                w.SteerAngle = UpdateLinearValue(_targetSteerAngle, w.SteerAngle, deltaT / 0.1f * MaxSteerAngle);
+                if (Math.Abs(w.SteerAngle - _targetSteerAngle) > 0.01f * Math.PI)
+                    w.SteerAngle = UpdateLinearValue(_targetSteerAngle, w.SteerAngle, deltaT / 0.1f * MaxSteerAngle);
         }
 
         private static float UpdateLinearValue(float targetValue, float currentValue, float delta)

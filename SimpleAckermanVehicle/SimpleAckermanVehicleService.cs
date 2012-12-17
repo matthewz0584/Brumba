@@ -63,7 +63,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             var box = new BoxShape(new BoxShapeProperties(10, new Pose(), new Vector3(1, 0.03f, 0.5f)) { Material = new MaterialProperties("ground", 0f, 0.5f, 0.5f) });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(box, new Vector3(0, 0.02f, 2f)) { State = { Name = "booox" } });
 
-            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "SAV2", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Simple),
+            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Simple),
                 ops4 =>
                 {
                     //ops4.SetMotorPower(new SafwProxy.MotorPowerRequest { Value = 0.2f });
@@ -95,7 +95,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             };
             SimulationEngine.GlobalInstancePort.Insert(sun);
 
-            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "SAV2", new Vector3(), AckermanFourWheelsEntity.Builder.Simple4x4),
+            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(), AckermanFourWheelsEntity.Builder.Simple4x4),
                 ops4 => {}, f => LogInfo("bebebe")));
         }
 
