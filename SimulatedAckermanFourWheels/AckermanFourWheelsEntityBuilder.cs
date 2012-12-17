@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Microsoft.Dss.Core.Attributes;
-using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
-using Microsoft.Xna.Framework.Graphics;
-using System.Diagnostics;
 
 namespace Brumba.Simulation.SimulatedAckermanFourWheels
 {
@@ -36,13 +31,13 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                         Clearance = 0.05f,
                         MaxVelocity = 4.16f, //15 km/h 
                         MaxSteerAngle = (float)Math.PI / 4,
-                        ChassisPartsProperties = new BoxShapeProperties[]
+                        ChassisPartsProperties = new []
                         {
                             new BoxShapeProperties { Name = "ChassisBack", Dimensions = new Vector3(distanceBetweenWheels - wheelWidth, 0.04f, 2 * wheelRadius), MassDensity = { Mass = 0.1f } },
                             new BoxShapeProperties { Name = "ChassisMiddle", Dimensions = new Vector3(distanceBetweenWheels - wheelWidth, 0.10f, 0.13f), MassDensity = { Mass = 0.5f } },
                             new BoxShapeProperties { Name = "ChassisFront", Dimensions = new Vector3(distanceBetweenWheels - 2 * wheelWidth, 0.06f, 0.12f), MassDensity = { Mass = 0.4f } },
                         },
-                        WheelsProperties = new CompositeWheelProperties[]
+                        WheelsProperties = new []
                         {
                             new CompositeWheelProperties { Name = "WheelFrontLeft", Position = new Vector3(distanceBetweenWheels / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = true},
                             new CompositeWheelProperties { Name = "WheelFrontRight", Position = new Vector3(-distanceBetweenWheels / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = false},
@@ -99,7 +94,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
                 _vehicle.ChassisParts = ChassisPartsProperties.Select(BuildChassisPart).ToList();
 
-                _vehicle.Wheels = WheelsProperties.Select(BuildWheel).ToList();
+				WheelsProperties.Select(BuildWheel).ToList().ForEach(_vehicle.InsertEntity);
             }
 
             public float WheelRadius { get; set; }
@@ -141,7 +136,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             private CompositeWheel BuildWheel(CompositeWheelProperties wheelProps)
             {
                 wheelProps.Name = VehiclePartName(wheelProps.Name);
-                return new CompositeWheel(wheelProps);
+            	return wheelProps.Build(_vehicle);
             }
 
             private string VehiclePartName(string partName)

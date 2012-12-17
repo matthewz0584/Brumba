@@ -1,14 +1,11 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Xna.Framework.Graphics;
-using System.Diagnostics;
-using Microsoft.Robotics.Simulation;
 
 namespace Brumba.Simulation.SimulatedAckermanFourWheels
 {
@@ -55,19 +52,9 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                     _builder = Builder.Simple;
 
                 if (_builder != null)
-                {
                     _builder.Build(this);
-                    Wheels.ForEach(w =>
-                                    {
-                                        w.Parent = this;
-                                        w.Build();
-                                        InsertEntity(w);
-                                    });
-                }
-                else
-                {
-                	Wheels = new List<CompositeWheel>(Children.OfType<CompositeWheel>());
-                }
+
+				Wheels = Children.OfType<CompositeWheel>().ToList();
 
                 ChassisParts.ForEach(State.PhysicsPrimitives.Add);
 
@@ -87,10 +74,10 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
         public override void Update(FrameUpdate update)
         {
-            base.Update(update);
-
             UpdateMotorAxleSpeed((float)update.ElapsedTime);
             UpdateSteerAngle((float)update.ElapsedTime);
+
+			base.Update(update);
         }
 
         #endregion
