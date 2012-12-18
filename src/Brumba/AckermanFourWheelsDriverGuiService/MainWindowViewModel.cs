@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
+﻿namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
 {
     public class MainWindowViewModel
     {

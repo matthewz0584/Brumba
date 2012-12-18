@@ -74,10 +74,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Ccr.Adapters.Wpf\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Ccr.Adapters.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Dss.Runtime.Proxy, Version=4.0.261.0">
-      <SpecificVersion>true</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0">
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>

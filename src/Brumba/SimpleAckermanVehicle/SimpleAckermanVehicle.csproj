@@ -70,21 +70,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Dss.Runtime.Proxy, Version=4.0.261.0">
-      <SpecificVersion>true</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0">
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Microsoft.Xna.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Microsoft.Xna.Framework.Graphics.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <SpecificVersion>False</SpecificVersion>
@@ -96,10 +84,6 @@
     </Reference>
     <Reference Include="Microsoft.Dss.Base, Version=4.0.261.0">
       <SpecificVersion>true</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PhysicsEngine">
-      <HintPath>..\..\..\..\bin\PhysicsEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RoboticsCommon">
@@ -123,10 +107,6 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Xml">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>

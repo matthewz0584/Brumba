@@ -70,10 +70,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Dss.Runtime.Proxy, Version=4.0.261.0">
-      <SpecificVersion>true</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0">
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
@@ -81,11 +77,6 @@
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Microsoft.Xna.Framework.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Microsoft.Xna.Framework.Graphics.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib">
@@ -98,11 +89,6 @@
     </Reference>
     <Reference Include="Microsoft.Dss.Base, Version=4.0.261.0">
       <SpecificVersion>true</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PhysicsEngine, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\PhysicsEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RoboticsCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -149,7 +135,6 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Xml.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AckermanFourWheelsCreator.cs" />
