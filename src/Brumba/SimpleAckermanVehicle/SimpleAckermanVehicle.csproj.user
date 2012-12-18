@@ -7,8 +7,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <StartWorkingDirectory>C:\MRDS4\</StartWorkingDirectory>
     <StartAction>Program</StartAction>
-    <StartProgram>..\..\bin\dsshost32.exe</StartProgram>
-    <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\SimpleAckermanVehicle/SimpleAckermanVehicle.manifest.xml" /s:"brumba\config\DssHost32.security"</StartArguments>
+    <StartProgram>..\..\..\bin\dsshost32.exe</StartProgram>
+    <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\src\Brumba\SimpleAckermanVehicle\SimpleAckermanVehicle.manifest.xml" /s:"brumba\config\DssHost32.security"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <StartWorkingDirectory>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\</StartWorkingDirectory>

@@ -10,8 +10,6 @@ using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
 using Brumba.Simulation.SimulatedAckermanFourWheels;
 using SafwProxy = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
-using System.Threading;
-using Microsoft.Ccr.Core.Arbiters;
 using Brumba.Simulation.SimulationTester;
 
 namespace Brumba.Simulation.SimpleAckermanVehicle
@@ -37,8 +35,8 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 
         protected override void Start()
         {
-            GenerateEnvironment();
-            //GenerateEnvironmentForTests();
+            //GenerateEnvironment();
+            GenerateEnvironmentForTests();
 
             base.Start();
         }
@@ -63,10 +61,10 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             var box = new BoxShape(new BoxShapeProperties(10, new Pose(), new Vector3(1, 0.03f, 0.5f)) { Material = new MaterialProperties("ground", 0f, 0.5f, 0.5f) });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(box, new Vector3(0, 0.02f, 2f)) { State = { Name = "booox" } });
 
-            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Simple),
+            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.HardRearDriven),
                 ops4 =>
                 {
-                    //ops4.SetMotorPower(new SafwProxy.MotorPowerRequest { Value = 0.2f });
+                    //ops4.SetMotorPower(new SafwProxy.MotorPowerRequest { Value = 0.1f });
                     ops4.SetSteerAngle(new SafwProxy.SteerAngleRequest { Value = -0.25f });
                 },
                 f => LogInfo("bebebe")));
@@ -83,7 +81,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             var view = new CameraView { EyePosition = new Vector3(-12f, 9f, -3f), LookAtPoint = new Vector3(0.36f, 0.49f, 0.06f) };
             SimulationEngine.GlobalInstancePort.Update(view);
 
-            SkyDomeEntity sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
+            var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
             SimulationEngine.GlobalInstancePort.Insert(sky);
 
             var sun = new LightSourceEntity
@@ -95,7 +93,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             };
             SimulationEngine.GlobalInstancePort.Insert(sun);
 
-            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(), AckermanFourWheelsEntity.Builder.Simple4x4),
+			Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(), AckermanFourWheelsEntity.Builder.HardRearDriven),
                 ops4 => {}, f => LogInfo("bebebe")));
         }
 

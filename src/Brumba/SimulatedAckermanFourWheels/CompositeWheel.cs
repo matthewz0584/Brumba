@@ -25,6 +25,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         public float Radius { get; set; }
         [DataMember]
         public float MaxSteerAngle { get; set; }
+		[DataMember]
+		public float SuspensionRate { get; set; }
 
         [DataMember]
         public bool Motorized { get; set; }
@@ -65,7 +67,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 			var jointLinearProps = new JointLinearProperties
 			{
 				XMotionMode = JointDOFMode.Free,
-				XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(500, 10, 0), 10000)
+				XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(SuspensionRate, SuspensionRate / 10, 0), 10000)
 			};
 
 			var connector1 = new EntityJointConnector(this, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) { EntityName = Name };

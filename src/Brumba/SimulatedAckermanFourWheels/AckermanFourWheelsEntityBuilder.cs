@@ -11,16 +11,14 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         public class Builder
         {
             private AckermanFourWheelsEntity _vehicle;
-            private IEnumerable<CompositeWheelProperties> _wheelsProperties;
-            private IEnumerable<BoxShapeProperties> _chassisPartsProperties;
 
-            public static Builder Simple
+        	public static Builder HardRearDriven
             {
                 get
                 {
                     float wheelRadius = 0.05f, distanceBetweenWheels = 0.17f, wheelWidth = 0.045f, wheelBase = 0.25f;
                     
-                    return new Builder()
+                    return new Builder
                     {
                         WheelBase = wheelBase,
                         DistanceBetweenWheels = distanceBetweenWheels,
@@ -29,6 +27,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                         WheelMass = 0.03f,
                         ChassisMass = 2f,
                         Clearance = 0.05f,
+						SuspensionRate = 7500,
                         MaxVelocity = 4.16f, //15 km/h 
                         MaxSteerAngle = (float)Math.PI / 4,
                         ChassisPartsProperties = new []
@@ -48,43 +47,32 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 }
             }
 
-            public static Builder Simple4x4
+			public static Builder SuspendedRearDriven
+			{
+				get
+				{
+					var builder = HardRearDriven;
+					builder.SuspensionRate = 750;
+					return builder;
+				}
+			}
+
+        	public static Builder Suspended4x4
             {
                 get
                 {
-                    var builder = Simple;
+					var builder = SuspendedRearDriven;
                     foreach (var wp in builder.WheelsProperties)
                         wp.Motorized = true;
                     return builder;
                 }
             }
 
-            private void FillWheelsProperties()
-            {
-                foreach (var wp in WheelsProperties)
-                {
-                    wp.Mass = WheelMass;
-                    wp.MaxSteerAngle = MaxSteerAngle;
-                    wp.PhysicalMesh = "WheelShape3.obj";
-                    wp.VisualMesh = "CorobotWheel.obj";
-                    wp.Radius = 0.05f;
-                }
-            }
-
-            private void FillChassisPartsProperties()
-            {
-                var i = 0;
-                foreach (var chp in ChassisPartsProperties)
-                {
-                    chp.LocalPose.Position = new Vector3(0, chp.Dimensions.Y / 2.0f + Clearance, -WheelBase / 2.0f - WheelRadius + ChassisPartsProperties.Take(i++).Aggregate(0f, (a, p) => a + p.Dimensions.Z) + chp.Dimensions.Z / 2);
-                    chp.MassDensity.Mass = chp.MassDensity.Mass * ChassisMass;
-                    chp.Material = new MaterialProperties("ChassisMaterial", 0.0f, 0.5f, 0.5f);
-                    chp.DiffuseColor = new Vector4(1, 0, 0, 0);
-                }
-            }
-
             public void Build(AckermanFourWheelsEntity v)
             {
+            	FillWheelsProperties();
+            	FillChassisPartsProperties();
+
                 _vehicle = v;
 
                 _vehicle.MaxVelocity = MaxVelocity;
@@ -97,34 +85,44 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 				WheelsProperties.Select(BuildWheel).ToList().ForEach(_vehicle.InsertEntity);
             }
 
+			private void FillWheelsProperties()
+			{
+				foreach (var wp in WheelsProperties)
+				{
+					wp.Mass = WheelMass;
+					wp.MaxSteerAngle = MaxSteerAngle;
+					wp.PhysicalMesh = "WheelShape3.obj";
+					wp.VisualMesh = "CorobotWheel.obj";
+					wp.Radius = 0.05f;
+					wp.SuspensionRate = SuspensionRate;
+				}
+			}
+
+			private void FillChassisPartsProperties()
+			{
+				var i = 0;
+				foreach (var chp in ChassisPartsProperties)
+				{
+					chp.LocalPose.Position = new Vector3(0, chp.Dimensions.Y / 2.0f + Clearance, -WheelBase / 2.0f - WheelRadius + ChassisPartsProperties.Take(i++).Aggregate(0f, (a, p) => a + p.Dimensions.Z) + chp.Dimensions.Z / 2);
+					chp.MassDensity.Mass = chp.MassDensity.Mass * ChassisMass;
+					chp.Material = new MaterialProperties("ChassisMaterial", 0.0f, 0.5f, 0.5f);
+					chp.DiffuseColor = new Vector4(1, 0, 0, 0);
+				}
+			}
+
             public float WheelRadius { get; set; }
             public float WheelWidth { get; set; }
             public float WheelMass { get; set; }
-            public IEnumerable<CompositeWheelProperties> WheelsProperties 
-            {
-                get { return _wheelsProperties; }
-                private set
-                {
-                    _wheelsProperties = value;
-                    FillWheelsProperties();
-                }
-            }
+			public float SuspensionRate { get; set; }
+        	public IEnumerable<CompositeWheelProperties> WheelsProperties { get; private set; }
 
-            public float WheelBase { get; set; }
+        	public float WheelBase { get; set; }
             public float DistanceBetweenWheels { get; set; }
             public float Clearance { get; set; }
             public float ChassisMass { get; set; }
-            public IEnumerable<BoxShapeProperties> ChassisPartsProperties
-            {
-                get { return _chassisPartsProperties; }
-                private set
-                {
-                    _chassisPartsProperties = value;
-                    FillChassisPartsProperties();
-                }
-            }
+        	public IEnumerable<BoxShapeProperties> ChassisPartsProperties { get; private set; }
 
-            public float MaxVelocity { get; set; }
+        	public float MaxVelocity { get; set; }
             public float MaxSteerAngle { get; set; }
 
             private BoxShape BuildChassisPart(BoxShapeProperties partProps)

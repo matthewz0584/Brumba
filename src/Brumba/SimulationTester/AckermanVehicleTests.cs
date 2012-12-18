@@ -19,7 +19,7 @@ namespace Brumba.Simulation.SimulationTester
         {
             var motorPower = 1f;
             yield return To.Exec(vehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = motorPower }));
-            @return(50 / (AckermanFourWheelsEntity.Builder.Simple.MaxVelocity * motorPower));//50 meters
+            @return(50 / (AckermanFourWheelsEntity.Builder.HardRearDriven.MaxVelocity * motorPower));//50 meters
             //@return(2);
         }
 

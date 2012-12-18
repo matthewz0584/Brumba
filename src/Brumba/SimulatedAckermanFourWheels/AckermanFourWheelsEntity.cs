@@ -49,10 +49,10 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             {
                 //New from simulator Entity\New menu (not deserialization)
                 if (ChassisParts == null && _builder == null)
-                    _builder = Builder.Simple;
+                    _builder = Builder.HardRearDriven;
 
-                if (_builder != null)
-                    _builder.Build(this);
+				//if (_builder != null)
+				//    _builder.Build(this);
 
 				Wheels = Children.OfType<CompositeWheel>().ToList();
 
