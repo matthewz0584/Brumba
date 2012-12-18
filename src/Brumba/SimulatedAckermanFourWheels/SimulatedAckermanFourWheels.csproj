@@ -13,7 +13,7 @@
     </AssemblyKeyContainerName>
     <AssemblyName>SimulatedAckermanFourWheels.Y2012.M10</AssemblyName>
     <RootNamespace>Brumba.Simulation.SimulatedAckermanFourWheels</RootNamespace>
-    <AssemblyOriginatorKeyFile>..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -81,10 +81,12 @@
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Microsoft.Xna.Framework.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Microsoft.Xna.Framework.Graphics.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="mscorlib">
       <SpecificVersion>False</SpecificVersion>

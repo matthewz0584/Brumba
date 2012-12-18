@@ -55,7 +55,7 @@ namespace Brumba.Simulation.SimulationTester
     public class SimpleAckermanVehTests : SimulationTestFixture
     {
         public SimpleAckermanVehTests()
-            : base(new SimulationTest[] { new StraightPath(), new CurvedPath() }, "SimpleAckermanVehicleOnTerrain.xml", new string[] { "testee" })
+            : base(new SimulationTest[] { new StraightPath(), new CurvedPath() }, "SimpleAckermanVehicleOnTerrain.xml", new [] { "testee" })
         {
         }
     }
@@ -63,7 +63,7 @@ namespace Brumba.Simulation.SimulationTester
     public class Simple4x4AckermanVehTests : SimulationTestFixture
     {
         public Simple4x4AckermanVehTests()
-            : base(new SimulationTest[] { new StraightPath(), new CurvedPath() }, "Simple4x4AckermanVehicleOnTerrain.xml", new string[] { "testee" })
+            : base(new SimulationTest[] { new StraightPath(), new CurvedPath() }, "Simple4x4AckermanVehicleOnTerrain.xml", new [] { "testee" })
         {
         }
     }

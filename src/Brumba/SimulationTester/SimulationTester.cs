@@ -98,7 +98,7 @@ namespace Brumba.Simulation.SimulationTester
             SimPxy.SimulationState simState = null;
             yield return Arbiter.Choice(_simEngine.Get(), s => simState = s, LogError);
 
-            simState.RenderMode = SimPxy.RenderMode.None;
+            //simState.RenderMode = SimPxy.RenderMode.None;
             yield return To.Exec(_simEngine.Replace(simState));
         }
 
@@ -173,7 +173,7 @@ namespace Brumba.Simulation.SimulationTester
             yield return To.Exec(_simEngine.Replace(simState));
 
             var get = new DsspDefaultGet();
-            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/brumba/simulationtester/{1}", ServicePaths.MountPoint, environmentXmlFile)).Post(get);
+            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/brumba/src/brumba/simulationtester/{1}", ServicePaths.MountPoint, environmentXmlFile)).Post(get);
             yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (Microsoft.Robotics.Simulation.Proxy.SimulationState)success);
 
             IEnumerable<VisualEntity> entities = null;
