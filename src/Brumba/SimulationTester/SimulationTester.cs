@@ -5,6 +5,7 @@ using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Robotics.PhysicalModel;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using SimPxy = Microsoft.Robotics.Simulation.Proxy;
 using Microsoft.Robotics.Simulation.Engine;
@@ -26,7 +27,9 @@ namespace Brumba.Simulation.SimulationTester
 	[Description("SimulationTester service (no description provided)")]
 	class SimulationTesterService : DsspServiceBase, IServiceStarter
 	{
-		public const int TRIES_NUMBER = 10;
+		public const int TRIES_NUMBER = 100;
+		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
+		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
 
 		[ServiceState]
 		SimulationTesterState _state = new SimulationTesterState();
@@ -69,7 +72,7 @@ namespace Brumba.Simulation.SimulationTester
             foreach (var fixture in _testFixtures)
             {
                 Console.WriteLine("Fixture {0}", fixture.GetType().Name);
-                yield return To.Exec(RestoreFixtureEnvironment, fixture.EnvironmentXmlFile, (List<string>)null);
+                yield return To.Exec(RestoreFixtureEnvironment, fixture);
 
                 foreach (var test in fixture.Tests)
                 {
@@ -98,7 +101,7 @@ namespace Brumba.Simulation.SimulationTester
             SimPxy.SimulationState simState = null;
             yield return Arbiter.Choice(_simEngine.Get(), s => simState = s, LogError);
 
-            //simState.RenderMode = SimPxy.RenderMode.None;
+			simState.RenderMode = RENDER_MODE;
             yield return To.Exec(_simEngine.Replace(simState));
         }
 
@@ -107,7 +110,7 @@ namespace Brumba.Simulation.SimulationTester
         	var successful = 0;
 			for (int i = 0; i < TRIES_NUMBER; ++i)
             {
-                yield return To.Exec(RestoreFixtureEnvironment, test.Fixture.EnvironmentXmlFile, test.Fixture.ObjectsToRestore);
+                yield return To.Exec(RestoreTestEnvironment, test);
 
                 yield return To.Exec(test.Start, vehiclePort);
 
@@ -152,7 +155,40 @@ namespace Brumba.Simulation.SimulationTester
             Console.ForegroundColor = consoleColor;
         }
 
-        private IEnumerator<ITask> RestoreFixtureEnvironment(string environmentXmlFile, IEnumerable<string> objectsToRestore)
+		private IEnumerator<ITask> RestoreFixtureEnvironment(ISimulationTestFixture fixture)
+		{
+			SimPxy.SimulationState simState = null;
+			yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
+
+			var renderMode = simState.RenderMode;
+			simState.Pause = true;
+			yield return To.Exec(_simEngine.Replace(simState));
+
+			IEnumerable<EngPxy.VisualEntity> entityPxies = null;
+			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<EngPxy.VisualEntity> ePxies) => entityPxies = ePxies, simState);
+			foreach (var entity in entityPxies)
+				yield return To.Exec(_simEngine.DeleteSimulationEntity((EngPxy.VisualEntity)DssTypeHelper.TransformToProxy(entity)));
+
+			simState.Pause = false;
+			simState.RenderMode = renderMode;
+			yield return To.Exec(_simEngine.Replace(simState));
+
+			var get = new DsspDefaultGet();
+			ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/brumba/src/brumba/simulationtester/{1}", ServicePaths.MountPoint, fixture.EnvironmentXmlFile)).Post(get);
+			yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (Microsoft.Robotics.Simulation.Proxy.SimulationState)success);
+
+			IEnumerable<VisualEntity> entities = null;
+			yield return To.Exec(DeserializeTopLevelEntities, (IEnumerable<VisualEntity> ens) => entities = ens, simState);
+			foreach (var insRequest in entities.Select(entity => new InsertSimulationEntity(entity)))
+			{
+				SimulationEngine.GlobalInstancePort.Post(insRequest);
+				yield return To.Exec(insRequest.ResponsePort);
+			}
+
+			SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
+		}
+
+		private IEnumerator<ITask> RestoreTestEnvironment(ISimulationTest test)
         {
             SimPxy.SimulationState simState = null;
             yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
@@ -161,24 +197,24 @@ namespace Brumba.Simulation.SimulationTester
             simState.Pause = true;
             yield return To.Exec(_simEngine.Replace(simState));
 
-            if (objectsToRestore != null) objectsToRestore = objectsToRestore.ToList().Addd("timer");
-
             IEnumerable<EngPxy.VisualEntity> entityPxies = null;
 			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<EngPxy.VisualEntity> ePxies) => entityPxies = ePxies, simState);
-			foreach (var entity in entityPxies.Where(e => objectsToRestore == null || objectsToRestore.Contains(e.State.Name)))
+			foreach (var entity in test.FindEntitiesToRestore(entityPxies))
                 yield return To.Exec(_simEngine.DeleteSimulationEntity((EngPxy.VisualEntity)DssTypeHelper.TransformToProxy(entity)));
+
+			yield return To.Exec(_simEngine.DeleteSimulationEntity((EngPxy.VisualEntity)DssTypeHelper.TransformToProxy(entityPxies.Single(pxy => pxy.State.Name == "timer"))));
 
             simState.Pause = false;
             simState.RenderMode = renderMode;
             yield return To.Exec(_simEngine.Replace(simState));
 
             var get = new DsspDefaultGet();
-            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/brumba/src/brumba/simulationtester/{1}", ServicePaths.MountPoint, environmentXmlFile)).Post(get);
+            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/brumba/src/brumba/simulationtester/{1}", ServicePaths.MountPoint, test.Fixture.EnvironmentXmlFile)).Post(get);
             yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (Microsoft.Robotics.Simulation.Proxy.SimulationState)success);
 
             IEnumerable<VisualEntity> entities = null;
             yield return To.Exec(DeserializeTopLevelEntities, (IEnumerable<VisualEntity> ens) => entities = ens, simState);
-			foreach (var insRequest in entities.Where(e => objectsToRestore == null || objectsToRestore.Contains(e.State.Name)).Select(entity => new InsertSimulationEntity(entity)))
+			foreach (var insRequest in test.PrepareEntitiesToRestore(entities).Select(entity => new InsertSimulationEntity(entity)))
 			{
 				SimulationEngine.GlobalInstancePort.Post(insRequest);
 				yield return To.Exec(insRequest.ResponsePort);

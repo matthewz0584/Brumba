@@ -35,6 +35,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 
         protected override void Start()
         {
+			//CrossCountryGenerator.Generate(257, 0.1f).Save("terrain00.bmp");
             //GenerateEnvironment();
             GenerateEnvironmentForTests();
 
@@ -72,13 +73,13 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 
         private void GenerateEnvironmentForTests()
         {
-            var terrain = new TerrainEntity(@"terrain_file.bmp", "terrain_tex.jpg", new MaterialProperties("ground", 0, 0.5f, 1.0f))
+            var terrain = new TerrainEntity(@"terrain03.bmp", "terrain_tex.jpg", new MaterialProperties("ground", 0, 0.5f, 1.0f))
             {
                 State = { Name = "Terrain", Assets = { Effect = "Terrain.fx" } },
             };
             SimulationEngine.GlobalInstancePort.Insert(terrain);
 
-            var view = new CameraView { EyePosition = new Vector3(-12f, 9f, -3f), LookAtPoint = new Vector3(0.36f, 0.49f, 0.06f) };
+            var view = new CameraView { EyePosition = new Vector3(-12f, 9f, 6), LookAtPoint = new Vector3(0, 0, 6) };
             SimulationEngine.GlobalInstancePort.Update(view);
 
             var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");

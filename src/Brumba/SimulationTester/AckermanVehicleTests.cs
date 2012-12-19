@@ -17,13 +17,13 @@ namespace Brumba.Simulation.SimulationTester
     {
         protected override IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
         {
-            var motorPower = 1f;
+            var motorPower = 0.9f;
             yield return To.Exec(vehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = motorPower }));
             @return(50 / (AckermanFourWheelsEntity.Builder.HardRearDriven.MaxVelocity * motorPower));//50 meters
             //@return(2);
         }
 
-        public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
+    	public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
         {
             var vehEntity = simStateEntities.Single(e => e.State.Name == Fixture.ObjectsToRestore.First());
             var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(vehEntity.State.Pose.Position));
@@ -55,7 +55,7 @@ namespace Brumba.Simulation.SimulationTester
     public class SimpleAckermanVehTests : SimulationTestFixture
     {
         public SimpleAckermanVehTests()
-            : base(new SimulationTest[] { new StraightPath(), new CurvedPath() }, "SimpleAckermanVehicleOnTerrain.xml", new [] { "testee" })
+			: base(new SimulationTest[] { new StraightPath(), new CurvedPath() }, "hard_rear_driven_on_terrain.xml", new[] { "testee" })
         {
         }
     }

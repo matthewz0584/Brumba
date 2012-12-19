@@ -27,14 +27,14 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                         WheelMass = 0.03f,
                         ChassisMass = 2f,
                         Clearance = 0.05f,
-						SuspensionRate = 7500,
+						SuspensionRate = 75000,
                         MaxVelocity = 4.16f, //15 km/h 
                         MaxSteerAngle = (float)Math.PI / 4,
                         ChassisPartsProperties = new []
                         {
                             new BoxShapeProperties { Name = "ChassisBack", Dimensions = new Vector3(distanceBetweenWheels - wheelWidth, 0.04f, 2 * wheelRadius), MassDensity = { Mass = 0.1f } },
                             new BoxShapeProperties { Name = "ChassisMiddle", Dimensions = new Vector3(distanceBetweenWheels - wheelWidth, 0.10f, 0.13f), MassDensity = { Mass = 0.5f } },
-                            new BoxShapeProperties { Name = "ChassisFront", Dimensions = new Vector3(distanceBetweenWheels - 2 * wheelWidth, 0.06f, 0.12f), MassDensity = { Mass = 0.4f } },
+                            new BoxShapeProperties { Name = "ChassisFront", Dimensions = new Vector3(distanceBetweenWheels - 2 * wheelWidth, 0.06f, 0.1f), MassDensity = { Mass = 0.4f } },
                         },
                         WheelsProperties = new []
                         {

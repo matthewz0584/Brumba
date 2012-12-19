@@ -1,18 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
-using Microsoft.Robotics.Simulation.Engine;
-using Microsoft.Dss.Core.Attributes;
-using System.ComponentModel;
-using Microsoft.Robotics.Simulation;
-using System.IO;
-using Microsoft.Robotics.Simulation.Physics;
-using Xna = Microsoft.Xna.Framework;
-using Xnagrfx = Microsoft.Xna.Framework.Graphics;
-using System.Runtime.InteropServices;
-using Microsoft.Robotics.PhysicalModel;
 
 namespace Brumba.Simulation.SimulationTester
 {
