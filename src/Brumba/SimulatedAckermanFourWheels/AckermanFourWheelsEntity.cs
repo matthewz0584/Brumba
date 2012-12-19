@@ -51,8 +51,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 if (ChassisParts == null && _builder == null)
                     _builder = Builder.HardRearDriven;
 
-				//if (_builder != null)
-				//    _builder.Build(this);
+				if (_builder != null)
+					_builder.Build(this);
 
 				Wheels = Children.OfType<CompositeWheel>().ToList();
 

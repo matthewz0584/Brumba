@@ -20,7 +20,6 @@ namespace Brumba.Simulation.SimulationTester
         public static DsspResponsePort<SafwPx.SimulatedAckermanFourWheelsOperations> CreateVehicleAndService(IServiceStarter starter, string name, Vector3 position, AckermanFourWheelsEntity.Builder builder)
         {
             var sav = new AckermanFourWheelsEntity(name, position, builder);
-			builder.Build(sav);
             SimulationEngine.GlobalInstancePort.Insert(sav);
 
             return StartService(starter, name);

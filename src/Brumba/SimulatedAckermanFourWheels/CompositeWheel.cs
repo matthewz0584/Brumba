@@ -37,10 +37,14 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
 		public CompositeWheel Build(VisualEntity parent)
 		{
-			return SetParams(new CompositeWheel(this) { ParentJoint = BuildJoint(parent), Model = BuildModel() });
+			var wheel = new CompositeWheel(this);
+			SetParams(wheel);
+			wheel.ParentJoint = BuildJoint(parent, wheel);
+			wheel.Model = BuildModel();			
+			return wheel;
 		}
 
-		private CompositeWheel SetParams(CompositeWheel wheel)
+		private void SetParams(CompositeWheel wheel)
 		{
 			wheel.Props = this;
 
@@ -49,10 +53,9 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 			wheel.State.Assets.Mesh = PhysicalMesh;
 			wheel.Material = new MaterialProperties("tire", 0.0f, 0, 0);
 			wheel.Flags = VisualEntityProperties.DisableRendering;
-			return wheel;
 		}
 
-		private Joint BuildJoint(VisualEntity parent)
+		private Joint BuildJoint(VisualEntity parent, CompositeWheel wheel)
 		{
 			var jointAngularProps = new JointAngularProperties();
 
@@ -70,7 +73,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 				XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(SuspensionRate, SuspensionRate / 10, 0), 10000)
 			};
 
-			var connector1 = new EntityJointConnector(this, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) { EntityName = Name };
+			var connector1 = new EntityJointConnector(wheel, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) { EntityName = wheel.State.Name };
 			var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), Position) { EntityName = parent.State.Name };
 
 			return new Joint
