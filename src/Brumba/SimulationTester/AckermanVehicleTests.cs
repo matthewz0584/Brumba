@@ -17,7 +17,7 @@ namespace Brumba.Simulation.SimulationTester
     {
         protected override IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
         {
-            var motorPower = 0.9f;
+            var motorPower = 0.5f;
             yield return To.Exec(vehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = motorPower }));
             @return(50 / (AckermanFourWheelsEntity.Builder.HardRearDriven.MaxVelocity * motorPower));//50 meters
             //@return(2);

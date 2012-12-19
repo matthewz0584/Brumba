@@ -27,9 +27,9 @@ namespace Brumba.Simulation.SimulationTester
 	[Description("SimulationTester service (no description provided)")]
 	class SimulationTesterService : DsspServiceBase, IServiceStarter
 	{
-		public const int TRIES_NUMBER = 100;
-		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
-		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
+		public const int TRIES_NUMBER = 10;
+		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
+		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
 
 		[ServiceState]
 		SimulationTesterState _state = new SimulationTesterState();
@@ -60,7 +60,7 @@ namespace Brumba.Simulation.SimulationTester
             SpawnIterator(ExecuteTests);
 		}
 
-        private IEnumerator<ITask> ExecuteTests()
+        IEnumerator<ITask> ExecuteTests()
         {
             yield return To.Exec(SetUpSimulator);
 
@@ -72,14 +72,15 @@ namespace Brumba.Simulation.SimulationTester
             foreach (var fixture in _testFixtures)
             {
                 Console.WriteLine("Fixture {0}", fixture.GetType().Name);
-                yield return To.Exec(RestoreFixtureEnvironment, fixture);
+                yield return To.Exec(RestoreTestEnvironment, fixture.Tests.First(), new Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>(es => es), new Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>(es => es));
 
                 foreach (var test in fixture.Tests)
                 {
-                    Console.Write("\t{0} ", test.GetType().Name);
+                    Console.Write("\t{0,20} ", test.GetType().Name);
                     float result = 0;
                     yield return To.Exec(ExecuteTest, (float r) => result = r, test, vehiclePort);
-                    Console.WriteLine(" {0}%", result * 100);
+                    WriteColored(result * 100 > 80 ? ConsoleColor.Green : ConsoleColor.Red, " {0}%", result * 100);
+                    Console.WriteLine();
                 }
             }
         }
@@ -110,7 +111,7 @@ namespace Brumba.Simulation.SimulationTester
         	var successful = 0;
 			for (int i = 0; i < TRIES_NUMBER; ++i)
             {
-                yield return To.Exec(RestoreTestEnvironment, test);
+                yield return To.Exec(RestoreTestEnvironment, test, (Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>)test.FindEntitiesToRestore, (Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>)test.PrepareEntitiesToRestore);
 
                 yield return To.Exec(test.Start, vehiclePort);
 
@@ -131,7 +132,7 @@ namespace Brumba.Simulation.SimulationTester
                     if (!testSucceed)
                         yield return To.Exec(TimeoutPort(50));
                 }
-                PrintOutSingleTestResult(testSucceed);
+                WriteColored(testSucceed ? ConsoleColor.DarkGreen : ConsoleColor.DarkRed, testSucceed ? "." : "x");
 
                 if (testSucceed) ++successful;
             }
@@ -139,56 +140,14 @@ namespace Brumba.Simulation.SimulationTester
             @return((float)successful / TRIES_NUMBER);
         }
 
-        private void PrintOutSingleTestResult(bool testSucceed)
+	    void WriteColored(ConsoleColor color, string text, params object[] objs)
         {
-            var consoleColor = Console.ForegroundColor;
-            if (testSucceed)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write(".");
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("x");
-            }
-            Console.ForegroundColor = consoleColor;
+            Console.ForegroundColor = color;
+            Console.Write(text, objs);
+            Console.ResetColor();
         }
 
-		private IEnumerator<ITask> RestoreFixtureEnvironment(ISimulationTestFixture fixture)
-		{
-			SimPxy.SimulationState simState = null;
-			yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
-
-			var renderMode = simState.RenderMode;
-			simState.Pause = true;
-			yield return To.Exec(_simEngine.Replace(simState));
-
-			IEnumerable<EngPxy.VisualEntity> entityPxies = null;
-			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<EngPxy.VisualEntity> ePxies) => entityPxies = ePxies, simState);
-			foreach (var entity in entityPxies)
-				yield return To.Exec(_simEngine.DeleteSimulationEntity((EngPxy.VisualEntity)DssTypeHelper.TransformToProxy(entity)));
-
-			simState.Pause = false;
-			simState.RenderMode = renderMode;
-			yield return To.Exec(_simEngine.Replace(simState));
-
-			var get = new DsspDefaultGet();
-			ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/brumba/src/brumba/simulationtester/{1}", ServicePaths.MountPoint, fixture.EnvironmentXmlFile)).Post(get);
-			yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (Microsoft.Robotics.Simulation.Proxy.SimulationState)success);
-
-			IEnumerable<VisualEntity> entities = null;
-			yield return To.Exec(DeserializeTopLevelEntities, (IEnumerable<VisualEntity> ens) => entities = ens, simState);
-			foreach (var insRequest in entities.Select(entity => new InsertSimulationEntity(entity)))
-			{
-				SimulationEngine.GlobalInstancePort.Post(insRequest);
-				yield return To.Exec(insRequest.ResponsePort);
-			}
-
-			SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
-		}
-
-		private IEnumerator<ITask> RestoreTestEnvironment(ISimulationTest test)
+        IEnumerator<ITask> RestoreTestEnvironment(ISimulationTest test, Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>> deleteFilter, Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>> insertFilter)
         {
             SimPxy.SimulationState simState = null;
             yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
@@ -199,10 +158,8 @@ namespace Brumba.Simulation.SimulationTester
 
             IEnumerable<EngPxy.VisualEntity> entityPxies = null;
 			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<EngPxy.VisualEntity> ePxies) => entityPxies = ePxies, simState);
-			foreach (var entity in test.FindEntitiesToRestore(entityPxies))
+            foreach (var entity in deleteFilter(entityPxies).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
                 yield return To.Exec(_simEngine.DeleteSimulationEntity((EngPxy.VisualEntity)DssTypeHelper.TransformToProxy(entity)));
-
-			yield return To.Exec(_simEngine.DeleteSimulationEntity((EngPxy.VisualEntity)DssTypeHelper.TransformToProxy(entityPxies.Single(pxy => pxy.State.Name == "timer"))));
 
             simState.Pause = false;
             simState.RenderMode = renderMode;
@@ -214,7 +171,7 @@ namespace Brumba.Simulation.SimulationTester
 
             IEnumerable<VisualEntity> entities = null;
             yield return To.Exec(DeserializeTopLevelEntities, (IEnumerable<VisualEntity> ens) => entities = ens, simState);
-			foreach (var insRequest in test.PrepareEntitiesToRestore(entities).Select(entity => new InsertSimulationEntity(entity)))
+			foreach (var insRequest in insertFilter(entities).Select(entity => new InsertSimulationEntity(entity)))
 			{
 				SimulationEngine.GlobalInstancePort.Post(insRequest);
 				yield return To.Exec(insRequest.ResponsePort);
@@ -223,7 +180,7 @@ namespace Brumba.Simulation.SimulationTester
 			SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
         }
 
-		private IEnumerator<ITask> DeserializaTopLevelEntityProxies(Action<IEnumerable<EngPxy.VisualEntity>> @return, SimPxy.SimulationState simState)
+		IEnumerator<ITask> DeserializaTopLevelEntityProxies(Action<IEnumerable<EngPxy.VisualEntity>> @return, SimPxy.SimulationState simState)
 		{
 			var entities = new List<EngPxy.VisualEntity>();
 			foreach (var entityNode in simState.SerializedEntities.XmlNodes.Cast<XmlElement>())
@@ -237,7 +194,7 @@ namespace Brumba.Simulation.SimulationTester
 			@return(entities);
 		}
 
-        private IEnumerator<ITask> DeserializeTopLevelEntities(Action<IEnumerable<VisualEntity>> @return, SimPxy.SimulationState simState)
+        IEnumerator<ITask> DeserializeTopLevelEntities(Action<IEnumerable<VisualEntity>> @return, SimPxy.SimulationState simState)
         {
 			IEnumerable<EngPxy.VisualEntity> entitiesFlatPxies = null;
 			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<EngPxy.VisualEntity> es) => entitiesFlatPxies = es, simState);
@@ -253,7 +210,7 @@ namespace Brumba.Simulation.SimulationTester
             @return(entitiesTop);
         }
 
-        private IEnumerator<ITask> ReuniteEntity(Action<IEnumerable<VisualEntity>> @return, VisualEntity parent, IEnumerable<VisualEntity> entitiesFlat)
+        IEnumerator<ITask> ReuniteEntity(Action<IEnumerable<VisualEntity>> @return, VisualEntity parent, IEnumerable<VisualEntity> entitiesFlat)
         {
             if (parent.ChildCount != 0)
 	            for (var i = 0; i < parent.ChildCount; ++i)
@@ -264,7 +221,7 @@ namespace Brumba.Simulation.SimulationTester
             @return(entitiesFlat);
         }
 
-        private IEnumerator<ITask> DeserializeEntityFromXml(Action<EngPxy.VisualEntity> @return, XmlElement entityNode)
+        IEnumerator<ITask> DeserializeEntityFromXml(Action<EngPxy.VisualEntity> @return, XmlElement entityNode)
         {
             var desRequest = new Deserialize(new XmlNodeReader(entityNode));
             SerializerPort.Post(desRequest);
