@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Ccr.Core;
-using W3C.Soap;
 
 namespace Brumba.Simulation.SimulationTester
 {
@@ -209,12 +206,12 @@ namespace Brumba.Simulation.SimulationTester
 
         public static ITask Exec<T1>(Port<T1> portSet)
         {
-            return Arbiter.Receive<T1>(false, portSet, (T1 val) => { });
+            return Arbiter.Receive(false, portSet, val => { });
         }
 
         public static ITask Exec<T1, T2>(PortSet<T1, T2> portSet)
         {
-            return Arbiter.Choice(portSet, (T1 p1) => { }, (T2 p2) => { Console.WriteLine("qqqqqqqqqqqqq"); });
+            return Arbiter.Choice(portSet, p1 => { }, p2 => Console.WriteLine("Choice on {0} returned error {1}", portSet, p2));
         }
     }
 }

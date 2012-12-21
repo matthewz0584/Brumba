@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using Microsoft.Robotics.PhysicalModel;
+using Microsoft.Dss.Services.ConsoleOutput;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using SimPxy = Microsoft.Robotics.Simulation.Proxy;
 using Microsoft.Robotics.Simulation.Engine;
@@ -23,11 +24,12 @@ using Brumba.Simulation.SimulatedTimer;
 namespace Brumba.Simulation.SimulationTester
 {
 	[Contract(Contract.Identifier)]
-	[DisplayName("SimulationTester")]
-	[Description("SimulationTester service (no description provided)")]
+	[DisplayName("Simulation Tester")]
+	[Description("Simulation Tester service (no description provided)")]
 	class SimulationTesterService : DsspServiceBase, IServiceStarter
 	{
-		public const int TRIES_NUMBER = 10;
+		public const int TRIES_NUMBER = 100;
+		public const float SUCCESS_THRESHOLD = 0.79f;
 		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
 		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
 
@@ -43,7 +45,15 @@ namespace Brumba.Simulation.SimulationTester
         [Partner("SimTimer", Contract = SimulatedTimer.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UsePartnerListEntry)]
         StPxy.SimulatedTimerOperations _timer = new StPxy.SimulatedTimerOperations();
 
-        private readonly List<ISimulationTestFixture> _testFixtures = new List<ISimulationTestFixture>();
+        readonly List<ISimulationTestFixture> _testFixtures = new List<ISimulationTestFixture>();
+		readonly Dictionary<ISimulationTest, float> _testResults = new Dictionary<ISimulationTest, float>();
+
+		public event Action OnStarted = delegate { };
+		public event Action<Dictionary<ISimulationTest, float>> OnEnded = delegate { };
+		public event Action<ISimulationTestFixture> OnFixtureStarted = delegate { };
+		public event Action<ISimulationTest> OnTestStarted = delegate { };
+		public event Action<ISimulationTest, float> OnTestEnded = delegate { };
+		public event Action<ISimulationTest, bool> OnTestTryEnded = delegate { };
 		
 		public SimulationTesterService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
@@ -52,10 +62,14 @@ namespace Brumba.Simulation.SimulationTester
 		
 		protected override void Start()
 		{
+			var testerPresenter = new SimulationTesterPresenterConsole(this);
+
 			base.Start();
 
-            _testFixtures.Add(new SimpleAckermanVehTests());
-            _testFixtures.Add(new Simple4x4AckermanVehTests());
+			_testFixtures.Add(new HardRearDrivenVehicleTests());
+			_testFixtures.Add(new SuspendedRearDrivenVehicleTests());
+			_testFixtures.Add(new Hard4x4VehicleTests());
+			_testFixtures.Add(new Suspended4x4VehicleTests());
 
             SpawnIterator(ExecuteTests);
 		}
@@ -67,22 +81,27 @@ namespace Brumba.Simulation.SimulationTester
             SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort = null;
             yield return To.Exec(SetUpTest1Services, (SafwPxy.SimulatedAckermanFourWheelsOperations vp) => vehiclePort = vp);
             yield return To.Exec(TimeoutPort(50));
-
-            Console.WriteLine();
+        	
+			OnStarted();
             foreach (var fixture in _testFixtures)
             {
-                Console.WriteLine("Fixture {0}", fixture.GetType().Name);
+            	OnFixtureStarted(fixture);
                 yield return To.Exec(RestoreTestEnvironment, fixture.Tests.First(), new Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>(es => es), new Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>(es => es));
 
                 foreach (var test in fixture.Tests)
                 {
-                    Console.Write("\t{0,20} ", test.GetType().Name);
-                    float result = 0;
+                	OnTestStarted(test);
+                    
+					float result = 0;
                     yield return To.Exec(ExecuteTest, (float r) => result = r, test, vehiclePort);
-                    WriteColored(result * 100 > 80 ? ConsoleColor.Green : ConsoleColor.Red, " {0}%", result * 100);
-                    Console.WriteLine();
+					_testResults.Add(test, result);
+
+                	OnTestEnded(test, result);
                 }
             }
+        	OnEnded(_testResults);
+
+			LogInfo(_testResults.Aggregate("All tests are run: ", (message, test) => string.Format("{0} {1}-{2:P0}\n", message, test.Key.GetType().Name, test.Value)));
         }
 
         IEnumerator<ITask> SetUpTest1Services(Action<SafwPxy.SimulatedAckermanFourWheelsOperations> @return)
@@ -108,9 +127,12 @@ namespace Brumba.Simulation.SimulationTester
 
         IEnumerator<ITask> ExecuteTest(Action<float> @return, ISimulationTest test, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
         {
-        	var successful = 0;
-			for (int i = 0; i < TRIES_NUMBER; ++i)
+        	int successful = 0, i;
+			for (i = 0; i < TRIES_NUMBER; ++i)
             {
+				if (HasEarlyResults(i, successful))
+					break;
+
                 yield return To.Exec(RestoreTestEnvironment, test, (Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>)test.FindEntitiesToRestore, (Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>)test.PrepareEntitiesToRestore);
 
                 yield return To.Exec(test.Start, vehiclePort);
@@ -132,22 +154,15 @@ namespace Brumba.Simulation.SimulationTester
                     if (!testSucceed)
                         yield return To.Exec(TimeoutPort(50));
                 }
-                WriteColored(testSucceed ? ConsoleColor.DarkGreen : ConsoleColor.DarkRed, testSucceed ? "." : "x");
+            	OnTestTryEnded(test, testSucceed);
 
                 if (testSucceed) ++successful;
             }
 
-            @return((float)successful / TRIES_NUMBER);
+            @return((float)successful / i);
         }
 
-	    void WriteColored(ConsoleColor color, string text, params object[] objs)
-        {
-            Console.ForegroundColor = color;
-            Console.Write(text, objs);
-            Console.ResetColor();
-        }
-
-        IEnumerator<ITask> RestoreTestEnvironment(ISimulationTest test, Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>> deleteFilter, Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>> insertFilter)
+		IEnumerator<ITask> RestoreTestEnvironment(ISimulationTest test, Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>> deleteFilter, Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>> insertFilter)
         {
             SimPxy.SimulationState simState = null;
             yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
@@ -158,8 +173,8 @@ namespace Brumba.Simulation.SimulationTester
 
             IEnumerable<EngPxy.VisualEntity> entityPxies = null;
 			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<EngPxy.VisualEntity> ePxies) => entityPxies = ePxies, simState);
-            foreach (var entity in deleteFilter(entityPxies).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
-                yield return To.Exec(_simEngine.DeleteSimulationEntity((EngPxy.VisualEntity)DssTypeHelper.TransformToProxy(entity)));
+            foreach (var entity in deleteFilter(entityPxies).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
+                yield return To.Exec(_simEngine.DeleteSimulationEntity(entity));
 
             simState.Pause = false;
             simState.RenderMode = renderMode;
@@ -229,6 +244,11 @@ namespace Brumba.Simulation.SimulationTester
             yield return Arbiter.Choice(desRequest.ResultPort, v => desEntity = v, LogError);
             @return((EngPxy.VisualEntity)desEntity.Instance);
         }
+
+		static bool HasEarlyResults(int i, int successful)
+		{
+			return i == TRIES_NUMBER / 10 && ((float)successful / i > SUCCESS_THRESHOLD || (float)successful / i < 1 - SUCCESS_THRESHOLD);
+		}
 
         #region IServiceCreator
         DsspResponsePort<CreateResponse> IServiceStarter.CreateService(ServiceInfoType serviceInfo)

@@ -57,16 +57,26 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 				}
 			}
 
-        	public static Builder Suspended4x4
+        	public static Builder Hard4x4
             {
                 get
                 {
-					var builder = SuspendedRearDriven;
+					var builder = HardRearDriven;
                     foreach (var wp in builder.WheelsProperties)
                         wp.Motorized = true;
                     return builder;
                 }
             }
+
+			public static Builder Suspended4x4
+			{
+				get
+				{
+					var builder = Hard4x4;
+					builder.SuspensionRate = 750;
+					return builder;
+				}
+			}
 
             public void Build(AckermanFourWheelsEntity v)
             {

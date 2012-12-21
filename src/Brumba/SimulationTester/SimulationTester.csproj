@@ -139,6 +139,7 @@
   <ItemGroup>
     <Compile Include="AckermanFourWheelsCreator.cs" />
     <Compile Include="AckermanVehicleTests.cs" />
+    <Compile Include="SimulationTesterPresenterConsole.cs" />
     <Compile Include="SimulationTest.cs" />
     <Compile Include="SimulationTestFixture.cs" />
     <Compile Include="To.cs" />
