@@ -101,9 +101,10 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 				{
 					wp.Mass = WheelMass;
 					wp.MaxSteerAngle = MaxSteerAngle;
-					wp.PhysicalMesh = "WheelShape3.obj";
+					wp.PhysicalMesh = "WheelShape4.obj";
 					wp.VisualMesh = "CorobotWheel.obj";
 					wp.Radius = 0.05f;
+					wp.Width = WheelWidth;
 					wp.SuspensionRate = SuspensionRate;
 				}
 			}

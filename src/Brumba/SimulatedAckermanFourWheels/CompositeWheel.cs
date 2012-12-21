@@ -23,6 +23,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         public float Mass { get; set; }
         [DataMember]
         public float Radius { get; set; }
+		[DataMember]
+		public float Width { get; set; }
         [DataMember]
         public float MaxSteerAngle { get; set; }
 		[DataMember]
@@ -40,7 +42,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 			var wheel = new CompositeWheel(this);
 			SetParams(wheel);
 			wheel.ParentJoint = BuildJoint(parent, wheel);
-			wheel.Model = BuildModel();			
+			wheel.ModelInner = BuildModel(!Flipped);
+			wheel.ModelOutter = BuildModel(Flipped);
 			return wheel;
 		}
 
@@ -87,10 +90,11 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 			};
 		}
 
-		private WheelEntity BuildModel()
+		private WheelEntity BuildModel(bool inner)
 		{
-			var wheel = new WheelEntity(new WheelShapeProperties(Name + " model", Mass, Radius)
+			var wheel = new WheelEntity(new WheelShapeProperties(Name + (inner ? " model inner" : " model outter"), Mass, Radius)
 			{
+				LocalPose = new Pose(new Vector3((inner ? 1 : -1) * Width / 2, 0, 0)),
 				TireLongitudalForceFunction =
 				{
 					ExtremumSlip = 1.0f,
@@ -111,7 +115,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 			{
 				State =
 				{
-					Name = Name + " model",
+					Name = Name + (inner ? " model inner" : " model outter"),
 					Assets = { Mesh = VisualMesh }
 				},
 			};
@@ -130,7 +134,9 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         public CompositeWheelProperties Props { get; set; }
 
 		[DataMember]
-		public WheelEntity Model { get; set; }
+		public WheelEntity ModelInner { get; set; }
+		[DataMember]
+		public WheelEntity ModelOutter { get; set; }
 
         public CompositeWheel()
         {
@@ -146,25 +152,29 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             base.Initialize(device, physicsEngine);
             PhysicsEntity.SolverIterationCount = 64;
 
-            Model.Parent = this;
-            Model.Initialize(device, physicsEngine);
+            ModelInner.Parent = this;
+            ModelInner.Initialize(device, physicsEngine);
+			ModelOutter.Parent = this;
+			ModelOutter.Initialize(device, physicsEngine);
         }
 
         public override void Update(FrameUpdate update)
         {
-            Model.Update(update);
+            ModelInner.Update(update);
+			ModelOutter.Update(update);
             base.Update(update);
         }
 
         public override void Render(RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)
         {
-            Model.Render(renderMode, transforms, currentCamera);
+			ModelOutter.Render(renderMode, transforms, currentCamera);
             base.Render(renderMode, transforms, currentCamera);
         }
 
         public override void Dispose()
         {
-            Model.Dispose();
+            ModelInner.Dispose();
+			ModelOutter.Dispose();
             base.Dispose();
         }
 
@@ -172,11 +182,12 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         {
             get
             {
-                return Model.Wheel.AxleSpeed;
+                return ModelInner.Wheel.AxleSpeed;
             }
             set
             {
-                Model.Wheel.AxleSpeed = value;
+                ModelInner.Wheel.AxleSpeed = value;
+				ModelOutter.Wheel.AxleSpeed = value;
             }
         }
 
@@ -185,6 +196,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             get
             {
                 var localOrientation = Quaternion.ToAxisAngle(State.Pose.Orientation * Quaternion.Inverse(Parent.State.Pose.Orientation));
+				if (double.IsNaN(localOrientation.Angle))
+					return 0;
                 return Math.Sign(localOrientation.Axis.Y) * localOrientation.Angle;
             }
             set
