@@ -92,7 +92,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
 		private WheelEntity BuildModel(bool inner)
 		{
-			var wheel = new WheelEntity(new WheelShapeProperties(Name + (inner ? " model inner" : " model outter"), Mass, Radius)
+			var wheel = new WheelEntity(new WheelShapeProperties(Name + (inner ? " model inner" : " model outter"), Mass / 2, Radius)
 			{
 				LocalPose = new Pose(new Vector3((inner ? 1 : -1) * Width / 2, 0, 0)),
 				TireLongitudalForceFunction =

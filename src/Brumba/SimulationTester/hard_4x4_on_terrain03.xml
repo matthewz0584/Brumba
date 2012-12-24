@@ -6,7 +6,7 @@
     <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
   </Gravity>
   <RenderMode>Full</RenderMode>
-  <FramesPerSecond>61.45816</FramesPerSecond>
+  <FramesPerSecond>49.667347</FramesPerSecond>
   <Pause>false</Pause>
   <CameraPosition>
     <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-12</X>
@@ -311,26 +311,26 @@
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
-            <physm:X>1.44573614E-05</physm:X>
+            <physm:X>1.87527949E-05</physm:X>
             <physm:Y>0</physm:Y>
-            <physm:Z>5.863908E-05</physm:Z>
+            <physm:Z>3.955105E-05</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.000545822259</physm:X>
-            <physm:Y>1.84756391E-05</physm:Y>
-            <physm:Z>-5.16696564E-05</physm:Z>
-            <physm:W>0.9999996</physm:W>
+            <physm:X>0.000509525358</physm:X>
+            <physm:Y>-1.35452747E-05</physm:Y>
+            <physm:Z>-0.000208650119</physm:Z>
+            <physm:W>0.9999998</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>4.27100167E-05</physm:X>
-          <physm:Y>-1.33870917E-05</physm:Y>
-          <physm:Z>7.382884E-05</physm:Z>
+          <physm:X>7.030554E-05</physm:X>
+          <physm:Y>-1.85074441E-05</physm:Y>
+          <physm:Z>-7.046871E-05</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>-9.784782E-05</physm:X>
-          <physm:Y>0.0006800699</physm:Y>
-          <physm:Z>5.83085348E-05</physm:Z>
+          <physm:X>4.06106E-05</physm:X>
+          <physm:Y>-0.000305746682</physm:Y>
+          <physm:Z>8.115937E-05</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>2</phys:Mass>
@@ -630,30 +630,30 @@
       <sim:State>
         <sim:Name>testee WheelFrontLeft body</sim:Name>
         <sim:Assets>
-          <sim:Mesh>WheelShape3.obj</sim:Mesh>
+          <sim:Mesh>WheelShape4.obj</sim:Mesh>
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>0.08502479</physm:X>
-            <physm:Y>-0.05099997</physm:Y>
-            <physm:Z>0.12509653</physm:Z>
+            <physm:X>0.0850328</physm:X>
+            <physm:Y>-0.0509966761</physm:Y>
+            <physm:Z>0.125078261</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.0009821123</physm:X>
-            <physm:Y>1.71302836E-05</physm:Y>
-            <physm:Z>-0.000116841249</physm:Z>
-            <physm:W>0.9999995</physm:W>
+            <physm:X>0.0008609395</physm:X>
+            <physm:Y>-0.000200076887</physm:Y>
+            <physm:Z>-0.000355491618</physm:Z>
+            <physm:W>1</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>0.000114083974</physm:X>
-          <physm:Y>1.3563934E-08</physm:Y>
-          <physm:Z>-4.34180329E-05</physm:Z>
+          <physm:X>1.95499051E-05</physm:X>
+          <physm:Y>-3.96629257E-05</physm:Y>
+          <physm:Z>-1.55623511E-05</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>-0.000952365</physm:X>
-          <physm:Y>0.0008940423</physm:Y>
-          <physm:Z>-0.0014084971</physm:Z>
+          <physm:X>-0.00110902661</physm:X>
+          <physm:Y>0.000888314156</physm:Y>
+          <physm:Z>-0.00331338937</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.015</phys:Mass>
@@ -829,7 +829,7 @@
       <MeshEntityType xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Convex</MeshEntityType>
       <ConvexMeshShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <phys:ConvexMeshState>
-          <phys:Name>WheelShape3.obj</phys:Name>
+          <phys:Name>WheelShape4.obj</phys:Name>
           <phys:ShapeId>ConvexMesh</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -902,14 +902,14 @@
             <physm:W>1</physm:W>
           </phys:DiffuseColor>
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape3.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
-          <phys:FaceCount>614</phys:FaceCount>
-          <phys:VertexCount>662</phys:VertexCount>
+          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape4.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
+          <phys:FaceCount>188</phys:FaceCount>
+          <phys:VertexCount>194</phys:VertexCount>
         </phys:ConvexMeshState>
       </ConvexMeshShape>
       <Props>
         <Name>testee WheelFrontLeft</Name>
-        <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
+        <PhysicalMesh>WheelShape4.obj</PhysicalMesh>
         <VisualMesh>CorobotWheel.obj</VisualMesh>
         <Position>
           <physm:X>0.085</physm:X>
@@ -918,29 +918,30 @@
         </Position>
         <Mass>0.03</Mass>
         <Radius>0.05</Radius>
+        <Width>0.045</Width>
         <MaxSteerAngle>0.7853982</MaxSteerAngle>
         <SuspensionRate>75000</SuspensionRate>
         <Motorized>true</Motorized>
         <Steerable>true</Steerable>
         <Flipped>true</Flipped>
       </Props>
-      <Model>
+      <ModelInner>
         <sim:State>
-          <sim:Name>testee WheelFrontLeft model</sim:Name>
+          <sim:Name>testee WheelFrontLeft model outter</sim:Name>
           <sim:Assets>
             <sim:Mesh>CorobotWheel.obj</sim:Mesh>
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>0.08502383</physm:X>
-              <physm:Y>-0.0509999767</physm:Y>
-              <physm:Z>0.125098124</physm:Z>
+              <physm:X>0.08503189</physm:X>
+              <physm:Y>-0.0509966724</physm:Y>
+              <physm:Z>0.125080124</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.000973606366</physm:X>
-              <physm:Y>1.47536475E-05</physm:Y>
-              <physm:Z>-0.00011637804</physm:Z>
-              <physm:W>0.9999996</physm:W>
+              <physm:X>0.000860798464</physm:X>
+              <physm:Y>-0.000200648879</physm:Y>
+              <physm:Z>-0.000396224466</physm:Z>
+              <physm:W>1</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -1012,7 +1013,7 @@
         </MeshTranslation>
         <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <phys:WheelState>
-            <phys:Name>testee WheelFrontLeft model</phys:Name>
+            <phys:Name>testee WheelFrontLeft model outter</phys:Name>
             <phys:ShapeId>Wheel</phys:ShapeId>
             <phys:Dimensions>
               <physm:X>0</physm:X>
@@ -1066,7 +1067,7 @@
             </phys:MassDensity>
             <phys:LocalPose>
               <physm:Position>
-                <physm:X>0</physm:X>
+                <physm:X>-0.0225</physm:X>
                 <physm:Y>0</physm:Y>
                 <physm:Z>0</physm:Z>
               </physm:Position>
@@ -1107,36 +1108,220 @@
           </phys:WheelState>
         </WheelShape>
         <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
-      </Model>
+      </ModelInner>
+      <ModelOutter>
+        <sim:State>
+          <sim:Name>testee WheelFrontLeft model inner</sim:Name>
+          <sim:Assets>
+            <sim:Mesh>CorobotWheel.obj</sim:Mesh>
+          </sim:Assets>
+          <sim:Pose>
+            <physm:Position>
+              <physm:X>0.08503189</physm:X>
+              <physm:Y>-0.0509966724</physm:Y>
+              <physm:Z>0.125080124</physm:Z>
+            </physm:Position>
+            <physm:Orientation>
+              <physm:X>0.000860798464</physm:X>
+              <physm:Y>-0.000200648879</physm:Y>
+              <physm:Z>-0.000396224466</physm:Z>
+              <physm:W>1</physm:W>
+            </physm:Orientation>
+          </sim:Pose>
+          <sim:Velocity>
+            <physm:X>0</physm:X>
+            <physm:Y>0</physm:Y>
+            <physm:Z>0</physm:Z>
+          </sim:Velocity>
+          <sim:AngularVelocity>
+            <physm:X>0</physm:X>
+            <physm:Y>0</physm:Y>
+            <physm:Z>0</physm:Z>
+          </sim:AngularVelocity>
+          <sim:MassDensity>
+            <phys:Mass>0</phys:Mass>
+            <phys:InertiaTensor>
+              <physm:X>0</physm:X>
+              <physm:Y>0</physm:Y>
+              <physm:Z>0</physm:Z>
+            </phys:InertiaTensor>
+            <phys:CenterOfMass>
+              <physm:Position>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>0</physm:W>
+              </physm:Orientation>
+            </phys:CenterOfMass>
+            <phys:Density>0</phys:Density>
+            <phys:LinearDamping>0</phys:LinearDamping>
+            <phys:AngularDamping>0</phys:AngularDamping>
+            <phys:MassLocalPose>
+              <physm:Position>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>1</physm:W>
+              </physm:Orientation>
+            </phys:MassLocalPose>
+          </sim:MassDensity>
+          <sim:Flags>Dynamic</sim:Flags>
+        </sim:State>
+        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">TexturesPending</Flags>
+        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
+        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
+        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>1</physm:X>
+          <physm:Y>1</physm:Y>
+          <physm:Z>1</physm:Z>
+        </MeshScale>
+        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>0</physm:X>
+          <physm:Y>180</physm:Y>
+          <physm:Z>0</physm:Z>
+        </MeshRotation>
+        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>0</physm:X>
+          <physm:Y>0</physm:Y>
+          <physm:Z>0</physm:Z>
+        </MeshTranslation>
+        <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <phys:WheelState>
+            <phys:Name>testee WheelFrontLeft model inner</phys:Name>
+            <phys:ShapeId>Wheel</phys:ShapeId>
+            <phys:Dimensions>
+              <physm:X>0</physm:X>
+              <physm:Y>0</physm:Y>
+              <physm:Z>0</physm:Z>
+            </phys:Dimensions>
+            <phys:Radius>0.05</phys:Radius>
+            <phys:Material>
+              <phys:Name>default wheel material</phys:Name>
+              <phys:Restitution>0</phys:Restitution>
+              <phys:DynamicFriction>0</phys:DynamicFriction>
+              <phys:StaticFriction>0</phys:StaticFriction>
+              <phys:MaterialIndex>7</phys:MaterialIndex>
+            </phys:Material>
+            <phys:MassDensity>
+              <phys:Mass>0.03</phys:Mass>
+              <phys:InertiaTensor>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </phys:InertiaTensor>
+              <phys:CenterOfMass>
+                <physm:Position>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                </physm:Position>
+                <physm:Orientation>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                  <physm:W>0</physm:W>
+                </physm:Orientation>
+              </phys:CenterOfMass>
+              <phys:Density>0</phys:Density>
+              <phys:LinearDamping>0</phys:LinearDamping>
+              <phys:AngularDamping>0</phys:AngularDamping>
+              <phys:MassLocalPose>
+                <physm:Position>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                </physm:Position>
+                <physm:Orientation>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                  <physm:W>1</physm:W>
+                </physm:Orientation>
+              </phys:MassLocalPose>
+            </phys:MassDensity>
+            <phys:LocalPose>
+              <physm:Position>
+                <physm:X>0.0225</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>1</physm:W>
+              </physm:Orientation>
+            </phys:LocalPose>
+            <phys:TextureFileName />
+            <phys:DiffuseColor>
+              <physm:X>0.5</physm:X>
+              <physm:Y>0.5</physm:Y>
+              <physm:Z>0.5</physm:Z>
+              <physm:W>1</physm:W>
+            </phys:DiffuseColor>
+            <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
+            <phys:InnerRadius>0</phys:InnerRadius>
+            <phys:SuspensionTravel>0</phys:SuspensionTravel>
+            <phys:Flags>OverrideAxleSpeed</phys:Flags>
+            <phys:AxleSpeed>0</phys:AxleSpeed>
+            <phys:TireLateralForceFunction>
+              <physm:ExtremumSlip>1</physm:ExtremumSlip>
+              <physm:ExtremumValue>0.02</physm:ExtremumValue>
+              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
+              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
+              <physm:StiffnessFactor>1E+07</physm:StiffnessFactor>
+            </phys:TireLateralForceFunction>
+            <phys:TireLongitudalForceFunction>
+              <physm:ExtremumSlip>1</physm:ExtremumSlip>
+              <physm:ExtremumValue>0.02</physm:ExtremumValue>
+              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
+              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
+              <physm:StiffnessFactor>1E+08</physm:StiffnessFactor>
+            </phys:TireLongitudalForceFunction>
+            <phys:BrakeTorque>0</phys:BrakeTorque>
+          </phys:WheelState>
+        </WheelShape>
+        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
+      </ModelOutter>
     </CompositeWheel>
     <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html">
       <sim:State>
         <sim:Name>testee WheelFrontRight body</sim:Name>
         <sim:Assets>
-          <sim:Mesh>WheelShape3.obj</sim:Mesh>
+          <sim:Mesh>WheelShape4.obj</sim:Mesh>
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>-0.08498339</physm:X>
-            <physm:Y>-0.0509999581</physm:Y>
-            <physm:Z>0.12510033</physm:Z>
+            <physm:X>-0.08496925</physm:X>
+            <physm:Y>-0.05099908</physm:Y>
+            <physm:Z>0.125079408</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.00102648512</physm:X>
-            <physm:Y>4.155447E-06</physm:Y>
-            <physm:Z>-0.000201054951</physm:Z>
-            <physm:W>0.9999996</physm:W>
+            <physm:X>0.0008067453</physm:X>
+            <physm:Y>0.000141830824</physm:Y>
+            <physm:Z>-0.000291164819</physm:Z>
+            <physm:W>1</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-0.000169186067</physm:X>
-          <physm:Y>1.86318E-08</physm:Y>
-          <physm:Z>1.85607914E-05</physm:Z>
+          <physm:X>6.346214E-05</physm:X>
+          <physm:Y>-3.969302E-05</physm:Y>
+          <physm:Z>0.000105155515</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>0.000361623039</physm:X>
-          <physm:Y>-0.0010356917</physm:Y>
-          <physm:Z>0.00213407143</physm:Z>
+          <physm:X>0.00295648072</physm:X>
+          <physm:Y>0.001746446</physm:Y>
+          <physm:Z>0.0009723335</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.015</phys:Mass>
@@ -1312,7 +1497,7 @@
       <MeshEntityType xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Convex</MeshEntityType>
       <ConvexMeshShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <phys:ConvexMeshState>
-          <phys:Name>WheelShape3.obj</phys:Name>
+          <phys:Name>WheelShape4.obj</phys:Name>
           <phys:ShapeId>ConvexMesh</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -1325,7 +1510,7 @@
             <phys:Restitution>0</phys:Restitution>
             <phys:DynamicFriction>0</phys:DynamicFriction>
             <phys:StaticFriction>0</phys:StaticFriction>
-            <phys:MaterialIndex>7</phys:MaterialIndex>
+            <phys:MaterialIndex>8</phys:MaterialIndex>
           </phys:Material>
           <phys:MassDensity>
             <phys:Mass>0.015</phys:Mass>
@@ -1385,14 +1570,14 @@
             <physm:W>1</physm:W>
           </phys:DiffuseColor>
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape3.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
-          <phys:FaceCount>614</phys:FaceCount>
-          <phys:VertexCount>662</phys:VertexCount>
+          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape4.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
+          <phys:FaceCount>188</phys:FaceCount>
+          <phys:VertexCount>194</phys:VertexCount>
         </phys:ConvexMeshState>
       </ConvexMeshShape>
       <Props>
         <Name>testee WheelFrontRight</Name>
-        <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
+        <PhysicalMesh>WheelShape4.obj</PhysicalMesh>
         <VisualMesh>CorobotWheel.obj</VisualMesh>
         <Position>
           <physm:X>-0.085</physm:X>
@@ -1401,29 +1586,30 @@
         </Position>
         <Mass>0.03</Mass>
         <Radius>0.05</Radius>
+        <Width>0.045</Width>
         <MaxSteerAngle>0.7853982</MaxSteerAngle>
         <SuspensionRate>75000</SuspensionRate>
         <Motorized>true</Motorized>
         <Steerable>true</Steerable>
         <Flipped>false</Flipped>
       </Props>
-      <Model>
+      <ModelInner>
         <sim:State>
-          <sim:Name>testee WheelFrontRight model</sim:Name>
+          <sim:Name>testee WheelFrontRight model inner</sim:Name>
           <sim:Assets>
             <sim:Mesh>CorobotWheel.obj</sim:Mesh>
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>-0.08497957</physm:X>
-              <physm:Y>-0.05099996</physm:Y>
-              <physm:Z>0.125100389</physm:Z>
+              <physm:X>-0.0849690437</physm:X>
+              <physm:Y>-0.0509990975</physm:Y>
+              <physm:Z>0.12507458</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.00101216824</physm:X>
-              <physm:Y>1.25448987E-05</physm:Y>
-              <physm:Z>-0.000176440008</physm:Z>
-              <physm:W>0.9999996</physm:W>
+              <physm:X>0.000853878446</physm:X>
+              <physm:Y>0.000147525963</physm:Y>
+              <physm:Z>-0.000265023555</physm:Z>
+              <physm:W>1</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -1495,7 +1681,7 @@
         </MeshTranslation>
         <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <phys:WheelState>
-            <phys:Name>testee WheelFrontRight model</phys:Name>
+            <phys:Name>testee WheelFrontRight model inner</phys:Name>
             <phys:ShapeId>Wheel</phys:ShapeId>
             <phys:Dimensions>
               <physm:X>0</physm:X>
@@ -1508,7 +1694,7 @@
               <phys:Restitution>0</phys:Restitution>
               <phys:DynamicFriction>0</phys:DynamicFriction>
               <phys:StaticFriction>0</phys:StaticFriction>
-              <phys:MaterialIndex>8</phys:MaterialIndex>
+              <phys:MaterialIndex>9</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
               <phys:Mass>0.03</phys:Mass>
@@ -1549,7 +1735,7 @@
             </phys:MassDensity>
             <phys:LocalPose>
               <physm:Position>
-                <physm:X>0</physm:X>
+                <physm:X>0.0225</physm:X>
                 <physm:Y>0</physm:Y>
                 <physm:Z>0</physm:Z>
               </physm:Position>
@@ -1590,36 +1776,220 @@
           </phys:WheelState>
         </WheelShape>
         <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
-      </Model>
+      </ModelInner>
+      <ModelOutter>
+        <sim:State>
+          <sim:Name>testee WheelFrontRight model outter</sim:Name>
+          <sim:Assets>
+            <sim:Mesh>CorobotWheel.obj</sim:Mesh>
+          </sim:Assets>
+          <sim:Pose>
+            <physm:Position>
+              <physm:X>-0.0849690437</physm:X>
+              <physm:Y>-0.0509990975</physm:Y>
+              <physm:Z>0.12507458</physm:Z>
+            </physm:Position>
+            <physm:Orientation>
+              <physm:X>0.000853878446</physm:X>
+              <physm:Y>0.000147525963</physm:Y>
+              <physm:Z>-0.000265023555</physm:Z>
+              <physm:W>1</physm:W>
+            </physm:Orientation>
+          </sim:Pose>
+          <sim:Velocity>
+            <physm:X>0</physm:X>
+            <physm:Y>0</physm:Y>
+            <physm:Z>0</physm:Z>
+          </sim:Velocity>
+          <sim:AngularVelocity>
+            <physm:X>0</physm:X>
+            <physm:Y>0</physm:Y>
+            <physm:Z>0</physm:Z>
+          </sim:AngularVelocity>
+          <sim:MassDensity>
+            <phys:Mass>0</phys:Mass>
+            <phys:InertiaTensor>
+              <physm:X>0</physm:X>
+              <physm:Y>0</physm:Y>
+              <physm:Z>0</physm:Z>
+            </phys:InertiaTensor>
+            <phys:CenterOfMass>
+              <physm:Position>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>0</physm:W>
+              </physm:Orientation>
+            </phys:CenterOfMass>
+            <phys:Density>0</phys:Density>
+            <phys:LinearDamping>0</phys:LinearDamping>
+            <phys:AngularDamping>0</phys:AngularDamping>
+            <phys:MassLocalPose>
+              <physm:Position>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>1</physm:W>
+              </physm:Orientation>
+            </phys:MassLocalPose>
+          </sim:MassDensity>
+          <sim:Flags>Dynamic</sim:Flags>
+        </sim:State>
+        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">TexturesPending</Flags>
+        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
+        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
+        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>1</physm:X>
+          <physm:Y>1</physm:Y>
+          <physm:Z>1</physm:Z>
+        </MeshScale>
+        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>0</physm:X>
+          <physm:Y>0</physm:Y>
+          <physm:Z>0</physm:Z>
+        </MeshRotation>
+        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>0</physm:X>
+          <physm:Y>0</physm:Y>
+          <physm:Z>0</physm:Z>
+        </MeshTranslation>
+        <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <phys:WheelState>
+            <phys:Name>testee WheelFrontRight model outter</phys:Name>
+            <phys:ShapeId>Wheel</phys:ShapeId>
+            <phys:Dimensions>
+              <physm:X>0</physm:X>
+              <physm:Y>0</physm:Y>
+              <physm:Z>0</physm:Z>
+            </phys:Dimensions>
+            <phys:Radius>0.05</phys:Radius>
+            <phys:Material>
+              <phys:Name>default wheel material</phys:Name>
+              <phys:Restitution>0</phys:Restitution>
+              <phys:DynamicFriction>0</phys:DynamicFriction>
+              <phys:StaticFriction>0</phys:StaticFriction>
+              <phys:MaterialIndex>10</phys:MaterialIndex>
+            </phys:Material>
+            <phys:MassDensity>
+              <phys:Mass>0.03</phys:Mass>
+              <phys:InertiaTensor>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </phys:InertiaTensor>
+              <phys:CenterOfMass>
+                <physm:Position>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                </physm:Position>
+                <physm:Orientation>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                  <physm:W>0</physm:W>
+                </physm:Orientation>
+              </phys:CenterOfMass>
+              <phys:Density>0</phys:Density>
+              <phys:LinearDamping>0</phys:LinearDamping>
+              <phys:AngularDamping>0</phys:AngularDamping>
+              <phys:MassLocalPose>
+                <physm:Position>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                </physm:Position>
+                <physm:Orientation>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                  <physm:W>1</physm:W>
+                </physm:Orientation>
+              </phys:MassLocalPose>
+            </phys:MassDensity>
+            <phys:LocalPose>
+              <physm:Position>
+                <physm:X>-0.0225</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>1</physm:W>
+              </physm:Orientation>
+            </phys:LocalPose>
+            <phys:TextureFileName />
+            <phys:DiffuseColor>
+              <physm:X>0.5</physm:X>
+              <physm:Y>0.5</physm:Y>
+              <physm:Z>0.5</physm:Z>
+              <physm:W>1</physm:W>
+            </phys:DiffuseColor>
+            <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
+            <phys:InnerRadius>0</phys:InnerRadius>
+            <phys:SuspensionTravel>0</phys:SuspensionTravel>
+            <phys:Flags>OverrideAxleSpeed</phys:Flags>
+            <phys:AxleSpeed>0</phys:AxleSpeed>
+            <phys:TireLateralForceFunction>
+              <physm:ExtremumSlip>1</physm:ExtremumSlip>
+              <physm:ExtremumValue>0.02</physm:ExtremumValue>
+              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
+              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
+              <physm:StiffnessFactor>1E+07</physm:StiffnessFactor>
+            </phys:TireLateralForceFunction>
+            <phys:TireLongitudalForceFunction>
+              <physm:ExtremumSlip>1</physm:ExtremumSlip>
+              <physm:ExtremumValue>0.02</physm:ExtremumValue>
+              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
+              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
+              <physm:StiffnessFactor>1E+08</physm:StiffnessFactor>
+            </phys:TireLongitudalForceFunction>
+            <phys:BrakeTorque>0</phys:BrakeTorque>
+          </phys:WheelState>
+        </WheelShape>
+        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
+      </ModelOutter>
     </CompositeWheel>
     <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html">
       <sim:State>
         <sim:Name>testee WheelRearLeft body</sim:Name>
         <sim:Assets>
-          <sim:Mesh>WheelShape3.obj</sim:Mesh>
+          <sim:Mesh>WheelShape4.obj</sim:Mesh>
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>0.0850186944</physm:X>
-            <physm:Y>-0.05099996</physm:Y>
-            <physm:Z>-0.124901049</physm:Z>
+            <physm:X>0.0850311145</physm:X>
+            <physm:Y>-0.0509994738</physm:Y>
+            <physm:Z>-0.124922365</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.0010349548</physm:X>
-            <physm:Y>-2.86607574E-05</physm:Y>
-            <physm:Z>-0.000100383375</physm:Z>
-            <physm:W>0.9999997</physm:W>
+            <physm:X>0.0008614076</physm:X>
+            <physm:Y>-0.000143482946</physm:Y>
+            <physm:Z>-0.0003930814</physm:Z>
+            <physm:W>0.999999464</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>5.941318E-05</physm:X>
-          <physm:Y>1.937576E-08</physm:Y>
-          <physm:Z>0.0001500818</physm:Z>
+          <physm:X>-0.000254195766</physm:X>
+          <physm:Y>-2.39171313E-05</physm:Y>
+          <physm:Z>-1.47029259E-05</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>0.00320845773</physm:X>
-          <physm:Y>-0.00103271857</physm:Y>
-          <physm:Z>-2.354941E-05</physm:Z>
+          <physm:X>-0.0009077755</physm:X>
+          <physm:Y>0.000847540447</physm:Y>
+          <physm:Z>0.00302122277</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.015</phys:Mass>
@@ -1768,7 +2138,7 @@
       <MeshEntityType xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Convex</MeshEntityType>
       <ConvexMeshShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <phys:ConvexMeshState>
-          <phys:Name>WheelShape3.obj</phys:Name>
+          <phys:Name>WheelShape4.obj</phys:Name>
           <phys:ShapeId>ConvexMesh</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -1781,7 +2151,7 @@
             <phys:Restitution>0</phys:Restitution>
             <phys:DynamicFriction>0</phys:DynamicFriction>
             <phys:StaticFriction>0</phys:StaticFriction>
-            <phys:MaterialIndex>9</phys:MaterialIndex>
+            <phys:MaterialIndex>11</phys:MaterialIndex>
           </phys:Material>
           <phys:MassDensity>
             <phys:Mass>0.015</phys:Mass>
@@ -1841,14 +2211,14 @@
             <physm:W>1</physm:W>
           </phys:DiffuseColor>
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape3.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
-          <phys:FaceCount>614</phys:FaceCount>
-          <phys:VertexCount>662</phys:VertexCount>
+          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape4.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
+          <phys:FaceCount>188</phys:FaceCount>
+          <phys:VertexCount>194</phys:VertexCount>
         </phys:ConvexMeshState>
       </ConvexMeshShape>
       <Props>
         <Name>testee WheelRearLeft</Name>
-        <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
+        <PhysicalMesh>WheelShape4.obj</PhysicalMesh>
         <VisualMesh>CorobotWheel.obj</VisualMesh>
         <Position>
           <physm:X>0.085</physm:X>
@@ -1857,29 +2227,30 @@
         </Position>
         <Mass>0.03</Mass>
         <Radius>0.05</Radius>
+        <Width>0.045</Width>
         <MaxSteerAngle>0.7853982</MaxSteerAngle>
         <SuspensionRate>75000</SuspensionRate>
         <Motorized>true</Motorized>
         <Steerable>false</Steerable>
         <Flipped>true</Flipped>
       </Props>
-      <Model>
+      <ModelInner>
         <sim:State>
-          <sim:Name>testee WheelRearLeft model</sim:Name>
+          <sim:Name>testee WheelRearLeft model outter</sim:Name>
           <sim:Assets>
             <sim:Mesh>CorobotWheel.obj</sim:Mesh>
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>0.08501786</physm:X>
-              <physm:Y>-0.0509999655</physm:Y>
-              <physm:Z>-0.124903165</physm:Z>
+              <physm:X>0.0850366354</physm:X>
+              <physm:Y>-0.05099945</physm:Y>
+              <physm:Z>-0.124921858</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.000998213</physm:X>
-              <physm:Y>-1.95962821E-05</physm:Y>
-              <physm:Z>-9.982722E-05</physm:Z>
-              <physm:W>0.9999997</physm:W>
+              <physm:X>0.0008640359</physm:X>
+              <physm:Y>-0.0001596521</physm:Y>
+              <physm:Z>-0.0003468193</physm:Z>
+              <physm:W>0.999999464</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -1951,7 +2322,7 @@
         </MeshTranslation>
         <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <phys:WheelState>
-            <phys:Name>testee WheelRearLeft model</phys:Name>
+            <phys:Name>testee WheelRearLeft model outter</phys:Name>
             <phys:ShapeId>Wheel</phys:ShapeId>
             <phys:Dimensions>
               <physm:X>0</physm:X>
@@ -1964,7 +2335,7 @@
               <phys:Restitution>0</phys:Restitution>
               <phys:DynamicFriction>0</phys:DynamicFriction>
               <phys:StaticFriction>0</phys:StaticFriction>
-              <phys:MaterialIndex>10</phys:MaterialIndex>
+              <phys:MaterialIndex>12</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
               <phys:Mass>0.03</phys:Mass>
@@ -2005,7 +2376,7 @@
             </phys:MassDensity>
             <phys:LocalPose>
               <physm:Position>
-                <physm:X>0</physm:X>
+                <physm:X>-0.0225</physm:X>
                 <physm:Y>0</physm:Y>
                 <physm:Z>0</physm:Z>
               </physm:Position>
@@ -2046,36 +2417,220 @@
           </phys:WheelState>
         </WheelShape>
         <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
-      </Model>
+      </ModelInner>
+      <ModelOutter>
+        <sim:State>
+          <sim:Name>testee WheelRearLeft model inner</sim:Name>
+          <sim:Assets>
+            <sim:Mesh>CorobotWheel.obj</sim:Mesh>
+          </sim:Assets>
+          <sim:Pose>
+            <physm:Position>
+              <physm:X>0.0850366354</physm:X>
+              <physm:Y>-0.05099945</physm:Y>
+              <physm:Z>-0.124921858</physm:Z>
+            </physm:Position>
+            <physm:Orientation>
+              <physm:X>0.0008640359</physm:X>
+              <physm:Y>-0.0001596521</physm:Y>
+              <physm:Z>-0.0003468193</physm:Z>
+              <physm:W>0.999999464</physm:W>
+            </physm:Orientation>
+          </sim:Pose>
+          <sim:Velocity>
+            <physm:X>0</physm:X>
+            <physm:Y>0</physm:Y>
+            <physm:Z>0</physm:Z>
+          </sim:Velocity>
+          <sim:AngularVelocity>
+            <physm:X>0</physm:X>
+            <physm:Y>0</physm:Y>
+            <physm:Z>0</physm:Z>
+          </sim:AngularVelocity>
+          <sim:MassDensity>
+            <phys:Mass>0</phys:Mass>
+            <phys:InertiaTensor>
+              <physm:X>0</physm:X>
+              <physm:Y>0</physm:Y>
+              <physm:Z>0</physm:Z>
+            </phys:InertiaTensor>
+            <phys:CenterOfMass>
+              <physm:Position>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>0</physm:W>
+              </physm:Orientation>
+            </phys:CenterOfMass>
+            <phys:Density>0</phys:Density>
+            <phys:LinearDamping>0</phys:LinearDamping>
+            <phys:AngularDamping>0</phys:AngularDamping>
+            <phys:MassLocalPose>
+              <physm:Position>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>1</physm:W>
+              </physm:Orientation>
+            </phys:MassLocalPose>
+          </sim:MassDensity>
+          <sim:Flags>Dynamic</sim:Flags>
+        </sim:State>
+        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">TexturesPending</Flags>
+        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
+        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
+        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>1</physm:X>
+          <physm:Y>1</physm:Y>
+          <physm:Z>1</physm:Z>
+        </MeshScale>
+        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>0</physm:X>
+          <physm:Y>180</physm:Y>
+          <physm:Z>0</physm:Z>
+        </MeshRotation>
+        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>0</physm:X>
+          <physm:Y>0</physm:Y>
+          <physm:Z>0</physm:Z>
+        </MeshTranslation>
+        <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <phys:WheelState>
+            <phys:Name>testee WheelRearLeft model inner</phys:Name>
+            <phys:ShapeId>Wheel</phys:ShapeId>
+            <phys:Dimensions>
+              <physm:X>0</physm:X>
+              <physm:Y>0</physm:Y>
+              <physm:Z>0</physm:Z>
+            </phys:Dimensions>
+            <phys:Radius>0.05</phys:Radius>
+            <phys:Material>
+              <phys:Name>default wheel material</phys:Name>
+              <phys:Restitution>0</phys:Restitution>
+              <phys:DynamicFriction>0</phys:DynamicFriction>
+              <phys:StaticFriction>0</phys:StaticFriction>
+              <phys:MaterialIndex>13</phys:MaterialIndex>
+            </phys:Material>
+            <phys:MassDensity>
+              <phys:Mass>0.03</phys:Mass>
+              <phys:InertiaTensor>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </phys:InertiaTensor>
+              <phys:CenterOfMass>
+                <physm:Position>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                </physm:Position>
+                <physm:Orientation>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                  <physm:W>0</physm:W>
+                </physm:Orientation>
+              </phys:CenterOfMass>
+              <phys:Density>0</phys:Density>
+              <phys:LinearDamping>0</phys:LinearDamping>
+              <phys:AngularDamping>0</phys:AngularDamping>
+              <phys:MassLocalPose>
+                <physm:Position>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                </physm:Position>
+                <physm:Orientation>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                  <physm:W>1</physm:W>
+                </physm:Orientation>
+              </phys:MassLocalPose>
+            </phys:MassDensity>
+            <phys:LocalPose>
+              <physm:Position>
+                <physm:X>0.0225</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>1</physm:W>
+              </physm:Orientation>
+            </phys:LocalPose>
+            <phys:TextureFileName />
+            <phys:DiffuseColor>
+              <physm:X>0.5</physm:X>
+              <physm:Y>0.5</physm:Y>
+              <physm:Z>0.5</physm:Z>
+              <physm:W>1</physm:W>
+            </phys:DiffuseColor>
+            <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
+            <phys:InnerRadius>0</phys:InnerRadius>
+            <phys:SuspensionTravel>0</phys:SuspensionTravel>
+            <phys:Flags>OverrideAxleSpeed</phys:Flags>
+            <phys:AxleSpeed>0</phys:AxleSpeed>
+            <phys:TireLateralForceFunction>
+              <physm:ExtremumSlip>1</physm:ExtremumSlip>
+              <physm:ExtremumValue>0.02</physm:ExtremumValue>
+              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
+              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
+              <physm:StiffnessFactor>1E+07</physm:StiffnessFactor>
+            </phys:TireLateralForceFunction>
+            <phys:TireLongitudalForceFunction>
+              <physm:ExtremumSlip>1</physm:ExtremumSlip>
+              <physm:ExtremumValue>0.02</physm:ExtremumValue>
+              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
+              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
+              <physm:StiffnessFactor>1E+08</physm:StiffnessFactor>
+            </phys:TireLongitudalForceFunction>
+            <phys:BrakeTorque>0</phys:BrakeTorque>
+          </phys:WheelState>
+        </WheelShape>
+        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
+      </ModelOutter>
     </CompositeWheel>
     <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html">
       <sim:State>
         <sim:Name>testee WheelRearRight body</sim:Name>
         <sim:Assets>
-          <sim:Mesh>WheelShape3.obj</sim:Mesh>
+          <sim:Mesh>WheelShape4.obj</sim:Mesh>
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>-0.08498432</physm:X>
-            <physm:Y>-0.0509999581</physm:Y>
-            <physm:Z>-0.12489906</physm:Z>
+            <physm:X>-0.08496893</physm:X>
+            <physm:Y>-0.0510003455</physm:Y>
+            <physm:Z>-0.124923512</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.00101247733</physm:X>
-            <physm:Y>6.8936456E-06</physm:Y>
-            <physm:Z>-0.0001835889</physm:Z>
-            <physm:W>0.9999994</physm:W>
+            <physm:X>0.000873027253</physm:X>
+            <physm:Y>-0.000138099073</physm:Y>
+            <physm:Z>-0.0003799802</physm:Z>
+            <physm:W>1</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>5.029312E-05</physm:X>
-          <physm:Y>1.798374E-08</physm:Y>
-          <physm:Z>2.00333816E-05</physm:Z>
+          <physm:X>-0.000240191555</physm:X>
+          <physm:Y>-2.70498458E-05</physm:Y>
+          <physm:Z>0.000113010828</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>0.000345030247</physm:X>
-          <physm:Y>-0.00103972631</physm:Y>
-          <physm:Z>-0.00139736047</physm:Z>
+          <physm:X>0.00250270846</physm:X>
+          <physm:Y>-0.0005317321</physm:Y>
+          <physm:Z>0.003581187</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.015</phys:Mass>
@@ -2224,7 +2779,7 @@
       <MeshEntityType xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Convex</MeshEntityType>
       <ConvexMeshShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <phys:ConvexMeshState>
-          <phys:Name>WheelShape3.obj</phys:Name>
+          <phys:Name>WheelShape4.obj</phys:Name>
           <phys:ShapeId>ConvexMesh</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -2237,7 +2792,7 @@
             <phys:Restitution>0</phys:Restitution>
             <phys:DynamicFriction>0</phys:DynamicFriction>
             <phys:StaticFriction>0</phys:StaticFriction>
-            <phys:MaterialIndex>11</phys:MaterialIndex>
+            <phys:MaterialIndex>14</phys:MaterialIndex>
           </phys:Material>
           <phys:MassDensity>
             <phys:Mass>0.015</phys:Mass>
@@ -2297,14 +2852,14 @@
             <physm:W>1</physm:W>
           </phys:DiffuseColor>
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape3.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
-          <phys:FaceCount>614</phys:FaceCount>
-          <phys:VertexCount>662</phys:VertexCount>
+          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape4.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
+          <phys:FaceCount>188</phys:FaceCount>
+          <phys:VertexCount>194</phys:VertexCount>
         </phys:ConvexMeshState>
       </ConvexMeshShape>
       <Props>
         <Name>testee WheelRearRight</Name>
-        <PhysicalMesh>WheelShape3.obj</PhysicalMesh>
+        <PhysicalMesh>WheelShape4.obj</PhysicalMesh>
         <VisualMesh>CorobotWheel.obj</VisualMesh>
         <Position>
           <physm:X>-0.085</physm:X>
@@ -2313,29 +2868,30 @@
         </Position>
         <Mass>0.03</Mass>
         <Radius>0.05</Radius>
+        <Width>0.045</Width>
         <MaxSteerAngle>0.7853982</MaxSteerAngle>
         <SuspensionRate>75000</SuspensionRate>
         <Motorized>true</Motorized>
         <Steerable>false</Steerable>
         <Flipped>false</Flipped>
       </Props>
-      <Model>
+      <ModelInner>
         <sim:State>
-          <sim:Name>testee WheelRearRight model</sim:Name>
+          <sim:Name>testee WheelRearRight model inner</sim:Name>
           <sim:Assets>
             <sim:Mesh>CorobotWheel.obj</sim:Mesh>
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>-0.08498506</physm:X>
-              <physm:Y>-0.0509999543</physm:Y>
-              <physm:Z>-0.124900311</physm:Z>
+              <physm:X>-0.08496479</physm:X>
+              <physm:Y>-0.0510003753</physm:Y>
+              <physm:Z>-0.124925055</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.001038942</physm:X>
-              <physm:Y>1.54841164E-05</physm:Y>
-              <physm:Z>-0.000170974265</physm:Z>
-              <physm:W>0.9999994</physm:W>
+              <physm:X>0.0008447928</physm:X>
+              <physm:Y>-0.000135816736</physm:Y>
+              <physm:Z>-0.0004070432</physm:Z>
+              <physm:W>1</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -2407,7 +2963,7 @@
         </MeshTranslation>
         <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <phys:WheelState>
-            <phys:Name>testee WheelRearRight model</phys:Name>
+            <phys:Name>testee WheelRearRight model inner</phys:Name>
             <phys:ShapeId>Wheel</phys:ShapeId>
             <phys:Dimensions>
               <physm:X>0</physm:X>
@@ -2420,7 +2976,7 @@
               <phys:Restitution>0</phys:Restitution>
               <phys:DynamicFriction>0</phys:DynamicFriction>
               <phys:StaticFriction>0</phys:StaticFriction>
-              <phys:MaterialIndex>12</phys:MaterialIndex>
+              <phys:MaterialIndex>15</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
               <phys:Mass>0.03</phys:Mass>
@@ -2461,7 +3017,7 @@
             </phys:MassDensity>
             <phys:LocalPose>
               <physm:Position>
-                <physm:X>0</physm:X>
+                <physm:X>0.0225</physm:X>
                 <physm:Y>0</physm:Y>
                 <physm:Z>0</physm:Z>
               </physm:Position>
@@ -2502,7 +3058,191 @@
           </phys:WheelState>
         </WheelShape>
         <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
-      </Model>
+      </ModelInner>
+      <ModelOutter>
+        <sim:State>
+          <sim:Name>testee WheelRearRight model outter</sim:Name>
+          <sim:Assets>
+            <sim:Mesh>CorobotWheel.obj</sim:Mesh>
+          </sim:Assets>
+          <sim:Pose>
+            <physm:Position>
+              <physm:X>-0.08496479</physm:X>
+              <physm:Y>-0.0510003753</physm:Y>
+              <physm:Z>-0.124925055</physm:Z>
+            </physm:Position>
+            <physm:Orientation>
+              <physm:X>0.0008447928</physm:X>
+              <physm:Y>-0.000135816736</physm:Y>
+              <physm:Z>-0.0004070432</physm:Z>
+              <physm:W>1</physm:W>
+            </physm:Orientation>
+          </sim:Pose>
+          <sim:Velocity>
+            <physm:X>0</physm:X>
+            <physm:Y>0</physm:Y>
+            <physm:Z>0</physm:Z>
+          </sim:Velocity>
+          <sim:AngularVelocity>
+            <physm:X>0</physm:X>
+            <physm:Y>0</physm:Y>
+            <physm:Z>0</physm:Z>
+          </sim:AngularVelocity>
+          <sim:MassDensity>
+            <phys:Mass>0</phys:Mass>
+            <phys:InertiaTensor>
+              <physm:X>0</physm:X>
+              <physm:Y>0</physm:Y>
+              <physm:Z>0</physm:Z>
+            </phys:InertiaTensor>
+            <phys:CenterOfMass>
+              <physm:Position>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>0</physm:W>
+              </physm:Orientation>
+            </phys:CenterOfMass>
+            <phys:Density>0</phys:Density>
+            <phys:LinearDamping>0</phys:LinearDamping>
+            <phys:AngularDamping>0</phys:AngularDamping>
+            <phys:MassLocalPose>
+              <physm:Position>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>1</physm:W>
+              </physm:Orientation>
+            </phys:MassLocalPose>
+          </sim:MassDensity>
+          <sim:Flags>Dynamic</sim:Flags>
+        </sim:State>
+        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">TexturesPending</Flags>
+        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
+        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
+        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>1</physm:X>
+          <physm:Y>1</physm:Y>
+          <physm:Z>1</physm:Z>
+        </MeshScale>
+        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>0</physm:X>
+          <physm:Y>0</physm:Y>
+          <physm:Z>0</physm:Z>
+        </MeshRotation>
+        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <physm:X>0</physm:X>
+          <physm:Y>0</physm:Y>
+          <physm:Z>0</physm:Z>
+        </MeshTranslation>
+        <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+          <phys:WheelState>
+            <phys:Name>testee WheelRearRight model outter</phys:Name>
+            <phys:ShapeId>Wheel</phys:ShapeId>
+            <phys:Dimensions>
+              <physm:X>0</physm:X>
+              <physm:Y>0</physm:Y>
+              <physm:Z>0</physm:Z>
+            </phys:Dimensions>
+            <phys:Radius>0.05</phys:Radius>
+            <phys:Material>
+              <phys:Name>default wheel material</phys:Name>
+              <phys:Restitution>0</phys:Restitution>
+              <phys:DynamicFriction>0</phys:DynamicFriction>
+              <phys:StaticFriction>0</phys:StaticFriction>
+              <phys:MaterialIndex>16</phys:MaterialIndex>
+            </phys:Material>
+            <phys:MassDensity>
+              <phys:Mass>0.03</phys:Mass>
+              <phys:InertiaTensor>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </phys:InertiaTensor>
+              <phys:CenterOfMass>
+                <physm:Position>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                </physm:Position>
+                <physm:Orientation>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                  <physm:W>0</physm:W>
+                </physm:Orientation>
+              </phys:CenterOfMass>
+              <phys:Density>0</phys:Density>
+              <phys:LinearDamping>0</phys:LinearDamping>
+              <phys:AngularDamping>0</phys:AngularDamping>
+              <phys:MassLocalPose>
+                <physm:Position>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                </physm:Position>
+                <physm:Orientation>
+                  <physm:X>0</physm:X>
+                  <physm:Y>0</physm:Y>
+                  <physm:Z>0</physm:Z>
+                  <physm:W>1</physm:W>
+                </physm:Orientation>
+              </phys:MassLocalPose>
+            </phys:MassDensity>
+            <phys:LocalPose>
+              <physm:Position>
+                <physm:X>-0.0225</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+              </physm:Position>
+              <physm:Orientation>
+                <physm:X>0</physm:X>
+                <physm:Y>0</physm:Y>
+                <physm:Z>0</physm:Z>
+                <physm:W>1</physm:W>
+              </physm:Orientation>
+            </phys:LocalPose>
+            <phys:TextureFileName />
+            <phys:DiffuseColor>
+              <physm:X>0.5</physm:X>
+              <physm:Y>0.5</physm:Y>
+              <physm:Z>0.5</physm:Z>
+              <physm:W>1</physm:W>
+            </phys:DiffuseColor>
+            <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
+            <phys:InnerRadius>0</phys:InnerRadius>
+            <phys:SuspensionTravel>0</phys:SuspensionTravel>
+            <phys:Flags>OverrideAxleSpeed</phys:Flags>
+            <phys:AxleSpeed>0</phys:AxleSpeed>
+            <phys:TireLateralForceFunction>
+              <physm:ExtremumSlip>1</physm:ExtremumSlip>
+              <physm:ExtremumValue>0.02</physm:ExtremumValue>
+              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
+              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
+              <physm:StiffnessFactor>1E+07</physm:StiffnessFactor>
+            </phys:TireLateralForceFunction>
+            <phys:TireLongitudalForceFunction>
+              <physm:ExtremumSlip>1</physm:ExtremumSlip>
+              <physm:ExtremumValue>0.02</physm:ExtremumValue>
+              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
+              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
+              <physm:StiffnessFactor>1E+08</physm:StiffnessFactor>
+            </phys:TireLongitudalForceFunction>
+            <phys:BrakeTorque>0</phys:BrakeTorque>
+          </phys:WheelState>
+        </WheelShape>
+        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
+      </ModelOutter>
     </CompositeWheel>
   </SerializedEntities>
 </SimulationState>

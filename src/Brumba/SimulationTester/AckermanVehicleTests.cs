@@ -104,7 +104,7 @@ namespace Brumba.Simulation.SimulationTester
 	public class SuspendedRearDrivenVehicleTests : SimulationTestFixture
 	{
 		public SuspendedRearDrivenVehicleTests()
-			: base(new SingleVehicleTest[] { new StraightPathTest(0.5f), new CurvedPathTest(0.45f) }, "suspended_rear_driven_on_terrain03.xml")
+			: base(new SingleVehicleTest[] { new StraightPathTest(0.6f), new CurvedPathTest(0.5f) }, "suspended_rear_driven_on_terrain03.xml")
 		{
 		}
 	}
@@ -120,7 +120,7 @@ namespace Brumba.Simulation.SimulationTester
 	public class Suspended4x4VehicleTests : SimulationTestFixture
 	{
 		public Suspended4x4VehicleTests()
-			: base(new SingleVehicleTest[] { new StraightPathTest(0.5f), new CurvedPathTest(0.45f) }, "suspended_4x4_on_terrain03.xml")
+			: base(new SingleVehicleTest[] { new StraightPathTest(0.6f), new CurvedPathTest(0.5f) }, "suspended_4x4_on_terrain03.xml")
 		{
 		}
 	}
