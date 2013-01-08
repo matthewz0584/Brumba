@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using Brumba.Simulation.SimulatedStabilizer;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using W3C.Soap;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
@@ -36,13 +36,14 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
         protected override void Start()
         {
 			//CrossCountryGenerator.Generate(257, 0.1f).Save("terrain00.bmp");
-            //GenerateEnvironment();
-            GenerateEnvironmentForTests();
+            PopulateStabilizer();
+            //PopulateAckermanVehicle();
+            //GenerateEnvironmentForTests();
 
             base.Start();
         }
 
-        private void GenerateEnvironment()
+        private void PopulateAckermanVehicle()
         {
             var view = new CameraView { EyePosition = new Vector3(-1.65f, 1.63f, -0.29f), LookAtPoint = new Vector3(0, 0, 0) };
             SimulationEngine.GlobalInstancePort.Update(view);
@@ -62,13 +63,44 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             var box = new BoxShape(new BoxShapeProperties(10, new Pose(), new Vector3(1, 0.03f, 0.5f)) { Material = new MaterialProperties("ground", 0f, 0.5f, 0.5f) });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(box, new Vector3(0, 0.02f, 2f)) { State = { Name = "booox" } });
 
-            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Hard4x4),
+            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Suspended4x4),
                 ops4 =>
                 {
                     //ops4.SetMotorPower(new SafwProxy.MotorPowerRequest { Value = 0.1f });
                     ops4.SetSteerAngle(new SafwProxy.SteerAngleRequest { Value = -0.25f });
                 },
                 f => LogInfo("bebebe")));
+        }
+
+        private static void PopulateStabilizer()
+        {
+            var view = new CameraView { EyePosition = new Vector3(-1.65f, 1.63f, -0.29f), LookAtPoint = new Vector3(0, 0, 0) };
+            SimulationEngine.GlobalInstancePort.Update(view);
+
+            var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
+            SimulationEngine.GlobalInstancePort.Insert(sky);
+
+            var sun = new LightSourceEntity
+                {
+                    Type = LightSourceEntityType.Directional,
+                    Color = new Vector4(0.8f, 0.8f, 0.8f, 1),
+                    Direction = new Vector3(0.5f, -.75f, 0.5f),
+                    State = {Name = "Sun"}
+                };
+            SimulationEngine.GlobalInstancePort.Insert(sun);
+
+            var ground = new HeightFieldEntity("Ground", "WoodFloor.dds", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
+            SimulationEngine.GlobalInstancePort.Insert(ground);
+            //var ground = new TerrainEntity("terrain.bmp", "", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
+            //SimulationEngine.GlobalInstancePort.Insert(ground);
+
+            var box = new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f)));
+            var boxEntity = new SingleShapeEntity(box, new Vector3(0, 0.1f, 0)) { State = { Name = "booox" } };
+
+            var stabilizer = StabilizerEntity.Build("stabilizeer", new Vector3(0, 0.2f, 0), 1, 0.05f, boxEntity);
+            boxEntity.InsertEntity(stabilizer);
+
+            SimulationEngine.GlobalInstancePort.Insert(boxEntity);
         }
 
         private void GenerateEnvironmentForTests()
@@ -94,7 +126,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             };
             SimulationEngine.GlobalInstancePort.Insert(sun);
 
-			Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(), AckermanFourWheelsEntity.Builder.Suspended4x4),
+			Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(), AckermanFourWheelsEntity.Builder.SuspendedRearDriven),
                 ops4 => {}, f => LogInfo("bebebe")));
         }
 

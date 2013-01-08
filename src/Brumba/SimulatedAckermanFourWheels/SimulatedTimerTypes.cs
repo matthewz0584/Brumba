@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Dss.Core.Attributes;
+﻿using Microsoft.Dss.Core.Attributes;
 using System.ComponentModel;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Ccr.Core;
