@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simpleackermanvehicle="http://schemas.tempuri.org/2012/10/simpleackermanvehicle.html" xmlns:this="urn:uuid:5e3d86a2-2bb1-4b6e-8948-7a9d8af02d03" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:ackermanfourwheelsdriverguiservice="http://schemas.tempuri.org/2012/10/ackermanfourwheelsdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedstabilizer="http://schemas.tempuri.org/2013/01/simulatedstabilizer.html" xmlns:simpleackermanvehicle="http://schemas.tempuri.org/2012/10/simpleackermanvehicle.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:bf12e5c3-a310-4269-96a1-0d02af5ce9df" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://schemas.tempuri.org/2012/10/simpleackermanvehicle.html</dssp:Contract>
@@ -8,9 +8,15 @@
       <Name>this:simpleackermanvehicle</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.tempuri.org/2012/10/ackermanfourwheelsdriverguiservice.html</dssp:Contract>
-      <dssp:PartnerList />
-      <Name>this:AckermanFourWheelsDriverGuiService</Name>
+      <dssp:Contract>http://schemas.tempuri.org/2013/01/simulatedstabilizer.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/stabilizeer</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedStabilizer</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

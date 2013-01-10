@@ -8,8 +8,8 @@ using Microsoft.Robotics.Simulation.Engine;
 namespace Brumba.Simulation.SimulatedAckermanFourWheels
 {
 	[Contract(Contract.Identifier)]
-	[DisplayName("SimulatedAckermanFourWheels")]
-	[Description("SimulatedAckermanFourWheels service (no description provided)")]
+	[DisplayName("Simulated Ackerman Four Wheels")]
+	[Description("no description provided")]
 	class SimulatedAckermanFourWheelsService : DsspServiceBase
 	{
 		[ServiceState]
@@ -97,7 +97,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                         ),
                     new ExclusiveReceiverGroup(),
                     new ConcurrentReceiverGroup(
-                        Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler)
+                        Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
+                        Arbiter.Receive<Get>(true, _mainPort, DefaultGetHandler)
                         )));
         }
 
@@ -114,7 +115,8 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                         Arbiter.Receive<Break>(true, _mainPort, OnBreak)
                         ),
                     new ConcurrentReceiverGroup(
-                        Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler)
+                        Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
+                        Arbiter.Receive<Get>(true, _mainPort, DefaultGetHandler)
                         )));
         }
 

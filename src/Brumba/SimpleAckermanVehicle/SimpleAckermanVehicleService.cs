@@ -91,13 +91,18 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 
             var ground = new HeightFieldEntity("Ground", "WoodFloor.dds", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
             SimulationEngine.GlobalInstancePort.Insert(ground);
-            //var ground = new TerrainEntity("terrain.bmp", "", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
-            //SimulationEngine.GlobalInstancePort.Insert(ground);
 
             var box = new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f)));
             var boxEntity = new SingleShapeEntity(box, new Vector3(0, 0.1f, 0)) { State = { Name = "booox" } };
 
-            var stabilizer = StabilizerEntity.Build("stabilizeer", new Vector3(0, 0.2f, 0), 1, 0.05f, boxEntity);
+            var stabilizer = new StabilizerEntity.StabilizerProperties
+                    {
+                        TailPosition = new Vector3(0, 0.2f, 0),
+                        TailMass = 1,
+                        TailMassRadius = 0.05f,
+                        LfWheelPosition = new Vector3(-0.05f, -0.01f, 0.1f),
+                        RfWheelPosition = new Vector3(0.05f, -0.01f, 0.1f),
+                    }.Build("stabilizeer", boxEntity);
             boxEntity.InsertEntity(stabilizer);
 
             SimulationEngine.GlobalInstancePort.Insert(boxEntity);

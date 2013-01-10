@@ -8,18 +8,18 @@ using Microsoft.Robotics.Simulation.Engine;
 namespace Brumba.Simulation.SimulatedStabilizer
 {
 	[Contract(Contract.Identifier)]
-    [DisplayName("SimulatedStabilizer")]
-    [Description("SimulatedStabilizer service (no description provided)")]
+    [DisplayName("Simulated Stabilizer")]
+    [Description("no description provided")]
 	class SimulatedStabilizerService : DsspServiceBase
 	{
 		[ServiceState]
-		private SimulatedStabilizerState _state = new SimulatedStabilizerState();
+		SimulatedStabilizerState _state = new SimulatedStabilizerState();
 		
-		[ServicePort("/SimulatedAckermanFourWheels", AllowMultipleInstances = true)]
-		private SimulatedStabilizerOperations _mainPort = new SimulatedStabilizerOperations();
+		[ServicePort("/SimulatedStabilizer", AllowMultipleInstances = true)]
+		SimulatedStabilizerOperations _mainPort = new SimulatedStabilizerOperations();
 
-        private SimulationEnginePort _simEngineNotifyPort = new SimulationEnginePort();
-        //private AckermanFourWheelsEntity _vehicle;
+        SimulationEnginePort _simEngineNotifyPort = new SimulationEnginePort();
+        StabilizerEntity _stabilizer;
 
         public SimulatedStabilizerService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
@@ -33,71 +33,90 @@ namespace Brumba.Simulation.SimulatedStabilizer
             base.Start();
 
             //Killing default main port interleave. From now on I control main port interleave
-            //MainPortInterleave.CombineWith(new Interleave(
-            //        new TeardownReceiverGroup(Arbiter.Receive<Break>(false, _mainPort, b => { })),
-            //        new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup()));
-            //_mainPort.Post(new Break());
+            MainPortInterleave.CombineWith(new Interleave(
+                    new TeardownReceiverGroup(Arbiter.Receive<Park>(false, _mainPort, b => { })),
+                    new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup()));
+            _mainPort.Post(new Park());
 
-            //SetUpForWaitingForEntity(); 
+            SetUpForWaitingForEntity(); 
 		}
 
-        //private void OnInsertEntity(InsertSimulationEntity entity)
-        //{
-        //    LogInfo("SimulatedAckermanFourWheels OnInsertEntity called");
-            
-        //    _vehicle = entity.Body as AckermanFourWheelsEntity;
-        //    _vehicle.ServiceContract = Contract.Identifier;
-        //    _state.Connected = true;
+        void OnInsertEntity(InsertSimulationEntity entity)
+        {
+            LogInfo("SimulatedAckermanFourWheels OnInsertEntity called");
 
-        //    SetUpForControlOfEntity();
-        //}
+            _stabilizer = entity.Body as StabilizerEntity;
+            _stabilizer.ServiceContract = Contract.Identifier;
+            _state.Connected = true;
 
-        //private void OnDeleteEntity(DeleteSimulationEntity entity)
-        //{
-        //    LogInfo("SimulatedAckermanFourWheels OnDeleteEntity called");
-            
-        //    _vehicle = null;
-        //    _state.Connected = false;
-        //    _state.MotorPower = 0;
-        //    _state.SteerAngle = 0;
+            SetUpForControlOfEntity();
+        }
 
-        //    SetUpForWaitingForEntity();
-        //}
+        void OnDeleteEntity(DeleteSimulationEntity entity)
+        {
+            LogInfo("SimulatedAckermanFourWheels OnDeleteEntity called");
 
-        //private void SetUpForWaitingForEntity()
-        //{
-        //    ResetMainPortInterleave(new Interleave(
-        //            new TeardownReceiverGroup(
-        //                Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
-        //                Arbiter.Receive<InsertSimulationEntity>(false, _simEngineNotifyPort, OnInsertEntity)
-        //                ),
-        //            new ExclusiveReceiverGroup(),
-        //            new ConcurrentReceiverGroup(
-        //                Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler)
-        //                )));
-        //}
+            _stabilizer = null;
+            _state.Connected = false;
 
-        //private void SetUpForControlOfEntity()
-        //{
-        //    ResetMainPortInterleave(new Interleave(
-        //            new TeardownReceiverGroup(
-        //                Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
-        //                Arbiter.Receive<DeleteSimulationEntity>(false, _simEngineNotifyPort, OnDeleteEntity)
-        //                ),
-        //            new ExclusiveReceiverGroup(
-        //                Arbiter.Receive<SetMotorPower>(true, _mainPort, OnSetMotorPower),
-        //                Arbiter.Receive<SetSteerAngle>(true, _mainPort, OnSetSteerAngle),
-        //                Arbiter.Receive<Break>(true, _mainPort, OnBreak)
-        //                ),
-        //            new ConcurrentReceiverGroup(
-        //                Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler)
-        //                )));
-        //}
+            SetUpForWaitingForEntity();
+        }
 
-        //private void ResetMainPortInterleave(Interleave ileave)
-        //{
-        //    Activate(ileave);
-        //    MainPortInterleave = ileave;
-        //}
+        void OnGet(Get getRequest)
+        {
+            if (_stabilizer != null)
+            {
+                _state.LfWheelDistanceToGround = _stabilizer.LfWheelRf.Distance;
+            }
+
+            DefaultGetHandler(getRequest);
+        }
+
+        void OnMoveTail(MoveTail moveRequest)
+        {
+            moveRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+        }
+
+        void OnPark(Park parkRequest)
+        {
+            parkRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+        }
+
+        void SetUpForWaitingForEntity()
+        {
+            ResetMainPortInterleave(new Interleave(
+                    new TeardownReceiverGroup(
+                        Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
+                        Arbiter.Receive<InsertSimulationEntity>(false, _simEngineNotifyPort, OnInsertEntity)
+                        ),
+                    new ExclusiveReceiverGroup(),
+                    new ConcurrentReceiverGroup(
+                        Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
+                        Arbiter.Receive<Get>(true, _mainPort, OnGet)
+                        )));
+        }
+
+        void SetUpForControlOfEntity()
+        {
+            ResetMainPortInterleave(new Interleave(
+                    new TeardownReceiverGroup(
+                        Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
+                        Arbiter.Receive<DeleteSimulationEntity>(false, _simEngineNotifyPort, OnDeleteEntity)
+                        ),
+                    new ExclusiveReceiverGroup(
+                        Arbiter.Receive<Park>(true, _mainPort, OnPark),
+                        Arbiter.Receive<MoveTail>(true, _mainPort, OnMoveTail)
+                        ),
+                    new ConcurrentReceiverGroup(
+                        Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
+                        Arbiter.Receive<Get>(true, _mainPort, OnGet)
+                        )));
+        }
+
+        void ResetMainPortInterleave(Interleave ileave)
+        {
+            Activate(ileave);
+            MainPortInterleave = ileave;
+        }
 	}
 }

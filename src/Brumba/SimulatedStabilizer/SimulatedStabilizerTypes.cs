@@ -9,16 +9,39 @@ namespace Brumba.Simulation.SimulatedStabilizer
 	public sealed class Contract
 	{
 		[DataMember]
-		public const string Identifier = "http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html";
+		public const string Identifier = "http://schemas.tempuri.org/2013/01/simulatedstabilizer.html";
 	}
 	
 	[DataContract]
 	public class SimulatedStabilizerState
 	{
+        [DataMember]
+        [Description("If there is any simulation entity under control of this service")]
+        public bool Connected { get; set; }
+        
+        [DataMember]
+        [Description("")]
+        public float LfWheelDistanceToGround { get; set; }
+        [DataMember]
+        [Description("")]
+        public float RfWheelDistanceToGround { get; set; }
+        [DataMember]
+        [Description("")]
+        public float LrWheelDistanceToGround { get; set; }
+        [DataMember]
+        [Description("")]
+        public float RrWheelDistanceToGround { get; set; }
+
+        [DataMember]
+        [Description("Polar tail weight coordinates: angle")]
+        public float TailDirection { get; set; }
+        [DataMember]
+        [Description("Polar tail weight coordinates: radius")]
+        public float TailShoulder { get; set; }
 	}
 	
 	[ServicePort]
-    public class SimulatedStabilizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+    public class SimulatedStabilizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, MoveTail, Park>
 	{
 	}
 
@@ -38,4 +61,26 @@ namespace Brumba.Simulation.SimulatedStabilizer
 		{
 		}
 	}
+
+    [DataContract]
+    public class ParkRequest
+    {
+    }
+
+    public class Park : Update<ParkRequest, PortSet<DefaultUpdateResponseType, Fault>>
+    {
+    }
+
+    [DataContract]
+    public class MoveTailRequest
+    {
+        [DataMember, DataMemberConstructor]
+        public float Direction { get; set; }
+        [DataMember, DataMemberConstructor]
+        public float Shoulder { get; set; }
+    }
+
+    public class MoveTail : Update<MoveTailRequest, PortSet<DefaultUpdateResponseType, Fault>>
+    {
+    }
 }

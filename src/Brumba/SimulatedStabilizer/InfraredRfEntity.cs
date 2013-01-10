@@ -10,17 +10,12 @@ using Xna = Microsoft.Xna.Framework;
 
 namespace Brumba.Simulation.SimulatedStabilizer
 {
-    /// <summary>
-    /// An IR distance sensor.
-    /// </summary>
     public class InfraredRfEntity : VisualEntity
     {
         float _elapsedSinceLastScan;
         float _appTime;
         List<RaycastImpactPoint> _lastScanResult;
         CachedEffectParameter _timeAttenuationHandle;
-
-        public float Distance { get; private set; }
 
         [DataMember]
         public float MaximumRange { get; set; }
@@ -34,9 +29,6 @@ namespace Brumba.Simulation.SimulatedStabilizer
         [DataMember]
         public float ScanInterval { get; set; }
 
-        /// <summary>
-        /// Default constructor used when this entity is deserialized
-        /// </summary>
         public InfraredRfEntity()
         {
             _lastScanResult = new List<RaycastImpactPoint>();
@@ -98,9 +90,6 @@ namespace Brumba.Simulation.SimulatedStabilizer
             var horizontalPlane = TypeConversion.ToXNA(Parent.State.Pose.Orientation) * TypeConversion.ToXNA(State.Pose.Orientation);
             _lastScanResult.AddRange(ScanInPlane(horizontalPlane));
             _lastScanResult.AddRange(ScanInPlane(horizontalPlane * Xna.Quaternion.CreateFromAxisAngle(new Xna.Vector3(0, 0, 1), (float)Math.PI / 2f)));
-
-            // find the shortest distance to an impact point
-            Distance = _lastScanResult.Select(ip => ip.Position.W).Concat(new[] {MaximumRange}).Min();
         }
 
         public override void Render(RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)
@@ -110,14 +99,23 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
             _timeAttenuationHandle.SetValue(new Xna.Vector4(100 * (float)Math.Cos(_appTime * (1.0f / ScanInterval)), 0, 0, 1));
 
-            var faceRayTransform = Xna.Matrix.CreateFromAxisAngle(new Xna.Vector3(1, 0, 0), (float)-Math.PI / 2);
+            //sticker in the place of rf device - I could not render it here better and easy
+            base.Render(renderMode, transforms, currentCamera);
 
             foreach (var iPosition in _lastScanResult.Select(ip => new Xna.Vector3(ip.Position.X, ip.Position.Y, ip.Position.Z)))
             {
-                faceRayTransform.Translation = iPosition - 0.01f * Xna.Vector3.Normalize(iPosition - RaysOrigin());
-                transforms.World = faceRayTransform;
+                var ipDir = Xna.Vector3.Normalize(iPosition - RaysOrigin());
+                var ipMeshNorm = new Xna.Vector3(0, 1, 0);
+                transforms.World = Xna.Matrix.CreateFromAxisAngle(Xna.Vector3.Cross(ipMeshNorm, ipDir),
+                                                          (float)Math.Acos(Xna.Vector3.Dot(ipDir, ipMeshNorm)));
+                transforms.World.Translation = iPosition - 0.01f * ipDir;
                 Render(renderMode, transforms, Meshes[0]);
             }
+        }
+
+        public float Distance
+        {
+            get { return _lastScanResult.Select(ip => ip.Position.W).Concat(new[] { MaximumRange }).Min(); }
         }
 
         VisualEntityMesh CreateImpactPointMesh(GraphicsDevice device)

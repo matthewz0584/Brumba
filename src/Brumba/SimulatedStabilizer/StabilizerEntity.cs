@@ -11,58 +11,74 @@ namespace Brumba.Simulation.SimulatedStabilizer
 {
     public class StabilizerEntity : SingleShapeEntity
     {
-        public static StabilizerEntity Build(string name, Vector3 position, float mass, float tailWeightRadius, VisualEntity parent)
+        public class StabilizerProperties
         {
-            var se = new StabilizerEntity(name, position + new Vector3(0.0f, 0.0f, 0), mass, tailWeightRadius);
-            //var se = new StabilizerEntity(name, position, mass, tailWeightRadius);
+            public Vector3 TailPosition { get; set; }
+            public float TailMass { get; set; }
+            public float TailMassRadius { get; set; }
+            public Vector3 LfWheelPosition { get; set; }
+            public Vector3 RfWheelPosition { get; set; }
+            public Vector3 LrWheelPosition { get; set; }
+            public Vector3 RrWheelPosition { get; set; }
 
-            //var jointAngularProps = new JointAngularProperties
-            //    {
-            //        TwistMode = JointDOFMode.Free,
-            //        TwistDrive = new JointDriveProperties(JointDriveMode.Velocity, new SpringProperties(10, 10, 0), 10000),
-            //    };
+            public StabilizerEntity Build(string name, VisualEntity parent)
+            {
+                var se = new StabilizerEntity(name, this);
+                //var se = new StabilizerEntity(name, position, mass, tailWeightRadius);
 
-            //var jointLinearProps = new JointLinearProperties
-            //    {
-            //        YMotionMode = JointDOFMode.Free,
-            //        YDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(10, 10, 0), 10000),
-            //        MotionLimit = new JointLimitProperties(1, 1, new SpringProperties())
-            //    };
+                //var jointAngularProps = new JointAngularProperties
+                //    {
+                //        TwistMode = JointDOFMode.Free,
+                //        TwistDrive = new JointDriveProperties(JointDriveMode.Velocity, new SpringProperties(10, 10, 0), 10000),
+                //    };
 
-            //var connector1 = new EntityJointConnector(se, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) { EntityName = se.State.Name };
-            //var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), position) { EntityName = parent.State.Name };
+                //var jointLinearProps = new JointLinearProperties
+                //    {
+                //        YMotionMode = JointDOFMode.Free,
+                //        YDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(10, 10, 0), 10000),
+                //        MotionLimit = new JointLimitProperties(1, 1, new SpringProperties())
+                //    };
 
-            //se.ParentJoint = new Joint
-            //{
-            //    State = new JointProperties(jointAngularProps, connector1, connector2)
-            //    {
-            //        Linear = jointLinearProps,
-            //        Name = name + " joint"
-            //    }
-            //};
+                //var connector1 = new EntityJointConnector(se, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) { EntityName = se.State.Name };
+                //var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), position) { EntityName = parent.State.Name };
 
-            se.Rf0 = new InfraredRfEntity(name + " rf0",
-                                          new Pose(new Vector3(0, 0, 0.5f), Quaternion.FromAxisAngle(0, 1, 0, 2 * (float)Math.PI / 2)));
-            //se.Rf0 = new IREntity(new Pose(new Vector3(0, -0.05f, 0.5f), Quaternion.FromAxisAngle(1, 0, 0, -(float)Math.PI / 2)), 0.0f, 0.8f, 0.0349f)
-            //    {
-            //        State = {Name = name + " rf1"},
-            //        MinimumRange = 0.0f
-            //    };
-            //se.InsertEntity(se.Rf0);
-            parent.InsertEntity(se.Rf0);
+                //se.ParentJoint = new Joint
+                //{
+                //    State = new JointProperties(jointAngularProps, connector1, connector2)
+                //    {
+                //        Linear = jointLinearProps,
+                //        Name = name + " joint"
+                //    }
+                //};
 
-            return se;
+                //se.LfWheelRf = new InfraredRfEntity(name + " left front wheel rf",
+                //                                    new Pose(new Vector3(0, 0, 0.5f),
+                //                                             Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 2)));
+                //parent.InsertEntity(se.LfWheelRf);
+                se.RfWheelRf = new InfraredRfEntity(name + " right front wheel rf",
+                                                    new Pose(RfWheelPosition, Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 2)));
+                se.InsertEntity(se.RfWheelRf);
+                se.LfWheelRf = new InfraredRfEntity(name + " left front wheel rf",
+                                                    new Pose(LfWheelPosition, Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 2)));
+                se.InsertEntity(se.LfWheelRf);
+
+                return se;
+            }
         }
 
-        public StabilizerEntity(string name, Vector3 position, float mass, float tailWeightRadius)
+        private StabilizerProperties _props;
+
+        public StabilizerEntity(string name, StabilizerProperties props)
         {
-            SphereShape = new SphereShape(new SphereShapeProperties(mass, new Pose(), tailWeightRadius));
-            //State.MassDensity.Mass = mass;
-            State.Name = name + " tail";
-            State.Pose.Position = position;
+            _props = props;
+
+            SphereShape = new SphereShape(new SphereShapeProperties(_props.TailMass, new Pose(), _props.TailMassRadius));
+            State.Name = name;
+            State.Pose.Position = _props.TailPosition;
         }
 
-        public InfraredRfEntity Rf0 { get; private set; }
+        public InfraredRfEntity LfWheelRf { get; private set; }
+        public InfraredRfEntity RfWheelRf { get; private set; }
 
         public float TailLinearVelocity
         {

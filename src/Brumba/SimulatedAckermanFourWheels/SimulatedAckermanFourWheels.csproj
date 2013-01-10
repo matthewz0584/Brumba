@@ -121,7 +121,7 @@
     <Compile Include="AckermanFourWheelsEntityBuilder.cs" />
     <Compile Include="CompositeWheel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimulatedAckermanFourWheels.cs" />
+    <Compile Include="SimulatedAckermanFourWheelsService.cs" />
     <Compile Include="SimulatedAckermanFourWheelsTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimulatedTimer.cs" />
