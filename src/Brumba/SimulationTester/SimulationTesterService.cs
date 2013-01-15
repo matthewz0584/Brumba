@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
+using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using Microsoft.Dss.Services.ConsoleOutput;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using SimPxy = Microsoft.Robotics.Simulation.Proxy;
 using Microsoft.Robotics.Simulation.Engine;
@@ -14,11 +13,9 @@ using SafwPxy = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
 using StPxy = Brumba.Simulation.SimulatedTimer.Proxy;
 using System.Linq;
 using System.Xml;
-using Xna = Microsoft.Xna.Framework;
 using Microsoft.Dss.Services.Serializer;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.Services.MountService;
-using MountPxy = Microsoft.Dss.Services.MountService;
 using Brumba.Simulation.SimulatedTimer;
 
 namespace Brumba.Simulation.SimulationTester

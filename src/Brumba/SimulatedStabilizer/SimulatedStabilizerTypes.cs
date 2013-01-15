@@ -21,16 +21,16 @@ namespace Brumba.Simulation.SimulatedStabilizer
         
         [DataMember]
         [Description("")]
-        public float LfWheelDistanceToGround { get; set; }
+        public float LfWheelToGroundDistance { get; set; }
         [DataMember]
         [Description("")]
-        public float RfWheelDistanceToGround { get; set; }
+        public float RfWheelToGroundDistance { get; set; }
         [DataMember]
         [Description("")]
-        public float LrWheelDistanceToGround { get; set; }
+        public float LrWheelToGroundDistance { get; set; }
         [DataMember]
         [Description("")]
-        public float RrWheelDistanceToGround { get; set; }
+        public float RrWheelToGroundDistance { get; set; }
 
         [DataMember]
         [Description("Polar tail weight coordinates: angle")]
@@ -75,7 +75,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
     public class MoveTailRequest
     {
         [DataMember, DataMemberConstructor]
-        public float Direction { get; set; }
+        public float Angle { get; set; }
         [DataMember, DataMemberConstructor]
         public float Shoulder { get; set; }
     }

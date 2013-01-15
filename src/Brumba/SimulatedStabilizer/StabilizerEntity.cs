@@ -13,7 +13,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
     {
         public class StabilizerProperties
         {
-            public Vector3 TailPosition { get; set; }
+            public Vector3 TailCenter { get; set; }
             public float TailMass { get; set; }
             public float TailMassRadius { get; set; }
             public Vector3 LfWheelPosition { get; set; }
@@ -24,32 +24,36 @@ namespace Brumba.Simulation.SimulatedStabilizer
             public StabilizerEntity Build(string name, VisualEntity parent)
             {
                 var se = new StabilizerEntity(name, this);
-                //var se = new StabilizerEntity(name, position, mass, tailWeightRadius);
+                
+                se.State.Pose.Position = TailCenter;
 
-                //var jointAngularProps = new JointAngularProperties
-                //    {
-                //        TwistMode = JointDOFMode.Free,
-                //        TwistDrive = new JointDriveProperties(JointDriveMode.Velocity, new SpringProperties(10, 10, 0), 10000),
-                //    };
+                var jointAngularProps = new JointAngularProperties
+                    {
+                        TwistMode = JointDOFMode.Free,
+                        TwistDrive = new JointDriveProperties(JointDriveMode.Velocity, new SpringProperties(100000, 1000, 0), 10000),
+                    };
 
-                //var jointLinearProps = new JointLinearProperties
-                //    {
-                //        YMotionMode = JointDOFMode.Free,
-                //        YDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(10, 10, 0), 10000),
-                //        MotionLimit = new JointLimitProperties(1, 1, new SpringProperties())
-                //    };
+                var jointLinearProps = new JointLinearProperties
+                    {
+                        YMotionMode = JointDOFMode.Limited,
+                        XMotionMode = JointDOFMode.Free,
+                        YDrive = new JointDriveProperties(JointDriveMode.Velocity, new SpringProperties(1000, 10f, 0), 10000),
+                        XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100000, 10000, 0), 10000),                        
+                        MotionLimit = new JointLimitProperties(0.5f, 1, new SpringProperties(10000000, 1000, 0))
+                    };
 
-                //var connector1 = new EntityJointConnector(se, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) { EntityName = se.State.Name };
-                //var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), position) { EntityName = parent.State.Name };
+                var connector1 = new EntityJointConnector(se, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) { EntityName = se.State.Name };
+                //var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), TailCenter + new Vector3(0.3f, 0, 0)) { EntityName = parent.State.Name };
+                var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), TailCenter) { EntityName = parent.State.Name };
 
-                //se.ParentJoint = new Joint
-                //{
-                //    State = new JointProperties(jointAngularProps, connector1, connector2)
-                //    {
-                //        Linear = jointLinearProps,
-                //        Name = name + " joint"
-                //    }
-                //};
+                se.ParentJoint = new Joint
+                {
+                    State = new JointProperties(jointLinearProps, connector1, connector2)
+                    {
+                        Angular = jointAngularProps,
+                        Name = name + " joint"
+                    }
+                };
 
                 //se.LfWheelRf = new InfraredRfEntity(name + " left front wheel rf",
                 //                                    new Pose(new Vector3(0, 0, 0.5f),
@@ -74,7 +78,6 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
             SphereShape = new SphereShape(new SphereShapeProperties(_props.TailMass, new Pose(), _props.TailMassRadius));
             State.Name = name;
-            State.Pose.Position = _props.TailPosition;
         }
 
         public InfraredRfEntity LfWheelRf { get; private set; }
@@ -83,8 +86,8 @@ namespace Brumba.Simulation.SimulatedStabilizer
         public float TailLinearVelocity
         {
             get { return 0; }
-            //set { ((PhysicsJoint) ParentJoint).SetLinearDriveVelocity(new Vector3(value, value, value)); }
-            set { ((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, value, 0)); }
+            set { ((PhysicsJoint) ParentJoint).SetLinearDriveVelocity(new Vector3(0, value, 0)); }
+            //set { ((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, value, 0)); }
         }
 
         public float TailAngularVelocity
@@ -96,12 +99,15 @@ namespace Brumba.Simulation.SimulatedStabilizer
         public override void Initialize(GraphicsDevice device, PhysicsEngine physicsEngine)
         {
             base.Initialize(device, physicsEngine);
-            TailLinearVelocity = 0.9f;
-            //TailAngularVelocity = 0.1f;
+            //PhysicsEntity.SolverIterationCount = 32;
+            //Parent.PhysicsEntity.SolverIterationCount = 32;
+            TailLinearVelocity = 0.1f;
+            //TailAngularVelocity = 10f;
         }
 
         public override void Update(FrameUpdate update)
         {
+            //this.Position = new Microsoft.Xna.Framework.Vector3(0, 1, 0);
             //TailLinearVelocity = 0.9f;
             //TailAngularVelocity = 0.1f;
             base.Update(update);

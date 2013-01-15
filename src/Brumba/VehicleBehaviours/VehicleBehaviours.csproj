@@ -4,15 +4,15 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BF9957AB-2A19-4904-B423-BD0A09D0EB01}</ProjectGuid>
+    <ProjectGuid>{8D34F077-4275-418D-B1C0-CF780E61B8D0}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>SimpleAckermanVehicle.Y2012.M10</AssemblyName>
-    <RootNamespace>Brumba.Simulation.SimpleAckermanVehicle</RootNamespace>
+    <AssemblyName>VehicleBehaviours.Y2013.M01</AssemblyName>
+    <RootNamespace>Brumba.VehicleBrains.Behaviours</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
@@ -46,11 +46,12 @@
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\</OutputPath>
+    <OutputPath>$(MRDS_PATH)\bin\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -72,17 +73,21 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;INSTRUMENTED</DefineConstants>
-    <NoWarn>3003</NoWarn>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0">
-      <SpecificVersion>true</SpecificVersion>
+    <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\Microsoft.Xna.Framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib">
       <SpecificVersion>False</SpecificVersion>
@@ -96,58 +101,34 @@
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PhysicsEngine">
-      <HintPath>..\..\..\..\bin\PhysicsEngine.dll</HintPath>
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\utils\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="RoboticsCommon">
-      <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulatedAckermanFourWheels.Y2012.M10.Proxy">
-      <HintPath>..\SimulatedAckermanFourWheels\bin\Debug\SimulatedAckermanFourWheels.Y2012.M10.Proxy.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulationCommon">
-      <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulationEngine">
-      <HintPath>..\..\..\..\bin\SimulationEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulationEngine.proxy">
-      <HintPath>..\..\..\..\bin\SimulationEngine.proxy.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="SimulatedStabilizer.Y2013.M01.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SimulatedStabilizer\bin\Debug\SimulatedStabilizer.Y2013.M01.Proxy.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AirborneStabilizerBehaviourTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleAckermanVehicleService.cs" />
-    <Compile Include="SimpleAckermanVehicleTypes.cs" />
+    <Compile Include="AirborneStabilizerBehaviour.cs" />
+    <Compile Include="AirborneStabilizerBehaviourTypes.cs" />
     <AppDesigner Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SimpleAckermanVehicle.manifest.xml" />
+    <Content Include="VehicleBehaviours.manifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimulatedAckermanFourWheels\SimulatedAckermanFourWheels.csproj">
-      <Project>{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}</Project>
-      <Name>SimulatedAckermanFourWheels</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SimulatedStabilizer\SimulatedStabilizer.csproj">
-      <Project>{64124F6A-E6FF-44BD-8F50-4B599E848DB5}</Project>
-      <Name>SimulatedStabilizer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SimulationTester\SimulationTester.csproj">
-      <Project>{105800AF-F412-413D-8D51-A417E39B6960}</Project>
-      <Name>SimulationTester</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
+      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
@@ -157,7 +138,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)\"
+    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)"
 copy "$(TargetDir)" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

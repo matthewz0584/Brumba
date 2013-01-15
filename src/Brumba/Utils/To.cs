@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Ccr.Core;
 
-namespace Brumba.Simulation.SimulationTester
+namespace Brumba.Utils
 {
     public static class To
     {

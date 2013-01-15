@@ -66,7 +66,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
         {
             if (_stabilizer != null)
             {
-                _state.LfWheelDistanceToGround = _stabilizer.LfWheelRf.Distance;
+                _state.LfWheelToGroundDistance = _stabilizer.LfWheelRf.Distance;
             }
 
             DefaultGetHandler(getRequest);
