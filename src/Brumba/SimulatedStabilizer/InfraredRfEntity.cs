@@ -36,7 +36,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
             DispersionConeAngle = 4f;
             Samples = 3f;
             MaximumRange = 1;
-            ScanInterval = 0.25f;
+            ScanInterval = 0.025f;
         }
 
         public InfraredRfEntity(string name, Pose initialPose)

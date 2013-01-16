@@ -21,7 +21,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour.Tests
                     RfRangefinderPosition = new Vector3(1, 0, 1),
                     LrRangefinderPosition = new Vector3(-1, 0, -1),
                     RrRangefinderPosition = new Vector3(1, 0, -1),
-                    ScanPeriod = SCAN_PERIOD
+                    ScanInterval = SCAN_PERIOD
                 });
         }
 

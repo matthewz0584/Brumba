@@ -16,10 +16,9 @@ namespace Brumba.Simulation.SimulatedStabilizer
             public Vector3 TailCenter { get; set; }
             public float TailMass { get; set; }
             public float TailMassRadius { get; set; }
-            public Vector3 LfWheelPosition { get; set; }
-            public Vector3 RfWheelPosition { get; set; }
-            public Vector3 LrWheelPosition { get; set; }
-            public Vector3 RrWheelPosition { get; set; }
+			//Clockwise from left front rangefinder
+			public Vector3[] GroundRangefindersPositions { get; set; }
+			public float ScanInterval { get; set; }
 
             public StabilizerEntity Build(string name, VisualEntity parent)
             {
@@ -55,16 +54,12 @@ namespace Brumba.Simulation.SimulatedStabilizer
                     }
                 };
 
-                //se.LfWheelRf = new InfraredRfEntity(name + " left front wheel rf",
-                //                                    new Pose(new Vector3(0, 0, 0.5f),
-                //                                             Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 2)));
-                //parent.InsertEntity(se.LfWheelRf);
-                se.RfWheelRf = new InfraredRfEntity(name + " right front wheel rf",
-                                                    new Pose(RfWheelPosition, Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 2)));
-                se.InsertEntity(se.RfWheelRf);
-                se.LfWheelRf = new InfraredRfEntity(name + " left front wheel rf",
-                                                    new Pose(LfWheelPosition, Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 2)));
-                se.InsertEntity(se.LfWheelRf);
+				for (var i = 0; i < GroundRangefindersPositions.Length; ++i)
+				{
+					se.GroundRangefinders.Add(new InfraredRfEntity(String.Format("{0} rangefinder#{1}", name, i),
+														new Pose(GroundRangefindersPositions[i], Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 2))) { ScanInterval = ScanInterval });
+					parent.InsertEntity(se.GroundRangefinders.Last());
+				}
 
                 return se;
             }
@@ -78,10 +73,10 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
             SphereShape = new SphereShape(new SphereShapeProperties(_props.TailMass, new Pose(), _props.TailMassRadius));
             State.Name = name;
+			GroundRangefinders = new List<InfraredRfEntity>();
         }
 
-        public InfraredRfEntity LfWheelRf { get; private set; }
-        public InfraredRfEntity RfWheelRf { get; private set; }
+		public List<InfraredRfEntity> GroundRangefinders { get; private set; }
 
         public float TailLinearVelocity
         {

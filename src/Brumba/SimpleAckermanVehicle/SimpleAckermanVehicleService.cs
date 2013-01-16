@@ -100,8 +100,8 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
                         TailCenter = new Vector3(0, 0.2f, 0),
                         TailMass = 0.5f,
                         TailMassRadius = 0.05f,
-                        LfWheelPosition = new Vector3(-0.05f, -0.01f, 0.1f),
-                        RfWheelPosition = new Vector3(0.05f, -0.01f, 0.1f),
+						ScanInterval = 0.025f,
+						GroundRangefindersPositions = new[] { new Vector3(-0.06f, 0, 0.11f), new Vector3(0.06f, 0, 0.11f), new Vector3(0.06f, 0, -0.11f), new Vector3(-0.06f, 0, -0.11f) }
                     }.Build("stabilizeer", boxEntity);
             boxEntity.InsertEntity(stabilizer);
 

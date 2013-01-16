@@ -30,8 +30,8 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
         public Vector3 RrRangefinderPosition { get; set; }
 
         [DataMember]
-        [Description("Rangefinders' scan interval in ms")]
-        public int ScanPeriod { get; set; }
+        [Description("Rangefinders' scan interval in s")]
+        public float ScanInterval { get; set; }
 	}
 	
 	[ServicePort]

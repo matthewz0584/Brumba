@@ -62,10 +62,10 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
                 Debug.Assert(errorNew >= 0 && errorNew < MathHelper.PiOver2);
 
                 //Shoulder value is always positive, it's thes of tail weight's radius in polar coordinates
-                var shoulder = Kp * (errorNew + 1 / Ti * _errorIntegral + Td * (errorNew - _errorOld) / _state.ScanPeriod);
+                var shoulder = Kp * (errorNew + 1 / Ti * _errorIntegral + Td * (errorNew - _errorOld) / _state.ScanInterval);
 
                 _errorOld = errorNew;
-                _errorIntegral += errorNew * _state.ScanPeriod; //unclear how to handle integral term given tail rotation, does it still have any sense
+                _errorIntegral += errorNew * _state.ScanInterval; //unclear how to handle integral term given tail rotation, does it still have any sense
 
                 return shoulder;
             }
@@ -156,7 +156,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 
                 _stabilizer.MoveTail(mtRequest);
 
-                yield return To.Exec(TimeoutPort(_state.ScanPeriod));
+                yield return To.Exec(TimeoutPort((int)(_state.ScanInterval * 1000)));
             }
         }
 
@@ -167,7 +167,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
             _state.LrRangefinderPosition = new Vector3(-0.05f, -0.01f, -0.1f);
             _state.RrRangefinderPosition = new Vector3(0.05f, -0.01f, -0.1f);
 
-	        _state.ScanPeriod = 50;
+	        _state.ScanInterval = 50;
         }
 	}
 }
