@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Brumba.Simulation.SimulatedStabilizer.Proxy;
 using Microsoft.Xna.Framework;
@@ -10,18 +11,15 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour.Tests
     public class AirborneStabilizerBehaviourTests
     {
         private AirborneStabilizerBehaviour.Calculator _asbCalc;
-        private const int SCAN_PERIOD = 50;
+        private const int SCAN_INTERVAL = 50;
 
         [SetUp]
         public void SetUp()
         {
             _asbCalc = new AirborneStabilizerBehaviour.Calculator(new AirborneStabilizerBehaviourState
                 {
-                    LfRangefinderPosition = new Vector3(-1, 0, 1),
-                    RfRangefinderPosition = new Vector3(1, 0, 1),
-                    LrRangefinderPosition = new Vector3(-1, 0, -1),
-                    RrRangefinderPosition = new Vector3(1, 0, -1),
-                    ScanInterval = SCAN_PERIOD
+                    GroundRangefinderPositions = new List<Vector3> { new Vector3(-1, 0, 1), new Vector3(1, 0, 1), new Vector3(-1, 0, -1), new Vector3(1, 0, -1) },
+                    ScanInterval = SCAN_INTERVAL
                 });
         }
 
@@ -40,7 +38,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour.Tests
         }
 
         [Test]
-        public void CalculateGroundPlaneNormalLLS()
+        public void CalculateGroundPlaneNormalLls()
         {
             var points = new[] { new Vector3(1, 0, 0), new Vector3(-0.5f, (float)Math.Sin(Math.PI / 3), 0), new Vector3(-0.5f, -(float)Math.Sin(Math.PI / 3), 0), new Vector3(0, 0, 1) };
             var gpNormal = _asbCalc.CalculateGroundPlaneNormal(points);
@@ -51,7 +49,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour.Tests
         [Test]
         public void GetGroundPoints()
         {
-            var gPoints = _asbCalc.GetGroundPoints(0.1f, 0.2f, 0.3f, 0.4f).ToList();
+            var gPoints = _asbCalc.GetGroundPoints(new [] {0.1f, 0.2f, 0.3f, 0.4f}).ToList();
 
             Assert.That(gPoints[0], Is.EqualTo(new Vector3(-1, -0.1f, 1)));
             Assert.That(gPoints[1], Is.EqualTo(new Vector3(1, -0.2f, 1)));
@@ -87,31 +85,25 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour.Tests
             _asbCalc.Td = 100;
             _asbCalc.Ti = float.PositiveInfinity;
             Assert.That(_asbCalc.CalculateShoulder(gpN),
-                Is.EqualTo(_asbCalc.Kp * (0.5f + _asbCalc.Td * (0.5f / SCAN_PERIOD))).
+                Is.EqualTo(_asbCalc.Kp * (0.5f + _asbCalc.Td * (0.5f / SCAN_INTERVAL))).
                 Within(0.00001));
 
             _asbCalc.Td = 0;
             _asbCalc.Ti = 10;
             Assert.That(_asbCalc.CalculateShoulder(gpN),
-                Is.EqualTo(_asbCalc.Kp * (0.5f + 1.0f / _asbCalc.Ti * 2 * 0.5f * SCAN_PERIOD)).
+                Is.EqualTo(_asbCalc.Kp * (0.5f + 1.0f / _asbCalc.Ti * 2 * 0.5f * SCAN_INTERVAL)).
                 Within(0.00001));
         }
 
         [Test]
         public void Cycle()
         {
-            var stabState = new SimulatedStabilizerState
-                {
-                    LfWheelToGroundDistance = 0,
-                    RfWheelToGroundDistance = 2,
-                    LrWheelToGroundDistance = 0,
-                    RrWheelToGroundDistance = 2
-                };
+            var stabState = new SimulatedStabilizerState { WheelToGroundDistances = new List<float> { 0, 2, 0, 2 } };
 
             var mtRequest = _asbCalc.Cycle(stabState);
 
             Assert.That(mtRequest.Angle, Is.EqualTo(3 * MathHelper.PiOver2));
-            Assert.That(mtRequest.Shoulder, Is.EqualTo(_asbCalc.Kp * (0.5f + _asbCalc.Td * (0.5f / SCAN_PERIOD))));
+            Assert.That(mtRequest.Shoulder, Is.EqualTo(_asbCalc.Kp * (0.5f + _asbCalc.Td * (0.5f / SCAN_INTERVAL))));
         }
 
         private static void AssertVectorsAreEqual(Vector3 lhs, Vector3 rhs)

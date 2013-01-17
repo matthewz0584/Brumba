@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -20,21 +21,12 @@ namespace Brumba.Simulation.SimulatedStabilizer
         public bool Connected { get; set; }
         
         [DataMember]
-        [Description("")]
-        public float LfWheelToGroundDistance { get; set; }
-        [DataMember]
-        [Description("")]
-        public float RfWheelToGroundDistance { get; set; }
-        [DataMember]
-        [Description("")]
-        public float LrWheelToGroundDistance { get; set; }
-        [DataMember]
-        [Description("")]
-        public float RrWheelToGroundDistance { get; set; }
+        [Description("Ground rangefinders measurements clockwise from left front one")]
+        public List<float> WheelToGroundDistances { get; set; }
 
         [DataMember]
         [Description("Polar tail weight coordinates: angle")]
-        public float TailDirection { get; set; }
+        public float TailAngle { get; set; }
         [DataMember]
         [Description("Polar tail weight coordinates: radius")]
         public float TailShoulder { get; set; }

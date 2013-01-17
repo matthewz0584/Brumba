@@ -93,12 +93,12 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             SimulationEngine.GlobalInstancePort.Insert(ground);
 
             var box = new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f)) {Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f)});
-            var boxEntity = new SingleShapeEntity(box, new Vector3(0, 0.11f, 0)) { State = { Name = "booox" } };
+            var boxEntity = new SingleShapeEntity(box, new Vector3(0, 0.11f, 0)) { State = { Name = "booox"} };
 
             var stabilizer = new StabilizerEntity.StabilizerProperties
                     {
                         TailCenter = new Vector3(0, 0.2f, 0),
-                        TailMass = 0.5f,
+                        TailMass = 0.1f,
                         TailMassRadius = 0.05f,
 						ScanInterval = 0.025f,
 						GroundRangefindersPositions = new[] { new Vector3(-0.06f, 0, 0.11f), new Vector3(0.06f, 0, 0.11f), new Vector3(0.06f, 0, -0.11f), new Vector3(-0.06f, 0, -0.11f) }

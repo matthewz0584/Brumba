@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Linq;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -66,7 +67,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
         {
             if (_stabilizer != null)
             {
-                _state.LfWheelToGroundDistance = _stabilizer.GroundRangefinders[0].Distance;
+                _state.WheelToGroundDistances = _stabilizer.GroundRangefinders.Select(grf => grf.Distance).ToList();
             }
 
             DefaultGetHandler(getRequest);
@@ -74,6 +75,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
         void OnMoveTail(MoveTail moveRequest)
         {
+            //stabilizer.MoveTail
             moveRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 

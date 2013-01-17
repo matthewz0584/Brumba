@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -17,17 +18,8 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
     public class AirborneStabilizerBehaviourState
 	{
         [DataMember]
-        [Description("")]
-        public Vector3 LfRangefinderPosition { get; set; }
-        [DataMember]
-        [Description("")]
-        public Vector3 RfRangefinderPosition { get; set; }
-        [DataMember]
-        [Description("")]
-        public Vector3 LrRangefinderPosition { get; set; }
-        [DataMember]
-        [Description("")]
-        public Vector3 RrRangefinderPosition { get; set; }
+        [Description("Ground rangefinders positions clockwise from front left one")]
+        public List<Vector3> GroundRangefinderPositions { get; set; }
 
         [DataMember]
         [Description("Rangefinders' scan interval in s")]

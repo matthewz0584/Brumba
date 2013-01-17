@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Brumba.Simulation.SimulatedStabilizer
 {
@@ -26,46 +24,50 @@ namespace Brumba.Simulation.SimulatedStabilizer
                 
                 se.State.Pose.Position = TailCenter;
 
-                var jointAngularProps = new JointAngularProperties
-                    {
-                        TwistMode = JointDOFMode.Free,
-                        TwistDrive = new JointDriveProperties(JointDriveMode.Velocity, new SpringProperties(100000, 1000, 0), 10000),
-                    };
+                se.ParentJoint = BuildJoint(name, parent, se);
 
+                var rfs = BuildGroundRangefinders(name);
+                se.GroundRangefinders.AddRange(rfs);
+                se.GroundRangefinders.ForEach(parent.InsertEntity);
+
+                return se;
+            }
+
+            Joint BuildJoint(string name, VisualEntity parent, StabilizerEntity se)
+            {
                 var jointLinearProps = new JointLinearProperties
                     {
                         YMotionMode = JointDOFMode.Limited,
+                        ZMotionMode = JointDOFMode.Limited,
                         XMotionMode = JointDOFMode.Free,
-                        YDrive = new JointDriveProperties(JointDriveMode.Velocity, new SpringProperties(1000, 10f, 0), 10000),
-                        XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100000, 10000, 0), 10000),                        
-                        MotionLimit = new JointLimitProperties(0.5f, 1, new SpringProperties(10000000, 1000, 0))
+                        YDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100, 10f, 0), 10000),
+                        ZDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100, 10f, 0), 10000),
+                        XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100000, 10000, 0), 10000),
+                        MotionLimit = new JointLimitProperties(0.5f, 1, new SpringProperties(10000, 100, 0))
                     };
 
-                var connector1 = new EntityJointConnector(se, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3()) { EntityName = se.State.Name };
-                //var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), TailCenter + new Vector3(0.3f, 0, 0)) { EntityName = parent.State.Name };
-                var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), TailCenter) { EntityName = parent.State.Name };
+                var connector1 = new EntityJointConnector(se, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3())
+                    { EntityName = se.State.Name };
+                var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), TailCenter)
+                    { EntityName = parent.State.Name };
 
-                se.ParentJoint = new Joint
-                {
-                    State = new JointProperties(jointLinearProps, connector1, connector2)
+                return new Joint
                     {
-                        Angular = jointAngularProps,
-                        Name = name + " joint"
-                    }
-                };
+                        State = new JointProperties(jointLinearProps, connector1, connector2) {Name = name + " joint"}
+                    };
+            }
 
-				for (var i = 0; i < GroundRangefindersPositions.Length; ++i)
-				{
-					se.GroundRangefinders.Add(new InfraredRfEntity(String.Format("{0} rangefinder#{1}", name, i),
-														new Pose(GroundRangefindersPositions[i], Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 2))) { ScanInterval = ScanInterval });
-					parent.InsertEntity(se.GroundRangefinders.Last());
-				}
-
-                return se;
+            IEnumerable<InfraredRfEntity> BuildGroundRangefinders(string stabilizerName)
+            {
+                return GroundRangefindersPositions.Select((v, i) =>
+                    new InfraredRfEntity(String.Format("{0} rangefinder#{1}", stabilizerName, i),
+                        new Pose(GroundRangefindersPositions[i], Quaternion.FromAxisAngle(1, 0, 0, Microsoft.Xna.Framework.MathHelper.PiOver2)))
+                        { ScanInterval = ScanInterval });
             }
         }
 
         private StabilizerProperties _props;
+        private Vector2 _tailPosition;
 
         public StabilizerEntity(string name, StabilizerProperties props)
         {
@@ -78,34 +80,20 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
 		public List<InfraredRfEntity> GroundRangefinders { get; private set; }
 
-        public float TailLinearVelocity
+        public Vector2 TailPosition
         {
-            get { return 0; }
-            set { ((PhysicsJoint) ParentJoint).SetLinearDriveVelocity(new Vector3(0, value, 0)); }
-            //set { ((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, value, 0)); }
+            get { return _tailPosition; }
+            set
+            {
+                _tailPosition = value;
+                ((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, _tailPosition.X, _tailPosition.Y));
+            }
         }
 
-        public float TailAngularVelocity
-        {
-            get { return 0; }
-            set { ((PhysicsJoint)ParentJoint).SetAngularDriveVelocity(new Vector3(value, value, value)); }
-        }
-
-        public override void Initialize(GraphicsDevice device, PhysicsEngine physicsEngine)
+        public override void Initialize(Microsoft.Xna.Framework.Graphics.GraphicsDevice device, PhysicsEngine physicsEngine)
         {
             base.Initialize(device, physicsEngine);
-            //PhysicsEntity.SolverIterationCount = 32;
-            //Parent.PhysicsEntity.SolverIterationCount = 32;
-            TailLinearVelocity = 0.1f;
-            //TailAngularVelocity = 10f;
-        }
-
-        public override void Update(FrameUpdate update)
-        {
-            //this.Position = new Microsoft.Xna.Framework.Vector3(0, 1, 0);
-            //TailLinearVelocity = 0.9f;
-            //TailAngularVelocity = 0.1f;
-            base.Update(update);
+            TailPosition = new Vector2(0.4f, 0.4f);
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 
             public StbPxy.MoveTailRequest Cycle(StbPxy.SimulatedStabilizerState stabState)
             {
-                var groundPoints = GetGroundPoints(stabState.LfWheelToGroundDistance, stabState.RfWheelToGroundDistance, stabState.LrWheelToGroundDistance, stabState.RrWheelToGroundDistance);
+                var groundPoints = GetGroundPoints(stabState.WheelToGroundDistances);
 
                 var groundPlaneNormal = CalculateGroundPlaneNormal(groundPoints);
 
@@ -98,12 +98,9 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
                 return Vector3.Normalize(new Vector3(norm.M11, Math.Abs(norm.M21), norm.M31)); //Normal is directed towards positive Y
             }
 
-            public IEnumerable<Vector3> GetGroundPoints(float lfDistance, float rfDistance, float lrDistance, float rrDistance)
+            public IEnumerable<Vector3> GetGroundPoints(IEnumerable<float> wheelToGroundDistances)
             {
-                return new[] { _state.LfRangefinderPosition - Vector3.UnitY * lfDistance,
-                            _state.RfRangefinderPosition - Vector3.UnitY * rfDistance,
-                            _state.LrRangefinderPosition - Vector3.UnitY * lrDistance,
-                            _state.RrRangefinderPosition - Vector3.UnitY * rrDistance};
+                return _state.GroundRangefinderPositions.Zip(wheelToGroundDistances, (p, d) => p - Vector3.UnitY * d);
             }
 
             static Vector4 Vector4From(IList<float> numbers)
@@ -160,12 +157,15 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
             }
         }
 
-	    void InitState()
-        {
-            _state.LfRangefinderPosition = new Vector3(-0.05f, -0.01f, 0.1f);
-            _state.RfRangefinderPosition = new Vector3(0.05f, -0.01f, 0.1f);
-            _state.LrRangefinderPosition = new Vector3(-0.05f, -0.01f, -0.1f);
-            _state.RrRangefinderPosition = new Vector3(0.05f, -0.01f, -0.1f);
+	    private void InitState()
+	    {
+	        _state.GroundRangefinderPositions = new List<Vector3>
+	            {
+	                new Vector3(-0.05f, -0.01f, 0.1f),
+	                new Vector3(0.05f, -0.01f, 0.1f),
+	                new Vector3(-0.05f, -0.01f, -0.1f),
+	                new Vector3(0.05f, -0.01f, -0.1f)
+	            };
 
 	        _state.ScanInterval = 50;
         }
