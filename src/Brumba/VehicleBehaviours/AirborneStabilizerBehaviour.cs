@@ -30,8 +30,8 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
                 _state = state;
 
                 Ti = float.PositiveInfinity;
-                Td = 100;
-                Kp = 10;
+                Td = 0;
+                Kp = 1;
             }
 
             public float Ti { get; set; }
@@ -75,6 +75,8 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
                 //Vehcile is directed along Z axe (front to positive), altitude is along Y, left is at positive X
                 //Z is codirected with Y in 2D
                 //Tail angle is laid off counterwise from Y (Z in 3D) axe
+				if (new Vector2(groundPlaneNormal.X, groundPlaneNormal.Z).Length() == 0)
+					return 0;
                 var angleCos = Vector2.Dot(Vector2.Normalize(new Vector2(groundPlaneNormal.X, groundPlaneNormal.Z)), Vector2.UnitY);
                 return groundPlaneNormal.X > 0 ? (float)Math.Acos(angleCos) : (MathHelper.TwoPi - (float)Math.Acos(angleCos));
             }
@@ -111,8 +113,8 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 
 		[ServiceState]
 		AirborneStabilizerBehaviourState _state = new AirborneStabilizerBehaviourState();
-		
-		[ServicePort("/SimulatedStabilizer", AllowMultipleInstances = true)]
+
+		[ServicePort("/AirborneStabilizerBehaviour", AllowMultipleInstances = true)]
 		AirborneStabilizerBehaviourOperations _mainPort = new AirborneStabilizerBehaviourOperations();
         
         [Partner("Stabilizer", Contract = StbPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
@@ -131,12 +133,13 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
             InitState();
 
 		    base.Start();
-		    
-            SpawnIterator(Execute);
+
+			//_stabilizer.MoveTail(MathHelper.PiOver4, 0.5f);
+			SpawnIterator(Execute);
 		}
 
 	    [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
-        void OnReplace(Replace replaceRequest)
+        public void OnReplace(Replace replaceRequest)
         {
             _state = replaceRequest.Body;
             replaceRequest.ResponsePort.Post(DefaultReplaceResponseType.Instance);
@@ -148,6 +151,8 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
             {
                 StbPxy.SimulatedStabilizerState stabState = null;
                 yield return Arbiter.Choice(_stabilizer.Get(), st => stabState = st, LogError);
+				if (!stabState.Connected)
+					continue;
 
                 var mtRequest = _c.Cycle(stabState);
 
@@ -163,11 +168,11 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 	            {
 	                new Vector3(-0.05f, -0.01f, 0.1f),
 	                new Vector3(0.05f, -0.01f, 0.1f),
-	                new Vector3(-0.05f, -0.01f, -0.1f),
-	                new Vector3(0.05f, -0.01f, -0.1f)
+	                new Vector3(0.05f, -0.01f, -0.1f),
+	                new Vector3(-0.05f, -0.01f, -0.1f)
 	            };
 
-	        _state.ScanInterval = 50;
+	        _state.ScanInterval = 0.05f;
         }
 	}
 }

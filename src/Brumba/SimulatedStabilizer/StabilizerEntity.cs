@@ -18,7 +18,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
 			public Vector3[] GroundRangefindersPositions { get; set; }
 			public float ScanInterval { get; set; }
 
-            public StabilizerEntity Build(string name, VisualEntity parent)
+            public StabilizerEntity BuildAndInsert(string name, VisualEntity parent)
             {
                 var se = new StabilizerEntity(name, this);
                 
@@ -30,6 +30,8 @@ namespace Brumba.Simulation.SimulatedStabilizer
                 se.GroundRangefinders.AddRange(rfs);
                 se.GroundRangefinders.ForEach(parent.InsertEntity);
 
+				parent.InsertEntity(se);
+
                 return se;
             }
 
@@ -40,8 +42,8 @@ namespace Brumba.Simulation.SimulatedStabilizer
                         YMotionMode = JointDOFMode.Limited,
                         ZMotionMode = JointDOFMode.Limited,
                         XMotionMode = JointDOFMode.Free,
-                        YDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100, 10f, 0), 10000),
-                        ZDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100, 10f, 0), 10000),
+                        YDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100, 1f, 0), 10000),
+                        ZDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100, 1f, 0), 10000),
                         XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100000, 10000, 0), 10000),
                         MotionLimit = new JointLimitProperties(0.5f, 1, new SpringProperties(10000, 100, 0))
                     };
@@ -80,20 +82,22 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
 		public List<InfraredRfEntity> GroundRangefinders { get; private set; }
 
-        public Vector2 TailPosition
+        /// <summary>
+        /// X - codirected with parent Z, Y - with parent X
+        /// </summary>
+		public Vector2 TailPosition
         {
             get { return _tailPosition; }
             set
             {
                 _tailPosition = value;
-                ((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, _tailPosition.X, _tailPosition.Y));
+                ((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, -_tailPosition.Y, _tailPosition.X));
             }
         }
 
         public override void Initialize(Microsoft.Xna.Framework.Graphics.GraphicsDevice device, PhysicsEngine physicsEngine)
         {
             base.Initialize(device, physicsEngine);
-            TailPosition = new Vector2(0.4f, 0.4f);
         }
     }
 }

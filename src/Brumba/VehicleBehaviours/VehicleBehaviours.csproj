@@ -123,7 +123,7 @@
     <AppDesigner Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="VehicleBehaviours.manifest.xml" />
+    <Content Include="AirborneStabilizerBehaviour.manifest.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Utils\Utils.csproj">
@@ -139,6 +139,6 @@
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)"
-copy "$(TargetDir)" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
+copy "$(TargetDir)\$(ProjectName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

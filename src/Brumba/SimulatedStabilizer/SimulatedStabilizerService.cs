@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Linq;
 using Microsoft.Ccr.Core;
@@ -5,6 +6,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
+using Microsoft.Xna.Framework;
 
 namespace Brumba.Simulation.SimulatedStabilizer
 {
@@ -68,6 +70,9 @@ namespace Brumba.Simulation.SimulatedStabilizer
             if (_stabilizer != null)
             {
                 _state.WheelToGroundDistances = _stabilizer.GroundRangefinders.Select(grf => grf.Distance).ToList();
+	            _state.TailAngle = (float)Math.Atan2(_stabilizer.TailPosition.Y, _stabilizer.TailPosition.X);
+	            _state.TailAngle += _state.TailAngle < 0 ? MathHelper.TwoPi : 0;
+	            _state.TailShoulder = new Vector2(_stabilizer.TailPosition.X, _stabilizer.TailPosition.Y).Length();
             }
 
             DefaultGetHandler(getRequest);
@@ -75,12 +80,16 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
         void OnMoveTail(MoveTail moveRequest)
         {
-            //stabilizer.MoveTail
+	        _stabilizer.TailPosition =
+		        new Microsoft.Robotics.PhysicalModel.Vector2(
+			        moveRequest.Body.Shoulder*(float) Math.Cos(moveRequest.Body.Angle),
+			        moveRequest.Body.Shoulder*(float) Math.Sin(moveRequest.Body.Angle));
             moveRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
         void OnPark(Park parkRequest)
         {
+			_stabilizer.TailPosition = new Microsoft.Robotics.PhysicalModel.Vector2();
             parkRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 

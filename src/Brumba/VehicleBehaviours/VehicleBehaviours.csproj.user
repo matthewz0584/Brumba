@@ -7,12 +7,18 @@
     <StartWorkingDirectory>C:\MRDS4\</StartWorkingDirectory>
     <StartAction>Program</StartAction>
     <StartProgram>C:\MRDS4\bin\DssHost32.exe</StartProgram>
-    <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\src\Brumba\VehicleBehaviours\VehicleBehaviours.manifest.xml" /s:"brumba\config\DssHost32.security"</StartArguments>
+    <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\src\Brumba\VehicleBehaviours\AirborneStabilizerBehaviour.manifest.xml" /s:"brumba\config\DssHost32.security"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <StartWorkingDirectory>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\</StartWorkingDirectory>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\dsshost.exe</StartProgram>
     <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\SimulatedAckermanFourWheels/SimulatedAckermanFourWheels.manifest.xml"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\MRDS4\bin\DssHost32.exe</StartProgram>
+    <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\src\Brumba\VehicleBehaviours\AirborneStabilizerBehaviour.manifest.xml" /s:"brumba\config\DssHost32.security"</StartArguments>
+    <StartWorkingDirectory>C:\MRDS4\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

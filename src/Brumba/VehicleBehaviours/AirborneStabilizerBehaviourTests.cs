@@ -65,6 +65,9 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour.Tests
 
             angle = _asbCalc.CalculateAngle(Vector3.Normalize(new Vector3(-1, 1, 1)));
             Assert.That(angle, Is.EqualTo(MathHelper.Pi * 7 / 4));
+
+			angle = _asbCalc.CalculateAngle(Vector3.Normalize(new Vector3(0, 1, 0)));
+			Assert.That(angle, Is.EqualTo(0));
         }
 
         [Test]
