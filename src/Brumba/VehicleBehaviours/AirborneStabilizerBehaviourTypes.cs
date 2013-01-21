@@ -24,7 +24,21 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
         [DataMember]
         [Description("Rangefinders' scan interval in s")]
         public float ScanInterval { get; set; }
-	}
+
+        [DataMember]
+        [Description("PID proportionality coefficient")]
+        public float Kp { get; set; }
+        [DataMember]
+        [Description("PID derivative term time value")]
+        public float Td { get; set; }
+
+        [DataMember]
+        [Description("Tail angle deadband")]
+        public float TailAngleDeadband { get; set; }
+        [DataMember]
+        [Description("Tail shoulder deadband")]
+        public float TailShoulderDeadband { get; set; }
+    }
 	
 	[ServicePort]
     public class AirborneStabilizerBehaviourOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Replace>

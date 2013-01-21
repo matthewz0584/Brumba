@@ -115,7 +115,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
         public float Distance
         {
-            get { return _lastScanResult.Select(ip => ip.Position.W).Concat(new[] { MaximumRange }).Min(); }
+            get { return _lastScanResult.ToList().Select(ip => ip.Position.W).Concat(new[] { MaximumRange }).Min(); }
         }
 
         VisualEntityMesh CreateImpactPointMesh(GraphicsDevice device)

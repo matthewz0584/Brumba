@@ -74,7 +74,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 
         private static void PopulateStabilizer()
         {
-            var view = new CameraView { EyePosition = new Vector3(-1.65f, 1.63f, -0.29f), LookAtPoint = new Vector3(0, 0, 0) };
+            var view = new CameraView { EyePosition = new Vector3(-1.65f, 1.63f, -0.29f), LookAtPoint = new Vector3(0, 0, 0.5f) };
             SimulationEngine.GlobalInstancePort.Update(view);
 
             var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
@@ -94,17 +94,20 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 
 			var box = new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) });
 			var boxEntity = new SingleShapeEntity(box, new Vector3()) { State = { Name = "booox", Pose = {Orientation = Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 4)}} };
+            //var boxEntity = new SingleShapeEntity(box, new Vector3()) { State = { Name = "booox" } };
 
             var stabilizer = new StabilizerEntity.StabilizerProperties
                     {
                         TailCenter = new Vector3(0, 0.2f, 0),
-                        TailMass = 0.1f,
-                        TailMassRadius = 0.05f,
+                        TailMass = 0.01f,
+                        TailMassRadius = 0.01f,
+                        TailMaxShoulder = 1f,
+                        TailPower = 100,
 						ScanInterval = 0.025f,
 						GroundRangefindersPositions = new[] { new Vector3(-0.06f, 0, 0.11f), new Vector3(0.06f, 0, 0.11f), new Vector3(0.06f, 0, -0.11f), new Vector3(-0.06f, 0, -0.11f) }
                     }.BuildAndInsert("stabilizeer", boxEntity);
 
-	        var hangerEntity = new SingleShapeEntity(new SphereShape(new SphereShapeProperties(1, new Pose(), 0.1f)), new Vector3(0, 1, 1))
+	        var hangerEntity = new SingleShapeEntity(new SphereShape(new SphereShapeProperties(1, new Pose(), 0.1f)), new Vector3(0, 1, 0.5f))
 		        {
 			        State = {Name = "hanger", Flags = EntitySimulationModifiers.Kinematic}
 		        };
@@ -114,9 +117,9 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 			        State = new JointProperties(
 						new JointAngularProperties
 							{
-								TwistMode = JointDOFMode.Free,
-								Swing1Mode = JointDOFMode.Free,
-								Swing2Mode = JointDOFMode.Free
+                                //TwistMode = JointDOFMode.Free,
+                                Swing1Mode = JointDOFMode.Free,
+                                //Swing2Mode = JointDOFMode.Free
 							},
 						new EntityJointConnector(boxEntity, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0.1f, 0)) {EntityName = boxEntity.State.Name},
 						new EntityJointConnector(hangerEntity, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, -0.5f, 0)) {EntityName = hangerEntity.State.Name}) 

@@ -20,39 +20,40 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 	{
         public class Calculator
         {
-            private readonly AirborneStabilizerBehaviourState _state;
+            private readonly Func<AirborneStabilizerBehaviourState> _getState;
 
-            float _errorOld;
-            float _errorIntegral;
+            float _errorPrev, _errorIntegral;
+            float _shoulderPrev, _anglePrev;
 
-            public Calculator(AirborneStabilizerBehaviourState state)
+            public Calculator(Func<AirborneStabilizerBehaviourState> getState)
             {
-                _state = state;
+                _getState = getState;
 
                 Ti = float.PositiveInfinity;
-                Td = 0;
-                Kp = 1;
             }
 
             public float Ti { get; set; }
-            public float Td { get; set; }
-            public float Kp { get; set; }
 
-            public StbPxy.MoveTailRequest Cycle(StbPxy.SimulatedStabilizerState stabState)
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="wheelToGroundDistances"></param>
+            /// <returns>Vector2.X - tail angle, Vector2.Y - tail shoulder</returns>
+            public Vector2 Cycle(IEnumerable<float> wheelToGroundDistances)
             {
-                var groundPoints = GetGroundPoints(stabState.WheelToGroundDistances);
+                var groundPoints = GetGroundPoints(wheelToGroundDistances);
 
                 var groundPlaneNormal = CalculateGroundPlaneNormal(groundPoints);
 
-                var angle = CalculateAngle(groundPlaneNormal);
-                
+                var angle = CalculateAngle(groundPlaneNormal);                
                 //!!!Every new angle (out of deadband) should clear error integral (if integral term is used) and do something with derivative (still don't know what)
-
-                //introduce angle deadband
                 var shoulder = CalculateShoulder(groundPlaneNormal);
-                //introduce shoulder deadband
 
-                return new StbPxy.MoveTailRequest(angle, shoulder);
+                return new Vector2(
+                        Math.Abs(angle - _anglePrev) > _getState().TailAngleDeadband
+                            ? _anglePrev = angle : float.NaN,
+                        Math.Abs(shoulder - _shoulderPrev) > _getState().TailShoulderDeadband
+                            ? _shoulderPrev = shoulder : float.NaN);
             }
 
             public float CalculateShoulder(Vector3 groundPlaneNormal)
@@ -62,10 +63,10 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
                 Debug.Assert(errorNew >= 0 && errorNew < MathHelper.PiOver2);
 
                 //Shoulder value is always positive, it's thes of tail weight's radius in polar coordinates
-                var shoulder = Kp * (errorNew + 1 / Ti * _errorIntegral + Td * (errorNew - _errorOld) / _state.ScanInterval);
+                var shoulder = _getState().Kp * (errorNew + 1 / Ti * _errorIntegral + _getState().Td * (errorNew - _errorPrev) / _getState().ScanInterval);
 
-                _errorOld = errorNew;
-                _errorIntegral += errorNew * _state.ScanInterval; //unclear how to handle integral term given tail rotation, does it still have any sense
+                _errorPrev = errorNew;
+                _errorIntegral += errorNew * _getState().ScanInterval; //unclear how to handle integral term given tail rotation, does it still have any sense
 
                 return shoulder;
             }
@@ -78,7 +79,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 				if (new Vector2(groundPlaneNormal.X, groundPlaneNormal.Z).Length() == 0)
 					return 0;
                 var angleCos = Vector2.Dot(Vector2.Normalize(new Vector2(groundPlaneNormal.X, groundPlaneNormal.Z)), Vector2.UnitY);
-                return groundPlaneNormal.X > 0 ? (float)Math.Acos(angleCos) : (MathHelper.TwoPi - (float)Math.Acos(angleCos));
+                return groundPlaneNormal.X > 0 ? (MathHelper.TwoPi - (float)Math.Acos(angleCos)) : (float)Math.Acos(angleCos);
             }
 
             public Vector3 CalculateGroundPlaneNormal(IEnumerable<Vector3> groundPoints)
@@ -96,13 +97,14 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
                                    Vector4.Dot(ys, ones), 0, 0, 0,
                                    Vector4.Dot(zs, ones), 0, 0, 0,
                                    1, 0, 0, 0);
-                var norm = Matrix.Invert(a) * b;
-                return Vector3.Normalize(new Vector3(norm.M11, Math.Abs(norm.M21), norm.M31)); //Normal is directed towards positive Y
+                var normAsM = Matrix.Invert(a) * b;
+                var norm = Vector3.Normalize(new Vector3(normAsM.M11, normAsM.M21, normAsM.M31));
+                return norm.Y > 0 ? norm : -norm; //Normal is directed towards positive Y
             }
 
             public IEnumerable<Vector3> GetGroundPoints(IEnumerable<float> wheelToGroundDistances)
             {
-                return _state.GroundRangefinderPositions.Zip(wheelToGroundDistances, (p, d) => p - Vector3.UnitY * d);
+                return _getState().GroundRangefinderPositions.Zip(wheelToGroundDistances, (p, d) => p - Vector3.UnitY * d);
             }
 
             static Vector4 Vector4From(IList<float> numbers)
@@ -125,17 +127,18 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
         public AirborneStabilizerBehaviour(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
-            _c = new Calculator(_state);
+            _c = new Calculator(() => _state);
 		}
 
 		protected override void Start()
 		{
-            InitState();
-
 		    base.Start();
 
-			//_stabilizer.MoveTail(MathHelper.PiOver4, 0.5f);
-			SpawnIterator(Execute);
+            InitState();
+
+			//_stabilizer.ChangeTailShoulder(0.5f);
+		    //_stabilizer.ChangeTailAngle(MathHelper.PiOver4 * 7);
+		    SpawnIterator(Execute);
 		}
 
 	    [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
@@ -154,9 +157,12 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 				if (!stabState.Connected)
 					continue;
 
-                var mtRequest = _c.Cycle(stabState);
+                var angleShoulder = _c.Cycle(stabState.WheelToGroundDistances);
 
-                _stabilizer.MoveTail(mtRequest);
+                if (!float.IsNaN(angleShoulder.X))
+                    _stabilizer.ChangeTailAngle(angleShoulder.X);
+                if (!float.IsNaN(angleShoulder.Y))
+                    _stabilizer.ChangeTailShoulder(angleShoulder.Y);
 
                 yield return To.Exec(TimeoutPort((int)(_state.ScanInterval * 1000)));
             }
@@ -164,15 +170,21 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 
 	    private void InitState()
 	    {
-	        _state.GroundRangefinderPositions = new List<Vector3>
+	        _state = new AirborneStabilizerBehaviourState
 	            {
-	                new Vector3(-0.05f, -0.01f, 0.1f),
-	                new Vector3(0.05f, -0.01f, 0.1f),
-	                new Vector3(0.05f, -0.01f, -0.1f),
-	                new Vector3(-0.05f, -0.01f, -0.1f)
+	                GroundRangefinderPositions = new List<Vector3>
+	                    {
+	                        new Vector3(-0.06f, 0, 0.11f),
+	                        new Vector3(0.06f, 0, 0.11f),
+	                        new Vector3(0.06f, 0, -0.11f),
+	                        new Vector3(-0.06f, 0, -0.11f)
+	                    },
+	                ScanInterval = 0.025f,
+	                Kp = 0.1f,
+	                Td = 4f,
+	                //TailAngleDeadband = MathHelper.Pi/180,
+	                //TailShoulderDeadband = 0.005f
 	            };
-
-	        _state.ScanInterval = 0.05f;
-        }
+	    }
 	}
 }

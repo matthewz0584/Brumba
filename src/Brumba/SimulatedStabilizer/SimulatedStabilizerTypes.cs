@@ -33,7 +33,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
 	}
 	
 	[ServicePort]
-    public class SimulatedStabilizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, MoveTail, Park>
+    public class SimulatedStabilizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, ChangeTailAngle, ChangeTailShoulder, Park>
 	{
 	}
 
@@ -64,15 +64,24 @@ namespace Brumba.Simulation.SimulatedStabilizer
     }
 
     [DataContract]
-    public class MoveTailRequest
+    public class ChangeTailAngleRequest
     {
         [DataMember, DataMemberConstructor]
         public float Angle { get; set; }
+    }
+
+    [DataContract]
+    public class ChangeTailShoulderRequest
+    {
         [DataMember, DataMemberConstructor]
         public float Shoulder { get; set; }
     }
 
-    public class MoveTail : Update<MoveTailRequest, PortSet<DefaultUpdateResponseType, Fault>>
+    public class ChangeTailAngle : Update<ChangeTailAngleRequest, PortSet<DefaultUpdateResponseType, Fault>>
+    {
+    }
+
+    public class ChangeTailShoulder : Update<ChangeTailShoulderRequest, PortSet<DefaultUpdateResponseType, Fault>>
     {
     }
 }

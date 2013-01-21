@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
+using Xna = Microsoft.Xna.Framework;
 
 namespace Brumba.Simulation.SimulatedStabilizer
 {
@@ -14,6 +15,8 @@ namespace Brumba.Simulation.SimulatedStabilizer
             public Vector3 TailCenter { get; set; }
             public float TailMass { get; set; }
             public float TailMassRadius { get; set; }
+            public float TailMaxShoulder { get; set; }
+            public float TailPower { get; set; }
 			//Clockwise from left front rangefinder
 			public Vector3[] GroundRangefindersPositions { get; set; }
 			public float ScanInterval { get; set; }
@@ -42,10 +45,10 @@ namespace Brumba.Simulation.SimulatedStabilizer
                         YMotionMode = JointDOFMode.Limited,
                         ZMotionMode = JointDOFMode.Limited,
                         XMotionMode = JointDOFMode.Free,
-                        YDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100, 1f, 0), 10000),
-                        ZDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100, 1f, 0), 10000),
+                        YDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(TailPower, TailPower / 10f, 0), 10000),
+                        ZDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(TailPower, TailPower / 10f, 0), 10000),
                         XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100000, 10000, 0), 10000),
-                        MotionLimit = new JointLimitProperties(0.5f, 1, new SpringProperties(10000, 100, 0))
+                        MotionLimit = new JointLimitProperties(TailMaxShoulder, 1, new SpringProperties(10000, 100, 0))
                     };
 
                 var connector1 = new EntityJointConnector(se, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3())
@@ -63,7 +66,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
             {
                 return GroundRangefindersPositions.Select((v, i) =>
                     new InfraredRfEntity(String.Format("{0} rangefinder#{1}", stabilizerName, i),
-                        new Pose(GroundRangefindersPositions[i], Quaternion.FromAxisAngle(1, 0, 0, Microsoft.Xna.Framework.MathHelper.PiOver2)))
+                        new Pose(GroundRangefindersPositions[i], Quaternion.FromAxisAngle(1, 0, 0, Xna.MathHelper.PiOver2)))
                         { ScanInterval = ScanInterval });
             }
         }
@@ -90,7 +93,10 @@ namespace Brumba.Simulation.SimulatedStabilizer
             get { return _tailPosition; }
             set
             {
-                _tailPosition = value;
+                var xnaPos = new Xna.Vector2(value.X, value.Y);
+                var xnaPosClamped = xnaPos.Length() > _props.TailMaxShoulder
+                                        ? Xna.Vector2.Normalize(xnaPos) * _props.TailMaxShoulder : xnaPos;
+                _tailPosition = new Vector2(xnaPosClamped.X, xnaPosClamped.Y);
                 ((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, -_tailPosition.Y, _tailPosition.X));
             }
         }

@@ -70,21 +70,34 @@ namespace Brumba.Simulation.SimulatedStabilizer
             if (_stabilizer != null)
             {
                 _state.WheelToGroundDistances = _stabilizer.GroundRangefinders.Select(grf => grf.Distance).ToList();
-	            _state.TailAngle = (float)Math.Atan2(_stabilizer.TailPosition.Y, _stabilizer.TailPosition.X);
-	            _state.TailAngle += _state.TailAngle < 0 ? MathHelper.TwoPi : 0;
-	            _state.TailShoulder = new Vector2(_stabilizer.TailPosition.X, _stabilizer.TailPosition.Y).Length();
+                _state.TailAngle = _tailAngle;
+	            _state.TailShoulder = _tailShoulder;
             }
 
             DefaultGetHandler(getRequest);
         }
 
-        void OnMoveTail(MoveTail moveRequest)
+	    float _tailAngle;
+        void OnChangeTailAngle(ChangeTailAngle angleRequest)
         {
-	        _stabilizer.TailPosition =
-		        new Microsoft.Robotics.PhysicalModel.Vector2(
-			        moveRequest.Body.Shoulder*(float) Math.Cos(moveRequest.Body.Angle),
-			        moveRequest.Body.Shoulder*(float) Math.Sin(moveRequest.Body.Angle));
-            moveRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+            _tailAngle = angleRequest.Body.Angle;
+            _stabilizer.TailPosition = PolarToDecart(_tailAngle, _tailShoulder);            
+            angleRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+        }
+
+	    float _tailShoulder;
+        void OnChangeTailShoulder(ChangeTailShoulder shoulderRequest)
+        {
+            _tailShoulder = shoulderRequest.Body.Shoulder;
+            _stabilizer.TailPosition = PolarToDecart(_tailAngle, _tailShoulder);
+            shoulderRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+        }
+
+	    Microsoft.Robotics.PhysicalModel.Vector2 PolarToDecart(float angle, float radius)
+	    {
+            return new Microsoft.Robotics.PhysicalModel.Vector2(
+                radius * (float)Math.Cos(angle),
+                radius * (float)Math.Sin(angle));
         }
 
         void OnPark(Park parkRequest)
@@ -116,7 +129,8 @@ namespace Brumba.Simulation.SimulatedStabilizer
                         ),
                     new ExclusiveReceiverGroup(
                         Arbiter.Receive<Park>(true, _mainPort, OnPark),
-                        Arbiter.Receive<MoveTail>(true, _mainPort, OnMoveTail)
+                        Arbiter.Receive<ChangeTailAngle>(true, _mainPort, OnChangeTailAngle),
+                        Arbiter.Receive<ChangeTailShoulder>(true, _mainPort, OnChangeTailShoulder)
                         ),
                     new ConcurrentReceiverGroup(
                         Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
