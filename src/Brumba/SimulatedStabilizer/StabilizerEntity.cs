@@ -40,25 +40,35 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
             Joint BuildJoint(string name, VisualEntity parent, StabilizerEntity se)
             {
+	            var jointAngularProps = new JointAngularProperties
+		            {
+			            TwistMode = JointDOFMode.Locked,
+			            TwistDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(1, 0, 0), 10000)
+		            };
+
                 var jointLinearProps = new JointLinearProperties
                     {
-                        YMotionMode = JointDOFMode.Limited,
-                        ZMotionMode = JointDOFMode.Limited,
-                        XMotionMode = JointDOFMode.Free,
+                        YMotionMode = JointDOFMode.Locked,
+//                        ZMotionMode = JointDOFMode.Limited,
+//                        XMotionMode = JointDOFMode.Free,
                         YDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(TailPower, TailPower / 10f, 0), 10000),
-                        ZDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(TailPower, TailPower / 10f, 0), 10000),
-                        XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100000, 10000, 0), 10000),
+//                        ZDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(TailPower, TailPower / 10f, 0), 10000),
+//                        XDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(100000, 10000, 0), 10000),
                         MotionLimit = new JointLimitProperties(TailMaxShoulder, 1, new SpringProperties(10000, 100, 0))
                     };
 
-                var connector1 = new EntityJointConnector(se, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3())
-                    { EntityName = se.State.Name };
-                var connector2 = new EntityJointConnector(parent, new Vector3(1, 0, 0), new Vector3(0, 1, 0), TailCenter)
-                    { EntityName = parent.State.Name };
+	            var axe1 = new Vector3(1, 0, 0);
+	            var axe2 = new Vector3(0, 0, 1);
+				var connector1 = new EntityJointConnector(se, axe1, axe2, new Vector3(0, 0, 0)) { EntityName = se.State.Name };
+                var connector2 = new EntityJointConnector(parent, axe1, axe2, TailCenter) { EntityName = parent.State.Name };
 
                 return new Joint
                     {
-                        State = new JointProperties(jointLinearProps, connector1, connector2) {Name = name + " joint"}
+                        State = new JointProperties(jointLinearProps, connector1, connector2)
+	                        {
+		                        Name = name + " joint",
+								Angular = jointAngularProps
+	                        }
                     };
             }
 
@@ -85,21 +95,43 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
 		public List<InfraredRfEntity> GroundRangefinders { get; private set; }
 
-        /// <summary>
-        /// X - codirected with parent Z, Y - with parent X
-        /// </summary>
-		public Vector2 TailPosition
-        {
-            get { return _tailPosition; }
-            set
-            {
-                var xnaPos = new Xna.Vector2(value.X, value.Y);
-                var xnaPosClamped = xnaPos.Length() > _props.TailMaxShoulder
-                                        ? Xna.Vector2.Normalize(xnaPos) * _props.TailMaxShoulder : xnaPos;
-                _tailPosition = new Vector2(xnaPosClamped.X, xnaPosClamped.Y);
-                ((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, -_tailPosition.Y, _tailPosition.X));
-            }
-        }
+	    /// <summary>
+	    /// X - codirected with parent Z, Y - with parent X
+	    /// </summary>
+	    //public Vector2 TailPosition
+	    //{
+	    //	get { return _tailPosition; }
+	    //	set
+	    //	{
+	    //		var xnaPos = new Xna.Vector2(value.X, value.Y);
+	    //		var xnaPosClamped = xnaPos.Length() > _props.TailMaxShoulder
+	    //								? Xna.Vector2.Normalize(xnaPos) * _props.TailMaxShoulder : xnaPos;
+	    //		_tailPosition = new Vector2(xnaPosClamped.X, xnaPosClamped.Y);
+	    //		((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, -_tailPosition.Y, _tailPosition.X));
+	    //	}
+	    //}
+	    float _shoulder;
+		public float TailShoulder
+		{
+			get { return _shoulder; }
+			set
+			{
+				_shoulder = value;
+				//((PhysicsJoint)ParentJoint).SetLinearDrivePosition(new Vector3(0, value, 0));
+			}
+		}
+
+		float _angle;
+		public float Angle
+		{
+			get { return _angle; }
+			set
+			{
+				_angle = value;
+				//((PhysicsJoint)ParentJoint).SetAngularDriveVelocity(new Vector3(value, 0, 0));
+				//((PhysicsJoint)ParentJoint).SetAngularDriveOrientation(Quaternion.FromAxisAngle(1, 0, 0, value));
+			}
+		}
 
         public override void Initialize(Microsoft.Xna.Framework.Graphics.GraphicsDevice device, PhysicsEngine physicsEngine)
         {

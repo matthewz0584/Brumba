@@ -137,8 +137,8 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
             InitState();
 
 			//_stabilizer.ChangeTailShoulder(0.5f);
-		    //_stabilizer.ChangeTailAngle(MathHelper.PiOver4 * 7);
-		    SpawnIterator(Execute);
+		    //_stabilizer.ChangeTailAngle(MathHelper.Pi);
+		    //SpawnIterator(Execute);
 		}
 
 	    [ServiceHandler(ServiceHandlerBehavior.Exclusive)]

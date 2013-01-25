@@ -74,7 +74,7 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 
         private static void PopulateStabilizer()
         {
-            var view = new CameraView { EyePosition = new Vector3(-1.65f, 1.63f, -0.29f), LookAtPoint = new Vector3(0, 0, 0.5f) };
+			var view = new CameraView { EyePosition = new Vector3(0, 1f, -2f), LookAtPoint = new Vector3(0, 1, 0) };
             SimulationEngine.GlobalInstancePort.Update(view);
 
             var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
@@ -92,42 +92,44 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
             var ground = new HeightFieldEntity("Ground", "WoodFloor.dds", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
             SimulationEngine.GlobalInstancePort.Insert(ground);
 
-			var box = new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) });
-			var boxEntity = new SingleShapeEntity(box, new Vector3()) { State = { Name = "booox", Pose = {Orientation = Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 4)}} };
-            //var boxEntity = new SingleShapeEntity(box, new Vector3()) { State = { Name = "booox" } };
+			var box = new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.5f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) });
+			//var boxEntity = new SingleShapeEntity(box, new Vector3()) { State = { Name = "booox", Pose = {Orientation = Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 4)}, Flags = EntitySimulationModifiers.IgnoreGravity} };
+			var boxEntity = new SingleShapeEntity(box, new Vector3(0, 1, 0)) { State = { Name = "booox", Flags = EntitySimulationModifiers.IgnoreGravity } };
 
             var stabilizer = new StabilizerEntity.StabilizerProperties
                     {
-                        TailCenter = new Vector3(0, 0.2f, 0),
+                        TailCenter = new Vector3(0, 0, -0.27f),
                         TailMass = 0.01f,
-                        TailMassRadius = 0.01f,
+                        TailMassRadius = 0.02f,
                         TailMaxShoulder = 1f,
                         TailPower = 100,
 						ScanInterval = 0.025f,
 						GroundRangefindersPositions = new[] { new Vector3(-0.06f, 0, 0.11f), new Vector3(0.06f, 0, 0.11f), new Vector3(0.06f, 0, -0.11f), new Vector3(-0.06f, 0, -0.11f) }
                     }.BuildAndInsert("stabilizeer", boxEntity);
+	        stabilizer.State.Flags = EntitySimulationModifiers.IgnoreGravity;
 
-	        var hangerEntity = new SingleShapeEntity(new SphereShape(new SphereShapeProperties(1, new Pose(), 0.1f)), new Vector3(0, 1, 0.5f))
-		        {
-			        State = {Name = "hanger", Flags = EntitySimulationModifiers.Kinematic}
-		        };
+			//var hangerEntity = new SingleShapeEntity(new SphereShape(new SphereShapeProperties(1, new Pose(), 0.1f)), new Vector3(0, 1, 0.5f))
+			//	{
+			//		State = {Name = "hanger", Flags = EntitySimulationModifiers.Kinematic}
+			//	};
 
-	        boxEntity.ParentJoint = new Joint
-		        {
-			        State = new JointProperties(
-						new JointAngularProperties
-							{
-                                //TwistMode = JointDOFMode.Free,
-                                Swing1Mode = JointDOFMode.Free,
-                                //Swing2Mode = JointDOFMode.Free
-							},
-						new EntityJointConnector(boxEntity, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0.1f, 0)) {EntityName = boxEntity.State.Name},
-						new EntityJointConnector(hangerEntity, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, -0.5f, 0)) {EntityName = hangerEntity.State.Name}) 
-						{Name = "Hanger joint"}
-		        };
-			hangerEntity.InsertEntity(boxEntity);
+			//boxEntity.ParentJoint = new Joint
+			//	{
+			//		State = new JointProperties(
+			//			new JointAngularProperties
+			//				{
+			//					//TwistMode = JointDOFMode.Free,
+			//					Swing1Mode = JointDOFMode.Free,
+			//					//Swing2Mode = JointDOFMode.Free
+			//				},
+			//			new EntityJointConnector(boxEntity, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, 0.1f, 0)) {EntityName = boxEntity.State.Name},
+			//			new EntityJointConnector(hangerEntity, new Vector3(1, 0, 0), new Vector3(0, 1, 0), new Vector3(0, -0.5f, 0)) {EntityName = hangerEntity.State.Name}) 
+			//			{Name = "Hanger joint"}
+			//	};
+			//hangerEntity.InsertEntity(boxEntity);
 			
-			SimulationEngine.GlobalInstancePort.Insert(hangerEntity);
+			//SimulationEngine.GlobalInstancePort.Insert(hangerEntity);
+			SimulationEngine.GlobalInstancePort.Insert(boxEntity);
         }
 
         private void GenerateEnvironmentForTests()

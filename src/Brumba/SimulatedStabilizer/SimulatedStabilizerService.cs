@@ -81,7 +81,8 @@ namespace Brumba.Simulation.SimulatedStabilizer
         void OnChangeTailAngle(ChangeTailAngle angleRequest)
         {
             _tailAngle = angleRequest.Body.Angle;
-            _stabilizer.TailPosition = PolarToDecart(_tailAngle, _tailShoulder);            
+            //_stabilizer.TailPosition = PolarToDecart(_tailAngle, _tailShoulder);            
+	        _stabilizer.Angle = _tailAngle;
             angleRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
@@ -89,7 +90,8 @@ namespace Brumba.Simulation.SimulatedStabilizer
         void OnChangeTailShoulder(ChangeTailShoulder shoulderRequest)
         {
             _tailShoulder = shoulderRequest.Body.Shoulder;
-            _stabilizer.TailPosition = PolarToDecart(_tailAngle, _tailShoulder);
+            //_stabilizer.TailPosition = PolarToDecart(_tailAngle, _tailShoulder);
+	        _stabilizer.TailShoulder = _tailShoulder;
             shoulderRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
@@ -102,7 +104,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
         void OnPark(Park parkRequest)
         {
-			_stabilizer.TailPosition = new Microsoft.Robotics.PhysicalModel.Vector2();
+			//_stabilizer.TailPosition = new Microsoft.Robotics.PhysicalModel.Vector2();
             parkRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
