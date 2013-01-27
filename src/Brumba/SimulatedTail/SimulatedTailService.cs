@@ -8,23 +8,23 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Xna.Framework;
 
-namespace Brumba.Simulation.SimulatedStabilizer
+namespace Brumba.Simulation.SimulatedTail
 {
 	[Contract(Contract.Identifier)]
     [DisplayName("Simulated Stabilizer")]
     [Description("no description provided")]
-	class SimulatedStabilizerService : DsspServiceBase
+	class SimulatedTailService : DsspServiceBase
 	{
 		[ServiceState]
-		SimulatedStabilizerState _state = new SimulatedStabilizerState();
+		SimulatedTailState _state = new SimulatedTailState();
 		
-		[ServicePort("/SimulatedStabilizer", AllowMultipleInstances = true)]
-		SimulatedStabilizerOperations _mainPort = new SimulatedStabilizerOperations();
+		[ServicePort("/SimulatedTail", AllowMultipleInstances = true)]
+		SimulatedTailOperations _mainPort = new SimulatedTailOperations();
 
         SimulationEnginePort _simEngineNotifyPort = new SimulationEnginePort();
-        StabilizerEntity _stabilizer;
+        TailEntity _tail;
 
-        public SimulatedStabilizerService(DsspServiceCreationPort creationPort)
+        public SimulatedTailService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
 		}
@@ -48,8 +48,8 @@ namespace Brumba.Simulation.SimulatedStabilizer
         {
             LogInfo("SimulatedAckermanFourWheels OnInsertEntity called");
 
-            _stabilizer = entity.Body as StabilizerEntity;
-            _stabilizer.ServiceContract = Contract.Identifier;
+            _tail = entity.Body as TailEntity;
+            _tail.ServiceContract = Contract.Identifier;
             _state.Connected = true;
 
             SetUpForControlOfEntity();
@@ -59,7 +59,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
         {
             LogInfo("SimulatedAckermanFourWheels OnDeleteEntity called");
 
-            _stabilizer = null;
+            _tail = null;
             _state.Connected = false;
 
             SetUpForWaitingForEntity();
@@ -67,44 +67,33 @@ namespace Brumba.Simulation.SimulatedStabilizer
 
         void OnGet(Get getRequest)
         {
-            if (_stabilizer != null)
+            if (_tail != null)
             {
-                _state.WheelToGroundDistances = _stabilizer.GroundRangefinders.Select(grf => grf.Distance).ToList();
-                _state.TailAngle = _tailAngle;
-	            _state.TailShoulder = _tailShoulder;
+                _state.WheelToGroundDistances = _tail.GroundRangefinders.Select(grf => grf.Distance).ToList();
+                _state.Segment1Angle = _tail.Segment1Angle;
+	            _state.Segment2Angle = _tail.Segment2Angle;
             }
 
             DefaultGetHandler(getRequest);
         }
 
-	    float _tailAngle;
-        void OnChangeTailAngle(ChangeTailAngle angleRequest)
+        void OnChangeSegment1Angle(ChangeSegment1Angle angleRequest)
         {
-            _tailAngle = angleRequest.Body.Angle;
-            //_stabilizer.TailPosition = PolarToDecart(_tailAngle, _tailShoulder);            
-	        _stabilizer.Angle = _tailAngle;
+            _tail.Segment1Angle = angleRequest.Body.Angle;
             angleRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
 	    float _tailShoulder;
-        void OnChangeTailShoulder(ChangeTailShoulder shoulderRequest)
+        void OnChangeSegment2Angle(ChangeSegment2Angle shoulderRequest)
         {
-            _tailShoulder = shoulderRequest.Body.Shoulder;
-            //_stabilizer.TailPosition = PolarToDecart(_tailAngle, _tailShoulder);
-	        _stabilizer.TailShoulder = _tailShoulder;
+            _tail.Segment2Angle = shoulderRequest.Body.Shoulder;
             shoulderRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
-        }
-
-	    Microsoft.Robotics.PhysicalModel.Vector2 PolarToDecart(float angle, float radius)
-	    {
-            return new Microsoft.Robotics.PhysicalModel.Vector2(
-                radius * (float)Math.Cos(angle),
-                radius * (float)Math.Sin(angle));
         }
 
         void OnPark(Park parkRequest)
         {
-			//_stabilizer.TailPosition = new Microsoft.Robotics.PhysicalModel.Vector2();
+			_tail.Segment1Angle = 0;
+            _tail.Segment2Angle = MathHelper.PiOver2;
             parkRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
@@ -131,8 +120,8 @@ namespace Brumba.Simulation.SimulatedStabilizer
                         ),
                     new ExclusiveReceiverGroup(
                         Arbiter.Receive<Park>(true, _mainPort, OnPark),
-                        Arbiter.Receive<ChangeTailAngle>(true, _mainPort, OnChangeTailAngle),
-                        Arbiter.Receive<ChangeTailShoulder>(true, _mainPort, OnChangeTailShoulder)
+                        Arbiter.Receive<ChangeSegment1Angle>(true, _mainPort, OnChangeSegment1Angle),
+                        Arbiter.Receive<ChangeSegment2Angle>(true, _mainPort, OnChangeSegment2Angle)
                         ),
                     new ConcurrentReceiverGroup(
                         Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),

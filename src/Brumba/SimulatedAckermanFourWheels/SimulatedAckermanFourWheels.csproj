@@ -141,7 +141,12 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SimulatedTail\SimulatedTail.csproj">
+      <Project>{64124f6a-e6ff-44bd-8f50-4b599e848db5}</Project>
+      <Name>SimulatedTail</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">
     <ProxyDelaySign>/delaysign+</ProxyDelaySign>

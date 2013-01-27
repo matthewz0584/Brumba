@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using Brumba.Simulation.SimulatedStabilizer;
+using Brumba.Simulation.SimulatedTail;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -96,17 +96,21 @@ namespace Brumba.Simulation.SimpleAckermanVehicle
 			//var boxEntity = new SingleShapeEntity(box, new Vector3()) { State = { Name = "booox", Pose = {Orientation = Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 4)}, Flags = EntitySimulationModifiers.IgnoreGravity} };
 			var boxEntity = new SingleShapeEntity(box, new Vector3(0, 1, 0)) { State = { Name = "booox", Flags = EntitySimulationModifiers.IgnoreGravity } };
 
-            var stabilizer = new StabilizerEntity.StabilizerProperties
+            var tail = new TailEntity.TailProperties
                     {
-                        TailCenter = new Vector3(0, 0, -0.27f),
-                        TailMass = 0.01f,
-                        TailMassRadius = 0.02f,
-                        TailMaxShoulder = 1f,
-                        TailPower = 100,
+                        Origin = new Vector3(0, 0, -0.27f),
+                        PayloadMass = 0.04f,
+                        PayloadRadius = 0.02f,
+                        TwistPower = 100,
 						ScanInterval = 0.025f,
+                        Segment1Length = 0.2f,
+                        Segment1Mass = 0.02f,
+                        Segment2Length = 0.2f,
+                        Segment2Mass = 0.02f,
+                        SegmentRadius = 0.01f,
 						GroundRangefindersPositions = new[] { new Vector3(-0.06f, 0, 0.11f), new Vector3(0.06f, 0, 0.11f), new Vector3(0.06f, 0, -0.11f), new Vector3(-0.06f, 0, -0.11f) }
-                    }.BuildAndInsert("stabilizeer", boxEntity);
-	        stabilizer.State.Flags = EntitySimulationModifiers.IgnoreGravity;
+                    }.Build("tail", boxEntity);
+            boxEntity.InsertEntity(tail);
 
 			//var hangerEntity = new SingleShapeEntity(new SphereShape(new SphereShapeProperties(1, new Pose(), 0.1f)), new Vector3(0, 1, 0.5f))
 			//	{

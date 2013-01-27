@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Xna.Framework;
-using StbPxy = Brumba.Simulation.SimulatedStabilizer.Proxy;
+using TailPxy = Brumba.Simulation.SimulatedTail.Proxy;
 
 namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 {
@@ -118,9 +119,9 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 
 		[ServicePort("/AirborneStabilizerBehaviour", AllowMultipleInstances = true)]
 		AirborneStabilizerBehaviourOperations _mainPort = new AirborneStabilizerBehaviourOperations();
-        
-        [Partner("Stabilizer", Contract = StbPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        StbPxy.SimulatedStabilizerOperations _stabilizer = new StbPxy.SimulatedStabilizerOperations();
+
+        [Partner("Stabilizer", Contract = TailPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        TailPxy.SimulatedTailOperations _stabilizer = new TailPxy.SimulatedTailOperations();
 
 	    readonly Calculator _c;
 
@@ -136,8 +137,8 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 
             InitState();
 
-			//_stabilizer.ChangeTailShoulder(0.5f);
-		    //_stabilizer.ChangeTailAngle(MathHelper.Pi);
+            _stabilizer.ChangeSegment2Angle(MathHelper.Pi / 2);
+		    _stabilizer.ChangeSegment1Angle(MathHelper.Pi / 2);
 		    //SpawnIterator(Execute);
 		}
 
@@ -152,17 +153,17 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
         {
             while (true)
             {
-                StbPxy.SimulatedStabilizerState stabState = null;
+                TailPxy.SimulatedTailState stabState = null;
                 yield return Arbiter.Choice(_stabilizer.Get(), st => stabState = st, LogError);
 				if (!stabState.Connected)
 					continue;
 
                 var angleShoulder = _c.Cycle(stabState.WheelToGroundDistances);
 
-                if (!float.IsNaN(angleShoulder.X))
-                    _stabilizer.ChangeTailAngle(angleShoulder.X);
-                if (!float.IsNaN(angleShoulder.Y))
-                    _stabilizer.ChangeTailShoulder(angleShoulder.Y);
+                //if (!float.IsNaN(angleShoulder.X))
+                //    _stabilizer.ChangeTailAngle(angleShoulder.X);
+                //if (!float.IsNaN(angleShoulder.Y))
+                //    _stabilizer.ChangeTailShoulder(angleShoulder.Y);
 
                 yield return To.Exec(TimeoutPort((int)(_state.ScanInterval * 1000)));
             }

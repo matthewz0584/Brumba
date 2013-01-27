@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Brumba.Simulation.SimulatedStabilizer.Proxy;
+using Brumba.Simulation.SimulatedTail.Proxy;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 

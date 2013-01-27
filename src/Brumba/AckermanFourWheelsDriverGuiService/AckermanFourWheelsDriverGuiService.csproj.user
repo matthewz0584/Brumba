@@ -18,7 +18,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\AckermanFourWheelsDriverGuiService/AckermanFourWheelsDriverGuiService.manifest.xml"</StartArguments>
     <StartAction>Program</StartAction>
-    <StartProgram>..\..\bin\dsshost.exe</StartProgram>
+    <StartProgram>C:\MRDS4\bin\DssHost32.exe</StartProgram>
     <StartWorkingDirectory>C:\MRDS4\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

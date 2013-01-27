@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Dss.Core.Attributes;
-using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Xna = Microsoft.Xna.Framework;
 
-namespace Brumba.Simulation.SimulatedStabilizer
+namespace Brumba.Simulation.SimulatedTail
 {
     public class InfraredRfEntity : VisualEntity
     {
@@ -39,7 +38,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
             ScanInterval = 0.025f;
         }
 
-        public InfraredRfEntity(string name, Pose initialPose)
+        public InfraredRfEntity(string name, Microsoft.Robotics.PhysicalModel.Pose initialPose)
             : this()
         {
             State.Name = name;
@@ -89,7 +88,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
             // cast rays on a horizontal plane and again on a vertical plane
             var horizontalPlane = TypeConversion.ToXNA(Parent.State.Pose.Orientation) * TypeConversion.ToXNA(State.Pose.Orientation);
             _lastScanResult.AddRange(ScanInPlane(horizontalPlane));
-            _lastScanResult.AddRange(ScanInPlane(horizontalPlane * Xna.Quaternion.CreateFromAxisAngle(new Xna.Vector3(0, 0, 1), (float)Math.PI / 2f)));
+            _lastScanResult.AddRange(ScanInPlane(horizontalPlane * Quaternion.CreateFromAxisAngle(new Vector3(0, 0, 1), (float)Math.PI / 2f)));
         }
 
         public override void Render(RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)
@@ -97,17 +96,16 @@ namespace Brumba.Simulation.SimulatedStabilizer
             if (Flags.HasFlag(VisualEntityProperties.DisableRendering))
                 return;
 
-            _timeAttenuationHandle.SetValue(new Xna.Vector4(100 * (float)Math.Cos(_appTime * (1.0f / ScanInterval)), 0, 0, 1));
+            _timeAttenuationHandle.SetValue(new Vector4(100 * (float)Math.Cos(_appTime * (1.0f / ScanInterval)), 0, 0, 1));
 
             //sticker in the place of rf device - I could not render it here better and easy
             base.Render(renderMode, transforms, currentCamera);
 
-            foreach (var iPosition in _lastScanResult.Select(ip => new Xna.Vector3(ip.Position.X, ip.Position.Y, ip.Position.Z)))
+            foreach (var iPosition in _lastScanResult.Select(ip => new Vector3(ip.Position.X, ip.Position.Y, ip.Position.Z)))
             {
-                var ipDir = Xna.Vector3.Normalize(iPosition - RaysOrigin());
-                var ipMeshNorm = new Xna.Vector3(0, 1, 0);
-                transforms.World = Xna.Matrix.CreateFromAxisAngle(Xna.Vector3.Cross(ipMeshNorm, ipDir),
-                                                          (float)Math.Acos(Xna.Vector3.Dot(ipDir, ipMeshNorm)));
+                var ipDir = Vector3.Normalize(iPosition - RaysOrigin());
+                var ipMeshNorm = new Vector3(0, 1, 0);
+                transforms.World = Matrix.CreateFromAxisAngle(Vector3.Cross(ipMeshNorm, ipDir), (float)Math.Acos(Vector3.Dot(ipDir, ipMeshNorm)));
                 transforms.World.Translation = iPosition - 0.01f * ipDir;
                 Render(renderMode, transforms, Meshes[0]);
             }
@@ -128,7 +126,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
             return mesh;
         }
 
-        List<RaycastImpactPoint> ScanInPlane(Xna.Quaternion planeOrientation)
+        List<RaycastImpactPoint> ScanInPlane(Quaternion planeOrientation)
         {
             var raycastProperties = new RaycastProperties
                 {
@@ -136,7 +134,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
                     EndAngle = DispersionConeAngle / 2.0f,
                     AngleIncrement = DispersionConeAngle / (Samples - 1),
                     Range = MaximumRange,
-                    OriginPose = new Pose(TypeConversion.FromXNA(RaysOrigin()), TypeConversion.FromXNA(planeOrientation))
+                    OriginPose = new Microsoft.Robotics.PhysicalModel.Pose(TypeConversion.FromXNA(RaysOrigin()), TypeConversion.FromXNA(planeOrientation))
                 };
 
             RaycastResult scanResult;
@@ -144,9 +142,9 @@ namespace Brumba.Simulation.SimulatedStabilizer
             return scanResult == null ? new List<RaycastImpactPoint>() : scanResult.ImpactPoints;
         }
 
-        Xna.Vector3 RaysOrigin()
+        Vector3 RaysOrigin()
         {
-            return Xna.Vector3.Transform(TypeConversion.ToXNA(State.Pose.Position), Parent.World);
+            return Vector3.Transform(TypeConversion.ToXNA(State.Pose.Position), Parent.World);
         }
     }
 }

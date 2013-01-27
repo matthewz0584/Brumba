@@ -5,16 +5,16 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 
-namespace Brumba.Simulation.SimulatedStabilizer
+namespace Brumba.Simulation.SimulatedTail
 {
 	public sealed class Contract
 	{
 		[DataMember]
-		public const string Identifier = "http://schemas.tempuri.org/2013/01/simulatedstabilizer.html";
+		public const string Identifier = "http://schemas.tempuri.org/2013/01/simulatedtail.html";
 	}
 	
 	[DataContract]
-	public class SimulatedStabilizerState
+	public class SimulatedTailState
 	{
         [DataMember]
         [Description("If there is any simulation entity under control of this service")]
@@ -25,19 +25,19 @@ namespace Brumba.Simulation.SimulatedStabilizer
         public List<float> WheelToGroundDistances { get; set; }
 
         [DataMember]
-        [Description("Polar tail weight coordinates: angle")]
-        public float TailAngle { get; set; }
+        [Description("")]
+        public float Segment1Angle { get; set; }
         [DataMember]
-        [Description("Polar tail weight coordinates: radius")]
-        public float TailShoulder { get; set; }
+        [Description("")]
+        public float Segment2Angle { get; set; }
 	}
 	
 	[ServicePort]
-    public class SimulatedStabilizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, ChangeTailAngle, ChangeTailShoulder, Park>
+    public class SimulatedTailOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, ChangeSegment1Angle, ChangeSegment2Angle, Park>
 	{
 	}
 
-    public class Get : Get<GetRequestType, PortSet<SimulatedStabilizerState, Fault>>
+    public class Get : Get<GetRequestType, PortSet<SimulatedTailState, Fault>>
 	{
 		public Get()
 		{
@@ -48,7 +48,7 @@ namespace Brumba.Simulation.SimulatedStabilizer
 		{
 		}
 
-        public Get(GetRequestType body, PortSet<SimulatedStabilizerState, Fault> responsePort)
+        public Get(GetRequestType body, PortSet<SimulatedTailState, Fault> responsePort)
 			: base(body, responsePort)
 		{
 		}
@@ -64,24 +64,24 @@ namespace Brumba.Simulation.SimulatedStabilizer
     }
 
     [DataContract]
-    public class ChangeTailAngleRequest
+    public class ChangeSegment1AngleRequest
     {
         [DataMember, DataMemberConstructor]
         public float Angle { get; set; }
     }
 
     [DataContract]
-    public class ChangeTailShoulderRequest
+    public class ChangeSegment2AngleRequest
     {
         [DataMember, DataMemberConstructor]
         public float Shoulder { get; set; }
     }
 
-    public class ChangeTailAngle : Update<ChangeTailAngleRequest, PortSet<DefaultUpdateResponseType, Fault>>
+    public class ChangeSegment1Angle : Update<ChangeSegment1AngleRequest, PortSet<DefaultUpdateResponseType, Fault>>
     {
     }
 
-    public class ChangeTailShoulder : Update<ChangeTailShoulderRequest, PortSet<DefaultUpdateResponseType, Fault>>
+    public class ChangeSegment2Angle : Update<ChangeSegment2AngleRequest, PortSet<DefaultUpdateResponseType, Fault>>
     {
     }
 }

@@ -106,10 +106,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\utils\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="SimulatedStabilizer.Y2013.M01.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
+    <Reference Include="SimulatedTail.Y2013.M01.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\SimulatedStabilizer\bin\Debug\SimulatedStabilizer.Y2013.M01.Proxy.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\bin\SimulatedTail.Y2013.M01.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <SpecificVersion>False</SpecificVersion>

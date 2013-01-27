@@ -52,7 +52,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 			wheel.Props = this;
 
 			wheel.State.Name = Name + " body";
-			wheel.State.MassDensity.Mass = Mass * 0.5f;
+			wheel.State.MassDensity.Mass = Mass;
 			wheel.State.Assets.Mesh = PhysicalMesh;
 			wheel.Material = new MaterialProperties("tire", 0.0f, 0, 0);
 			wheel.Flags = VisualEntityProperties.DisableRendering;
@@ -92,7 +92,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
 		private WheelEntity BuildModel(bool inner)
 		{
-			var wheel = new WheelEntity(new WheelShapeProperties(Name + (inner ? " model inner" : " model outter"), Mass / 2, Radius)
+			var wheel = new WheelEntity(new WheelShapeProperties(Name + (inner ? " model inner" : " model outter"), Mass / 20, Radius)
 			{
 				LocalPose = new Pose(new Vector3((inner ? 1 : -1) * Width / 2, 0, 0)),
 				TireLongitudalForceFunction =

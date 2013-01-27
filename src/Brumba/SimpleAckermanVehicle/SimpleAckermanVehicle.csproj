@@ -140,9 +140,9 @@
       <Name>SimulatedAckermanFourWheels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\SimulatedStabilizer\SimulatedStabilizer.csproj">
+    <ProjectReference Include="..\SimulatedTail\SimulatedTail.csproj">
       <Project>{64124F6A-E6FF-44BD-8F50-4B599E848DB5}</Project>
-      <Name>SimulatedStabilizer</Name>
+      <Name>SimulatedTail</Name>
     </ProjectReference>
     <ProjectReference Include="..\SimulationTester\SimulationTester.csproj">
       <Project>{105800AF-F412-413D-8D51-A417E39B6960}</Project>
