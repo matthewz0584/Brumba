@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedtail="http://schemas.tempuri.org/2013/01/simulatedtail.html" xmlns:this="urn:uuid:b8d8e770-3617-4a13-921f-7b64c9ad2912" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simpleackermanvehicle="http://schemas.tempuri.org/2012/10/simpleackermanvehicle.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:airbornestabilizerbehaviour="http://schemas.tempuri.org/2013/01/airbornestabilizerbehaviour.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedtail="http://brumba.ru/contracts/2013/01/simulatedtail.html" xmlns:this="urn:uuid:b8d8e770-3617-4a13-921f-7b64c9ad2912" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simpleackermanvehicle="http://brumba.ru/contracts/2012/10/simpleackermanvehicle.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:airbornestabilizerbehaviour="http://brumba.ru/contracts/2013/01/airbornestabilizerbehaviour.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.tempuri.org/2012/10/simpleackermanvehicle.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/simpleackermanvehicle.html</dssp:Contract>
       <dssp:PartnerList />
       <Name>this:simpleackermanvehicle</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.tempuri.org/2013/01/simulatedtail.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2013/01/simulatedtail.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
           <dssp:Service>http://localhost/tail</dssp:Service>
@@ -19,7 +19,7 @@
       <Name>this:SimulatedTail</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.tempuri.org/2013/01/airbornestabilizerbehaviour.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2013/01/airbornestabilizerbehaviour.html</dssp:Contract>
       <dssp:PartnerList />
       <Name>this:AirborneStabilizerBehaviour</Name>
     </ServiceRecordType>

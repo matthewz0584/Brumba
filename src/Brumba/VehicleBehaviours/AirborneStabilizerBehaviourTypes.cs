@@ -11,7 +11,8 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 	public sealed class Contract
 	{
 		[DataMember]
-        public const string Identifier = "http://schemas.tempuri.org/2013/01/airbornestabilizerbehaviour.html";
+        public const string Identifier = "http://brumba.ru/contracts/2013/01/airbornestabilizerbehaviour.html";
+        //brumba.ru/contracts
 	}
 	
 	[DataContract]

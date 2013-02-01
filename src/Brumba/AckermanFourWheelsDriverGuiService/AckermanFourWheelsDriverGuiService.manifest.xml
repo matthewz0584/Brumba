@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:ackermanfourwheelsdriverguiservice="http://schemas.tempuri.org/2012/10/ackermanfourwheelsdriverguiservice.html" xmlns:this="urn:uuid:6c9e4543-fe65-4a2a-9aa5-e55248427ad0" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simpleackermanvehicle="http://schemas.tempuri.org/2012/10/simpleackermanvehicle.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:ackermanfourwheelsdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanfourwheelsdriverguiservice.html" xmlns:this="urn:uuid:6c9e4543-fe65-4a2a-9aa5-e55248427ad0" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simpleackermanvehicle="http://brumba.ru/contracts/2012/10/simpleackermanvehicle.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.tempuri.org/2012/10/ackermanfourwheelsdriverguiservice.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanfourwheelsdriverguiservice.html</dssp:Contract>
       <dssp:PartnerList />
       <Name>this:ackermanfourwheelsdriverguiservice</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.tempuri.org/2012/10/simpleackermanvehicle.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/simpleackermanvehicle.html</dssp:Contract>
       <dssp:PartnerList />
       <Name>this:SimpleAckermanVehicle</Name>
     </ServiceRecordType>

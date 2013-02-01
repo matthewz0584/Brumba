@@ -10,7 +10,7 @@ namespace Brumba.Simulation.SimulatedTail
 	public sealed class Contract
 	{
 		[DataMember]
-		public const string Identifier = "http://schemas.tempuri.org/2013/01/simulatedtail.html";
+		public const string Identifier = "http://brumba.ru/contracts/2013/01/simulatedtail.html";
 	}
 	
 	[DataContract]

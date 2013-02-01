@@ -12,7 +12,7 @@ namespace Brumba.Simulation.SimulationTester
 	public sealed class Contract
 	{
 		[DataMember]
-		public const string Identifier = "http://schemas.tempuri.org/2012/11/simulationtester.html";
+        public const string Identifier = "http://brumba.ru/contracts/2012/11/simulationtester.html";
 	}
 	
 	[DataContract]

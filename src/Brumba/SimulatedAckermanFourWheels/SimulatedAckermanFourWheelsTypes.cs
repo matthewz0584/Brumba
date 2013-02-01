@@ -9,7 +9,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 	public sealed class Contract
 	{
 		[DataMember]
-		public const string Identifier = "http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html";
+        public const string Identifier = "http://brumba.ru/contracts/2012/10/simulatedackermanfourwheels.html";
 	}
 	
 	[DataContract]

@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedtimer="http://schemas.tempuri.org/2012/10/simulatedtimer.html" xmlns:simulationtester="http://schemas.tempuri.org/2012/11/simulationtester.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:68ef8ff8-384a-4cf7-b545-af924c1c7de2" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedtimer="http://brumba.ru/contracts/2012/10/simulatedtimer.html" xmlns:simulationtester="http://brumba.ru/contracts/2012/11/simulationtester.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:68ef8ff8-384a-4cf7-b545-af924c1c7de2" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.tempuri.org/2012/11/simulationtester.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2012/11/simulationtester.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Contract>http://schemas.tempuri.org/2012/10/simulatedtimer.html</dssp:Contract>
+          <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedtimer.html</dssp:Contract>
           <dssp:PartnerList />
           <dssp:Name>simulationtester:SimTimer</dssp:Name>
           <dssp:ServiceName>this:SimulatedTimerService</dssp:ServiceName>
@@ -15,7 +15,7 @@
       <Name>this:simulationtester</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.tempuri.org/2012/10/simulatedtimer.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedtimer.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
           <dssp:Service>http://localhost/timer</dssp:Service>

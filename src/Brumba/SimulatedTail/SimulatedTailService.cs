@@ -83,7 +83,6 @@ namespace Brumba.Simulation.SimulatedTail
             angleRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-	    float _tailShoulder;
         void OnChangeSegment2Angle(ChangeSegment2Angle shoulderRequest)
         {
             _tail.Segment2Angle = shoulderRequest.Body.Shoulder;
