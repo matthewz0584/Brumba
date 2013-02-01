@@ -18,7 +18,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <StartAction>Program</StartAction>
     <StartProgram>C:\MRDS4\bin\DssHost32.exe</StartProgram>
-    <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\src\Brumba\VehicleBehaviours\AirborneStabilizerBehaviour.manifest.xml" /s:"brumba\config\DssHost32.security"</StartArguments>
+    <StartArguments>/port:50000 /tcpport:50001 /manifest:"brumba\src\Brumba\VehicleBehaviours\OnGroundTailBehaviour.manifest.xml" /s:"brumba\config\DssHost32.security"</StartArguments>
     <StartWorkingDirectory>C:\MRDS4\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

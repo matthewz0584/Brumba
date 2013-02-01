@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:simulatedackermanfourwheels="http://brumba.ru/contracts/2012/10/simulatedackermanfourwheels.html" xmlns:this="urn:uuid:b3996257-e10d-4fa6-a7ec-6d73341c53e1" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simpleackermanvehicle="http://brumba.ru/contracts/2012/10/simpleackermanvehicle.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:ongroundtailbehaviour="http://brumba.ru/contracts/2013/01/ongroundtailbehaviour.html" xmlns:simulatedtail="http://brumba.ru/contracts/2013/01/simulatedtail.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/simpleackermanvehicle.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/ve</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:Environment</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2013/01/simulatedtail.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/tail</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:Tail</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanfourwheels.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/vehicle</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:Vehicle</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2013/01/ongroundtailbehaviour.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2013/01/simulatedtail.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>ongroundtailbehaviour:Tail</dssp:Name>
+          <dssp:ServiceName>this:Tail</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanfourwheels.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>ongroundtailbehaviour:Vehicle</dssp:Name>
+          <dssp:ServiceName>this:Vehicle</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:OnGroundTailBehaviourService</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
+</Manifest>

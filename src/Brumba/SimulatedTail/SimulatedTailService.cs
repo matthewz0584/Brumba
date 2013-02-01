@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 namespace Brumba.Simulation.SimulatedTail
 {
 	[Contract(Contract.Identifier)]
-    [DisplayName("Simulated Stabilizer")]
+    [DisplayName("Simulated tail")]
     [Description("no description provided")]
 	class SimulatedTailService : DsspServiceBase
 	{
@@ -85,7 +85,7 @@ namespace Brumba.Simulation.SimulatedTail
 
         void OnChangeSegment2Angle(ChangeSegment2Angle shoulderRequest)
         {
-            _tail.Segment2Angle = shoulderRequest.Body.Shoulder;
+            _tail.Segment2Angle = shoulderRequest.Body.Angle;
             shoulderRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 

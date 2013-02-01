@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;

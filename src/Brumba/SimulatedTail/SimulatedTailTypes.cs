@@ -74,7 +74,7 @@ namespace Brumba.Simulation.SimulatedTail
     public class ChangeSegment2AngleRequest
     {
         [DataMember, DataMemberConstructor]
-        public float Shoulder { get; set; }
+        public float Angle { get; set; }
     }
 
     public class ChangeSegment1Angle : Update<ChangeSegment1AngleRequest, PortSet<DefaultUpdateResponseType, Fault>>
