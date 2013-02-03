@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simpleackermanvehicle="http://brumba.ru/contracts/2012/10/simpleackermanvehicle.html" xmlns:this="urn:uuid:5e3d86a2-2bb1-4b6e-8948-7a9d8af02d03" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:ackermanfourwheelsdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanfourwheelsdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:this="urn:uuid:5e3d86a2-2bb1-4b6e-8948-7a9d8af02d03" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:ackermanfourwheelsdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanfourwheelsdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2012/10/simpleackermanvehicle.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
       <dssp:PartnerList />
-      <Name>this:simpleackermanvehicle</Name>
+      <Name>this:environmentbuilder</Name>
     </ServiceRecordType>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanfourwheelsdriverguiservice.html</dssp:Contract>

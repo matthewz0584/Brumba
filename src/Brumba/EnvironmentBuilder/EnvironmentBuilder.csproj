@@ -11,8 +11,8 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>SimpleAckermanVehicle.Y2012.M10</AssemblyName>
-    <RootNamespace>Brumba.Simulation.SimpleAckermanVehicle</RootNamespace>
+    <AssemblyName>EnvironmentBuilder.Y2012.M10</AssemblyName>
+    <RootNamespace>Brumba.Simulation.EnvironmentBuilder</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
@@ -126,12 +126,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleAckermanVehicleService.cs" />
-    <Compile Include="SimpleAckermanVehicleTypes.cs" />
+    <Compile Include="EnvironmentBuilderService.cs" />
+    <Compile Include="EnvironmentBuilderTypes.cs" />
     <AppDesigner Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SimpleAckermanVehicle.manifest.xml" />
+    <Content Include="EnvironmentBuilder.manifest.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimulatedAckermanFourWheels\SimulatedAckermanFourWheels.csproj">

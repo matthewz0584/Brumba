@@ -12,23 +12,23 @@ using Brumba.Simulation.SimulatedAckermanFourWheels;
 using SafwProxy = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
 using Brumba.Simulation.SimulationTester;
 
-namespace Brumba.Simulation.SimpleAckermanVehicle
+namespace Brumba.Simulation.EnvironmentBuilder
 {
     [Contract(Contract.Identifier)]
-    [DisplayName("SimpleAckermanVehicle")]
-    [Description("SimpleAckermanVehicle service (no description provided)")]
-    class SimpleAckermanVehicleService : DsspServiceBase, IServiceStarter
+    [DisplayName("EnvironmentBuilder")]
+    [Description("EnvironmentBuilder service (no description provided)")]
+    class EnvironmentBuilderService : DsspServiceBase, IServiceStarter
     {
         [ServiceState]
-        SimpleAckermanVehicleState _state = new SimpleAckermanVehicleState();
+        EnvironmentBuilderState _state = new EnvironmentBuilderState();
 
-        [ServicePort("/SimpleAckermanVehicle", AllowMultipleInstances = true)]
-        SimpleAckermanVehicleOperations _mainPort = new SimpleAckermanVehicleOperations();
+        [ServicePort("/EnvironmentBuilder", AllowMultipleInstances = true)]
+        EnvironmentBuilderOperations _mainPort = new EnvironmentBuilderOperations();
 
         [Partner("Engine", Contract = Microsoft.Robotics.Simulation.Engine.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExistingOrCreate)]
         private SimulationEnginePort _engineStub = new SimulationEnginePort();//only for auto engine creation
 
-        public SimpleAckermanVehicleService(DsspServiceCreationPort creationPort)
+        public EnvironmentBuilderService(DsspServiceCreationPort creationPort)
             : base(creationPort)
         {
         }
