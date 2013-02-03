@@ -1,9 +1,6 @@
-using System.Collections.Generic;
-using System.ComponentModel;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
-using Microsoft.Xna.Framework;
 using W3C.Soap;
 
 namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour
@@ -18,19 +15,22 @@ namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour
     public class OnGroundTailBehaviourState
 	{
         [DataMember]
-        public float TailMass { get; set; }
+        public float VehicleMass { get; set; }
 
         [DataMember]
-        public float VehicleMass { get; set; }
+        public float VehicleWheelBase { get; set; }
+
+        [DataMember]
+        public float VehicleCmHeight { get; set; }
+
+        [DataMember]
+        public float TailMass { get; set; }
 
         [DataMember]
         public float TailSegment1Length { get; set; }
 
         [DataMember]
         public float TailSegment2Length { get; set; }
-
-        [DataMember]
-        public float VehicleCoMY { get; set; }
     }
 	
 	[ServicePort]

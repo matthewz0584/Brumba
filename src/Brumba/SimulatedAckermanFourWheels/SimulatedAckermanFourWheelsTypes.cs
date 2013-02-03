@@ -20,12 +20,16 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         public bool Connected { get; set; }
 
         [DataMember]
-        [Description("Motor power")]
         public float MotorPower { get; set; }
 
         [DataMember]
-        [Description("Steer angle")]
         public float SteerAngle { get; set; }
+
+        [DataMember]
+        public float Velocity { get; set; }
+
+        [DataMember]
+        public float ActualSteerAngle { get; set; }
 	}
 	
 	[ServicePort]

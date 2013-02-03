@@ -5,9 +5,7 @@ using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using W3C.Soap;
 using Microsoft.Ccr.Adapters.Wpf;
-using System.Windows;
 using Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
 
 namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
@@ -46,7 +44,7 @@ namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
 
             if ((Exception)runWndResponse != null)
             {
-                LogError((Exception)runWndResponse);
+                LogError(runWndResponse);
                 yield break;
             }
 

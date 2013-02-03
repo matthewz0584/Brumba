@@ -89,7 +89,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 
         public void SetSteerAngle(float angle)
         {
-            _targetSteerAngle = -angle * MaxSteerAngle;
+            _targetSteerAngle = angle * MaxSteerAngle;
         }
 
         public void Break()
@@ -97,6 +97,16 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             SetMotorPower(0);
             foreach (var w in Wheels.Where(w => w.Props.Motorized))
                 w.AxleSpeed = 0;
+        }
+
+        public float Velocity
+        {
+            get { return Wheels.First(w => w.Props.Motorized).AxleSpeed * Wheels.First().Props.Radius; }
+        }
+
+        public float SteerAngle
+        {
+            get { return Wheels.First(w => w.Props.Steerable).SteerAngle; }
         }
 
         private void UpdateMotorAxleSpeed(float deltaT)

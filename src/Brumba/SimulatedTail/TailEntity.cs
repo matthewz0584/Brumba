@@ -42,7 +42,7 @@ namespace Brumba.Simulation.SimulatedTail
                             State = {Name = name, Flags = EntitySimulationModifiers.IgnoreGravity}
                         };
                 
-                tailSegment1.ParentJoint = BuildTwistJoint(parent, tailSegment1, new Vector3(1, 0, 0), new Vector3(0, 0, 1), Origin, new Vector3(0, -Segment1Length / 2, 0), TwistPower);
+                tailSegment1.ParentJoint = BuildTwistJoint(parent, tailSegment1, new Vector3(1, 0, 0), new Vector3(0, 0, 1), Origin, new Vector3(0, -Segment1Length / 2, 0), TwistPower * 10);
 
                 tailSegment1.Segment2 =
                     new SingleShapeEntity(
@@ -121,7 +121,7 @@ namespace Brumba.Simulation.SimulatedTail
 			{
 				_segment1Angle = value;
 				//((PhysicsJoint)ParentJoint).SetAngularDriveVelocity(new Vector3(value, 0, 0));
-				((PhysicsJoint)ParentJoint).SetAngularDriveOrientation(Quaternion.FromAxisAngle(1, 0, 0, value));
+				((PhysicsJoint)ParentJoint).SetAngularDriveOrientation(Quaternion.FromAxisAngle(1, 0, 0, -value));
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace Brumba.Simulation.SimulatedTail
             {
                 _segment2Angle = value;
                 //((PhysicsJoint)Segment2.ParentJoint).SetAngularDriveVelocity(new Vector3(value, value, value));
-                ((PhysicsJoint)Segment2.ParentJoint).SetAngularDriveOrientation(Quaternion.FromAxisAngle(1, 0, 0, value));
+                ((PhysicsJoint)Segment2.ParentJoint).SetAngularDriveOrientation(Quaternion.FromAxisAngle(1, 0, 0, -value));
             }
         }
 

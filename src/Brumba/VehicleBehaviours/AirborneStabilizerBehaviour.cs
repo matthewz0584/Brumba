@@ -20,16 +20,21 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 	{
         public class Calculator
         {
-            private readonly Func<AirborneStabilizerBehaviourState> _getState;
+            private AirborneStabilizerBehaviourState _behState;
 
             float _errorPrev, _errorIntegral;
             float _shoulderPrev, _anglePrev;
 
-            public Calculator(Func<AirborneStabilizerBehaviourState> getState)
+            public Calculator(AirborneStabilizerBehaviourState behState)
             {
-                _getState = getState;
+                _behState = behState;
 
                 Ti = float.PositiveInfinity;
+            }
+
+            public void UpdateState(AirborneStabilizerBehaviourState behState)
+            {
+                _behState = behState;
             }
 
             public float Ti { get; set; }
@@ -50,9 +55,9 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
                 var shoulder = CalculateShoulder(groundPlaneNormal);
 
                 return new Vector2(
-                        Math.Abs(angle - _anglePrev) > _getState().TailAngleDeadband
+                        Math.Abs(angle - _anglePrev) > _behState.TailAngleDeadband
                             ? _anglePrev = angle : float.NaN,
-                        Math.Abs(shoulder - _shoulderPrev) > _getState().TailShoulderDeadband
+                        Math.Abs(shoulder - _shoulderPrev) > _behState.TailShoulderDeadband
                             ? _shoulderPrev = shoulder : float.NaN);
             }
 
@@ -63,10 +68,10 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
                 Debug.Assert(errorNew >= 0 && errorNew < MathHelper.PiOver2);
 
                 //Shoulder value is always positive, it's thes of tail weight's radius in polar coordinates
-                var shoulder = _getState().Kp * (errorNew + 1 / Ti * _errorIntegral + _getState().Td * (errorNew - _errorPrev) / _getState().ScanInterval);
+                var shoulder = _behState.Kp * (errorNew + 1 / Ti * _errorIntegral + _behState.Td * (errorNew - _errorPrev) / _behState.ScanInterval);
 
                 _errorPrev = errorNew;
-                _errorIntegral += errorNew * _getState().ScanInterval; //unclear how to handle integral term given tail rotation, does it still have any sense
+                _errorIntegral += errorNew * _behState.ScanInterval; //unclear how to handle integral term given tail rotation, does it still have any sense
 
                 return shoulder;
             }
@@ -104,7 +109,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
 
             public IEnumerable<Vector3> GetGroundPoints(IEnumerable<float> wheelToGroundDistances)
             {
-                return _getState().GroundRangefinderPositions.Zip(wheelToGroundDistances, (p, d) => p - Vector3.UnitY * d);
+                return _behState.GroundRangefinderPositions.Zip(wheelToGroundDistances, (p, d) => p - Vector3.UnitY * d);
             }
 
             static Vector4 Vector4From(IList<float> numbers)
@@ -127,14 +132,13 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
         public AirborneStabilizerBehaviour(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
-            _c = new Calculator(() => _state);
+            InitState();
+            _c = new Calculator(_state);
 		}
 
 		protected override void Start()
 		{
 		    base.Start();
-
-            InitState();
 
             _stabilizer.ChangeSegment2Angle(MathHelper.Pi / 2);
 		    _stabilizer.ChangeSegment1Angle(MathHelper.Pi / 2);
@@ -145,6 +149,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
         public void OnReplace(Replace replaceRequest)
         {
             _state = replaceRequest.Body;
+	        _c.UpdateState(_state);
             replaceRequest.ResponsePort.Post(DefaultReplaceResponseType.Instance);
         }
 

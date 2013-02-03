@@ -65,7 +65,7 @@ namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
                 _vm.Break();
             else
                 _vm.Power(Keyboard.IsKeyDown(Key.Up) ? 1 : Keyboard.IsKeyDown(Key.Down) ? -1 : 0);
-            _vm.Steer(Keyboard.IsKeyDown(Key.Right) ? 1 : Keyboard.IsKeyDown(Key.Left) ? -1 : 0);
+            _vm.Steer(Keyboard.IsKeyDown(Key.Right) ? -1 : Keyboard.IsKeyDown(Key.Left) ? 1 : 0);
         }
     }
 }

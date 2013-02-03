@@ -88,6 +88,13 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             breakRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
+        private void OnGet(Get getRequest)
+        {
+            _state.Velocity = _vehicle.Velocity;
+            _state.ActualSteerAngle = _vehicle.SteerAngle;
+            DefaultGetHandler(getRequest);
+        }
+
         private void SetUpForWaitingForEntity()
         {
             ResetMainPortInterleave(new Interleave(
@@ -116,11 +123,11 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                         ),
                     new ConcurrentReceiverGroup(
                         Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                        Arbiter.Receive<Get>(true, _mainPort, DefaultGetHandler)
+                        Arbiter.Receive<Get>(true, _mainPort, OnGet)
                         )));
         }
 
-        private void ResetMainPortInterleave(Interleave ileave)
+	    private void ResetMainPortInterleave(Interleave ileave)
         {
             Activate(ileave);
             MainPortInterleave = ileave;

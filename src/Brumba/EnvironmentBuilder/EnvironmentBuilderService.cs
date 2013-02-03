@@ -66,11 +66,11 @@ namespace Brumba.Simulation.EnvironmentBuilder
             var tail = new TailEntity.TailProperties
                 {
                     Origin = new Vector3(0, 0.1f, -0.20f),
-                    PayloadMass = 0.04f,
+                    PayloadMass = 0.08f,
                     PayloadRadius = 0.02f,
-                    TwistPower = 100,
+                    TwistPower = 1000,
                     ScanInterval = 0.025f,
-                    Segment1Length = 0.2f,
+                    Segment1Length = 0.15f,
                     Segment1Mass = 0.02f,
                     Segment2Length = 0.2f,
                     Segment2Mass = 0.02f,
