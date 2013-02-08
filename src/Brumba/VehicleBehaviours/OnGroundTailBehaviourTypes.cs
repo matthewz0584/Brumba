@@ -20,6 +20,9 @@ namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour
         [DataMember]
         public float VehicleWheelBase { get; set; }
 
+		[DataMember]
+		public float VehicleWheelsSpacing { get; set; }
+
         [DataMember]
         public float VehicleCmHeight { get; set; }
 

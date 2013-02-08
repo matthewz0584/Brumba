@@ -19,7 +19,10 @@ namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour
 	{
         public class Calculator
         {
-            private OnGroundTailBehaviourState _behState;
+	        public static readonly float MinSegment2Angle = -MathHelper.PiOver2 * 1.1f;
+			public static readonly float LimitSegment1Angle = 0.99f * MathHelper.PiOver2;
+
+            OnGroundTailBehaviourState _behState;
 
             public Calculator(OnGroundTailBehaviourState behState)
             {
@@ -34,18 +37,18 @@ namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour
 
             public Vector2 Calculate(float steerAngle, float velocity)
             {
-                var seg1Angle = (velocity == 0 ? 0 : 1) * Math.Sign(steerAngle) * MathHelper.PiOver2;
-                var seg2AngleCos = BehState.VehicleMass/BehState.TailMass*CentripetalA(steerAngle, velocity)/9.8f*
-                              BehState.VehicleCmHeight/BehState.TailSegment2Length -
-                              BehState.TailSegment1Length/BehState.TailSegment2Length;
-                var seg2Angle = (float)Math.Acos(MathHelper.Clamp(seg2AngleCos, 0, 1));
-                seg2Angle = MathHelper.Clamp(seg2Angle, 0, MathHelper.PiOver2);
+				var seg1Angle = (velocity == 0 ? 0 : 1) * Math.Sign(steerAngle) * LimitSegment1Angle;
+                var seg2AngleCos = 1 / BehState.TailSegment2Length * 
+					(BehState.VehicleMass/BehState.TailMass * CentripetalA(steerAngle, velocity) / 9.8f * BehState.VehicleCmHeight -
+					BehState.TailSegment1Length - BehState.VehicleWheelsSpacing / 2);
+				var seg2Angle = (float)Math.Acos(MathHelper.Clamp(seg2AngleCos, (float)Math.Cos(-MinSegment2Angle), 1));
+                //seg2Angle = MathHelper.Clamp(seg2Angle, 0, MathHelper.PiOver2);
                 return new Vector2(seg1Angle, -seg2Angle);
             }
 
             public float CentripetalA(float steerAngle, float velocity)
             {
-                return Math.Abs(velocity * velocity / (_behState.VehicleWheelBase / 2 / (float)Math.Tan(steerAngle / 2)));
+                return Math.Abs(velocity * velocity / _behState.VehicleWheelBase * 2 * (float)Math.Tan(steerAngle / 2));
             }
         }
 
@@ -113,7 +116,8 @@ namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour
                     TailSegment2Length = 0.2f,
                     VehicleMass = 2,
                     VehicleCmHeight = 0.1f,
-                    VehicleWheelBase = 0.25f
+                    VehicleWheelBase = 0.25f,
+					VehicleWheelsSpacing = 0.17f
 	            };
 	    }
 	}

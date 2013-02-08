@@ -36,10 +36,11 @@ namespace Brumba.Simulation.EnvironmentBuilder
         protected override void Start()
         {
 			//CrossCountryGenerator.Generate(257, 0.1f).Save("terrain00.bmp");
-            //PopulateStabilizer();
-            //PopulateAckermanVehicle();
-            //GenerateEnvironmentForTests();
-            PopulateAckermanVehicleWithTail();
+			//PopulateStabilizer();
+			//PopulateAckermanVehicle();
+			//GenerateEnvironmentForTests();
+			//PopulateAckermanVehicleWithTail();
+	        PopulateEnvForGroundTail();
 
             base.Start();
         }
@@ -63,25 +64,70 @@ namespace Brumba.Simulation.EnvironmentBuilder
 
             var vehicle = new AckermanFourWheelsEntity("vehicle", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Suspended4x4);
 
-            var tail = new TailEntity.TailProperties
-                {
-                    Origin = new Vector3(0, 0.1f, -0.20f),
-                    PayloadMass = 0.08f,
-                    PayloadRadius = 0.02f,
-                    TwistPower = 1000,
-                    ScanInterval = 0.025f,
-                    Segment1Length = 0.15f,
-                    Segment1Mass = 0.02f,
-                    Segment2Length = 0.2f,
-                    Segment2Mass = 0.02f,
-                    SegmentRadius = 0.01f,
-                    GroundRangefindersPositions = new[] { new Vector3(-0.06f, 0, 0.11f), new Vector3(0.06f, 0, 0.11f), new Vector3(0.06f, 0, -0.11f), new Vector3(-0.06f, 0, -0.11f) }
-                }.Build("tail", vehicle);
-            
-            vehicle.InsertEntity(tail);
+			var tail = new TailEntity.TailProperties
+				{
+					Origin = new Vector3(0, 0.1f, -0.20f),
+					PayloadMass = 0.08f,
+					PayloadRadius = 0.02f,
+					TwistPower = 10000,
+					ScanInterval = 0.025f,
+					Segment1Length = 0.15f,
+					Segment1Mass = 0.02f,
+					Segment2Length = 0.2f,
+					Segment2Mass = 0.02f,
+					SegmentRadius = 0.01f,
+					GroundRangefindersPositions = new[] { new Vector3(-0.06f, 0, 0.11f), new Vector3(0.06f, 0, 0.11f), new Vector3(0.06f, 0, -0.11f), new Vector3(-0.06f, 0, -0.11f) }
+				}.Build("tail", vehicle);
+
+			vehicle.InsertEntity(tail);
 
             SimulationEngine.GlobalInstancePort.Insert(vehicle);            
         }
+
+		private void PopulateEnvForGroundTail()
+		{
+			var terrain = new TerrainEntity(@"terrain00.bmp", "terrain_tex.jpg", new MaterialProperties("ground", 0, 0.5f, 1.0f))
+			{
+				State = { Name = "Terrain", Assets = { Effect = "Terrain.fx" } },
+			};
+			SimulationEngine.GlobalInstancePort.Insert(terrain);
+
+			var view = new CameraView { EyePosition = new Vector3(-12, 9, 6), LookAtPoint = new Vector3(0, 0, 6) };
+			SimulationEngine.GlobalInstancePort.Update(view);
+
+			var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
+			SimulationEngine.GlobalInstancePort.Insert(sky);
+
+			var sun = new LightSourceEntity
+			{
+				State = { Name = "Sun" },
+				Type = LightSourceEntityType.Directional,
+				Color = new Vector4(0.8f, 0.8f, 0.8f, 1),
+				Direction = new Vector3(0.5f, -.75f, 0.5f)
+			};
+			SimulationEngine.GlobalInstancePort.Insert(sun);
+
+			var vehicle = new AckermanFourWheelsEntity("vehicle", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Suspended4x4);
+
+			var tail = new TailEntity.TailProperties
+			{
+				Origin = new Vector3(0, 0.1f, -0.20f),
+				PayloadMass = 0.08f,
+				PayloadRadius = 0.02f,
+				TwistPower = 10000,
+				ScanInterval = 0.025f,
+				Segment1Length = 0.15f,
+				Segment1Mass = 0.02f,
+				Segment2Length = 0.2f,
+				Segment2Mass = 0.02f,
+				SegmentRadius = 0.01f,
+				GroundRangefindersPositions = new[] { new Vector3(-0.06f, 0, 0.11f), new Vector3(0.06f, 0, 0.11f), new Vector3(0.06f, 0, -0.11f), new Vector3(-0.06f, 0, -0.11f) }
+			}.Build("tail", vehicle);
+
+			vehicle.InsertEntity(tail);
+
+			SimulationEngine.GlobalInstancePort.Insert(vehicle);
+		}
 
         private void PopulateAckermanVehicle()
         {

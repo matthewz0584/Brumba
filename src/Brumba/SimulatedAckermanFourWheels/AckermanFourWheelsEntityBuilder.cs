@@ -16,12 +16,12 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             {
                 get
                 {
-                    float wheelRadius = 0.05f, distanceBetweenWheels = 0.17f, wheelWidth = 0.045f, wheelBase = 0.25f;
+                    float wheelRadius = 0.05f, wheelsSpacing = 0.17f, wheelWidth = 0.045f, wheelBase = 0.25f;
                     
                     return new Builder
                     {
                         WheelBase = wheelBase,
-                        DistanceBetweenWheels = distanceBetweenWheels,
+                        WheelsSpacing = wheelsSpacing,
                         WheelRadius = wheelRadius,
                         WheelWidth = wheelWidth,
                         WheelMass = 0.03f,
@@ -32,16 +32,16 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                         MaxSteerAngle = (float)Math.PI / 4,
                         ChassisPartsProperties = new []
                         {
-                            new BoxShapeProperties { Name = "ChassisBack", Dimensions = new Vector3(distanceBetweenWheels - wheelWidth, 0.04f, 2 * wheelRadius), MassDensity = { Mass = 0.1f } },
-                            new BoxShapeProperties { Name = "ChassisMiddle", Dimensions = new Vector3(distanceBetweenWheels - wheelWidth, 0.10f, 0.13f), MassDensity = { Mass = 0.5f } },
-                            new BoxShapeProperties { Name = "ChassisFront", Dimensions = new Vector3(distanceBetweenWheels - 2 * wheelWidth, 0.06f, 0.1f), MassDensity = { Mass = 0.4f } },
+                            new BoxShapeProperties { Name = "ChassisBack", Dimensions = new Vector3(wheelsSpacing - wheelWidth, 0.04f, 2 * wheelRadius), MassDensity = { Mass = 0.1f } },
+                            new BoxShapeProperties { Name = "ChassisMiddle", Dimensions = new Vector3(wheelsSpacing - wheelWidth, 0.10f, 0.13f), MassDensity = { Mass = 0.5f } },
+                            new BoxShapeProperties { Name = "ChassisFront", Dimensions = new Vector3(wheelsSpacing - 2 * wheelWidth, 0.06f, 0.1f), MassDensity = { Mass = 0.4f } },
                         },
                         WheelsProperties = new []
                         {
-                            new CompositeWheelProperties { Name = "WheelFrontLeft", Position = new Vector3(distanceBetweenWheels / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = true},
-                            new CompositeWheelProperties { Name = "WheelFrontRight", Position = new Vector3(-distanceBetweenWheels / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = false},
-                            new CompositeWheelProperties { Name = "WheelRearLeft", Position = new Vector3(distanceBetweenWheels / 2.0f, wheelRadius, -wheelBase / 2.0f), Motorized = true, Steerable = false, Flipped = true},
-                            new CompositeWheelProperties { Name = "WheelRearRight", Position = new Vector3(-distanceBetweenWheels / 2.0f, wheelRadius, -wheelBase / 2.0f), Motorized = true, Steerable = false, Flipped = false}
+                            new CompositeWheelProperties { Name = "WheelFrontLeft", Position = new Vector3(wheelsSpacing / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = true},
+                            new CompositeWheelProperties { Name = "WheelFrontRight", Position = new Vector3(-wheelsSpacing / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = false},
+                            new CompositeWheelProperties { Name = "WheelRearLeft", Position = new Vector3(wheelsSpacing / 2.0f, wheelRadius, -wheelBase / 2.0f), Motorized = true, Steerable = false, Flipped = true},
+                            new CompositeWheelProperties { Name = "WheelRearRight", Position = new Vector3(-wheelsSpacing / 2.0f, wheelRadius, -wheelBase / 2.0f), Motorized = true, Steerable = false, Flipped = false}
                         },
                     };
                 }
@@ -128,7 +128,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         	public IEnumerable<CompositeWheelProperties> WheelsProperties { get; private set; }
 
         	public float WheelBase { get; set; }
-            public float DistanceBetweenWheels { get; set; }
+            public float WheelsSpacing { get; set; }
             public float Clearance { get; set; }
             public float ChassisMass { get; set; }
         	public IEnumerable<BoxShapeProperties> ChassisPartsProperties { get; private set; }

@@ -15,6 +15,7 @@ namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour.Tests
             _c = new OnGroundTailBehaviour.Calculator(new OnGroundTailBehaviourState()
                     {
                         VehicleWheelBase = 5,
+						VehicleWheelsSpacing = 2.5f,
                         TailMass = 0.3f,
                         TailSegment1Length = 2,
                         TailSegment2Length = 2,
@@ -24,45 +25,50 @@ namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour.Tests
         }
 
         [Test]
-        public void ZeroVelocityZeroSteeringResponce()
+        public void ZeroVelocityZeroSteeringResponse()
         {            
-            Assert.That(_c.Calculate(0, 0), Is.EqualTo(new Vector2(0, -MathHelper.PiOver2)));
+            Assert.That(_c.Calculate(0, 0).X, Is.EqualTo(0));
+			Assert.That(_c.Calculate(0, 0).Y, Is.EqualTo(OnGroundTailBehaviour.Calculator.MinSegment2Angle).Within(0.00001));
         }
 
         [Test]
-        public void NotZeroVelocityZeroSteeringResponce()
+        public void NotZeroVelocityZeroSteeringResponse()
         {
-            Assert.That(_c.Calculate(0, 1), Is.EqualTo(new Vector2(0, -MathHelper.PiOver2)));
-            Assert.That(_c.Calculate(0, -1), Is.EqualTo(new Vector2(0, -MathHelper.PiOver2)));
+            Assert.That(_c.Calculate(0, 1).X, Is.EqualTo(0));
+			Assert.That(_c.Calculate(0, 1).Y, Is.EqualTo(OnGroundTailBehaviour.Calculator.MinSegment2Angle).Within(0.00001));
+            Assert.That(_c.Calculate(0, -1).X, Is.EqualTo(0));
+			Assert.That(_c.Calculate(0, -1).Y, Is.EqualTo(OnGroundTailBehaviour.Calculator.MinSegment2Angle).Within(0.00001));
         }
 
         [Test]
-        public void ZeroVelocityNotZeroSteeringResponce()
+        public void ZeroVelocityNotZeroSteeringResponse()
         {
-            Assert.That(_c.Calculate(MathHelper.PiOver4, 0), Is.EqualTo(new Vector2(0, -MathHelper.PiOver2)));
-            Assert.That(_c.Calculate(MathHelper.PiOver4, 0), Is.EqualTo(new Vector2(0, -MathHelper.PiOver2)));
+			Assert.That(_c.Calculate(MathHelper.PiOver4, 0).X, Is.EqualTo(0));
+			Assert.That(_c.Calculate(MathHelper.PiOver4, 0).Y, Is.EqualTo(OnGroundTailBehaviour.Calculator.MinSegment2Angle).Within(0.00001));
+			Assert.That(_c.Calculate(MathHelper.PiOver4, 0).X, Is.EqualTo(0));
+			Assert.That(_c.Calculate(MathHelper.PiOver4, 0).Y, Is.EqualTo(OnGroundTailBehaviour.Calculator.MinSegment2Angle).Within(0.00001));
         }
 
         [Test]
-        public void Segment1Responce()
+        public void Segment1Response()
         {
-            Assert.That(_c.Calculate(MathHelper.PiOver4, 1).X, Is.EqualTo(MathHelper.PiOver2));
-            Assert.That(_c.Calculate(-MathHelper.PiOver4, 1).X, Is.EqualTo(-MathHelper.PiOver2));
+			Assert.That(_c.Calculate(MathHelper.PiOver4, 1).X, Is.EqualTo(OnGroundTailBehaviour.Calculator.LimitSegment1Angle));
+			Assert.That(_c.Calculate(-MathHelper.PiOver4, 1).X, Is.EqualTo(-OnGroundTailBehaviour.Calculator.LimitSegment1Angle));
 
-            Assert.That(_c.Calculate(MathHelper.PiOver4, -1).X, Is.EqualTo(MathHelper.PiOver2));
-            Assert.That(_c.Calculate(-MathHelper.PiOver4, -1).X, Is.EqualTo(-MathHelper.PiOver2));
+			Assert.That(_c.Calculate(MathHelper.PiOver4, -1).X, Is.EqualTo(OnGroundTailBehaviour.Calculator.LimitSegment1Angle));
+			Assert.That(_c.Calculate(-MathHelper.PiOver4, -1).X, Is.EqualTo(-OnGroundTailBehaviour.Calculator.LimitSegment1Angle));
         }
 
         [Test]
-        public void Segment2Responce()
+        public void Segment2Response()
         {
-            //More steeper turn, more distance to tail mass, i.e less segment2 angle
-            Assert.That(_c.Calculate(MathHelper.Pi / 8, 3).Y, Is.LessThan(_c.Calculate(MathHelper.Pi / 6, 3).Y));
-            Assert.That(_c.Calculate(-MathHelper.Pi / 8, 3).Y, Is.LessThan(_c.Calculate(-MathHelper.Pi / 6, 3).Y));
+            //Steeper turn, more distance to the tail mass, i.e less segment2 angle (0 is the longest tail) 
+            Assert.That(Math.Abs(_c.Calculate(MathHelper.Pi / 8, 3).Y), Is.GreaterThan(Math.Abs(_c.Calculate(MathHelper.Pi / 6, 3).Y)));
+            Assert.That(Math.Abs(_c.Calculate(-MathHelper.Pi / 8, 3).Y), Is.GreaterThan(Math.Abs(_c.Calculate(-MathHelper.Pi / 6, 3).Y)));
 
-            //More velocity more distance to the tail mass
-            Assert.That(_c.Calculate(MathHelper.Pi / 8, 2).Y, Is.LessThan(_c.Calculate(MathHelper.Pi / 8, 3).Y));
-            Assert.That(_c.Calculate(-MathHelper.Pi / 8, 2).Y, Is.LessThan(_c.Calculate(-MathHelper.Pi / 8, 3).Y));
+            //Higher velocity, more distance to the tail mass
+            Assert.That(Math.Abs(_c.Calculate(MathHelper.Pi / 8, 3).Y), Is.GreaterThan(Math.Abs(_c.Calculate(MathHelper.Pi / 8, 4).Y)));
+			Assert.That(Math.Abs(_c.Calculate(-MathHelper.Pi / 8, 3).Y), Is.GreaterThan(Math.Abs(_c.Calculate(-MathHelper.Pi / 8, 4).Y)));
         }
 
         [Test]

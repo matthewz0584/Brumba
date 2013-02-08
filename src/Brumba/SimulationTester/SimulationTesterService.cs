@@ -6,6 +6,7 @@ using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Dss.Services.ManifestLoaderClient.Proxy;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using SimPxy = Microsoft.Robotics.Simulation.Proxy;
 using Microsoft.Robotics.Simulation.Engine;
@@ -27,8 +28,8 @@ namespace Brumba.Simulation.SimulationTester
 	{
 		public const int TRIES_NUMBER = 100;
 		public const float SUCCESS_THRESHOLD = 0.79f;
-		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
-		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
+		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
+		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
 
 		[ServiceState]
 		SimulationTesterState _state = new SimulationTesterState();
@@ -41,6 +42,9 @@ namespace Brumba.Simulation.SimulationTester
 
         [Partner("SimTimer", Contract = SimulatedTimer.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UsePartnerListEntry)]
         StPxy.SimulatedTimerOperations _timer = new StPxy.SimulatedTimerOperations();
+
+		[Partner("Manifest loader", Contract = Microsoft.Dss.Services.ManifestLoaderClient.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+		ManifestLoaderClientPort _manifestLoader = new ManifestLoaderClientPort();
 
         readonly List<ISimulationTestFixture> _testFixtures = new List<ISimulationTestFixture>();
 		readonly Dictionary<ISimulationTest, float> _testResults = new Dictionary<ISimulationTest, float>();
@@ -80,22 +84,22 @@ namespace Brumba.Simulation.SimulationTester
             yield return To.Exec(TimeoutPort(50));
         	
 			OnStarted();
-            foreach (var fixture in _testFixtures)
-            {
-            	OnFixtureStarted(fixture);
-                yield return To.Exec(RestoreTestEnvironment, fixture.Tests.First(), new Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>(es => es), new Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>(es => es));
+			foreach (var fixture in _testFixtures)
+			{
+				OnFixtureStarted(fixture);
+				yield return To.Exec(RestoreTestEnvironment, fixture.Tests.First(), new Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>(es => es), new Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>(es => es));
 
-                foreach (var test in fixture.Tests)
-                {
-                	OnTestStarted(test);
-                    
+				foreach (var test in fixture.Tests)
+				{
+					OnTestStarted(test);
+
 					float result = 0;
-                    yield return To.Exec(ExecuteTest, (float r) => result = r, test, vehiclePort);
+					yield return To.Exec(ExecuteTest, (float r) => result = r, test, vehiclePort);
 					_testResults.Add(test, result);
 
-                	OnTestEnded(test, result);
-                }
-            }
+					OnTestEnded(test, result);
+				}
+			}
         	OnEnded(_testResults);
 
 			LogInfo(_testResults.Aggregate("All tests are run: ", (message, test) => string.Format("{0} {1}-{2:P0}\n", message, test.Key.GetType().Name, test.Value)));
@@ -103,11 +107,11 @@ namespace Brumba.Simulation.SimulationTester
 
         IEnumerator<ITask> SetUpTest1Services(Action<SafwPxy.SimulatedAckermanFourWheelsOperations> @return)
         {
-            SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort = null;
-            yield return Arbiter.Choice(AckermanFourWheelsCreator.StartService(this, "testee"), vp => vehiclePort = vp, LogError);
-            if (vehiclePort == null)
-                yield break;
-            @return(vehiclePort);
+			yield return To.Exec(_manifestLoader.Insert(new InsertRequest { Manifest = ServiceInfo.HttpServiceAlias.Authority + ServicePaths.MountPoint + "/bin/ground_tailed_vehicle.Manifest.xml" }));
+	        var vehiclePort = ServiceForwarder<SafwPxy.SimulatedAckermanFourWheelsOperations>(String.Format(@"{0}vehicle", ServicePaths.MountPoint));
+			if (vehiclePort == null)
+				yield break;
+			@return(vehiclePort);
         }
 
         IEnumerator<ITask> SetUpSimulator()
