@@ -136,9 +136,6 @@
     <Compile Include="SimulatedAckermanVehicleExService.cs" />
     <Compile Include="SimulatedAckermanVehicleExTypes.cs" />
     <AppDesigner Include="Properties" />
-    <Compile Include="SimulatedTimer.cs" />
-    <Compile Include="SimulatedTimerTypes.cs" />
-    <Compile Include="TimerEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SimulatedAckermanVehicleEx.manifest.xml">

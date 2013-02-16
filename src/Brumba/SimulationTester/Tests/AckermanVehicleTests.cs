@@ -94,6 +94,7 @@ namespace Brumba.Simulation.SimulationTester
         }
     }
 
+    [SimulationTestFixture]
 	public class AckermanVehicleExTests : SimulationTestFixture
 	{
 	    public AckermanVehicleExTests(ServiceForwarder sf)

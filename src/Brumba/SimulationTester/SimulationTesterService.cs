@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -10,7 +11,6 @@ using Microsoft.Dss.Services.ManifestLoaderClient.Proxy;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using SimPxy = Microsoft.Robotics.Simulation.Proxy;
 using Microsoft.Robotics.Simulation.Engine;
-using SafwPxy = Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
 using StPxy = Brumba.Simulation.SimulatedTimer.Proxy;
 using System.Linq;
 using System.Xml;
@@ -73,10 +73,17 @@ namespace Brumba.Simulation.SimulationTester
 
 			base.Start();
 
-			_testFixtures.Add(new AckermanVehicleExTests(new ServiceForwarder(this)));
+            _testFixtures.AddRange(GatherTestFixtures());
 
             SpawnIterator(ExecuteTests);
 		}
+
+        IEnumerable<ISimulationTestFixture> GatherTestFixtures()
+        {
+            var fixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimulationTestFixtureAttribute && !(a as SimulationTestFixtureAttribute).Ignore));
+            var sf = new ServiceForwarder(this);
+            return fixtureTypes.Select(ft => Activator.CreateInstance(ft, new object[] { sf })).Cast<ISimulationTestFixture>();
+        }
 
         IEnumerator<ITask> ExecuteTests()
         {
