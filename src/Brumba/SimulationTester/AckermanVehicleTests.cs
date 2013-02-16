@@ -28,16 +28,16 @@ namespace Brumba.Simulation.SimulationTester
 			return entityPxies.Where(pxy => pxy.State.Name == VEHICLE_NAME);
 		}
 
-        public IEnumerator<ITask> Start(SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort)
+        public IEnumerator<ITask> Start()
 		{
-			yield return To.Exec(Start, (double et) => EstimatedTime = et, vehiclePort);
+			yield return To.Exec(Start, (double et) => EstimatedTime = et);
 		}
 
 		public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
 
-        protected abstract IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort);
+        protected abstract IEnumerator<ITask> Start(Action<double> @return);
 
-		public IEnumerable<VisualEntity> PrepareEntitiesToRestore(IEnumerable<VisualEntity> entities)
+		public IEnumerable<VisualEntity> PrepareEntitiesForRestore(IEnumerable<VisualEntity> entities)
 		{
 			var testee = entities.Single(e => e.State.Name == VEHICLE_NAME);
 			testee.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * _randomG.NextDouble()));
@@ -54,9 +54,9 @@ namespace Brumba.Simulation.SimulationTester
     		_motorPower = motorPower;
     	}
 
-        protected override IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort)
+        protected override IEnumerator<ITask> Start(Action<double> @return)
         {
-            yield return To.Exec(vehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = _motorPower }));
+            yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = _motorPower }));
             @return(50 / (AckermanVehicleExEntity.Properties.HardRearDriven.MaxVelocity * _motorPower));//50 meters
             //@return(2);
         }
@@ -78,11 +78,11 @@ namespace Brumba.Simulation.SimulationTester
     		_motorPower = motorPower;
     	}
 
-        protected override IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort)
+        protected override IEnumerator<ITask> Start(Action<double> @return)
         {
             var steerAngle = _randomG.Next(0, 1) == 1 ? 0.1f : -0.1f;
-            yield return To.Exec(vehiclePort.SetSteerAngle(new SafwPxy.SteerAngleRequest { Value = steerAngle }));
-            yield return To.Exec(vehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = _motorPower }));
+            yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.SetSteerAngle(new SafwPxy.SteerAngleRequest { Value = steerAngle }));
+            yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = _motorPower }));
             @return(20);
         }
 
@@ -94,35 +94,18 @@ namespace Brumba.Simulation.SimulationTester
         }
     }
 
-	public class HardRearDrivenVehicleTests : SimulationTestFixture
+	public class AckermanVehicleExTests : SimulationTestFixture
 	{
-		public HardRearDrivenVehicleTests()
-			: base(new SingleVehicleTest[] { new StraightPathTest(0.6f), new CurvedPathTest(0.5f) }, "hard_rear_driven_on_terrain03.xml")
+	    public AckermanVehicleExTests(ServiceForwarder sf)
+            : base(new SingleVehicleTest[] { new StraightPathTest(0.6f), new CurvedPathTest(0.5f) }, "ackerman_vehicle_ex_on_terrain03", sf)
 		{
 		}
-	}
 
-	public class SuspendedRearDrivenVehicleTests : SimulationTestFixture
-	{
-		public SuspendedRearDrivenVehicleTests()
-			: base(new SingleVehicleTest[] { new StraightPathTest(0.6f), new CurvedPathTest(0.5f) }, "suspended_rear_driven_on_terrain03.xml")
-		{
-		}
-	}
+	    public SafwPxy.SimulatedAckermanVehicleExOperations VehiclePort { get; set; }
 
-	public class Hard4x4VehicleTests : SimulationTestFixture
-	{
-		public Hard4x4VehicleTests()
-			: base(new SingleVehicleTest[] { new StraightPathTest(0.6f), new CurvedPathTest(0.5f) }, "hard_4x4_on_terrain03.xml")
-		{
-		}
-	}
-
-	public class Suspended4x4VehicleTests : SimulationTestFixture
-	{
-		public Suspended4x4VehicleTests()
-			: base(new SingleVehicleTest[] { new StraightPathTest(0.6f), new CurvedPathTest(0.5f) }, "suspended_4x4_on_terrain03.xml")
-		{
-		}
+	    protected override void SetUpServicePorts(ServiceForwarder serviceForwarder)
+	    {
+            VehiclePort = serviceForwarder.ForwardTo<SafwPxy.SimulatedAckermanVehicleExOperations>("testee_veh_service");
+	    }
 	}
 }

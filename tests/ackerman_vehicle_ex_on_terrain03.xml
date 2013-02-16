@@ -6,7 +6,7 @@
     <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
   </Gravity>
   <RenderMode>Full</RenderMode>
-  <FramesPerSecond>59.6</FramesPerSecond>
+  <FramesPerSecond>57.6626968</FramesPerSecond>
   <Pause>false</Pause>
   <CameraPosition>
     <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-12</X>
@@ -305,32 +305,32 @@
       <FalloffEnd>30</FalloffEnd>
       <CastsShadows>false</CastsShadows>
     </LightSourceEntity>
-    <AckermanFourWheelsEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html">
+    <AckermanVehicleExEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html">
       <sim:State>
         <sim:Name>testee</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
-            <physm:X>-5.242647E-05</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>-0.00130586128</physm:Z>
+            <physm:X>-4.03169943E-05</physm:X>
+            <physm:Y>0.110344112</physm:Y>
+            <physm:Z>-0.00128322642</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.008032531</physm:X>
-            <physm:Y>1.64177054E-05</physm:Y>
-            <physm:Z>-0.0003544924</physm:Z>
-            <physm:W>0.9999678</physm:W>
+            <physm:X>0.007796973</physm:X>
+            <physm:Y>1.446755E-05</physm:Y>
+            <physm:Z>-0.0001638799</physm:Z>
+            <physm:W>0.9999693</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-7.384148E-05</physm:X>
-          <physm:Y>-0.000245997042</physm:Y>
-          <physm:Z>0.000104121165</physm:Z>
+          <physm:X>6.30448E-05</physm:X>
+          <physm:Y>-7.79622642E-05</physm:Y>
+          <physm:Z>4.86604076E-05</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>-0.000291058619</physm:X>
-          <physm:Y>-0.00115073507</physm:Y>
-          <physm:Z>-0.0003982111</physm:Z>
+          <physm:X>-0.000223847732</physm:X>
+          <physm:Y>0.001832719</physm:Y>
+          <physm:Z>0.0008099943</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>2</phys:Mass>
@@ -374,7 +374,7 @@
       <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">None</Flags>
       <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">4</ChildCount>
       <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
-      <ServiceContract xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html</ServiceContract>
+      <ServiceContract xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html</ServiceContract>
       <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <physm:X>1</physm:X>
         <physm:Y>1</physm:Y>
@@ -625,8 +625,8 @@
       </ChassisParts>
       <MaxVelocity>4.16</MaxVelocity>
       <MaxSteerAngle>0.7853982</MaxSteerAngle>
-    </AckermanFourWheelsEntity>
-    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html">
+    </AckermanVehicleExEntity>
+    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html">
       <sim:State>
         <sim:Name>testee WheelFrontLeft body</sim:Name>
         <sim:Assets>
@@ -634,29 +634,29 @@
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>0.08498733</physm:X>
-            <physm:Y>-0.0510034934</physm:Y>
-            <physm:Z>0.124648526</physm:Z>
+            <physm:X>0.08497886</physm:X>
+            <physm:Y>-0.05100516</physm:Y>
+            <physm:Z>0.124658063</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.00849208</physm:X>
-            <physm:Y>-0.000194950277</physm:Y>
-            <physm:Z>-0.0002834415</physm:Z>
-            <physm:W>0.9999641</physm:W>
+            <physm:X>0.007835019</physm:X>
+            <physm:Y>1.70980657E-05</physm:Y>
+            <physm:Z>-0.00015325821</physm:Z>
+            <physm:W>0.9999687</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-0.0005035595</physm:X>
-          <physm:Y>-0.000596208</physm:Y>
-          <physm:Z>1.14261911E-05</physm:Z>
+          <physm:X>7.55873843E-05</physm:X>
+          <physm:Y>-0.000109974033</physm:Y>
+          <physm:Z>8.601641E-06</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>0.0008158457</physm:X>
-          <physm:Y>-0.00292910775</physm:Y>
-          <physm:Z>0.004918225</physm:Z>
+          <physm:X>-0.00141984585</physm:X>
+          <physm:Y>0.0009807418</physm:Y>
+          <physm:Z>-0.00309076579</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
-          <phys:Mass>0.015</phys:Mass>
+          <phys:Mass>0.03</phys:Mass>
           <phys:InertiaTensor>
             <physm:X>0</physm:X>
             <physm:Y>0</physm:Y>
@@ -845,7 +845,7 @@
             <phys:MaterialIndex>5</phys:MaterialIndex>
           </phys:Material>
           <phys:MassDensity>
-            <phys:Mass>0.015</phys:Mass>
+            <phys:Mass>0.03</phys:Mass>
             <phys:InertiaTensor>
               <physm:X>0</physm:X>
               <physm:Y>0</physm:Y>
@@ -921,7 +921,7 @@
         <Width>0.045</Width>
         <MaxSteerAngle>0.7853982</MaxSteerAngle>
         <SuspensionRate>750</SuspensionRate>
-        <Motorized>true</Motorized>
+        <Motorized>false</Motorized>
         <Steerable>true</Steerable>
         <Flipped>true</Flipped>
       </Props>
@@ -933,15 +933,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>0.08498945</physm:X>
-              <physm:Y>-0.05100397</physm:Y>
-              <physm:Z>0.12465246</physm:Z>
+              <physm:X>0.0849751756</physm:X>
+              <physm:Y>-0.05100515</physm:Y>
+              <physm:Z>0.124658406</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.008458058</physm:X>
-              <physm:Y>-0.000214757412</physm:Y>
-              <physm:Z>-0.000243983028</physm:Z>
-              <physm:W>0.9999644</physm:W>
+              <physm:X>0.007835046</physm:X>
+              <physm:Y>9.995249E-06</physm:Y>
+              <physm:Z>-0.000175792782</physm:Z>
+              <physm:W>0.9999687</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -1029,7 +1029,7 @@
               <phys:MaterialIndex>6</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
-              <phys:Mass>0.03</phys:Mass>
+              <phys:Mass>0.0015</phys:Mass>
               <phys:InertiaTensor>
                 <physm:X>0</physm:X>
                 <physm:Y>0</physm:Y>
@@ -1072,10 +1072,10 @@
                 <physm:Z>0</physm:Z>
               </physm:Position>
               <physm:Orientation>
-                <physm:X>0</physm:X>
+                <physm:X>-0.00200079125</physm:X>
                 <physm:Y>0</physm:Y>
                 <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
+                <physm:W>0.999998</physm:W>
               </physm:Orientation>
             </phys:LocalPose>
             <phys:TextureFileName />
@@ -1088,7 +1088,7 @@
             <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
             <phys:InnerRadius>0</phys:InnerRadius>
             <phys:SuspensionTravel>0</phys:SuspensionTravel>
-            <phys:Flags>OverrideAxleSpeed</phys:Flags>
+            <phys:Flags />
             <phys:AxleSpeed>0</phys:AxleSpeed>
             <phys:TireLateralForceFunction>
               <physm:ExtremumSlip>1</physm:ExtremumSlip>
@@ -1107,7 +1107,7 @@
             <phys:BrakeTorque>0</phys:BrakeTorque>
           </phys:WheelState>
         </WheelShape>
-        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
+        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.000629319169</Rotations>
       </ModelInner>
       <ModelOutter>
         <sim:State>
@@ -1117,15 +1117,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>0.08498945</physm:X>
-              <physm:Y>-0.05100397</physm:Y>
-              <physm:Z>0.12465246</physm:Z>
+              <physm:X>0.0849751756</physm:X>
+              <physm:Y>-0.05100515</physm:Y>
+              <physm:Z>0.124658406</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.008458058</physm:X>
-              <physm:Y>-0.000214757412</physm:Y>
-              <physm:Z>-0.000243983028</physm:Z>
-              <physm:W>0.9999644</physm:W>
+              <physm:X>0.007835046</physm:X>
+              <physm:Y>9.995249E-06</physm:Y>
+              <physm:Z>-0.000175792782</physm:Z>
+              <physm:W>0.9999687</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -1213,7 +1213,7 @@
               <phys:MaterialIndex>7</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
-              <phys:Mass>0.03</phys:Mass>
+              <phys:Mass>0.0015</phys:Mass>
               <phys:InertiaTensor>
                 <physm:X>0</physm:X>
                 <physm:Y>0</physm:Y>
@@ -1256,10 +1256,10 @@
                 <physm:Z>0</physm:Z>
               </physm:Position>
               <physm:Orientation>
-                <physm:X>0</physm:X>
+                <physm:X>-0.00735662</physm:X>
                 <physm:Y>0</physm:Y>
                 <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
+                <physm:W>0.999972939</physm:W>
               </physm:Orientation>
             </phys:LocalPose>
             <phys:TextureFileName />
@@ -1272,7 +1272,7 @@
             <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
             <phys:InnerRadius>0</phys:InnerRadius>
             <phys:SuspensionTravel>0</phys:SuspensionTravel>
-            <phys:Flags>OverrideAxleSpeed</phys:Flags>
+            <phys:Flags />
             <phys:AxleSpeed>0</phys:AxleSpeed>
             <phys:TireLateralForceFunction>
               <physm:ExtremumSlip>1</physm:ExtremumSlip>
@@ -1291,10 +1291,10 @@
             <phys:BrakeTorque>0</phys:BrakeTorque>
           </phys:WheelState>
         </WheelShape>
-        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
+        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.00233560614</Rotations>
       </ModelOutter>
     </CompositeWheel>
-    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html">
+    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html">
       <sim:State>
         <sim:Name>testee WheelFrontRight body</sim:Name>
         <sim:Assets>
@@ -1302,29 +1302,29 @@
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>-0.08501067</physm:X>
-            <physm:Y>-0.0510062873</physm:Y>
-            <physm:Z>0.124652423</physm:Z>
+            <physm:X>-0.08502524</physm:X>
+            <physm:Y>-0.0510068461</physm:Y>
+            <physm:Z>0.12466123</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.0085830735</physm:X>
-            <physm:Y>0.000316425634</physm:Y>
-            <physm:Z>-0.000238325039</physm:Z>
-            <physm:W>0.9999631</physm:W>
+            <physm:X>0.007890091</physm:X>
+            <physm:Y>9.422036E-06</physm:Y>
+            <physm:Z>-1.05161171E-05</physm:Z>
+            <physm:W>0.999969</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>0.000363602041</physm:X>
-          <physm:Y>-0.0005812961</physm:Y>
-          <physm:Z>-0.000116410025</physm:Z>
+          <physm:X>-6.136809E-06</physm:X>
+          <physm:Y>-9.930217E-05</physm:Y>
+          <physm:Z>6.4138716E-05</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>-0.00150074053</physm:X>
-          <physm:Y>0.00174458255</physm:Y>
-          <physm:Z>-0.005091231</physm:Z>
+          <physm:X>-0.00166878593</physm:X>
+          <physm:Y>-0.0003294693</physm:Y>
+          <physm:Z>0.00328647671</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
-          <phys:Mass>0.015</phys:Mass>
+          <phys:Mass>0.03</phys:Mass>
           <phys:InertiaTensor>
             <physm:X>0</physm:X>
             <physm:Y>0</physm:Y>
@@ -1513,7 +1513,7 @@
             <phys:MaterialIndex>8</phys:MaterialIndex>
           </phys:Material>
           <phys:MassDensity>
-            <phys:Mass>0.015</phys:Mass>
+            <phys:Mass>0.03</phys:Mass>
             <phys:InertiaTensor>
               <physm:X>0</physm:X>
               <physm:Y>0</physm:Y>
@@ -1589,7 +1589,7 @@
         <Width>0.045</Width>
         <MaxSteerAngle>0.7853982</MaxSteerAngle>
         <SuspensionRate>750</SuspensionRate>
-        <Motorized>true</Motorized>
+        <Motorized>false</Motorized>
         <Steerable>true</Steerable>
         <Flipped>false</Flipped>
       </Props>
@@ -1601,15 +1601,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>-0.08500928</physm:X>
-              <physm:Y>-0.0510062724</physm:Y>
-              <physm:Z>0.124656804</physm:Z>
+              <physm:X>-0.08502291</physm:X>
+              <physm:Y>-0.0510068052</physm:Y>
+              <physm:Z>0.124660783</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.008539075</physm:X>
-              <physm:Y>0.000339164166</physm:Y>
-              <physm:Z>-0.0002261314</physm:Z>
-              <physm:W>0.999963462</physm:W>
+              <physm:X>0.007889101</physm:X>
+              <physm:Y>1.08043641E-05</physm:Y>
+              <physm:Z>-2.42705664E-05</physm:Z>
+              <physm:W>0.999969</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -1697,7 +1697,7 @@
               <phys:MaterialIndex>9</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
-              <phys:Mass>0.03</phys:Mass>
+              <phys:Mass>0.0015</phys:Mass>
               <phys:InertiaTensor>
                 <physm:X>0</physm:X>
                 <physm:Y>0</physm:Y>
@@ -1740,10 +1740,10 @@
                 <physm:Z>0</physm:Z>
               </physm:Position>
               <physm:Orientation>
-                <physm:X>0</physm:X>
+                <physm:X>0.0166626535</physm:X>
                 <physm:Y>0</physm:Y>
                 <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
+                <physm:W>0.9998612</physm:W>
               </physm:Orientation>
             </phys:LocalPose>
             <phys:TextureFileName />
@@ -1756,7 +1756,7 @@
             <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
             <phys:InnerRadius>0</phys:InnerRadius>
             <phys:SuspensionTravel>0</phys:SuspensionTravel>
-            <phys:Flags>OverrideAxleSpeed</phys:Flags>
+            <phys:Flags />
             <phys:AxleSpeed>0</phys:AxleSpeed>
             <phys:TireLateralForceFunction>
               <physm:ExtremumSlip>1</physm:ExtremumSlip>
@@ -1775,7 +1775,7 @@
             <phys:BrakeTorque>0</phys:BrakeTorque>
           </phys:WheelState>
         </WheelShape>
-        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
+        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">-0.00531218667</Rotations>
       </ModelInner>
       <ModelOutter>
         <sim:State>
@@ -1785,15 +1785,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>-0.08500928</physm:X>
-              <physm:Y>-0.0510062724</physm:Y>
-              <physm:Z>0.124656804</physm:Z>
+              <physm:X>-0.08502291</physm:X>
+              <physm:Y>-0.0510068052</physm:Y>
+              <physm:Z>0.124660783</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.008539075</physm:X>
-              <physm:Y>0.000339164166</physm:Y>
-              <physm:Z>-0.0002261314</physm:Z>
-              <physm:W>0.999963462</physm:W>
+              <physm:X>0.007889101</physm:X>
+              <physm:Y>1.08043641E-05</physm:Y>
+              <physm:Z>-2.42705664E-05</physm:Z>
+              <physm:W>0.999969</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -1881,7 +1881,7 @@
               <phys:MaterialIndex>10</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
-              <phys:Mass>0.03</phys:Mass>
+              <phys:Mass>0.0015</phys:Mass>
               <phys:InertiaTensor>
                 <physm:X>0</physm:X>
                 <physm:Y>0</physm:Y>
@@ -1924,10 +1924,10 @@
                 <physm:Z>0</physm:Z>
               </physm:Position>
               <physm:Orientation>
-                <physm:X>0</physm:X>
+                <physm:X>0.0200034864</physm:X>
                 <physm:Y>0</physm:Y>
                 <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
+                <physm:W>0.9997999</physm:W>
               </physm:Orientation>
             </phys:LocalPose>
             <phys:TextureFileName />
@@ -1940,7 +1940,7 @@
             <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
             <phys:InnerRadius>0</phys:InnerRadius>
             <phys:SuspensionTravel>0</phys:SuspensionTravel>
-            <phys:Flags>OverrideAxleSpeed</phys:Flags>
+            <phys:Flags />
             <phys:AxleSpeed>0</phys:AxleSpeed>
             <phys:TireLateralForceFunction>
               <physm:ExtremumSlip>1</physm:ExtremumSlip>
@@ -1959,10 +1959,10 @@
             <phys:BrakeTorque>0</phys:BrakeTorque>
           </phys:WheelState>
         </WheelShape>
-        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
+        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">-0.00637473771</Rotations>
       </ModelOutter>
     </CompositeWheel>
-    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html">
+    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html">
       <sim:State>
         <sim:Name>testee WheelRearLeft body</sim:Name>
         <sim:Assets>
@@ -1970,29 +1970,29 @@
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>0.08497913</physm:X>
-            <physm:Y>-0.05100546</physm:Y>
-            <physm:Z>-0.12537314</physm:Z>
+            <physm:X>0.08497173</physm:X>
+            <physm:Y>-0.05100517</physm:Y>
+            <physm:Z>-0.125375971</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.008120618</physm:X>
-            <physm:Y>-2.32714374E-05</physm:Y>
-            <physm:Z>-0.0004592144</physm:Z>
-            <physm:W>0.999967039</physm:W>
+            <physm:X>0.00791826751</physm:X>
+            <physm:Y>-9.563022E-05</physm:Y>
+            <physm:Z>-5.932074E-05</physm:Z>
+            <physm:W>0.9999691</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-0.0001873503</physm:X>
-          <physm:Y>-0.000406910782</physm:Y>
-          <physm:Z>-6.14096061E-05</physm:Z>
+          <physm:X>-0.0001496485</physm:X>
+          <physm:Y>-7.606485E-05</physm:Y>
+          <physm:Z>5.025879E-05</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>0.000153294837</physm:X>
-          <physm:Y>-0.0029779966</physm:Y>
-          <physm:Z>0.00237383065</physm:Z>
+          <physm:X>0.0006739249</physm:X>
+          <physm:Y>-0.0011268697</physm:Y>
+          <physm:Z>0.00116522389</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
-          <phys:Mass>0.015</phys:Mass>
+          <phys:Mass>0.03</phys:Mass>
           <phys:InertiaTensor>
             <physm:X>0</physm:X>
             <physm:Y>0</physm:Y>
@@ -2154,7 +2154,7 @@
             <phys:MaterialIndex>11</phys:MaterialIndex>
           </phys:Material>
           <phys:MassDensity>
-            <phys:Mass>0.015</phys:Mass>
+            <phys:Mass>0.03</phys:Mass>
             <phys:InertiaTensor>
               <physm:X>0</physm:X>
               <physm:Y>0</physm:Y>
@@ -2242,15 +2242,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>0.08497879</physm:X>
-              <physm:Y>-0.051005248</physm:Y>
-              <physm:Z>-0.125371158</physm:Z>
+              <physm:X>0.08497352</physm:X>
+              <physm:Y>-0.05100518</physm:Y>
+              <physm:Z>-0.12537685</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.008096864</physm:X>
-              <physm:Y>-3.6453006E-05</physm:Y>
-              <physm:Z>-0.000451110158</physm:Z>
-              <physm:W>0.9999672</physm:W>
+              <physm:X>0.007918273</physm:X>
+              <physm:Y>-8.45891263E-05</physm:Y>
+              <physm:Z>-6.124064E-05</physm:Z>
+              <physm:W>0.9999691</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -2338,7 +2338,7 @@
               <phys:MaterialIndex>12</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
-              <phys:Mass>0.03</phys:Mass>
+              <phys:Mass>0.0015</phys:Mass>
               <phys:InertiaTensor>
                 <physm:X>0</physm:X>
                 <physm:Y>0</physm:Y>
@@ -2426,15 +2426,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>0.08497879</physm:X>
-              <physm:Y>-0.051005248</physm:Y>
-              <physm:Z>-0.125371158</physm:Z>
+              <physm:X>0.08497352</physm:X>
+              <physm:Y>-0.05100518</physm:Y>
+              <physm:Z>-0.12537685</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.008096864</physm:X>
-              <physm:Y>-3.6453006E-05</physm:Y>
-              <physm:Z>-0.000451110158</physm:Z>
-              <physm:W>0.9999672</physm:W>
+              <physm:X>0.007918273</physm:X>
+              <physm:Y>-8.45891263E-05</physm:Y>
+              <physm:Z>-6.124064E-05</physm:Z>
+              <physm:W>0.9999691</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -2522,7 +2522,7 @@
               <phys:MaterialIndex>13</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
-              <phys:Mass>0.03</phys:Mass>
+              <phys:Mass>0.0015</phys:Mass>
               <phys:InertiaTensor>
                 <physm:X>0</physm:X>
                 <physm:Y>0</physm:Y>
@@ -2603,7 +2603,7 @@
         <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
       </ModelOutter>
     </CompositeWheel>
-    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.tempuri.org/2012/10/simulatedackermanfourwheels.html">
+    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html">
       <sim:State>
         <sim:Name>testee WheelRearRight body</sim:Name>
         <sim:Assets>
@@ -2611,29 +2611,29 @@
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>-0.08502059</physm:X>
-            <physm:Y>-0.0510060973</physm:Y>
-            <physm:Z>-0.125370234</physm:Z>
+            <physm:X>-0.08502867</physm:X>
+            <physm:Y>-0.05100555</physm:Y>
+            <physm:Z>-0.125374466</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0.008143581</physm:X>
-            <physm:Y>-5.19969726E-05</physm:Y>
-            <physm:Z>-0.000354766031</physm:Z>
-            <physm:W>0.9999666</physm:W>
+            <physm:X>0.007921306</physm:X>
+            <physm:Y>-0.000107223932</physm:Y>
+            <physm:Z>-0.000154645692</physm:Z>
+            <physm:W>0.99996835</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-0.000127925916</physm:X>
-          <physm:Y>-0.000429517066</physm:Y>
-          <physm:Z>-0.000117576252</physm:Z>
+          <physm:X>-0.000131740671</physm:X>
+          <physm:Y>-7.914972E-05</physm:Y>
+          <physm:Z>1.86820962E-05</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>-0.001117272</physm:X>
-          <physm:Y>-0.002271908</physm:Y>
-          <physm:Z>-0.000184602846</physm:Z>
+          <physm:X>0.0005052236</physm:X>
+          <physm:Y>-0.00130711</physm:Y>
+          <physm:Z>-0.000263851281</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
-          <phys:Mass>0.015</phys:Mass>
+          <phys:Mass>0.03</phys:Mass>
           <phys:InertiaTensor>
             <physm:X>0</physm:X>
             <physm:Y>0</physm:Y>
@@ -2795,7 +2795,7 @@
             <phys:MaterialIndex>14</phys:MaterialIndex>
           </phys:Material>
           <phys:MassDensity>
-            <phys:Mass>0.015</phys:Mass>
+            <phys:Mass>0.03</phys:Mass>
             <phys:InertiaTensor>
               <physm:X>0</physm:X>
               <physm:Y>0</physm:Y>
@@ -2883,15 +2883,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>-0.08502058</physm:X>
-              <physm:Y>-0.051005993</physm:Y>
-              <physm:Z>-0.1253691</physm:Z>
+              <physm:X>-0.08502665</physm:X>
+              <physm:Y>-0.0510055348</physm:Y>
+              <physm:Z>-0.1253749</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.008173218</physm:X>
-              <physm:Y>-9.047326E-05</physm:Y>
-              <physm:Z>-0.0003349617</physm:Z>
-              <physm:W>0.9999664</physm:W>
+              <physm:X>0.0079206</physm:X>
+              <physm:Y>-9.272549E-05</physm:Y>
+              <physm:Z>-0.000153392946</physm:Z>
+              <physm:W>0.99996835</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -2979,7 +2979,7 @@
               <phys:MaterialIndex>15</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
-              <phys:Mass>0.03</phys:Mass>
+              <phys:Mass>0.0015</phys:Mass>
               <phys:InertiaTensor>
                 <physm:X>0</physm:X>
                 <physm:Y>0</physm:Y>
@@ -3067,15 +3067,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>-0.08502058</physm:X>
-              <physm:Y>-0.051005993</physm:Y>
-              <physm:Z>-0.1253691</physm:Z>
+              <physm:X>-0.08502665</physm:X>
+              <physm:Y>-0.0510055348</physm:Y>
+              <physm:Z>-0.1253749</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>0.008173218</physm:X>
-              <physm:Y>-9.047326E-05</physm:Y>
-              <physm:Z>-0.0003349617</physm:Z>
-              <physm:W>0.9999664</physm:W>
+              <physm:X>0.0079206</physm:X>
+              <physm:Y>-9.272549E-05</physm:Y>
+              <physm:Z>-0.000153392946</physm:Z>
+              <physm:W>0.99996835</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -3163,7 +3163,7 @@
               <phys:MaterialIndex>16</phys:MaterialIndex>
             </phys:Material>
             <phys:MassDensity>
-              <phys:Mass>0.03</phys:Mass>
+              <phys:Mass>0.0015</phys:Mass>
               <phys:InertiaTensor>
                 <physm:X>0</physm:X>
                 <physm:Y>0</physm:Y>

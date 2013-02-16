@@ -21,15 +21,16 @@ using Brumba.Simulation.SimulatedTimer;
 
 namespace Brumba.Simulation.SimulationTester
 {
-	[Contract(Contract.Identifier)]
+    [Contract(Contract.Identifier)]
 	[DisplayName("Simulation Tester")]
 	[Description("Simulation Tester service (no description provided)")]
-	class SimulationTesterService : DsspServiceBase, IServiceStarter
+	public class SimulationTesterService : DsspServiceBase
 	{
 		public const int TRIES_NUMBER = 100;
 		public const float SUCCESS_THRESHOLD = 0.79f;
-		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
-		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
+		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
+		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
+        public const string TESTS_PATH = "brumba/tests";
 
 		[ServiceState]
 		SimulationTesterState _state = new SimulationTesterState();
@@ -60,6 +61,11 @@ namespace Brumba.Simulation.SimulationTester
 			: base(creationPort)
 		{
 		}
+
+        public T ForwardTo<T>(string serviceUri) where T : IPortSet, new()
+        {
+            return ServiceForwarder<T>(String.Format(@"{0}://{1}/{2}", ServiceInfo.HttpServiceAlias.Scheme, ServiceInfo.HttpServiceAlias.Authority, serviceUri));
+        }
 		
 		protected override void Start()
 		{
@@ -67,10 +73,7 @@ namespace Brumba.Simulation.SimulationTester
 
 			base.Start();
 
-			_testFixtures.Add(new HardRearDrivenVehicleTests());
-			_testFixtures.Add(new SuspendedRearDrivenVehicleTests());
-			_testFixtures.Add(new Hard4x4VehicleTests());
-			_testFixtures.Add(new Suspended4x4VehicleTests());
+			_testFixtures.Add(new AckermanVehicleExTests(new ServiceForwarder(this)));
 
             SpawnIterator(ExecuteTests);
 		}
@@ -79,14 +82,18 @@ namespace Brumba.Simulation.SimulationTester
         {
             yield return To.Exec(SetUpSimulator);
 
-            SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort = null;
-            yield return To.Exec(SetUpTest1Services, (SafwPxy.SimulatedAckermanVehicleExOperations vp) => vehiclePort = vp);
-            yield return To.Exec(TimeoutPort(50));
-        	
 			OnStarted();
 			foreach (var fixture in _testFixtures)
 			{
 				OnFixtureStarted(fixture);
+
+                //Start fixture manifest
+                yield return To.Exec(StartFixtureManifest, fixture);
+                
+                //Connect to necessary services
+                fixture.SetUpServicePorts();
+
+                //Full restore: static and dynamic objects
 				yield return To.Exec(RestoreTestEnvironment, fixture.Tests.First(), new Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>(es => es), new Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>(es => es));
 
 				foreach (var test in fixture.Tests)
@@ -94,7 +101,7 @@ namespace Brumba.Simulation.SimulationTester
 					OnTestStarted(test);
 
 					float result = 0;
-					yield return To.Exec(ExecuteTest, (float r) => result = r, test, vehiclePort);
+					yield return To.Exec(ExecuteTest, (float r) => result = r, test);
 					_testResults.Add(test, result);
 
 					OnTestEnded(test, result);
@@ -105,13 +112,14 @@ namespace Brumba.Simulation.SimulationTester
 			LogInfo(_testResults.Aggregate("All tests are run: ", (message, test) => string.Format("{0} {1}-{2:P0}\n", message, test.Key.GetType().Name, test.Value)));
         }
 
-        IEnumerator<ITask> SetUpTest1Services(Action<SafwPxy.SimulatedAckermanVehicleExOperations> @return)
+        IEnumerator<ITask> StartFixtureManifest(ISimulationTestFixture fixture)
         {
-			yield return To.Exec(_manifestLoader.Insert(new InsertRequest { Manifest = ServiceInfo.HttpServiceAlias.Authority + ServicePaths.MountPoint + "/bin/ground_tailed_vehicle.Manifest.xml" }));
-            var vehiclePort = ServiceForwarder<SafwPxy.SimulatedAckermanVehicleExOperations>(String.Format(@"{0}vehicle", ServicePaths.MountPoint));
-			if (vehiclePort == null)
-				yield break;
-			@return(vehiclePort);
+            yield return To.Exec(
+                _manifestLoader.Insert(new InsertRequest
+                    {
+                        Manifest = String.Format(@"{0}://{1}{2}/{3}/{4}.{5}",
+                                            ServiceInfo.HttpServiceAlias.Scheme, ServiceInfo.HttpServiceAlias.Authority, ServicePaths.MountPoint, TESTS_PATH, fixture.EnvironmentXmlFile, SimulationTestFixture.MANIFEST_EXTENSION)
+                    }));
         }
 
         IEnumerator<ITask> SetUpSimulator()
@@ -126,7 +134,7 @@ namespace Brumba.Simulation.SimulationTester
             yield return To.Exec(_simEngine.Replace(simState));
         }
 
-        IEnumerator<ITask> ExecuteTest(Action<float> @return, ISimulationTest test, SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort)
+        IEnumerator<ITask> ExecuteTest(Action<float> @return, ISimulationTest test)
         {
         	int successful = 0, i;
 			for (i = 0; i < TRIES_NUMBER; ++i)
@@ -134,9 +142,9 @@ namespace Brumba.Simulation.SimulationTester
 				if (HasEarlyResults(i, successful))
 					break;
 
-                yield return To.Exec(RestoreTestEnvironment, test, (Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>)test.FindEntitiesToRestore, (Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>)test.PrepareEntitiesToRestore);
+                yield return To.Exec(RestoreTestEnvironment, test, (Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>)test.FindEntitiesToRestore, (Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>)test.PrepareEntitiesForRestore);
 
-                yield return To.Exec(test.Start, vehiclePort);
+                yield return To.Exec(test.Start);
 
                 var testSucceed = false;
                 
@@ -182,7 +190,7 @@ namespace Brumba.Simulation.SimulationTester
             yield return To.Exec(_simEngine.Replace(simState));
 
             var get = new DsspDefaultGet();
-            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/brumba/src/brumba/simulationtester/{1}", ServicePaths.MountPoint, test.Fixture.EnvironmentXmlFile)).Post(get);
+            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, test.Fixture.EnvironmentXmlFile, SimulationTestFixture.ENVIRONMENT_EXTENSION)).Post(get);
             yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (Microsoft.Robotics.Simulation.Proxy.SimulationState)success);
 
             IEnumerable<VisualEntity> entities = null;
@@ -250,23 +258,6 @@ namespace Brumba.Simulation.SimulationTester
 		{
 			return i == TRIES_NUMBER / 10 && ((float)successful / i > SUCCESS_THRESHOLD || (float)successful / i < 1 - SUCCESS_THRESHOLD);
 		}
-
-        #region IServiceCreator
-        DsspResponsePort<CreateResponse> IServiceStarter.CreateService(ServiceInfoType serviceInfo)
-        {
-            return CreateService(serviceInfo);
-        }
-
-        SafwPxy.SimulatedAckermanVehicleExOperations IServiceStarter.ServiceForwarder(Uri uri)
-        {
-            return ServiceForwarder<SafwPxy.SimulatedAckermanVehicleExOperations>(uri);
-        }
-
-        void IServiceStarter.Activate(Choice choice)
-        {
-            Activate(choice);
-        }
-        #endregion
 	}
 }
 

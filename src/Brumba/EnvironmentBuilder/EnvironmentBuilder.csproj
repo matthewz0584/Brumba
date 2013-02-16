@@ -96,9 +96,6 @@
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PhysicsEngine">
-      <HintPath>..\..\..\..\bin\PhysicsEngine.dll</HintPath>
-    </Reference>
     <Reference Include="RoboticsCommon">
       <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
@@ -122,7 +119,6 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -141,11 +137,6 @@
     <ProjectReference Include="..\SimulatedTail\SimulatedTail.csproj">
       <Project>{64124F6A-E6FF-44BD-8F50-4B599E848DB5}</Project>
       <Name>SimulatedTail</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SimulationTester\SimulationTester.csproj">
-      <Project>{105800AF-F412-413D-8D51-A417E39B6960}</Project>
-      <Name>SimulationTester</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />

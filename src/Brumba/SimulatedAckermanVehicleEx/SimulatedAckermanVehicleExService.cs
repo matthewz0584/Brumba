@@ -4,13 +4,11 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
-using Contract = Brumba.Simulation.SimulatedAckermanVehicleEx.Contract;
-using Get = Brumba.Simulation.SimulatedAckermanVehicleEx.Get;
 
 namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 {
 	[Contract(Contract.Identifier)]
-	[DisplayName("Simulated Ackerman Four Wheels")]
+	[DisplayName("Simulated Ackerman Vehicle Extended")]
 	[Description("no description provided")]
 	class SimulatedAckermanVehicleExService : DsspServiceBase
 	{
@@ -45,7 +43,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 
         private void OnInsertEntity(InsertSimulationEntity entity)
         {
-            LogInfo("SimulatedAckermanFourWheels OnInsertEntity called");
+            LogInfo("SimulatedAckermanVehcileEx OnInsertEntity called");
             
             _vehicle = entity.Body as AckermanVehicleExEntity;
             _vehicle.ServiceContract = Contract.Identifier;
@@ -56,7 +54,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 
         private void OnDeleteEntity(DeleteSimulationEntity entity)
         {
-            LogInfo("SimulatedAckermanFourWheels OnDeleteEntity called");
+            LogInfo("SimulatedAckermanVehicleEx OnDeleteEntity called");
             
             _vehicle = null;
             _state.Connected = false;

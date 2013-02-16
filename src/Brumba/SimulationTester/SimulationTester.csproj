@@ -138,15 +138,14 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AckermanFourWheelsCreator.cs" />
     <Compile Include="AckermanVehicleTests.cs" />
+    <Compile Include="ServiceForwarder.cs" />
     <Compile Include="SimulationTesterPresenterConsole.cs" />
     <Compile Include="SimulationTest.cs" />
     <Compile Include="SimulationTestFixture.cs" />

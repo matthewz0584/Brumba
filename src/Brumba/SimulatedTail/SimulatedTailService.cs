@@ -46,7 +46,7 @@ namespace Brumba.Simulation.SimulatedTail
 
         void OnInsertEntity(InsertSimulationEntity entity)
         {
-            LogInfo("SimulatedAckermanFourWheels OnInsertEntity called");
+            LogInfo("SimulatedTail OnInsertEntity called");
 
             _tail = entity.Body as TailEntity;
             _tail.ServiceContract = Contract.Identifier;
@@ -57,7 +57,7 @@ namespace Brumba.Simulation.SimulatedTail
 
         void OnDeleteEntity(DeleteSimulationEntity entity)
         {
-            LogInfo("SimulatedAckermanFourWheels OnDeleteEntity called");
+            LogInfo("SimulatedTail OnDeleteEntity called");
 
             _tail = null;
             _state.Connected = false;
