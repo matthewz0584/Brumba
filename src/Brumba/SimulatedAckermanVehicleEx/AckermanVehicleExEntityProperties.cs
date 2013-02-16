@@ -4,21 +4,36 @@ using System.Collections.Generic;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
 
-namespace Brumba.Simulation.SimulatedAckermanFourWheels
+namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 {
-    public partial class AckermanFourWheelsEntity
+    public partial class AckermanVehicleExEntity
     {
-        public class Builder
+        public class Properties
         {
-            private AckermanFourWheelsEntity _vehicle;
+            private AckermanVehicleExEntity _vehicle;
 
-        	public static Builder HardRearDriven
+            public float WheelRadius { get; set; }
+            public float WheelWidth { get; set; }
+            public float WheelMass { get; set; }
+            public float SuspensionRate { get; set; }
+            public IEnumerable<CompositeWheelProperties> WheelsProperties { get; private set; }
+
+            public float WheelBase { get; set; }
+            public float WheelsSpacing { get; set; }
+            public float Clearance { get; set; }
+            public float ChassisMass { get; set; }
+            public IEnumerable<BoxShapeProperties> ChassisPartsProperties { get; private set; }
+
+            public float MaxVelocity { get; set; }
+            public float MaxSteerAngle { get; set; }
+
+        	public static Properties HardRearDriven
             {
                 get
                 {
                     float wheelRadius = 0.05f, wheelsSpacing = 0.17f, wheelWidth = 0.045f, wheelBase = 0.25f;
                     
-                    return new Builder
+                    return new Properties
                     {
                         WheelBase = wheelBase,
                         WheelsSpacing = wheelsSpacing,
@@ -47,7 +62,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 }
             }
 
-			public static Builder SuspendedRearDriven
+			public static Properties SuspendedRearDriven
 			{
 				get
 				{
@@ -57,7 +72,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 				}
 			}
 
-        	public static Builder Hard4x4
+        	public static Properties Hard4x4
             {
                 get
                 {
@@ -68,7 +83,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
                 }
             }
 
-			public static Builder Suspended4x4
+			public static Properties Suspended4x4
 			{
 				get
 				{
@@ -78,7 +93,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 				}
 			}
 
-            public void Build(AckermanFourWheelsEntity v)
+            public void Build(AckermanVehicleExEntity v)
             {
             	FillWheelsProperties();
             	FillChassisPartsProperties();
@@ -120,21 +135,6 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 					chp.DiffuseColor = new Vector4(1, 0, 0, 0);
 				}
 			}
-
-            public float WheelRadius { get; set; }
-            public float WheelWidth { get; set; }
-            public float WheelMass { get; set; }
-			public float SuspensionRate { get; set; }
-        	public IEnumerable<CompositeWheelProperties> WheelsProperties { get; private set; }
-
-        	public float WheelBase { get; set; }
-            public float WheelsSpacing { get; set; }
-            public float Clearance { get; set; }
-            public float ChassisMass { get; set; }
-        	public IEnumerable<BoxShapeProperties> ChassisPartsProperties { get; private set; }
-
-        	public float MaxVelocity { get; set; }
-            public float MaxSteerAngle { get; set; }
 
             private BoxShape BuildChassisPart(BoxShapeProperties partProps)
             {

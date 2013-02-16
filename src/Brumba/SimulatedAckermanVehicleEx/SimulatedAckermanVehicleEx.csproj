@@ -11,8 +11,8 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>SimulatedAckermanFourWheels.Y2012.M10</AssemblyName>
-    <RootNamespace>Brumba.Simulation.SimulatedAckermanFourWheels</RootNamespace>
+    <AssemblyName>SimulatedAckermanVehicleEx.Y2012.M10</AssemblyName>
+    <RootNamespace>Brumba.Simulation.SimulatedAckermanVehicleEx</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
@@ -129,19 +129,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AckermanFourWheelsEntity.cs" />
-    <Compile Include="AckermanFourWheelsEntityBuilder.cs" />
+    <Compile Include="AckermanVehicleExEntity.cs" />
+    <Compile Include="AckermanVehicleExEntityProperties.cs" />
     <Compile Include="CompositeWheel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimulatedAckermanFourWheelsService.cs" />
-    <Compile Include="SimulatedAckermanFourWheelsTypes.cs" />
+    <Compile Include="SimulatedAckermanVehicleExService.cs" />
+    <Compile Include="SimulatedAckermanVehicleExTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimulatedTimer.cs" />
     <Compile Include="SimulatedTimerTypes.cs" />
     <Compile Include="TimerEntity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SimulatedAckermanFourWheels.manifest.xml">
+    <Content Include="SimulatedAckermanVehicleEx.manifest.xml">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>

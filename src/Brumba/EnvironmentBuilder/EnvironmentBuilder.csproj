@@ -103,8 +103,8 @@
       <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SimulatedAckermanFourWheels.Y2012.M10.Proxy">
-      <HintPath>..\..\..\..\bin\SimulatedAckermanFourWheels.Y2012.M10.Proxy.dll</HintPath>
+    <Reference Include="SimulatedAckermanVehicleEx.Y2012.M10.Proxy">
+      <HintPath>..\..\..\..\bin\SimulatedAckermanVehicleEx.Y2012.M10.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="SimulationCommon">
       <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
@@ -134,10 +134,9 @@
     <Content Include="EnvironmentBuilder.manifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimulatedAckermanFourWheels\SimulatedAckermanFourWheels.csproj">
-      <Project>{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}</Project>
-      <Name>SimulatedAckermanFourWheels</Name>
-      <Private>False</Private>
+    <ProjectReference Include="..\SimulatedAckermanVehicleEx\SimulatedAckermanVehicleEx.csproj">
+      <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>
+      <Name>SimulatedAckermanVehicleEx</Name>
     </ProjectReference>
     <ProjectReference Include="..\SimulatedTail\SimulatedTail.csproj">
       <Project>{64124F6A-E6FF-44BD-8F50-4B599E848DB5}</Project>

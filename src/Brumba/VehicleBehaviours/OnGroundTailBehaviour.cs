@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
+using Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -61,8 +61,8 @@ namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour
         [Partner("Tail", Contract = Simulation.SimulatedTail.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         SimulatedTailOperations _tail = new SimulatedTailOperations();
 
-        [Partner("Vehicle", Contract = Simulation.SimulatedAckermanFourWheels.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        SimulatedAckermanFourWheelsOperations _vehicle = new SimulatedAckermanFourWheelsOperations();
+        [Partner("Vehicle", Contract = Simulation.SimulatedAckermanVehicleEx.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        SimulatedAckermanVehicleExOperations _vehicle = new SimulatedAckermanVehicleExOperations();
 
 	    private Calculator _calculator;
 
@@ -92,8 +92,8 @@ namespace Brumba.VehicleBrains.Behaviours.OnGroundTailBehaviour
         {
             while (true)
             {
-                SimulatedAckermanFourWheelsState vehState = null;
-                yield return Arbiter.Receive<SimulatedAckermanFourWheelsState>(false, _vehicle.Get(), st => vehState = st);
+                SimulatedAckermanVehicleExState vehState = null;
+                yield return Arbiter.Receive<SimulatedAckermanVehicleExState>(false, _vehicle.Get(), st => vehState = st);
 
                 var angles =
                     _calculator.Calculate(

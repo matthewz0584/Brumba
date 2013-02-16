@@ -4,24 +4,26 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
+using Contract = Brumba.Simulation.SimulatedAckermanVehicleEx.Contract;
+using Get = Brumba.Simulation.SimulatedAckermanVehicleEx.Get;
 
-namespace Brumba.Simulation.SimulatedAckermanFourWheels
+namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 {
 	[Contract(Contract.Identifier)]
 	[DisplayName("Simulated Ackerman Four Wheels")]
 	[Description("no description provided")]
-	class SimulatedAckermanFourWheelsService : DsspServiceBase
+	class SimulatedAckermanVehicleExService : DsspServiceBase
 	{
 		[ServiceState]
-		private SimulatedAckermanFourWheelsState _state = new SimulatedAckermanFourWheelsState();
-		
-		[ServicePort("/SimulatedAckermanFourWheels", AllowMultipleInstances = true)]
-		private SimulatedAckermanFourWheelsOperations _mainPort = new SimulatedAckermanFourWheelsOperations();
+		private SimulatedAckermanVehicleExState _state = new SimulatedAckermanVehicleExState();
+
+        [ServicePort("/SimulatedAckermanVehicleEx", AllowMultipleInstances = true)]
+		private SimulatedAckermanVehicleExOperations _mainPort = new SimulatedAckermanVehicleExOperations();
 
         private SimulationEnginePort _simEngineNotifyPort = new SimulationEnginePort();
-        private AckermanFourWheelsEntity _vehicle;
+        private AckermanVehicleExEntity _vehicle;
 		
-		public SimulatedAckermanFourWheelsService(DsspServiceCreationPort creationPort)
+		public SimulatedAckermanVehicleExService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
 		}
@@ -45,7 +47,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         {
             LogInfo("SimulatedAckermanFourWheels OnInsertEntity called");
             
-            _vehicle = entity.Body as AckermanFourWheelsEntity;
+            _vehicle = entity.Body as AckermanVehicleExEntity;
             _vehicle.ServiceContract = Contract.Identifier;
             _state.Connected = true;
 

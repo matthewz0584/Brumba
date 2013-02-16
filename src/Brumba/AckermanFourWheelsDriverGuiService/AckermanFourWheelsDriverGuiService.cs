@@ -6,7 +6,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Ccr.Adapters.Wpf;
-using Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
+using Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
 
 namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
 {
@@ -21,8 +21,8 @@ namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
 		[ServicePort("/AckermanFourWheelsDriverGuiService", AllowMultipleInstances = true)]
 		AckermanFourWheelsDriverGuiServiceOperations _mainPort = new AckermanFourWheelsDriverGuiServiceOperations();
 
-        [Partner("Simulated Ackerman Four Wheels", Contract = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        SimulatedAckermanFourWheelsOperations _simFourWheels = new SimulatedAckermanFourWheelsOperations();
+        [Partner("Simulated Ackerman Four Wheels", Contract = SimulatedAckermanVehicleEx.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        SimulatedAckermanVehicleExOperations _simFourWheels = new SimulatedAckermanVehicleExOperations();
 
         MainWindowEvents _mainWindowEventsPort = new MainWindowEvents();
 		

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
-using Brumba.Simulation.SimulatedAckermanFourWheels;
+using Brumba.Simulation.SimulatedAckermanVehicleEx;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Physics;
 using SimPxy = Microsoft.Robotics.Simulation.Proxy;
-using SafwPxy = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
+using SafwPxy = Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 
 namespace Brumba.Simulation.SimulationTester
@@ -28,14 +28,14 @@ namespace Brumba.Simulation.SimulationTester
 			return entityPxies.Where(pxy => pxy.State.Name == VEHICLE_NAME);
 		}
 
-		public IEnumerator<ITask> Start(SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
+        public IEnumerator<ITask> Start(SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort)
 		{
 			yield return To.Exec(Start, (double et) => EstimatedTime = et, vehiclePort);
 		}
 
 		public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
 
-		protected abstract IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort);
+        protected abstract IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort);
 
 		public IEnumerable<VisualEntity> PrepareEntitiesToRestore(IEnumerable<VisualEntity> entities)
 		{
@@ -54,10 +54,10 @@ namespace Brumba.Simulation.SimulationTester
     		_motorPower = motorPower;
     	}
 
-        protected override IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
+        protected override IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort)
         {
             yield return To.Exec(vehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = _motorPower }));
-            @return(50 / (AckermanFourWheelsEntity.Builder.HardRearDriven.MaxVelocity * _motorPower));//50 meters
+            @return(50 / (AckermanVehicleExEntity.Properties.HardRearDriven.MaxVelocity * _motorPower));//50 meters
             //@return(2);
         }
 
@@ -78,7 +78,7 @@ namespace Brumba.Simulation.SimulationTester
     		_motorPower = motorPower;
     	}
 
-    	protected override IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
+        protected override IEnumerator<ITask> Start(Action<double> @return, SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort)
         {
             var steerAngle = _randomG.Next(0, 1) == 1 ? 0.1f : -0.1f;
             yield return To.Exec(vehiclePort.SetSteerAngle(new SafwPxy.SteerAngleRequest { Value = steerAngle }));

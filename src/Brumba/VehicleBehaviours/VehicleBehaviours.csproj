@@ -106,9 +106,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\utils\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="SimulatedAckermanFourWheels.Y2012.M10.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=2d82424fb7d530b3, processorArchitecture=MSIL">
+    <Reference Include="SimulatedAckermanVehicleEx.Y2012.M10.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\SimulatedAckermanFourWheels.Y2012.M10.Proxy.dll</HintPath>
+      <HintPath>..\..\..\..\bin\SimulatedAckermanVehicleEx.Y2012.M10.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="SimulatedTail.Y2013.M01.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

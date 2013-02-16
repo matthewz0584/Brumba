@@ -10,7 +10,7 @@ using Microsoft.Dss.Services.ManifestLoaderClient.Proxy;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using SimPxy = Microsoft.Robotics.Simulation.Proxy;
 using Microsoft.Robotics.Simulation.Engine;
-using SafwPxy = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
+using SafwPxy = Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
 using StPxy = Brumba.Simulation.SimulatedTimer.Proxy;
 using System.Linq;
 using System.Xml;
@@ -79,8 +79,8 @@ namespace Brumba.Simulation.SimulationTester
         {
             yield return To.Exec(SetUpSimulator);
 
-            SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort = null;
-            yield return To.Exec(SetUpTest1Services, (SafwPxy.SimulatedAckermanFourWheelsOperations vp) => vehiclePort = vp);
+            SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort = null;
+            yield return To.Exec(SetUpTest1Services, (SafwPxy.SimulatedAckermanVehicleExOperations vp) => vehiclePort = vp);
             yield return To.Exec(TimeoutPort(50));
         	
 			OnStarted();
@@ -105,10 +105,10 @@ namespace Brumba.Simulation.SimulationTester
 			LogInfo(_testResults.Aggregate("All tests are run: ", (message, test) => string.Format("{0} {1}-{2:P0}\n", message, test.Key.GetType().Name, test.Value)));
         }
 
-        IEnumerator<ITask> SetUpTest1Services(Action<SafwPxy.SimulatedAckermanFourWheelsOperations> @return)
+        IEnumerator<ITask> SetUpTest1Services(Action<SafwPxy.SimulatedAckermanVehicleExOperations> @return)
         {
 			yield return To.Exec(_manifestLoader.Insert(new InsertRequest { Manifest = ServiceInfo.HttpServiceAlias.Authority + ServicePaths.MountPoint + "/bin/ground_tailed_vehicle.Manifest.xml" }));
-	        var vehiclePort = ServiceForwarder<SafwPxy.SimulatedAckermanFourWheelsOperations>(String.Format(@"{0}vehicle", ServicePaths.MountPoint));
+            var vehiclePort = ServiceForwarder<SafwPxy.SimulatedAckermanVehicleExOperations>(String.Format(@"{0}vehicle", ServicePaths.MountPoint));
 			if (vehiclePort == null)
 				yield break;
 			@return(vehiclePort);
@@ -126,7 +126,7 @@ namespace Brumba.Simulation.SimulationTester
             yield return To.Exec(_simEngine.Replace(simState));
         }
 
-        IEnumerator<ITask> ExecuteTest(Action<float> @return, ISimulationTest test, SafwPxy.SimulatedAckermanFourWheelsOperations vehiclePort)
+        IEnumerator<ITask> ExecuteTest(Action<float> @return, ISimulationTest test, SafwPxy.SimulatedAckermanVehicleExOperations vehiclePort)
         {
         	int successful = 0, i;
 			for (i = 0; i < TRIES_NUMBER; ++i)
@@ -257,9 +257,9 @@ namespace Brumba.Simulation.SimulationTester
             return CreateService(serviceInfo);
         }
 
-        SafwPxy.SimulatedAckermanFourWheelsOperations IServiceStarter.ServiceForwarder(Uri uri)
+        SafwPxy.SimulatedAckermanVehicleExOperations IServiceStarter.ServiceForwarder(Uri uri)
         {
-            return ServiceForwarder<SafwPxy.SimulatedAckermanFourWheelsOperations>(uri);
+            return ServiceForwarder<SafwPxy.SimulatedAckermanVehicleExOperations>(uri);
         }
 
         void IServiceStarter.Activate(Choice choice)

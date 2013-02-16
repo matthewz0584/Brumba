@@ -8,8 +8,8 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
-using Brumba.Simulation.SimulatedAckermanFourWheels;
-using SafwProxy = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
+using Brumba.Simulation.SimulatedAckermanVehicleEx;
+using SafwProxy = Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
 using Brumba.Simulation.SimulationTester;
 
 namespace Brumba.Simulation.EnvironmentBuilder
@@ -62,7 +62,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             var box = new BoxShape(new BoxShapeProperties(10, new Pose(), new Vector3(1, 0.03f, 0.5f)) { Material = new MaterialProperties("ground", 0f, 0.5f, 0.5f) });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(box, new Vector3(0, 0.02f, 2f)) { State = { Name = "booox" } });
 
-            var vehicle = new AckermanFourWheelsEntity("vehicle", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Suspended4x4);
+            var vehicle = new AckermanVehicleExEntity("vehicle", new Vector3(0, 0.2f, 0), AckermanVehicleExEntity.Properties.Suspended4x4);
 
 			var tail = new TailEntity.TailProperties
 				{
@@ -107,7 +107,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			};
 			SimulationEngine.GlobalInstancePort.Insert(sun);
 
-			var vehicle = new AckermanFourWheelsEntity("vehicle", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Suspended4x4);
+			var vehicle = new AckermanVehicleExEntity("vehicle", new Vector3(0, 0.2f, 0), AckermanVehicleExEntity.Properties.Suspended4x4);
 
 			var tail = new TailEntity.TailProperties
 			{
@@ -149,7 +149,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             var box = new BoxShape(new BoxShapeProperties(10, new Pose(), new Vector3(1, 0.03f, 0.5f)) { Material = new MaterialProperties("ground", 0f, 0.5f, 0.5f) });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(box, new Vector3(0, 0.02f, 2f)) { State = { Name = "booox" } });
 
-            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(0, 0.2f, 0), AckermanFourWheelsEntity.Builder.Suspended4x4),
+            Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(0, 0.2f, 0), AckermanVehicleExEntity.Properties.Suspended4x4),
                 ops4 =>
                 {
                     //ops4.SetMotorPower(new SafwProxy.MotorPowerRequest { Value = 0.1f });
@@ -245,7 +245,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             };
             SimulationEngine.GlobalInstancePort.Insert(sun);
 
-			Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(), AckermanFourWheelsEntity.Builder.SuspendedRearDriven),
+			Activate(Arbiter.Choice(AckermanFourWheelsCreator.CreateVehicleAndService(this, "testee", new Vector3(), AckermanVehicleExEntity.Properties.SuspendedRearDriven),
                 ops4 => {}, f => LogInfo("bebebe")));
         }
 
@@ -255,9 +255,9 @@ namespace Brumba.Simulation.EnvironmentBuilder
             return CreateService(serviceInfo);
         }
 
-        SafwProxy.SimulatedAckermanFourWheelsOperations IServiceStarter.ServiceForwarder(Uri uri)
+        SafwProxy.SimulatedAckermanVehicleExOperations IServiceStarter.ServiceForwarder(Uri uri)
         {
-            return ServiceForwarder<SafwProxy.SimulatedAckermanFourWheelsOperations>(uri);
+            return ServiceForwarder<SafwProxy.SimulatedAckermanVehicleExOperations>(uri);
         }
 
         void IServiceStarter.Activate(Choice choice)

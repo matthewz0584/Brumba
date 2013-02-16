@@ -7,12 +7,12 @@ using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Brumba.Simulation.SimulatedAckermanFourWheels
+namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 {
     [DataContract]
-    public partial class AckermanFourWheelsEntity : VisualEntity
+    public partial class AckermanVehicleExEntity : VisualEntity
     {
-        private Builder _builder;
+        private Properties _properties;
         private float _targetAxleSpeed;
         private float _targetSteerAngle;
 
@@ -31,15 +31,15 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
         /// <summary>
         /// Only for deserialization
         /// </summary>
-        public AckermanFourWheelsEntity()
+        public AckermanVehicleExEntity()
         { 
         }
 
-        public AckermanFourWheelsEntity(string name, Vector3 position, Builder builder)
+        public AckermanVehicleExEntity(string name, Vector3 position, Properties properties)
         {
             State.Name = name;
             State.Pose.Position = position;
-            _builder = builder;
+            _properties = properties;
         }
 
         #region Overrides
@@ -48,11 +48,11 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
             try
             {
                 //New from simulator Entity\New menu (not deserialization)
-                if (ChassisParts == null && _builder == null)
-                    _builder = Builder.HardRearDriven;
+                if (ChassisParts == null && _properties == null)
+                    _properties = Properties.HardRearDriven;
 
-				if (_builder != null)
-					_builder.Build(this);
+				if (_properties != null)
+					_properties.Build(this);
 
 				Wheels = Children.OfType<CompositeWheel>().ToList();
 

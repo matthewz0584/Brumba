@@ -4,7 +4,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 
-namespace Brumba.Simulation.SimulatedAckermanFourWheels
+namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 {
 	public sealed class Contract
 	{
@@ -13,7 +13,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 	}
 	
 	[DataContract]
-	public class SimulatedAckermanFourWheelsState
+	public class SimulatedAckermanVehicleExState
 	{
         [DataMember]
         [Description("If there is any simulation entity under control of this service")]
@@ -33,11 +33,11 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 	}
 	
 	[ServicePort]
-    public class SimulatedAckermanFourWheelsOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, SetMotorPower, SetSteerAngle, Break>
+    public class SimulatedAckermanVehicleExOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, SetMotorPower, SetSteerAngle, Break>
 	{
 	}
 	
-	public class Get : Get<GetRequestType, PortSet<SimulatedAckermanFourWheelsState, Fault>>
+	public class Get : Get<GetRequestType, PortSet<SimulatedAckermanVehicleExState, Fault>>
 	{
 		public Get()
 		{
@@ -48,7 +48,7 @@ namespace Brumba.Simulation.SimulatedAckermanFourWheels
 		{
 		}
 		
-		public Get(GetRequestType body, PortSet<SimulatedAckermanFourWheelsState, Fault> responsePort)
+		public Get(GetRequestType body, PortSet<SimulatedAckermanVehicleExState, Fault> responsePort)
 			: base(body, responsePort)
 		{
 		}

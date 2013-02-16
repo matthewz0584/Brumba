@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Dss.Core.Attributes;
 
-namespace Brumba.Simulation.SimulatedAckermanFourWheels
+namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 {
     [DataContract]
     public class CompositeWheelProperties

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Dss.ServiceModel.Dssp;
-using Brumba.Simulation.SimulatedAckermanFourWheels;
-using SafwPx = Brumba.Simulation.SimulatedAckermanFourWheels.Proxy;
+using Brumba.Simulation.SimulatedAckermanVehicleEx;
+using SafwPx = Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
@@ -11,23 +11,23 @@ namespace Brumba.Simulation.SimulationTester
     public interface IServiceStarter
     {
         DsspResponsePort<CreateResponse> CreateService(ServiceInfoType serviceInfo);
-        SafwPx.SimulatedAckermanFourWheelsOperations ServiceForwarder(Uri uri);
+        SafwPx.SimulatedAckermanVehicleExOperations ServiceForwarder(Uri uri);
         void Activate(Choice choice);
     }
 
     public class AckermanFourWheelsCreator
     {
-        public static DsspResponsePort<SafwPx.SimulatedAckermanFourWheelsOperations> CreateVehicleAndService(IServiceStarter starter, string name, Vector3 position, AckermanFourWheelsEntity.Builder builder)
+        public static DsspResponsePort<SafwPx.SimulatedAckermanVehicleExOperations> CreateVehicleAndService(IServiceStarter starter, string name, Vector3 position, AckermanVehicleExEntity.Properties properties)
         {
-            var sav = new AckermanFourWheelsEntity(name, position, builder);
+            var sav = new AckermanVehicleExEntity(name, position, properties);
             SimulationEngine.GlobalInstancePort.Insert(sav);
 
             return StartService(starter, name);
         }
 
-        public static DsspResponsePort<SafwPx.SimulatedAckermanFourWheelsOperations> StartService(IServiceStarter starter, string name)
+        public static DsspResponsePort<SafwPx.SimulatedAckermanVehicleExOperations> StartService(IServiceStarter starter, string name)
         {
-            var res = new DsspResponsePort<SafwPx.SimulatedAckermanFourWheelsOperations>();
+            var res = new DsspResponsePort<SafwPx.SimulatedAckermanVehicleExOperations>();
             starter.Activate(Arbiter.Choice(starter.CreateService(
                 new ServiceInfoType
                 {
