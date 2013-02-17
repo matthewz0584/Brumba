@@ -5,7 +5,7 @@ using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 
-namespace Brumba.Simulation
+namespace Brumba.Simulation.SimulatedAckermanVehicle
 {
     public partial class AckermanVehicleEntity
     {

@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
-using Brumba.Simulation.SimulatedAckermanVehicleEx;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Physics;
-using SimPxy = Microsoft.Robotics.Simulation.Proxy;
 using SafwPxy = Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 

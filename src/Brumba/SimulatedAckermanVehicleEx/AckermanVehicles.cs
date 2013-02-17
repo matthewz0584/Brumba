@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Brumba.Simulation.SimulatedAckermanVehicleEx;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Physics;
@@ -25,13 +26,13 @@ namespace Brumba.Simulation
                         SuspensionRate = 75000,
                         MaxVelocity = 4.16f, //15 km/h 
                         MaxSteerAngle = (float)Math.PI / 4,
-                        ChassisPartsProperties = new[]
+                        ChassisPartsProperties = new List<BoxShapeProperties>
                             {
                                 new BoxShapeProperties { Name = "ChassisBack", Dimensions = new Vector3(wheelsSpacing - wheelWidth, 0.04f, 2 * wheelRadius), MassDensity = { Mass = 0.1f } },
                                 new BoxShapeProperties { Name = "ChassisMiddle", Dimensions = new Vector3(wheelsSpacing - wheelWidth, 0.10f, 0.13f), MassDensity = { Mass = 0.5f } },
                                 new BoxShapeProperties { Name = "ChassisFront", Dimensions = new Vector3(wheelsSpacing - 2 * wheelWidth, 0.06f, 0.1f), MassDensity = { Mass = 0.4f } },
                             },
-                        WheelsProperties = new[]
+                        WheelsProperties = new List<CompositeWheelProperties>
                             {
                                 new CompositeWheelProperties { Name = "WheelFrontLeft", Position = new Vector3(wheelsSpacing / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = true},
                                 new CompositeWheelProperties { Name = "WheelFrontRight", Position = new Vector3(-wheelsSpacing / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = false},
@@ -91,11 +92,11 @@ namespace Brumba.Simulation
                     SuspensionRate = 0,
                     MaxVelocity = 1f, //?
                     MaxSteerAngle = (float)Math.PI / 4,
-                    ChassisPartsProperties = new[]
+                    ChassisPartsProperties = new List<BoxShapeProperties>
                             {
                                 new BoxShapeProperties { Name = "Chassis", Dimensions = new Vector3(wheelsSpacing - wheelWidth, 0.085f, 0.165f), MassDensity = { Mass = 0.1f } },
                             },
-                    WheelsProperties = new[]
+                    WheelsProperties = new List<CompositeWheelProperties>
                             {
                                 new CompositeWheelProperties { Name = "WheelFrontLeft", Position = new Vector3(wheelsSpacing / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = true},
                                 new CompositeWheelProperties { Name = "WheelFrontRight", Position = new Vector3(-wheelsSpacing / 2.0f, wheelRadius, wheelBase / 2.0f), Motorized = false, Steerable = true, Flipped = false},

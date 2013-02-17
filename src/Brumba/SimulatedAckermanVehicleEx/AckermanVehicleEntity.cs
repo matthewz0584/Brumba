@@ -7,7 +7,7 @@ using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Brumba.Simulation
+namespace Brumba.Simulation.SimulatedAckermanVehicle
 {
     [DataContract]
     public partial class AckermanVehicleEntity : VisualEntity
@@ -21,7 +21,7 @@ namespace Brumba.Simulation
         [DataMember]
         public BoxShape Chassis { get; set; }
 
-        //[DataMember]
+        [DataMember]
         public AckermanVehicleProperties Props { get; set; }
 
         /// <summary>
@@ -44,10 +44,10 @@ namespace Brumba.Simulation
             try
             {
                 //New from simulator Entity\New menu (not deserialization)
-                //if (ChassisParts == null && Props == null)
-                //    Props = Properties.HardRearDriven;
+                if (Wheels == null && Chassis == null && Props == null)
+                    Props = AckermanVehicles.Simplistic;
 
-                if (Props != null)
+                if (Wheels == null && Chassis == null && Props != null)
                     new Builder(this, Props).Build();
 
                 State.PhysicsPrimitives.Add(Chassis);
