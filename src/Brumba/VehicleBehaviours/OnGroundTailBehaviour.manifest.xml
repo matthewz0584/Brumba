@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:ackermanfourwheelsdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanfourwheelsdriverguiservice.html" xmlns:simulatedackermanvehicleex="http://brumba.ru/contracts/2012/10/simulatedackermanfourwheels.html" xmlns:this="urn:uuid:2fbb2012-bb5f-4846-b431-5e2cd6632492" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:ongroundtailbehaviour="http://brumba.ru/contracts/2013/01/ongroundtailbehaviour.html" xmlns:simulatedtail="http://brumba.ru/contracts/2013/01/simulatedtail.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns:simulatedackermanvehicleex="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html" xmlns:this="urn:uuid:2fbb2012-bb5f-4846-b431-5e2cd6632492" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:ongroundtailbehaviour="http://brumba.ru/contracts/2013/01/ongroundtailbehaviour.html" xmlns:simulatedtail="http://brumba.ru/contracts/2013/01/simulatedtail.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
@@ -54,16 +54,16 @@
       <Name>this:OnGroundTailBehaviourService</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanfourwheelsdriverguiservice.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
           <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html</dssp:Contract>
           <dssp:PartnerList />
-          <dssp:Name>ackermanfourwheelsdriverguiservice:Simulated_x0020_Ackerman_x0020_Four_x0020_Wheels</dssp:Name>
+          <dssp:Name>ackermanvehiclesdriverguiservice:Simulated_x0020_Ackerman_x0020_Four_x0020_Wheels</dssp:Name>
           <dssp:ServiceName>this:Vehicle</dssp:ServiceName>
         </dssp:Partner>
       </dssp:PartnerList>
-      <Name>this:AckermanFourWheelsDriverGuiService</Name>
+      <Name>this:AckermanVehicleDriverGuiService</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

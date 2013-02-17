@@ -129,18 +129,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AckermanVehicleEntity.cs" />
+    <Compile Include="AckermanVehicleEntityBuilder.cs" />
     <Compile Include="AckermanVehicleExEntity.cs" />
-    <Compile Include="AckermanVehicleExEntityProperties.cs" />
+    <Compile Include="AckermanVehicleExBuilder.cs" />
+    <Compile Include="AckermanVehicleProperties.cs" />
+    <Compile Include="AckermanVehicles.cs" />
     <Compile Include="CompositeWheel.cs" />
+    <Compile Include="SimulatedAckermanVehicleTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimulatedAckermanVehicleExService.cs" />
     <Compile Include="SimulatedAckermanVehicleExTypes.cs" />
     <AppDesigner Include="Properties" />
+    <Compile Include="SimulatedAckermanVehicleService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SimulatedAckermanVehicle.manifest.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="SimulatedAckermanVehicleEx.manifest.xml">
       <SubType>Designer</SubType>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AckermanVehicleDriverGuiService\AckermanVehicleDriverGuiService.csproj">
+      <Project>{727adf74-19da-4644-8b55-967e6fa5c2ae}</Project>
+      <Name>AckermanVehicleDriverGuiService</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">

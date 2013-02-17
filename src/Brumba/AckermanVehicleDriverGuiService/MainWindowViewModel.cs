@@ -1,4 +1,4 @@
-﻿namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
+﻿namespace Brumba.AckermanVehicleDriverGuiService
 {
     public class MainWindowViewModel
     {
@@ -16,7 +16,7 @@
 
         public void Power(float power)
         {
-            _servicePort.Post(new OnPower { Direction = power });
+            _servicePort.Post(new OnPower { Power = power });
         }
 
         public void Break()

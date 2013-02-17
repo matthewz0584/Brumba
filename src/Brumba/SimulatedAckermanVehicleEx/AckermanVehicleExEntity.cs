@@ -12,7 +12,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
     [DataContract]
     public partial class AckermanVehicleExEntity : VisualEntity
     {
-        private Properties _properties;
+        private AckermanVehicleProperties _properties;
         private float _targetAxleSpeed;
         private float _targetSteerAngle;
 
@@ -35,7 +35,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
         { 
         }
 
-        public AckermanVehicleExEntity(string name, Vector3 position, Properties properties)
+        public AckermanVehicleExEntity(string name, Vector3 position, AckermanVehicleProperties properties)
         {
             State.Name = name;
             State.Pose.Position = position;
@@ -49,10 +49,10 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
             {
                 //New from simulator Entity\New menu (not deserialization)
                 if (ChassisParts == null && _properties == null)
-                    _properties = Properties.HardRearDriven;
+                    _properties = AckermanVehicles.HardRearDriven;
 
 				if (_properties != null)
-					_properties.Build(this);
+					new Builder(this, _properties).Build();
 
 				Wheels = Children.OfType<CompositeWheel>().ToList();
 

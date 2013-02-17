@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:simulatedackermanvehicleex="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:this="urn:uuid:e7099451-5520-47ce-9208-28f103d8d510" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>ackermanvehiclesdriverguiservice:Simulated_x0020_Ackerman_x0020_Four_x0020_Wheels</dssp:Name>
+          <dssp:ServiceName>this:SimulatedAckermanVehicleExtended</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:ackermanvehiclesdriverguiservice</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
+      <dssp:PartnerList />
+      <Name>this:EnvironmentBuilder</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/testee</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedAckermanVehicleExtended</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
+</Manifest>

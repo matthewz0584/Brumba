@@ -57,7 +57,7 @@ namespace Brumba.Simulation.SimulationTester
         protected override IEnumerator<ITask> Start(Action<double> @return)
         {
             yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.SetMotorPower(new SafwPxy.MotorPowerRequest { Value = _motorPower }));
-            @return(50 / (AckermanVehicleExEntity.Properties.HardRearDriven.MaxVelocity * _motorPower));//50 meters
+            @return(50 / (AckermanVehicles.HardRearDriven.MaxVelocity * _motorPower));//50 meters
             //@return(2);
         }
 

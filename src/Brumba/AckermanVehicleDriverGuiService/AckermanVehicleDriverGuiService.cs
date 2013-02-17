@@ -1,32 +1,32 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Brumba.AckermanVehicle.Proxy;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Ccr.Adapters.Wpf;
-using Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
 
-namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
+namespace Brumba.AckermanVehicleDriverGuiService
 {
 	[Contract(Contract.Identifier)]
-	[DisplayName("AckermanFourWheelsDriverGuiService")]
-	[Description("AckermanFourWheelsDriverGuiService service (no description provided)")]
-	class AckermanFourWheelsDriverGuiService : DsspServiceBase
+	[DisplayName("AckermanVehicleDriverGuiService")]
+	[Description("AckermanVehicleDriverGuiService service (no description provided)")]
+	class AckermanVehicleDriverGuiService : DsspServiceBase
 	{
 		[ServiceState]
-		AckermanFourWheelsDriverGuiServiceState _state = new AckermanFourWheelsDriverGuiServiceState();
+		AckermanVehicleDriverGuiServiceState _state = new AckermanVehicleDriverGuiServiceState();
 		
-		[ServicePort("/AckermanFourWheelsDriverGuiService", AllowMultipleInstances = true)]
-		AckermanFourWheelsDriverGuiServiceOperations _mainPort = new AckermanFourWheelsDriverGuiServiceOperations();
+		[ServicePort("/AckermanVehicleDriverGuiService", AllowMultipleInstances = true)]
+		AckermanVehicleDriverGuiServiceOperations _mainPort = new AckermanVehicleDriverGuiServiceOperations();
 
-        [Partner("Simulated Ackerman Four Wheels", Contract = SimulatedAckermanVehicleEx.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        SimulatedAckermanVehicleExOperations _simFourWheels = new SimulatedAckermanVehicleExOperations();
+        [Partner("Ackerman Vehicle", Contract = AckermanVehicle.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        AckermanVehicleOperations _ackermanVehPort = new AckermanVehicleOperations();
 
         MainWindowEvents _mainWindowEventsPort = new MainWindowEvents();
 		
-		public AckermanFourWheelsDriverGuiService(DsspServiceCreationPort creationPort)
+		public AckermanVehicleDriverGuiService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
 		}
@@ -59,19 +59,17 @@ namespace Brumba.Simulation.AckermanFourWheelsDriverGuiService
 
         private void OnSteerHandler(OnSteer onSteerRequest)
         {
-            //_simFourWheels.SetSteerAngle(new SteerAngleRequest { Value = onSteerRequest.Direction * 0.2f });
-            _simFourWheels.SetSteerAngle(new SteerAngleRequest { Value = onSteerRequest.Direction * 1f });
+            _ackermanVehPort.UpdateSteerAngle(new SteerAngle { Value = onSteerRequest.Direction * 1f });
         }
 
         private void OnPowerHandler(OnPower onPowerRequest)
         {
-            //_simFourWheels.SetMotorPower(new MotorPowerRequest { Value = onPowerRequest.Direction * 0.2f });
-            _simFourWheels.SetMotorPower(new MotorPowerRequest { Value = onPowerRequest.Direction * 1f });
+            _ackermanVehPort.UpdateDrivePower(new DrivePower { Value = onPowerRequest.Power * 1f });
         }
 
         private void OnBreakHandler(OnBreak onBreakRequest)
         {
-            _simFourWheels.Break();
+            _ackermanVehPort.Break();
         }
     }
 }
