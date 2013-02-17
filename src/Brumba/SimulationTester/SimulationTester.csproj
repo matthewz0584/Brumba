@@ -134,10 +134,6 @@
       <HintPath>..\..\bin\SimulationEngine.proxy.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SimulationTester.Y2012.M11.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\SimulationTester.Y2012.M11.Proxy.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
@@ -150,8 +146,6 @@
   <ItemGroup>
     <Compile Include="Tests\AckermanVehicleTests.cs" />
     <Compile Include="ServiceForwarder.cs" />
-    <Compile Include="SimulatedTimer.cs" />
-    <Compile Include="SimulatedTimerTypes.cs" />
     <Compile Include="SimulationTesterPresenterConsole.cs" />
     <Compile Include="SimulationTest.cs" />
     <Compile Include="SimulationTestFixture.cs" />
@@ -160,7 +154,6 @@
     <Compile Include="SimulationTesterTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimulationTestFixtureAttribute.cs" />
-    <Compile Include="TimerEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SimulationTester.manifest.xml" />

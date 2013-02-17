@@ -100,9 +100,6 @@
       <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SimulatedAckermanVehicleEx.Y2012.M10.Proxy">
-      <HintPath>..\..\..\..\bin\SimulatedAckermanVehicleEx.Y2012.M10.Proxy.dll</HintPath>
-    </Reference>
     <Reference Include="SimulationCommon">
       <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
       <Private>False</Private>

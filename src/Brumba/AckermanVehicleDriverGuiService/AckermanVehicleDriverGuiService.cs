@@ -21,7 +21,7 @@ namespace Brumba.AckermanVehicleDriverGuiService
 		[ServicePort("/AckermanVehicleDriverGuiService", AllowMultipleInstances = true)]
 		AckermanVehicleDriverGuiServiceOperations _mainPort = new AckermanVehicleDriverGuiServiceOperations();
 
-        [Partner("Ackerman Vehicle", Contract = AckermanVehicle.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        [Partner("Ackerman Vehicle", Contract = AckermanVehicle.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         AckermanVehicleOperations _ackermanVehPort = new AckermanVehicleOperations();
 
         MainWindowEvents _mainWindowEventsPort = new MainWindowEvents();

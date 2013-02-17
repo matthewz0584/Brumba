@@ -33,8 +33,8 @@ namespace Brumba.Simulation.EnvironmentBuilder
         {
 			//CrossCountryGenerator.Generate(257, 0.1f).Save("terrain00.bmp");
 			//PopulateStabilizer();
-			PopulateAckermanVehicle();
-			//GenerateEnvironmentForTests();
+			//PopulateAckermanVehicle();
+			GenerateEnvironmentForTests();
 			//PopulateAckermanVehicleWithTail();
 	        //PopulateEnvForGroundTail();
 
@@ -217,7 +217,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 
         private void GenerateEnvironmentForTests()
         {
-            var terrain = new TerrainEntity(@"terrain03.bmp", "terrain_tex.jpg", new MaterialProperties("ground", 0, 0.5f, 1.0f))
+            var terrain = new TerrainEntity(@"terrain00.bmp", "terrain_tex.jpg", new MaterialProperties("ground", 0, 0.5f, 1.0f))
             {
                 State = { Name = "Terrain", Assets = { Effect = "Terrain.fx" } },
             };
@@ -238,7 +238,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             };
             SimulationEngine.GlobalInstancePort.Insert(sun);
 
-            var sav = new AckermanVehicleExEntity("testee", new Vector3(), AckermanVehicles.SuspendedRearDriven);
+            var sav = new AckermanVehicleEntity("testee", new Vector3(), AckermanVehicles.Simplistic);
             SimulationEngine.GlobalInstancePort.Insert(sav);
         }
     }
