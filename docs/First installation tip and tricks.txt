@@ -1,0 +1,5 @@
+1. During MRDS installation select custom and change destination folder to c:\MRDS4
+2. Add environment variable MRDS_PATH with value c:\MRDS4
+3. Add new project templates to VS (add zip file to folder 
+C:\Users\user\Documents\Visual Studio 2012\Templates\ProjectTemplates\Visual C#)
+4.Set maximum number of parallelproject builds to 1 in VS 2012.
