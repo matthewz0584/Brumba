@@ -34,5 +34,10 @@ namespace Brumba.Simulation
         public float MaxVelocity { get; set; }
         [DataMember]
         public float MaxSteerAngle { get; set; }
+
+        [DataMember]
+        public float TicksPerSteeringAngleRadian { get; set; }
+        [DataMember]
+        public float TicksPerDriveAngleRadian { get; set; }
     }
 }

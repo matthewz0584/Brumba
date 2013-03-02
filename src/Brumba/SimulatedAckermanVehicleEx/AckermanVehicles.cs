@@ -91,7 +91,7 @@ namespace Brumba.Simulation
                     Clearance = 0.028f,
                     SuspensionRate = 0,
                     MaxVelocity = 1f, //?
-                    MaxSteerAngle = (float)Math.PI / 4,
+                    MaxSteerAngle = (float)Math.PI / 5,
                     ChassisPartsProperties = new List<BoxShapeProperties>
                             {
                                 new BoxShapeProperties { Name = "Chassis", Dimensions = new Vector3(wheelsSpacing - wheelWidth, 0.085f, 0.165f), MassDensity = { Mass = 0.1f } },

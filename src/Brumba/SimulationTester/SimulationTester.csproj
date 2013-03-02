@@ -78,6 +78,7 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AckermanVehicle.Y2013.M02.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0">
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
@@ -144,7 +145,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tests\AckermanVehicleTests.cs" />
+    <Compile Include="Tests\AckermanVehicleExDriveTests.cs" />
     <Compile Include="ServiceForwarder.cs" />
     <Compile Include="SimulationTesterPresenterConsole.cs" />
     <Compile Include="SimulationTest.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="SimulationTesterTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimulationTestFixtureAttribute.cs" />
+    <Compile Include="Tests\SingleVehicleTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SimulationTester.manifest.xml" />

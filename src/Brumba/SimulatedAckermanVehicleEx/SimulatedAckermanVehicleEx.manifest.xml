@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:this="urn:uuid:5e3d86a2-2bb1-4b6e-8948-7a9d8af02d03" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedackermanvehicleex="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html" xmlns:this="urn:uuid:cfa02bc2-fe63-46d4-b545-02718d3a82df" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
@@ -9,8 +9,26 @@
     </ServiceRecordType>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html</dssp:Contract>
-      <dssp:PartnerList />
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2013/02/genericackermanvehicle.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>ackermanvehiclesdriverguiservice:Ackerman_x0020_Vehicle</dssp:Name>
+          <dssp:ServiceName>this:SimulatedAckermanVehicleExtended</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
       <Name>this:AckermanVehicleDriverGuiService</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/testee</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedAckermanVehicleExtended</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

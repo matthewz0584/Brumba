@@ -74,7 +74,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 
         public override void Update(FrameUpdate update)
         {
-            UpdateMotorAxleSpeed((float)update.ElapsedTime);
+            UpdateDriveAxleSpeed((float)update.ElapsedTime);
             UpdateSteerAngle((float)update.ElapsedTime);
 
 			base.Update(update);
@@ -82,7 +82,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 
         #endregion
 
-        public void SetMotorPower(float power)
+        public void SetDrivePower(float power)
         {
             _targetAxleSpeed = power * MaxAxleSpeed;
         }
@@ -94,22 +94,12 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 
         public void Break()
         {
-            SetMotorPower(0);
+            SetDrivePower(0);
             foreach (var w in Wheels.Where(w => w.Props.Motorized))
                 w.AxleSpeed = 0;
         }
 
-        public float Velocity
-        {
-            get { return Wheels.First(w => w.Props.Motorized).AxleSpeed * Wheels.First().Props.Radius; }
-        }
-
-        public float SteerAngle
-        {
-            get { return Wheels.First(w => w.Props.Steerable).SteerAngle; }
-        }
-
-        private void UpdateMotorAxleSpeed(float deltaT)
+        private void UpdateDriveAxleSpeed(float deltaT)
         {
             foreach (var w in Wheels.Where(w => w.Props.Motorized))
                 w.AxleSpeed = UpdateLinearValue(_targetAxleSpeed, w.AxleSpeed, deltaT / 5 * MaxAxleSpeed);
@@ -119,7 +109,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
         {
             foreach (var w in Wheels.Where(w => w.Props.Steerable))
                 if (Math.Abs(w.SteerAngle - _targetSteerAngle) > 0.01f * Math.PI)
-                    w.SteerAngle = UpdateLinearValue(_targetSteerAngle, w.SteerAngle, deltaT / 0.1f * MaxSteerAngle);
+                    w.SteerAngle = UpdateLinearValue(_targetSteerAngle, w.SteerAngle, deltaT / 0.01f * MaxSteerAngle);
         }
 
         private static float UpdateLinearValue(float targetValue, float currentValue, float delta)

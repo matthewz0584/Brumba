@@ -41,7 +41,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
                     wp.PhysicalMesh = null;
                     wp.VisualMesh = "CorobotWheel.obj";
                     wp.Radius = _props.WheelRadius;
-                    wp.Width = 0;
+                    wp.Width = _props.WheelWidth;
                     wp.SuspensionRate = 0;
                 }
             }
@@ -67,7 +67,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 
                 var wheel = new WheelEntity(new WheelShapeProperties(wp.Name, wp.Mass, wp.Radius)
                 {
-                    LocalPose = new Pose(new Vector3((wp.Flipped ? 1 : -1) * wp.Width / 2, 0, 0) + wp.Position),
+                    LocalPose = new Pose(wp.Position),
                     TireLongitudalForceFunction =
                     {
                         ExtremumSlip = 1.0f,
@@ -81,7 +81,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
                         ExtremumSlip = 1.0f,
                         ExtremumValue = 0.02f,
                         AsymptoteSlip = 2.0f,
-                        AsymptoteValue = 0.01f,
+                        AsymptoteValue = 0.02f,
                         StiffnessFactor = 1.0e7f
                     }
                 })

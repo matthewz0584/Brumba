@@ -41,7 +41,7 @@ namespace Brumba.Simulation.SimulationTester
         [Partner("SimEngine", Contract = Microsoft.Robotics.Simulation.Engine.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.CreateAlways)]
         EngPxy.SimulationEnginePort _simEngine = new EngPxy.SimulationEnginePort();
 
-        [Partner("SimTimer", Contract = SimulatedTimer.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UsePartnerListEntry)]
+        [Partner("SimTimer", Contract = StPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UsePartnerListEntry)]
         StPxy.SimulatedTimerOperations _timer = new StPxy.SimulatedTimerOperations();
 
 		[Partner("Manifest loader", Contract = Microsoft.Dss.Services.ManifestLoaderClient.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]

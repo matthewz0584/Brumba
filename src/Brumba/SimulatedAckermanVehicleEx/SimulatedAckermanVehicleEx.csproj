@@ -132,7 +132,7 @@
     <Compile Include="AckermanVehicleEntity.cs" />
     <Compile Include="AckermanVehicleEntityBuilder.cs" />
     <Compile Include="AckermanVehicleExEntity.cs" />
-    <Compile Include="AckermanVehicleExBuilder.cs" />
+    <Compile Include="AckermanVehicleExEntityBuilder.cs" />
     <Compile Include="AckermanVehicleProperties.cs" />
     <Compile Include="AckermanVehicles.cs" />
     <Compile Include="CompositeWheel.cs" />

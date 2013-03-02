@@ -114,7 +114,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 
         void UpdateMotorAxleSpeed(float deltaT)
         {
-            foreach (var w in Wheels)
+            foreach (var w in Wheels.Where((w, i) => Props.WheelsProperties.ToList()[i].Motorized))
                 w.Wheel.AxleSpeed = UpdateLinearValue(_targetAxleSpeed, w.Wheel.AxleSpeed, deltaT / 5 * MaxAxleSpeed);
         }
 

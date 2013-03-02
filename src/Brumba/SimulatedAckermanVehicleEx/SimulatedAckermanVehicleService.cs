@@ -90,14 +90,6 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
             breakRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-        void OnReplace(AckermanVehicle.Replace replaceRequest)
-        {
-            _state.TicksPerDriveAngleRadian = replaceRequest.Body.TicksPerDriveAngleRadian;
-            _state.TicksPerSteeringAngleRadian = replaceRequest.Body.TicksPerSteeringAngleRadian;
-
-            replaceRequest.ResponsePort.Post(DefaultReplaceResponseType.Instance);
-        }
-
         void SetUpForWaitingForEntity()
         {
             ResetMainPortInterleave(new Interleave(
@@ -125,8 +117,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
                                         new ExclusiveReceiverGroup(
                                             Arbiter.Receive<UpdateDrivePower>(true, _ackermanVehiclePort, OnUpdateDrivePower),
                                             Arbiter.Receive<UpdateSteerAngle>(true, _ackermanVehiclePort, OnUpdateSteerAngle),
-                                            Arbiter.Receive<Break>(true, _ackermanVehiclePort, OnBreak),
-                                            Arbiter.Receive<AckermanVehicle.Replace>(true, _ackermanVehiclePort, OnReplace)
+                                            Arbiter.Receive<Break>(true, _ackermanVehiclePort, OnBreak)
                                             ),
                                         new ConcurrentReceiverGroup(
                                             Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),

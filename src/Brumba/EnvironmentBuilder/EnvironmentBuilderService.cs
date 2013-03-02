@@ -34,8 +34,8 @@ namespace Brumba.Simulation.EnvironmentBuilder
         {
 			//CrossCountryGenerator.Generate(257, 0.1f).Save("terrain00.bmp");
 			//PopulateStabilizer();
-			//PopulateAckermanVehicle();
-			GenerateEnvironmentForTests();
+			PopulateAckermanVehicle();
+			//GenerateEnvironmentForTests();
 			//PopulateAckermanVehicleWithTail();
 	        //PopulateEnvForGroundTail();
 
@@ -146,10 +146,10 @@ namespace Brumba.Simulation.EnvironmentBuilder
             var box = new BoxShape(new BoxShapeProperties(10, new Pose(), new Vector3(1, 0.03f, 0.5f)) { Material = new MaterialProperties("ground", 0f, 0.5f, 0.5f) });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(box, new Vector3(0, 0.02f, 2f)) { State = { Name = "booox" } });
 
-            var sav = new AckermanVehicleEntity("testee", new Vector3(0, 0.2f, 0), AckermanVehicles.Simplistic);
-            SimulationEngine.GlobalInstancePort.Insert(sav);
-            //var sav = new AckermanVehicleExEntity("testee", new Vector3(0, 0.2f, 0), AckermanVehicles.Hard4x4);
+            //var sav = new AckermanVehicleEntity("testee", new Vector3(0, 0.2f, 0), AckermanVehicles.Simplistic);
             //SimulationEngine.GlobalInstancePort.Insert(sav);
+            var sav = new AckermanVehicleExEntity("testee", new Vector3(0, 0.2f, 0), AckermanVehicles.Simplistic);
+            SimulationEngine.GlobalInstancePort.Insert(sav);
         }
 
         private static void PopulateStabilizer()
