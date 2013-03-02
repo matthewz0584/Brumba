@@ -39,9 +39,9 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
                 {
                     wp.Mass = _props.WheelMass;
                     wp.MaxSteerAngle = _props.MaxSteerAngle;
-                    wp.PhysicalMesh = "WheelShape4.obj";
+                    wp.PhysicalMesh = _props.WheelRadius == 0.05f ? "WheelShape50.obj" : _props.WheelRadius == 0.028f ? "WheelShape28.obj" : "need exception";
                     wp.VisualMesh = "CorobotWheel.obj";
-                    wp.Radius = 0.05f;
+                    wp.Radius = _props.WheelRadius == 0.05f ? 0.05f : _props.WheelRadius == 0.028f ? 0.028f : -10;
                     wp.Width = _props.WheelWidth;
                     wp.SuspensionRate = _props.SuspensionRate;
                 }
@@ -68,7 +68,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
             private CompositeWheel BuildWheel(CompositeWheelProperties wheelProps)
             {
                 wheelProps.Name = VehiclePartName(wheelProps.Name);
-                return wheelProps.Build(_vehicle);
+                return new CompositeWheel.Builder(_vehicle, wheelProps).Build();
             }
 
             private string VehiclePartName(string partName)
