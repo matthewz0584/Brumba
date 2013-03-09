@@ -7,7 +7,7 @@ using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Physics;
-using SafwPxy = Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
+using SafwPxy = Brumba.Simulation.SimulatedAckermanVehicle.Proxy;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using AckPxy = Brumba.AckermanVehicle.Proxy;
 

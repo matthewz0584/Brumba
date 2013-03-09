@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedackermanvehicleex="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:a339af65-182f-48fd-83f5-40b378876842" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:a339af65-182f-48fd-83f5-40b378876842" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html</dssp:Contract>
       <dssp:Service>http://localhost:80/testee_veh_service</dssp:Service>
       <dssp:PartnerList>
         <dssp:Partner>
@@ -12,7 +12,7 @@
           <dssp:Name>simulation:Entity</dssp:Name>
         </dssp:Partner>
       </dssp:PartnerList>
-      <Name>this:SimulatedAckermanVehicleExtended</Name>
+      <Name>this:SimulatedAckermanVehicle</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

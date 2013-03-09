@@ -23,7 +23,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         private SimulatedAckermanVehicleOperations _mainPort = new SimulatedAckermanVehicleOperations();
 
         private SimulationEnginePort _simEngineNotifyPort = new SimulationEnginePort();
-        private AckermanVehicleEntity _vehicle;
+        private AckermanVehicleEntityBase _vehicle;
 
         public SimulatedAckermanVehicleService(DsspServiceCreationPort creationPort)
             : base(creationPort)
@@ -49,7 +49,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         {
             LogInfo("SimulatedAckermanVehcile OnInsertEntity called");
 
-            _vehicle = entity.Body as AckermanVehicleEntity;
+            _vehicle = entity.Body as AckermanVehicleEntityBase;
             _vehicle.ServiceContract = Contract.Identifier;
             _state.Connected = true;
 

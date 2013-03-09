@@ -1,59 +1,40 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using Brumba.Simulation.SimulatedAckermanVehicle;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Brumba.Simulation.SimulatedAckermanVehicleEx
+namespace Brumba.Simulation.SimulatedAckermanVehicle
 {
     [DataContract]
-    public partial class AckermanVehicleExEntity : VisualEntity
+    public partial class AckermanVehicleExEntity : AckermanVehicleEntityBase
     {
-        private AckermanVehicleProperties _properties;
-        private float _targetAxleSpeed;
-        private float _targetSteerAngle;
-
-        //[DataMember]
-        public List<CompositeWheel> Wheels { get; set; }
+        public List<CompositeWheel> Wheels { get; private set; }
 
         [DataMember]
         public List<BoxShape> ChassisParts { get; set; }
 
-        [DataMember]
-        public float MaxVelocity { get; set; }
-
-        [DataMember]
-        public float MaxSteerAngle { get; set; }
-
         /// <summary>
         /// Only for deserialization
         /// </summary>
-        public AckermanVehicleExEntity()
-        { 
-        }
+        public AckermanVehicleExEntity() {}
 
-        public AckermanVehicleExEntity(string name, Vector3 position, AckermanVehicleProperties properties)
-        {
-            State.Name = name;
-            State.Pose.Position = position;
-            _properties = properties;
-        }
+        public AckermanVehicleExEntity(string name, Vector3 position, AckermanVehicleProperties props)
+            : base(name, position, props) {}
 
-        #region Overrides
         public override void Initialize(GraphicsDevice device, PhysicsEngine physicsEngine)
         {
             try
             {
                 //New from simulator Entity\New menu (not deserialization)
-                if (ChassisParts == null && _properties == null)
-                    _properties = AckermanVehicles.HardRearDriven;
+                if (ChassisParts == null && Props == null)
+                    Props = AckermanVehicles.HardRearDriven;
 
-				if (_properties != null)
-					new Builder(this, _properties).Build();
+                if (ChassisParts == null && Props != null)
+					new Builder(this, Props).Build();
 
 				Wheels = Children.OfType<CompositeWheel>().ToList();
 
@@ -81,46 +62,25 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
 			base.Update(update);
         }
 
-        #endregion
-
-        public void SetDrivePower(float power)
+        void UpdateDriveAxleSpeed(float deltaT)
         {
-            _targetAxleSpeed = power * MaxAxleSpeed;
-        }
+            if (ToBreak)
+            {
+                SetDrivePower(0);
+                foreach (var w in Wheels.Where(w => w.Props.Motorized))
+                    w.AxleSpeed = 0;
+                return;
+            }
 
-        public void SetSteerAngle(float angle)
-        {
-            _targetSteerAngle = angle * MaxSteerAngle;
-        }
-
-        public void Break()
-        {
-            SetDrivePower(0);
             foreach (var w in Wheels.Where(w => w.Props.Motorized))
-                w.AxleSpeed = 0;
+                w.AxleSpeed = UpdateLinearValue(TargetAxleSpeed, w.AxleSpeed, deltaT / 5 * MaxAxleSpeed);
         }
 
-        private void UpdateDriveAxleSpeed(float deltaT)
-        {
-            foreach (var w in Wheels.Where(w => w.Props.Motorized))
-                w.AxleSpeed = UpdateLinearValue(_targetAxleSpeed, w.AxleSpeed, deltaT / 5 * MaxAxleSpeed);
-        }
-
-        private void UpdateSteerAngle(float deltaT)
+        void UpdateSteerAngle(float deltaT)
         {
             foreach (var w in Wheels.Where(w => w.Props.Steerable))
-                if (Math.Abs(w.SteerAngle - _targetSteerAngle) > 0.01f * Math.PI)
-                    w.SteerAngle = UpdateLinearValue(_targetSteerAngle, w.SteerAngle, deltaT / 0.01f * MaxSteerAngle);
-        }
-
-        private static float UpdateLinearValue(float targetValue, float currentValue, float delta)
-        {
-            return Math.Abs(targetValue - currentValue) > delta ? currentValue + Math.Sign(targetValue - currentValue) * delta : targetValue;
-        }
-
-        private float MaxAxleSpeed
-        {
-            get { return MaxVelocity / Wheels.First().Props.Radius; }
+                if (Math.Abs(w.SteerAngle - TargetSteerAngle) > 0.01f * Math.PI)
+                    w.SteerAngle = UpdateLinearValue(TargetSteerAngle, w.SteerAngle, deltaT / 0.01f * Props.MaxSteerAngle);
         }
     }
 }

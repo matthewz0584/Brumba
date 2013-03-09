@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Brumba.Simulation.SimulatedAckermanVehicle;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
 
-namespace Brumba.Simulation.SimulatedAckermanVehicleEx
+namespace Brumba.Simulation.SimulatedAckermanVehicle
 {
     public partial class AckermanVehicleExEntity
     {
@@ -23,9 +22,6 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
             {
                 FillWheelsProperties();
                 FillChassisPartsProperties();
-
-                _vehicle.MaxVelocity = _props.MaxVelocity;
-                _vehicle.MaxSteerAngle = _props.MaxSteerAngle;
 
                 //v.State.Flags = EntitySimulationModifiers.Kinematic;
 

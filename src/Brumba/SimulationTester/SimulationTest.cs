@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.Simulation.Engine;
-using SafwPxy = Brumba.Simulation.SimulatedAckermanVehicleEx.Proxy;
+using SafwPxy = Brumba.Simulation.SimulatedAckermanVehicle.Proxy;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 
 namespace Brumba.Simulation.SimulationTester

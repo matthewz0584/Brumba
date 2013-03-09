@@ -133,6 +133,7 @@
     <Compile Include="AckermanVehicleEntity.cs" />
     <Compile Include="AckermanVehicleEntityBuilder.cs" />
     <Compile Include="AckermanVehicleExEntity.cs" />
+    <Compile Include="AckermanVehicleEntityBase.cs" />
     <Compile Include="AckermanVehicleExEntityBuilder.cs" />
     <Compile Include="AckermanVehicleProperties.cs" />
     <Compile Include="AckermanVehicles.cs" />
@@ -141,8 +142,6 @@
     <Compile Include="CompositeWheelProperties.cs" />
     <Compile Include="SimulatedAckermanVehicleTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimulatedAckermanVehicleExService.cs" />
-    <Compile Include="SimulatedAckermanVehicleExTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimulatedAckermanVehicleService.cs" />
     <Compile Include="SimulatedTimer.cs" />
@@ -151,9 +150,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SimulatedAckermanVehicle.manifest.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="SimulatedAckermanVehicleEx.manifest.xml">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
