@@ -62,15 +62,17 @@ namespace Brumba.Simulation.SimulatedAckermanVehicleEx
             
             _vehicle = null;
             _state.Connected = false;
+            _state.DriveMotorTicks = 0;
+            _state.SteerMotorTicks = 0;
 
             SetUpForWaitingForEntity();
         }
 
-        void OnUpdateDrivePower(UpdateDrivePower motorRequest)
+        void OnUpdateDrivePower(UpdateDrivePower powerRequest)
         {
-            _vehicle.SetDrivePower(motorRequest.Body.Value);
+            _vehicle.SetDrivePower(powerRequest.Body.Value);
 
-            motorRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+            powerRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
         void OnUpdateSteerAngle(UpdateSteerAngle steerRequest)

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns:this="urn:uuid:e5019903-03c6-4c66-80a1-daf3ba49a9f0" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns:this="urn:uuid:ff8c912b-31b8-4b95-9f2b-cf2491ddc6b3" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
@@ -9,7 +9,14 @@
     </ServiceRecordType>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html</dssp:Contract>
-      <dssp:PartnerList />
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2013/02/genericackermanvehicle.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>ackermanvehiclesdriverguiservice:Ackerman_x0020_Vehicle</dssp:Name>
+          <dssp:ServiceName>this:SimulatedAckermanVehicle</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
       <Name>this:AckermanVehicleDriverGuiService</Name>
     </ServiceRecordType>
     <ServiceRecordType>

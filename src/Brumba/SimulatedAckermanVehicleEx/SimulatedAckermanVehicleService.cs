@@ -5,7 +5,6 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
-using Break = Brumba.AckermanVehicle.Break;
 
 namespace Brumba.Simulation.SimulatedAckermanVehicle
 {

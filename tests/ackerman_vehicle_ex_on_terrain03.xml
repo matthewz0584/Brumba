@@ -630,7 +630,7 @@
       <sim:State>
         <sim:Name>testee WheelFrontLeft body</sim:Name>
         <sim:Assets>
-          <sim:Mesh>WheelShape4.obj</sim:Mesh>
+          <sim:Mesh>WheelShape50.obj</sim:Mesh>
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
@@ -829,7 +829,7 @@
       <MeshEntityType xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Convex</MeshEntityType>
       <ConvexMeshShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <phys:ConvexMeshState>
-          <phys:Name>WheelShape4.obj</phys:Name>
+          <phys:Name>WheelShape50.obj</phys:Name>
           <phys:ShapeId>ConvexMesh</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -902,14 +902,14 @@
             <physm:W>1</physm:W>
           </phys:DiffuseColor>
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape4.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
+          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape50.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
           <phys:FaceCount>188</phys:FaceCount>
           <phys:VertexCount>194</phys:VertexCount>
         </phys:ConvexMeshState>
       </ConvexMeshShape>
       <Props>
         <Name>testee WheelFrontLeft</Name>
-        <PhysicalMesh>WheelShape4.obj</PhysicalMesh>
+        <PhysicalMesh>WheelShape50.obj</PhysicalMesh>
         <VisualMesh>CorobotWheel.obj</VisualMesh>
         <Position>
           <physm:X>0.085</physm:X>
@@ -1298,7 +1298,7 @@
       <sim:State>
         <sim:Name>testee WheelFrontRight body</sim:Name>
         <sim:Assets>
-          <sim:Mesh>WheelShape4.obj</sim:Mesh>
+          <sim:Mesh>WheelShape50.obj</sim:Mesh>
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
@@ -1497,7 +1497,7 @@
       <MeshEntityType xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Convex</MeshEntityType>
       <ConvexMeshShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <phys:ConvexMeshState>
-          <phys:Name>WheelShape4.obj</phys:Name>
+          <phys:Name>WheelShape50.obj</phys:Name>
           <phys:ShapeId>ConvexMesh</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -1570,14 +1570,14 @@
             <physm:W>1</physm:W>
           </phys:DiffuseColor>
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape4.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
+          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape50.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
           <phys:FaceCount>188</phys:FaceCount>
           <phys:VertexCount>194</phys:VertexCount>
         </phys:ConvexMeshState>
       </ConvexMeshShape>
       <Props>
         <Name>testee WheelFrontRight</Name>
-        <PhysicalMesh>WheelShape4.obj</PhysicalMesh>
+        <PhysicalMesh>WheelShape50.obj</PhysicalMesh>
         <VisualMesh>CorobotWheel.obj</VisualMesh>
         <Position>
           <physm:X>-0.085</physm:X>
@@ -1966,7 +1966,7 @@
       <sim:State>
         <sim:Name>testee WheelRearLeft body</sim:Name>
         <sim:Assets>
-          <sim:Mesh>WheelShape4.obj</sim:Mesh>
+          <sim:Mesh>WheelShape50.obj</sim:Mesh>
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
@@ -2138,7 +2138,7 @@
       <MeshEntityType xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Convex</MeshEntityType>
       <ConvexMeshShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <phys:ConvexMeshState>
-          <phys:Name>WheelShape4.obj</phys:Name>
+          <phys:Name>WheelShape50.obj</phys:Name>
           <phys:ShapeId>ConvexMesh</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -2211,14 +2211,14 @@
             <physm:W>1</physm:W>
           </phys:DiffuseColor>
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape4.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
+          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape50.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
           <phys:FaceCount>188</phys:FaceCount>
           <phys:VertexCount>194</phys:VertexCount>
         </phys:ConvexMeshState>
       </ConvexMeshShape>
       <Props>
         <Name>testee WheelRearLeft</Name>
-        <PhysicalMesh>WheelShape4.obj</PhysicalMesh>
+        <PhysicalMesh>WheelShape50.obj</PhysicalMesh>
         <VisualMesh>CorobotWheel.obj</VisualMesh>
         <Position>
           <physm:X>0.085</physm:X>
@@ -2607,7 +2607,7 @@
       <sim:State>
         <sim:Name>testee WheelRearRight body</sim:Name>
         <sim:Assets>
-          <sim:Mesh>WheelShape4.obj</sim:Mesh>
+          <sim:Mesh>WheelShape50.obj</sim:Mesh>
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
@@ -2779,7 +2779,7 @@
       <MeshEntityType xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Convex</MeshEntityType>
       <ConvexMeshShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <phys:ConvexMeshState>
-          <phys:Name>WheelShape4.obj</phys:Name>
+          <phys:Name>WheelShape50.obj</phys:Name>
           <phys:ShapeId>ConvexMesh</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -2852,14 +2852,14 @@
             <physm:W>1</physm:W>
           </phys:DiffuseColor>
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape4.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
+          <phys:ProcessedMeshResource>C:\MRDS4\store\media\WheelShape50.obj.convex.physics.2.7.bin</phys:ProcessedMeshResource>
           <phys:FaceCount>188</phys:FaceCount>
           <phys:VertexCount>194</phys:VertexCount>
         </phys:ConvexMeshState>
       </ConvexMeshShape>
       <Props>
         <Name>testee WheelRearRight</Name>
-        <PhysicalMesh>WheelShape4.obj</PhysicalMesh>
+        <PhysicalMesh>WheelShape50.obj</PhysicalMesh>
         <VisualMesh>CorobotWheel.obj</VisualMesh>
         <Position>
           <physm:X>-0.085</physm:X>

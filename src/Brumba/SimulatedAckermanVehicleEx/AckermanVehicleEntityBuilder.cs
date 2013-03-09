@@ -42,7 +42,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
                     wp.VisualMesh = "CorobotWheel.obj";
                     wp.Radius = _props.WheelRadius;
                     wp.Width = _props.WheelWidth;
-                    wp.SuspensionRate = 0;
+                    wp.SuspensionRate = _props.SuspensionRate;
                 }
             }
 
