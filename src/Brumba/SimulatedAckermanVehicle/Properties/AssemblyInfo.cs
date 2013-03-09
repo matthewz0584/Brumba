@@ -4,10 +4,10 @@ using interop = System.Runtime.InteropServices;
 
 [assembly: dss.ServiceDeclaration(dss.DssServiceDeclaration.ServiceBehavior)]
 [assembly: interop.ComVisible(false)]
-[assembly: AssemblyTitle("SimulatedAckermanVehicleEx")]
+[assembly: AssemblyTitle("SimulatedAckermanVehicle")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("SimulatedAckermanVehicleEx")]
+[assembly: AssemblyProduct("SimulatedAckermanVehicle")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

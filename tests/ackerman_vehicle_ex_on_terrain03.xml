@@ -626,7 +626,7 @@
       <MaxVelocity>4.16</MaxVelocity>
       <MaxSteerAngle>0.7853982</MaxSteerAngle>
     </AckermanVehicleExEntity>
-    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html">
+    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html">
       <sim:State>
         <sim:Name>testee WheelFrontLeft body</sim:Name>
         <sim:Assets>
@@ -1294,7 +1294,7 @@
         <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.00233560614</Rotations>
       </ModelOutter>
     </CompositeWheel>
-    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html">
+    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html">
       <sim:State>
         <sim:Name>testee WheelFrontRight body</sim:Name>
         <sim:Assets>
@@ -1962,7 +1962,7 @@
         <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">-0.00637473771</Rotations>
       </ModelOutter>
     </CompositeWheel>
-    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html">
+    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html">
       <sim:State>
         <sim:Name>testee WheelRearLeft body</sim:Name>
         <sim:Assets>
@@ -2603,7 +2603,7 @@
         <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
       </ModelOutter>
     </CompositeWheel>
-    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html">
+    <CompositeWheel xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html">
       <sim:State>
         <sim:Name>testee WheelRearRight body</sim:Name>
         <sim:Assets>

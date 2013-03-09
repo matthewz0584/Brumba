@@ -11,8 +11,8 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>SimulatedAckermanVehicleEx.Y2012.M10</AssemblyName>
-    <RootNamespace>Brumba.Simulation.SimulatedAckermanVehicleEx</RootNamespace>
+    <AssemblyName>SimulatedAckermanVehicle.Y2012.M10</AssemblyName>
+    <RootNamespace>Brumba.Simulation.SimulatedAckermanVehicle</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>

@@ -58,7 +58,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 
         void OnDeleteEntity(DeleteSimulationEntity entity)
         {
-            LogInfo("SimulatedAckermanVehicleEx OnDeleteEntity called");
+            LogInfo("SimulatedAckermanVehicle OnDeleteEntity called");
 
             _vehicle = null;
             _state.Connected = false;

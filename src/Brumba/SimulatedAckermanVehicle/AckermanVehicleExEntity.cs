@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Brumba.Simulation.SimulatedAckermanVehicle;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;

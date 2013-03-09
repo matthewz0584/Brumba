@@ -2,7 +2,7 @@
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 
-namespace Brumba.Simulation.SimulatedAckermanVehicleEx
+namespace Brumba.Simulation.SimulatedAckermanVehicle
 {
     public partial class CompositeWheel
     {

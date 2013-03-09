@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:simulatedackermanvehicleex="http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html" xmlns:this="urn:uuid:1004c5c2-cc42-4500-9827-4ac59a3f4bad" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
+      <dssp:PartnerList />
+      <Name>this:environmentbuilder</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanvehicleex.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/testee</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedAckermanVehicleExtended</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2013/02/genericackermanvehicle.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>ackermanvehiclesdriverguiservice:Ackerman_x0020_Vehicle</dssp:Name>
+          <dssp:ServiceName>this:SimulatedAckermanVehicleExtended</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:AckermanVehicleDriverGuiService</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
+</Manifest>

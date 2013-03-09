@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Dss.Core.Attributes;
 
-namespace Brumba.Simulation.SimulatedAckermanVehicleEx
+namespace Brumba.Simulation.SimulatedAckermanVehicle
 {
     [DataContract]
     public partial class CompositeWheel : SimplifiedConvexMeshEnvironmentEntity

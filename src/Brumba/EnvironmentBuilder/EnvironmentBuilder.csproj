@@ -127,9 +127,9 @@
     <Content Include="EnvironmentBuilder.manifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimulatedAckermanVehicleEx\SimulatedAckermanVehicleEx.csproj">
+    <ProjectReference Include="..\SimulatedAckermanVehicle\SimulatedAckermanVehicle.csproj">
       <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>
-      <Name>SimulatedAckermanVehicleEx</Name>
+      <Name>SimulatedAckermanVehicle</Name>
     </ProjectReference>
     <ProjectReference Include="..\SimulatedTail\SimulatedTail.csproj">
       <Project>{64124F6A-E6FF-44BD-8F50-4B599E848DB5}</Project>

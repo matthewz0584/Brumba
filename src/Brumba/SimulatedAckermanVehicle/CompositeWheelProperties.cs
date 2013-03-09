@@ -1,7 +1,7 @@
 ﻿using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.PhysicalModel;
 
-namespace Brumba.Simulation.SimulatedAckermanVehicleEx
+namespace Brumba.Simulation.SimulatedAckermanVehicle
 {
     [DataContract]
     public class CompositeWheelProperties
