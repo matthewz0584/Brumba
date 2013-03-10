@@ -44,8 +44,8 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
                 {
                     jointAngularProps.TwistMode = JointDOFMode.Limited;
                     jointAngularProps.TwistDrive = new JointDriveProperties(JointDriveMode.Position, new SpringProperties(1000000, 10000, 0), 100000000);
-                    jointAngularProps.UpperTwistLimit = new JointLimitProperties(_props.MaxSteerAngle * 1.1f, 0, new SpringProperties());
-                    jointAngularProps.LowerTwistLimit = new JointLimitProperties(-_props.MaxSteerAngle * 1.1f, 0, new SpringProperties());
+                    jointAngularProps.UpperTwistLimit = new JointLimitProperties(_props.MaxSteeringAngle * 1.1f, 0, new SpringProperties());
+                    jointAngularProps.LowerTwistLimit = new JointLimitProperties(-_props.MaxSteeringAngle * 1.1f, 0, new SpringProperties());
                 }
 
                 var jointLinearProps = new JointLinearProperties

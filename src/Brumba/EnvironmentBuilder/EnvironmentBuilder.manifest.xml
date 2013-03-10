@@ -1,14 +1,15 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2012/10/simulatedackermanvehicle.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:e1bd86d2-a3bb-4ae4-9480-ec9f7c2cd1fe" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:e1bd86d2-a3bb-4ae4-9480-ec9f7c2cd1fe" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
       <dssp:PartnerList />
       <Name>this:environmentbuilder</Name>
     </ServiceRecordType>
+    <!--Workaround for the bug with scene serialization. Without service referencing the enity it will not be serialized.-->
     <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanvehicle.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html</dssp:Contract>
       <dssp:PartnerList />
       <Name>this:SimulatedAckermanVehicle</Name>
     </ServiceRecordType>

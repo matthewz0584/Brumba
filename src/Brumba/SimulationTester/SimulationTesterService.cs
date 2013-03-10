@@ -69,7 +69,7 @@ namespace Brumba.Simulation.SimulationTester
 		
 		protected override void Start()
 		{
-			var testerPresenter = new SimulationTesterPresenterConsole(this);
+			new SimulationTesterPresenterConsole().Setup(this);
 
 			base.Start();
 

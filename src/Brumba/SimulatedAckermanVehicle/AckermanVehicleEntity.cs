@@ -98,7 +98,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         {
             foreach (var w in Wheels.Where((w, i) => Props.WheelsProperties.ToList()[i].Steerable))
                 if (Math.Abs(w.Wheel.SteerAngle - TargetSteerAngle) > 0.01f * Math.PI)
-                    w.Wheel.SteerAngle = UpdateLinearValue(TargetSteerAngle, w.Wheel.SteerAngle, deltaT / 0.1f * Props.MaxSteerAngle);
+                    w.Wheel.SteerAngle = UpdateLinearValue(TargetSteerAngle, w.Wheel.SteerAngle, deltaT / 0.1f * Props.MaxSteeringAngle);
         }
     }
 }

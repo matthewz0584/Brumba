@@ -56,10 +56,17 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 
         public override void Update(FrameUpdate update)
         {
+            UpdateState((float)update.ElapsedTime);
             UpdateDriveAxleSpeed((float)update.ElapsedTime);
             UpdateSteerAngle((float)update.ElapsedTime);
 
 			base.Update(update);
+        }
+
+        void UpdateState(float deltaT)
+        {
+            SteeringAngle = Wheels.First(w => w.Props.Steerable).SteeringAngle;
+            DriveAngularDistance += Wheels.First(w => w.Props.Motorized).AxleSpeed * deltaT;
         }
 
         void UpdateDriveAxleSpeed(float deltaT)
@@ -79,8 +86,8 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         void UpdateSteerAngle(float deltaT)
         {
             foreach (var w in Wheels.Where(w => w.Props.Steerable))
-                if (Math.Abs(w.SteerAngle - TargetSteerAngle) > 0.01f * Math.PI)
-                    w.SteerAngle = UpdateLinearValue(TargetSteerAngle, w.SteerAngle, deltaT / 0.01f * Props.MaxSteerAngle);
+                if (Math.Abs(w.SteeringAngle - TargetSteerAngle) > 0.01f * Math.PI)
+                    w.SteeringAngle = UpdateLinearValue(TargetSteerAngle, w.SteeringAngle, deltaT / 0.01f * Props.MaxSteeringAngle);
         }
     }
 }

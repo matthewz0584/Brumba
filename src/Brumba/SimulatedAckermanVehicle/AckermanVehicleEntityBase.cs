@@ -13,6 +13,9 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         protected float TargetSteerAngle { get; set; }
         protected bool ToBreak { get; set; }
 
+        protected float DriveAngularDistance { get; set; }
+        protected float SteeringAngle { get; set; }
+
         [DataMember]
         public AckermanVehicleProperties Props { get; set; }
 
@@ -32,9 +35,19 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
             TargetAxleSpeed = power * MaxAxleSpeed;
         }
 
-        public void SetSteerAngle(float angle)
+        public void SetSteeringAngle(float angle)
         {
-            TargetSteerAngle = angle * Props.MaxSteerAngle;
+            TargetSteerAngle = angle * Props.MaxSteeringAngle;
+        }
+
+        public float GetDriveAngularDistance()
+        {
+            return DriveAngularDistance;
+        }
+
+        public float GetSteeringAngle()
+        {
+            return SteeringAngle;
         }
 
         public void Break()

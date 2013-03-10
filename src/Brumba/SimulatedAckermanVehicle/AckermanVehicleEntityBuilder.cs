@@ -36,7 +36,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
                 foreach (var wp in _props.WheelsProperties)
                 {
                     wp.Mass = _props.WheelMass;
-                    wp.MaxSteerAngle = _props.MaxSteerAngle;
+                    wp.MaxSteeringAngle = _props.MaxSteeringAngle;
                     wp.PhysicalMesh = null;
                     wp.VisualMesh = "CorobotWheel.obj";
                     wp.Radius = _props.WheelRadius;

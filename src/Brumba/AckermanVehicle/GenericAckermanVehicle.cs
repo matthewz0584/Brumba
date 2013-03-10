@@ -15,14 +15,14 @@ namespace Brumba.AckermanVehicle
     public class AckermanVehicleState
     {
         [DataMember]
-        public int SteerMotorTicks { get; set; }
+        public float SteeringAngle { get; set; }
 
         [DataMember]
-        public int DriveMotorTicks { get; set; }
+        public float DriveAngularDistance { get; set; }
     }
 
     [ServicePort]
-    public class AckermanVehicleOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, UpdateDrivePower, UpdateSteerAngle, Break>
+    public class AckermanVehicleOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, UpdateDrivePower, UpdateSteeringAngle, Break>
     {
     }
 
@@ -48,7 +48,7 @@ namespace Brumba.AckermanVehicle
     }
 
     [DataContract]
-    public class SteerAngle
+    public class SteeringAngle
     {
         [DataMember, DataMemberConstructor]
         public float Value { get; set; }
@@ -63,7 +63,7 @@ namespace Brumba.AckermanVehicle
     {
     }
 
-    public class UpdateSteerAngle : Update<SteerAngle, PortSet<DefaultUpdateResponseType, Fault>>
+    public class UpdateSteeringAngle : Update<SteeringAngle, PortSet<DefaultUpdateResponseType, Fault>>
     {
     }
 

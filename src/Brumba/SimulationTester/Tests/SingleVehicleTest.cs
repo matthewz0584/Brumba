@@ -13,13 +13,7 @@ namespace Brumba.Simulation.SimulationTester
 
         protected static readonly Random _randomG = new Random((int)DateTime.Now.Ticks);	    
 
-        protected SingleVehicleTest(float motorPower)
-        {
-            MotorPower = motorPower;
-        }
-
         public double EstimatedTime { get; protected set; }
-        public float MotorPower { get; set; }
         public ISimulationTestFixture Fixture { get; set; }
 
         public IEnumerable<VisualEntity> FindEntitiesToRestore(IEnumerable<VisualEntity> entityPxies)

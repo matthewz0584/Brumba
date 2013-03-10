@@ -62,8 +62,8 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 
             _vehicle = null;
             _state.Connected = false;
-            _state.DriveMotorTicks = 0;
-            _state.SteerMotorTicks = 0;
+            _state.DriveAngularDistance = 0;
+            _state.SteeringAngle = 0;
 
             SetUpForWaitingForEntity();
         }
@@ -75,11 +75,11 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
             powerRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-        void OnUpdateSteerAngle(UpdateSteerAngle steerRequest)
+        void OnUpdateSteeringAngle(UpdateSteeringAngle steeringRequest)
         {
-            _vehicle.SetSteerAngle(steerRequest.Body.Value);
+            _vehicle.SetSteeringAngle(steeringRequest.Body.Value);
 
-            steerRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+            steeringRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
         void OnBreak(Break breakRequest)
@@ -87,6 +87,20 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
             _vehicle.Break();
 
             breakRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+        }
+
+        void OnGet(AckermanVehicle.Get get)
+        {
+            UpdateState();
+
+            DefaultGetHandler(get);
+        }
+
+        void OnGet(Get get)
+        {
+            UpdateState();
+
+            DefaultGetHandler(get);
         }
 
         void SetUpForWaitingForEntity()
@@ -115,15 +129,21 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
                                             ),
                                         new ExclusiveReceiverGroup(
                                             Arbiter.Receive<UpdateDrivePower>(true, _ackermanVehiclePort, OnUpdateDrivePower),
-                                            Arbiter.Receive<UpdateSteerAngle>(true, _ackermanVehiclePort, OnUpdateSteerAngle),
+                                            Arbiter.Receive<UpdateSteeringAngle>(true, _ackermanVehiclePort, OnUpdateSteeringAngle),
                                             Arbiter.Receive<Break>(true, _ackermanVehiclePort, OnBreak)
                                             ),
                                         new ConcurrentReceiverGroup(
                                             Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
                                             Arbiter.Receive<DsspDefaultLookup>(true, _ackermanVehiclePort, DefaultLookupHandler),
-                                            Arbiter.Receive<Get>(true, _mainPort, DefaultGetHandler),
-                                            Arbiter.Receive<AckermanVehicle.Get>(true, _ackermanVehiclePort, DefaultGetHandler)
+                                            Arbiter.Receive<Get>(true, _mainPort, OnGet),
+                                            Arbiter.Receive<AckermanVehicle.Get>(true, _ackermanVehiclePort, OnGet)
                                             )));
+        }
+
+        void UpdateState()
+        {
+            _state.DriveAngularDistance = _vehicle.GetDriveAngularDistance();
+            _state.SteeringAngle = _vehicle.GetSteeringAngle();
         }
 
         void ResetMainPortInterleave(Interleave ileave)

@@ -76,7 +76,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
             }
         }
 
-        public float SteerAngle
+        public float SteeringAngle
         {
             get
             {

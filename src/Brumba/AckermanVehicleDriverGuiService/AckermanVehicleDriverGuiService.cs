@@ -59,7 +59,7 @@ namespace Brumba.AckermanVehicleDriverGuiService
 
         private void OnSteerHandler(OnSteer onSteerRequest)
         {
-            _ackermanVehPort.UpdateSteerAngle(new SteerAngle { Value = onSteerRequest.Direction * 1f });
+            _ackermanVehPort.UpdateSteeringAngle(new SteeringAngle { Value = onSteerRequest.Direction * 1f });
         }
 
         private void OnPowerHandler(OnPower onPowerRequest)

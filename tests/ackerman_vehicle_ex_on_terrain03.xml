@@ -407,7 +407,7 @@
             <Mass>0.03</Mass>
             <Radius>0.05</Radius>
             <Width>0.045</Width>
-            <MaxSteerAngle>0.7853982</MaxSteerAngle>
+            <MaxSteeringAngle>0.7853982</MaxSteeringAngle>
             <SuspensionRate>750</SuspensionRate>
             <Motorized>true</Motorized>
             <Steerable>true</Steerable>
@@ -425,7 +425,7 @@
             <Mass>0.03</Mass>
             <Radius>0.05</Radius>
             <Width>0.045</Width>
-            <MaxSteerAngle>0.7853982</MaxSteerAngle>
+            <MaxSteeringAngle>0.7853982</MaxSteeringAngle>
             <SuspensionRate>750</SuspensionRate>
             <Motorized>true</Motorized>
             <Steerable>true</Steerable>
@@ -443,7 +443,7 @@
             <Mass>0.03</Mass>
             <Radius>0.05</Radius>
             <Width>0.045</Width>
-            <MaxSteerAngle>0.7853982</MaxSteerAngle>
+            <MaxSteeringAngle>0.7853982</MaxSteeringAngle>
             <SuspensionRate>750</SuspensionRate>
             <Motorized>true</Motorized>
             <Steerable>false</Steerable>
@@ -461,7 +461,7 @@
             <Mass>0.03</Mass>
             <Radius>0.05</Radius>
             <Width>0.045</Width>
-            <MaxSteerAngle>0.7853982</MaxSteerAngle>
+            <MaxSteeringAngle>0.7853982</MaxSteeringAngle>
             <SuspensionRate>750</SuspensionRate>
             <Motorized>true</Motorized>
             <Steerable>false</Steerable>
@@ -700,9 +700,7 @@
           </BoxShapeProperties>
         </ChassisPartsProperties>
         <MaxVelocity>4.16</MaxVelocity>
-        <MaxSteerAngle>0.7853982</MaxSteerAngle>
-        <TicksPerSteeringAngleRadian>0</TicksPerSteeringAngleRadian>
-        <TicksPerDriveAngleRadian>0</TicksPerDriveAngleRadian>
+        <MaxSteeringAngle>0.7853982</MaxSteeringAngle>
       </Props>
       <ChassisParts>
         <BoxShape>
@@ -1231,7 +1229,7 @@
         <Mass>0.03</Mass>
         <Radius>0.05</Radius>
         <Width>0.045</Width>
-        <MaxSteerAngle>0.7853982</MaxSteerAngle>
+        <MaxSteeringAngle>0.7853982</MaxSteeringAngle>
         <SuspensionRate>750</SuspensionRate>
         <Motorized>true</Motorized>
         <Steerable>true</Steerable>
@@ -1899,7 +1897,7 @@
         <Mass>0.03</Mass>
         <Radius>0.05</Radius>
         <Width>0.045</Width>
-        <MaxSteerAngle>0.7853982</MaxSteerAngle>
+        <MaxSteeringAngle>0.7853982</MaxSteeringAngle>
         <SuspensionRate>750</SuspensionRate>
         <Motorized>true</Motorized>
         <Steerable>true</Steerable>
@@ -2540,7 +2538,7 @@
         <Mass>0.03</Mass>
         <Radius>0.05</Radius>
         <Width>0.045</Width>
-        <MaxSteerAngle>0.7853982</MaxSteerAngle>
+        <MaxSteeringAngle>0.7853982</MaxSteeringAngle>
         <SuspensionRate>750</SuspensionRate>
         <Motorized>true</Motorized>
         <Steerable>false</Steerable>
@@ -3181,7 +3179,7 @@
         <Mass>0.03</Mass>
         <Radius>0.05</Radius>
         <Width>0.045</Width>
-        <MaxSteerAngle>0.7853982</MaxSteerAngle>
+        <MaxSteeringAngle>0.7853982</MaxSteeringAngle>
         <SuspensionRate>750</SuspensionRate>
         <Motorized>true</Motorized>
         <Steerable>false</Steerable>

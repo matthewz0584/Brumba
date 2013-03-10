@@ -22,7 +22,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         [DataMember]
         public float Width { get; set; }
         [DataMember]
-        public float MaxSteerAngle { get; set; }
+        public float MaxSteeringAngle { get; set; }
         [DataMember]
         public float SuspensionRate { get; set; }
 
