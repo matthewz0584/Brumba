@@ -34,8 +34,8 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			//CrossCountryGenerator.Generate(257, 0.1f).Save("terrain00.bmp");
 			//PopulateStabilizer();
 			//PopulateAckermanVehicle();
-			GenerateEnvironmentForTests();
-			//PopulateAckermanVehicleWithTail();
+			//GenerateEnvironmentForTests();
+			PopulateAckermanVehicleWithTail();
 	        //PopulateEnvForGroundTail();
 
             base.Start();
