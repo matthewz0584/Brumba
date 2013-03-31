@@ -47,9 +47,9 @@ namespace Brumba.Simulation
         {
             get
             {
-                var builder = HardRearDriven;
-                builder.SuspensionRate = 750;
-                return builder;
+                var props = HardRearDriven;
+                props.SuspensionRate = 750;
+                return props;
             }
         }
 
@@ -57,10 +57,10 @@ namespace Brumba.Simulation
         {
             get
             {
-                var builder = HardRearDriven;
-                foreach (var wp in builder.WheelsProperties)
+                var props = HardRearDriven;
+                foreach (var wp in props.WheelsProperties)
                     wp.Motorized = true;
-                return builder;
+                return props;
             }
         }
 
@@ -68,9 +68,9 @@ namespace Brumba.Simulation
         {
             get
             {
-                var builder = Hard4x4;
-                builder.SuspensionRate = 750;
-                return builder;
+                var props = Hard4x4;
+                props.SuspensionRate = 750;
+                return props;
             }
         }
 

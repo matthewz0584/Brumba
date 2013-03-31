@@ -95,8 +95,13 @@ namespace Brumba.Simulation.SimulatedTail
             {
                 return GroundRangefindersPositions.Select((v, i) =>
                     new InfraredRfEntity(String.Format("{0} rangefinder#{1}", stabilizerName, i),
-                        new Pose(GroundRangefindersPositions[i], Quaternion.FromAxisAngle(1, 0, 0, Microsoft.Xna.Framework.MathHelper.PiOver2)))
-                        { ScanInterval = ScanInterval });
+                        new Pose(GroundRangefindersPositions[i], Quaternion.FromAxisAngle(1, 0, 0, Microsoft.Xna.Framework.MathHelper.PiOver2)), new InfraredRfProperties
+                        {
+                            DispersionConeAngle = 4f,
+                            Samples = 3f,
+                            MaximumRange = 1,
+                            ScanInterval = ScanInterval
+                        }));
             }
         }
 

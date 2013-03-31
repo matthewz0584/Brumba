@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using Brumba.Simulation.SimulatedAckermanVehicle;
 using Brumba.Simulation.SimulatedTail;
 using Microsoft.Dss.Core.Attributes;
@@ -34,26 +36,50 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			//CrossCountryGenerator.Generate(257, 0.1f).Save("terrain00.bmp");
 			//PopulateStabilizer();
 			//PopulateAckermanVehicle();
-			//GenerateEnvironmentForTests();
-			PopulateAckermanVehicleWithTail();
+			//GenerateTest();
+			//PopulateAckermanVehicleWithTail();
 	        //PopulateEnvForGroundTail();
+            //PopulatePuckRobot();
+            PopulateInfraredRfRing();
 
             base.Start();
         }
 
-        private void PopulateAckermanVehicleWithTail()
+        void PopulateInfraredRfRing()
         {
-            var view = new CameraView { EyePosition = new Vector3(-1.65f, 1.63f, -0.29f), LookAtPoint = new Vector3(0, 0, 0) };
-            SimulationEngine.GlobalInstancePort.Update(view);
+            PopulateSimpleEnvironment();
 
-            var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
-            SimulationEngine.GlobalInstancePort.Insert(sky);
+            var ring = new InfraredRfRingEntity("rf ring", new Pose(new Vector3(0, 0, -0.3f)),
+                                                new InfraredRfProperties
+                                                    {
+                                                        DispersionConeAngle = 4f,
+                                                        Samples = 3f,
+                                                        MaximumRange = 1,
+                                                        ScanInterval = 0.025f
+                                                    })
+                {
+                    RfPositionsPolar =
+                            {
+                                new Vector2(0, 0.1f),
+                                new Vector2((float) Math.PI/2, 0.2f),
+                                new Vector2((float) Math.PI, 0.3f)
+                            }
+                };
 
-            var sun = new LightSourceEntity { Type = LightSourceEntityType.Directional, Color = new Vector4(0.8f, 0.8f, 0.8f, 1), Direction = new Vector3(0.5f, -.75f, 0.5f), State = {Name = "Sun"} };
-            SimulationEngine.GlobalInstancePort.Insert(sun);
+            var box = new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.3f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) });
+            var boxEntity = new SingleShapeEntity(box, new Vector3(0, 1, 1)) { State = { Name = "booox" } };
 
-            var ground = new HeightFieldEntity("Ground", "WoodFloor.dds", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
-            SimulationEngine.GlobalInstancePort.Insert(ground);
+            boxEntity.InsertEntity(ring);
+
+            SimulationEngine.GlobalInstancePort.Insert(boxEntity);
+
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.3f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) }), new Vector3(0, 1, -0.5f)) { State = { Name = "booox2" } });
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.3f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) }), new Vector3(1, 1, 0.7f)) { State = { Name = "booox3" } });
+        }
+
+        void PopulateAckermanVehicleWithTail()
+        {
+            PopulateSimpleEnvironment();
 
             var box = new BoxShape(new BoxShapeProperties(10, new Pose(), new Vector3(1, 0.03f, 0.5f)) { Material = new MaterialProperties("ground", 0f, 0.5f, 0.5f) });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(box, new Vector3(0, 0.02f, 2f)) { State = { Name = "booox" } });
@@ -80,28 +106,9 @@ namespace Brumba.Simulation.EnvironmentBuilder
             SimulationEngine.GlobalInstancePort.Insert(vehicle);            
         }
 
-		private void PopulateEnvForGroundTail()
+		void PopulateEnvForGroundTail()
 		{
-			var terrain = new TerrainEntity(@"terrain00.bmp", "terrain_tex.jpg", new MaterialProperties("ground", 0, 0.5f, 1.0f))
-			{
-				State = { Name = "Terrain", Assets = { Effect = "Terrain.fx" } },
-			};
-			SimulationEngine.GlobalInstancePort.Insert(terrain);
-
-			var view = new CameraView { EyePosition = new Vector3(-12, 9, 6), LookAtPoint = new Vector3(0, 0, 6) };
-			SimulationEngine.GlobalInstancePort.Update(view);
-
-			var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
-			SimulationEngine.GlobalInstancePort.Insert(sky);
-
-			var sun = new LightSourceEntity
-			{
-				State = { Name = "Sun" },
-				Type = LightSourceEntityType.Directional,
-				Color = new Vector4(0.8f, 0.8f, 0.8f, 1),
-				Direction = new Vector3(0.5f, -.75f, 0.5f)
-			};
-			SimulationEngine.GlobalInstancePort.Insert(sun);
+            PopulateSimpleEnvironment();
 
             var vehicle = new AckermanVehicleExEntity("vehicle", new Vector3(0, 0.2f, 0), AckermanVehicles.Suspended4x4);
 
@@ -125,22 +132,9 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			SimulationEngine.GlobalInstancePort.Insert(vehicle);
 		}
 
-        private void PopulateAckermanVehicle()
+        void PopulateAckermanVehicle()
         {
-            var view = new CameraView { EyePosition = new Vector3(-1.65f, 1.63f, -0.29f), LookAtPoint = new Vector3(0, 0, 0) };
-            SimulationEngine.GlobalInstancePort.Update(view);
-
-            var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
-            SimulationEngine.GlobalInstancePort.Insert(sky);
-
-            var sun = new LightSourceEntity() { Type = LightSourceEntityType.Directional, Color = new Vector4(0.8f, 0.8f, 0.8f, 1), Direction = new Vector3(0.5f, -.75f, 0.5f) };
-            sun.State.Name = "Sun";
-            SimulationEngine.GlobalInstancePort.Insert(sun);
-
-            var ground = new HeightFieldEntity("Ground", "WoodFloor.dds", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
-            SimulationEngine.GlobalInstancePort.Insert(ground);
-            //var ground = new TerrainEntity("terrain.bmp", "", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
-            //SimulationEngine.GlobalInstancePort.Insert(ground);
+            PopulateSimpleEnvironment();
 
             var box = new BoxShape(new BoxShapeProperties(10, new Pose(), new Vector3(1, 0.03f, 0.5f)) { Material = new MaterialProperties("ground", 0f, 0.5f, 0.5f) });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(box, new Vector3(0, 0.02f, 2f)) { State = { Name = "booox" } });
@@ -151,25 +145,9 @@ namespace Brumba.Simulation.EnvironmentBuilder
             SimulationEngine.GlobalInstancePort.Insert(sav);
         }
 
-        private static void PopulateStabilizer()
+        void PopulateStabilizer()
         {
-			var view = new CameraView { EyePosition = new Vector3(0, 1f, -2f), LookAtPoint = new Vector3(0, 1, 0) };
-            SimulationEngine.GlobalInstancePort.Update(view);
-
-            var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
-            SimulationEngine.GlobalInstancePort.Insert(sky);
-
-            var sun = new LightSourceEntity
-                {
-                    Type = LightSourceEntityType.Directional,
-                    Color = new Vector4(0.8f, 0.8f, 0.8f, 1),
-                    Direction = new Vector3(0.5f, -.75f, 0.5f),
-                    State = {Name = "Sun"}
-                };
-            SimulationEngine.GlobalInstancePort.Insert(sun);
-
-            var ground = new HeightFieldEntity("Ground", "WoodFloor.dds", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
-            SimulationEngine.GlobalInstancePort.Insert(ground);
+            PopulateSimpleEnvironment();
 
 			var box = new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.5f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) });
 			//var boxEntity = new SingleShapeEntity(box, new Vector3()) { State = { Name = "booox", Pose = {Orientation = Quaternion.FromAxisAngle(1, 0, 0, (float)Math.PI / 4)}, Flags = EntitySimulationModifiers.IgnoreGravity} };
@@ -215,7 +193,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			SimulationEngine.GlobalInstancePort.Insert(boxEntity);
         }
 
-        private void GenerateEnvironmentForTests()
+        void GenerateTest()
         {
             var terrain = new TerrainEntity(@"terrain03.bmp", "terrain_tex.jpg", new MaterialProperties("ground", 0, 0.5f, 1.0f))
             {
@@ -240,6 +218,29 @@ namespace Brumba.Simulation.EnvironmentBuilder
 
             var sav = new AckermanVehicleExEntity("testee", new Vector3(), AckermanVehicles.Suspended4x4);
             SimulationEngine.GlobalInstancePort.Insert(sav);
+        }
+
+        void PopulateSimpleEnvironment()
+        {
+            var view = new CameraView { EyePosition = new Vector3(-1.65f, 1.63f, -0.29f), LookAtPoint = new Vector3(0, 0, 0) };
+            SimulationEngine.GlobalInstancePort.Update(view);
+
+            var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
+            SimulationEngine.GlobalInstancePort.Insert(sky);
+
+            var sun = new LightSourceEntity
+            {
+                Type = LightSourceEntityType.Directional,
+                Color = new Vector4(0.8f, 0.8f, 0.8f, 1),
+                Direction = new Vector3(0.5f, -.75f, 0.5f)
+            };
+            sun.State.Name = "Sun";
+            SimulationEngine.GlobalInstancePort.Insert(sun);
+
+            var ground = new HeightFieldEntity("Ground", "WoodFloor.dds", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
+            SimulationEngine.GlobalInstancePort.Insert(ground);
+            //var ground = new TerrainEntity("terrain.bmp", "", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
+            //SimulationEngine.GlobalInstancePort.Insert(ground);
         }
     }
 }

@@ -131,7 +131,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InfraredRfProperties.cs" />
     <Compile Include="InfraredRfEntity.cs" />
+    <Compile Include="InfraredRfHelper.cs" />
+    <Compile Include="InfraredRfRingEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimulatedTailService.cs" />
     <Compile Include="SimulatedTailTypes.cs" />
