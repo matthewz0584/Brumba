@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:this="urn:uuid:e7099451-5520-47ce-9208-28f103d8d510" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns:this="urn:uuid:7bb50aad-4422-4bc0-b668-ea349b7b9bf1" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedinfraredrfring="http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html</dssp:Contract>
@@ -29,6 +29,17 @@
         </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:SimulatedAckermanVehicle</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/rfring</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedInfraredRangefinderRing</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

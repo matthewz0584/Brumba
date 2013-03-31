@@ -28,8 +28,8 @@ namespace Brumba.Simulation.SimulationTester
 	{
 		public const int TRIES_NUMBER = 100;
 		public const float SUCCESS_THRESHOLD = 0.79f;
-		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
-		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
+		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
+		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
         public const string TESTS_PATH = "brumba/tests";
 
 		[ServiceState]
@@ -144,7 +144,7 @@ namespace Brumba.Simulation.SimulationTester
         IEnumerator<ITask> ExecuteTest(Action<float> @return, ISimulationTest test)
         {
         	int successful = 0, i;
-			for (i = 0; i < TRIES_NUMBER; ++i)
+			for (i = 0; i < (test.IsProbabilistic ? TRIES_NUMBER : 1); ++i)
             {
 				if (HasEarlyResults(i, successful))
 					break;

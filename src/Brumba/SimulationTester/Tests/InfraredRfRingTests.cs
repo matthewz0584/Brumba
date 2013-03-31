@@ -53,6 +53,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
         }
 
         public double EstimatedTime { get; private set; }
+        public bool IsProbabilistic { get { return false; } }
         public ISimulationTestFixture Fixture { get; set; }
     }
 }

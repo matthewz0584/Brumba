@@ -16,6 +16,7 @@ namespace Brumba.Simulation.SimulationTester
         IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
 
         double EstimatedTime { get; }
+        bool IsProbabilistic { get; }
         ISimulationTestFixture Fixture { get; set; }
     }
 }

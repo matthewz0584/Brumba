@@ -40,9 +40,45 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			//PopulateAckermanVehicleWithTail();
 	        //PopulateEnvForGroundTail();
             //PopulatePuckRobot();
-            PopulateInfraredRfRing();
+            //PopulateInfraredRfRing();
+            PopulateHamster();
 
             base.Start();
+        }
+
+        void PopulateHamster()
+        {
+            PopulateSimpleEnvironment();
+
+            var ring = new InfraredRfRingEntity("rfring", new Pose(new Vector3(0, 0.08f, 0)),
+                                                new InfraredRfProperties
+                                                {
+                                                    DispersionConeAngle = 4f,
+                                                    Samples = 3f,
+                                                    MaximumRange = 1,
+                                                    ScanInterval = 0.1f
+                                                })
+            {
+                RfPositionsPolar =
+                            {
+                                new Vector2(0, 0.08f),
+                                new Vector2((float) Math.PI * 1/6, 0.085f),
+                                new Vector2((float) Math.PI * 2/6, 0.07f),
+                                new Vector2((float) Math.PI * 3/6, 0.06f),
+                                new Vector2((float) Math.PI, 0.1f),
+                                new Vector2((float) Math.PI * 9/6, 0.06f),
+                                new Vector2((float) Math.PI * 10/6, 0.07f),
+                                new Vector2((float) Math.PI * 11/6, 0.085f),
+                            }
+            };
+            var sav = new AckermanVehicleExEntity("testee", new Vector3(0, 0.2f, 0), AckermanVehicles.Simplistic);
+            sav.InsertEntity(ring);
+
+            SimulationEngine.GlobalInstancePort.Insert(sav);
+
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 1.5f)) { State = { Name = "wall1" } });
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(1.31f, 0.21f, 1f)) { State = { Name = "wall2" } });
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 0.5f)) { State = { Name = "wall3" } });
         }
 
         void PopulateInfraredRfRing()
@@ -55,7 +91,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
                                                         DispersionConeAngle = 4f,
                                                         Samples = 3f,
                                                         MaximumRange = 1,
-                                                        ScanInterval = 0.025f
+                                                        ScanInterval = 0.1f
                                                     })
                 {
                     RfPositionsPolar =
@@ -72,7 +108,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             ringOwner.InsertEntity(ring);
 
             SimulationEngine.GlobalInstancePort.Insert(ringOwner);
-
+            
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 1.5f)) { State = { Name = "wall1" } });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(1.31f, 0.21f, 1f)) { State = { Name = "wall2" } });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 0.5f)) { State = { Name = "wall3" } });

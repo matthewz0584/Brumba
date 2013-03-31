@@ -14,6 +14,7 @@ namespace Brumba.Simulation.SimulationTester
         protected static readonly Random _randomG = new Random((int)DateTime.Now.Ticks);	    
 
         public double EstimatedTime { get; protected set; }
+        public bool IsProbabilistic { get { return true; } }
         public ISimulationTestFixture Fixture { get; set; }
 
         public IEnumerable<VisualEntity> FindEntitiesToRestore(IEnumerable<VisualEntity> entityPxies)
