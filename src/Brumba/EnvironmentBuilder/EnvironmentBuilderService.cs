@@ -49,7 +49,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
         {
             PopulateSimpleEnvironment();
 
-            var ring = new InfraredRfRingEntity("rf ring", new Pose(new Vector3(0, 0, -0.3f)),
+            var ring = new InfraredRfRingEntity("rfring", new Pose(new Vector3()),
                                                 new InfraredRfProperties
                                                     {
                                                         DispersionConeAngle = 4f,
@@ -62,19 +62,20 @@ namespace Brumba.Simulation.EnvironmentBuilder
                             {
                                 new Vector2(0, 0.1f),
                                 new Vector2((float) Math.PI/2, 0.2f),
-                                new Vector2((float) Math.PI, 0.3f)
+                                new Vector2((float) Math.PI, 0.3f),
+                                new Vector2((float) Math.PI * 3 / 2, 0.4f)
                             }
                 };
 
-            var box = new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.3f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) });
-            var boxEntity = new SingleShapeEntity(box, new Vector3(0, 1, 1)) { State = { Name = "booox" } };
+            var ringOwner = new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 1)) { State = { Name = "ring owner" } };
 
-            boxEntity.InsertEntity(ring);
+            ringOwner.InsertEntity(ring);
 
-            SimulationEngine.GlobalInstancePort.Insert(boxEntity);
+            SimulationEngine.GlobalInstancePort.Insert(ringOwner);
 
-            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.3f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) }), new Vector3(0, 1, -0.5f)) { State = { Name = "booox2" } });
-            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.3f)) { Material = new MaterialProperties("qq", 0.2f, 0.8f, 1.0f) }), new Vector3(1, 1, 0.7f)) { State = { Name = "booox3" } });
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 1.5f)) { State = { Name = "wall1" } });
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(1.31f, 0.21f, 1f)) { State = { Name = "wall2" } });
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 0.5f)) { State = { Name = "wall3" } });
         }
 
         void PopulateAckermanVehicleWithTail()

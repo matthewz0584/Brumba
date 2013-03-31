@@ -14,11 +14,11 @@ namespace Brumba.Simulation.SimulationTester
         public const string MANIFEST_EXTENSION = "manifest.xml";
         public const string ENVIRONMENT_EXTENSION = "xml";
 
-    	readonly IEnumerable<SingleVehicleTest> _tests;
+        readonly IEnumerable<ISimulationTest> _tests;
     	readonly string _environmentXmlFile;
         readonly ServiceForwarder _serviceForwarder;
 
-        protected SimulationTestFixture(IEnumerable<SingleVehicleTest> tests, string environmentXmlFile, ServiceForwarder serviceForwarder)
+        protected SimulationTestFixture(IEnumerable<ISimulationTest> tests, string environmentXmlFile, ServiceForwarder serviceForwarder)
         {
             _serviceForwarder = serviceForwarder;
             _tests = tests;

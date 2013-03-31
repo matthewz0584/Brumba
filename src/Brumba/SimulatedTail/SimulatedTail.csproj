@@ -131,6 +131,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SimulatedInfraredRfRingService.cs" />
+    <Compile Include="SimulatedInfraredRfRingTypes.cs" />
     <Compile Include="InfraredRfProperties.cs" />
     <Compile Include="InfraredRfEntity.cs" />
     <Compile Include="InfraredRfHelper.cs" />

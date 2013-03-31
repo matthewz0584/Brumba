@@ -10,7 +10,7 @@ namespace Brumba.Simulation.SimulationTester
     public interface ISimulationTest
     {
     	IEnumerable<EngPxy.VisualEntity> FindEntitiesToRestore(IEnumerable<EngPxy.VisualEntity> entityPxies);
-    	IEnumerable<VisualEntity> PrepareEntitiesForRestore(IEnumerable<VisualEntity> entities);
+    	IEnumerable<VisualEntity> FindAndPrepareEntitiesForRestore(IEnumerable<VisualEntity> entities);
 
         IEnumerator<ITask> Start();
         IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);

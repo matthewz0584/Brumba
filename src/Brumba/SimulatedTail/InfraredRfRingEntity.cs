@@ -16,6 +16,7 @@ using xVector4 = Microsoft.Xna.Framework.Vector4;
 
 namespace Brumba.Simulation.SimulatedTail
 {
+    [DataContract]
     public class InfraredRfRingEntity : VisualEntity
     {
         float _elapsedSinceLastScan;
@@ -31,7 +32,8 @@ namespace Brumba.Simulation.SimulatedTail
         [DataMember]
         public InfraredRfProperties Props { get; set; }
 
-        [DataMember, Description("Rfs polar coordinates: X - angle, Y - radius. Zero angle along +Z axis")]
+        [DataMember]
+        [Description("Rfs polar coordinates: X - angle, Y - radius. Zero angle along +Z axis")]
         public List<Vector2> RfPositionsPolar { get; set; }
 
         public InfraredRfRingEntity()

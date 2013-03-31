@@ -21,7 +21,7 @@ namespace Brumba.Simulation.SimulationTester
             return entityPxies.Where(pxy => pxy.State.Name == VEHICLE_NAME);
         }
 
-        public IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> PrepareEntitiesForRestore(IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> entities)
+        public IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> FindAndPrepareEntitiesForRestore(IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> entities)
         {
             var testee = entities.Single(e => e.State.Name == VEHICLE_NAME);
             testee.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * _randomG.NextDouble()));

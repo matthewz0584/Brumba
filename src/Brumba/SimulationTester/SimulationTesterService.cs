@@ -28,8 +28,8 @@ namespace Brumba.Simulation.SimulationTester
 	{
 		public const int TRIES_NUMBER = 100;
 		public const float SUCCESS_THRESHOLD = 0.79f;
-		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
-		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
+		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
+		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
         public const string TESTS_PATH = "brumba/tests";
 
 		[ServiceState]
@@ -149,7 +149,7 @@ namespace Brumba.Simulation.SimulationTester
 				if (HasEarlyResults(i, successful))
 					break;
 
-                yield return To.Exec(RestoreTestEnvironment, test, (Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>)test.FindEntitiesToRestore, (Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>)test.PrepareEntitiesForRestore);
+                yield return To.Exec(RestoreTestEnvironment, test, (Func<IEnumerable<EngPxy.VisualEntity>, IEnumerable<EngPxy.VisualEntity>>)test.FindEntitiesToRestore, (Func<IEnumerable<VisualEntity>, IEnumerable<VisualEntity>>)test.FindAndPrepareEntitiesForRestore);
 
                 yield return To.Exec(test.Start);
 

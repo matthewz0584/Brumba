@@ -2,6 +2,7 @@
 
 namespace Brumba.Simulation.SimulatedTail
 {
+    [DataContract]
     public class InfraredRfProperties
     {
         [DataMember]

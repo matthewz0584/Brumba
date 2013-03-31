@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.PhysicalModel;
@@ -7,7 +6,6 @@ using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Xna.Framework.Graphics;
 using xMatrix = Microsoft.Xna.Framework.Matrix;
-using xQuaternion = Microsoft.Xna.Framework.Quaternion;
 using xVector3 = Microsoft.Xna.Framework.Vector3;
 using xVector4 = Microsoft.Xna.Framework.Vector4;
 

@@ -115,6 +115,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\SimulatedAckermanVehicle.Y2012.M10.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="SimulatedTail.Y2013.M01.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL" />
     <Reference Include="SimulationCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\SimulationCommon.dll</HintPath>
@@ -155,6 +156,7 @@
     <Compile Include="SimulationTesterTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimulationTestFixtureAttribute.cs" />
+    <Compile Include="Tests\InfraredRfRingTests.cs" />
     <Compile Include="Tests\SingleVehicleTest.cs" />
   </ItemGroup>
   <ItemGroup>
