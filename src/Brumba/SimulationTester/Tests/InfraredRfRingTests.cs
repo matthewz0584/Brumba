@@ -23,25 +23,15 @@ namespace Brumba.Simulation.SimulationTester.Tests
         }
     }
 
-    public class DistancesTest : ISimulationTest
+    public class DistancesTest : DeterministicTestBase
     {
-        public IEnumerable<VisualEntity> FindEntitiesToRestore(IEnumerable<VisualEntity> entityPxies)
-        {
-            return entityPxies.Where(pxy => pxy.State.Name == "ring owner");
-        }
-
-        public IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> FindAndPrepareEntitiesForRestore(IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> entities)
-        {
-            return entities.Where(e => e.State.Name == "ring owner");
-        }
-
-        public IEnumerator<ITask> Start()
+        public override IEnumerator<ITask> Start()
         {
             EstimatedTime = 1;
             yield break;
         }
 
-        public IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+        public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
         {
             IrrPxy.SimulatedInfraredRfRingState ringState = null;
             yield return Arbiter.Receive<IrrPxy.SimulatedInfraredRfRingState>(false, (Fixture as InfraredRfRingTests).IfRfRingPort.Get(), rs => ringState = rs);
@@ -51,9 +41,5 @@ namespace Brumba.Simulation.SimulationTester.Tests
                     ringState.Distances[2] > 0.1 * 0.95 && ringState.Distances[2] < 0.1 * 1.05 &&
                     ringState.Distances[3] == 1);
         }
-
-        public double EstimatedTime { get; private set; }
-        public bool IsProbabilistic { get { return false; } }
-        public ISimulationTestFixture Fixture { get; set; }
     }
 }

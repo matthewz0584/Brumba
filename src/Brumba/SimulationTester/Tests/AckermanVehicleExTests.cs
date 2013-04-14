@@ -18,7 +18,7 @@ namespace Brumba.Simulation.SimulationTester
     public class AckermanVehicleExTests : SimulationTestFixture
     {
         public AckermanVehicleExTests(ServiceForwarder sf)
-            : base(new SingleVehicleTest[] { new StraightPathTest(0.6f), new CurvedPathTest(0.5f), new VehicleAnglesTest() }, "ackerman_vehicle_ex_on_terrain03", sf)
+            : base(new SingleVehicleTestBase[] { new StraightPathTest(0.6f), new CurvedPathTest(0.5f), new VehicleAnglesTest() }, "ackerman_vehicle_ex_on_terrain03", sf)
         {
         }
 
@@ -30,7 +30,24 @@ namespace Brumba.Simulation.SimulationTester
         }
     }
 
-    public class StraightPathTest : SingleVehicleTest
+    public abstract class SingleVehicleTestBase : StochasticTestBase
+    {
+        public const string VEHICLE_NAME = "testee";
+
+        public override IEnumerable<EngPxy.VisualEntity> FindEntitiesToRestore(IEnumerable<EngPxy.VisualEntity> entityPxies)
+        {
+            return entityPxies.Where(pxy => pxy.State.Name == VEHICLE_NAME);
+        }
+
+        public override IEnumerable<VisualEntity> FindAndPrepareEntitiesForRestore(IEnumerable<VisualEntity> entities)
+        {
+            var testee = entities.Single(e => e.State.Name == VEHICLE_NAME);
+            testee.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
+            return new[] { testee };
+        }
+    }
+
+    public class StraightPathTest : SingleVehicleTestBase
     {
         private readonly float _motorPower;
 
@@ -53,7 +70,7 @@ namespace Brumba.Simulation.SimulationTester
         }
     }
 
-    public class CurvedPathTest : SingleVehicleTest
+    public class CurvedPathTest : SingleVehicleTestBase
     {
         private readonly float _motorPower;
 
@@ -65,7 +82,7 @@ namespace Brumba.Simulation.SimulationTester
         public override IEnumerator<ITask> Start()
         {
             EstimatedTime = 20;
-            var steerAngle = _randomG.Next(0, 1) == 1 ? 0.1f : -0.1f;
+            var steerAngle = RandomG.Next(0, 1) == 1 ? 0.1f : -0.1f;
             yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateSteeringAngle(steerAngle));
             yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateDrivePower(_motorPower));
         }
@@ -78,7 +95,7 @@ namespace Brumba.Simulation.SimulationTester
         }
     }
 
-    public class VehicleAnglesTest : SingleVehicleTest
+    public class VehicleAnglesTest : SingleVehicleTestBase
     {
         float _prevDriveAngularDistance = -1;
         double _prevElapsedTime;

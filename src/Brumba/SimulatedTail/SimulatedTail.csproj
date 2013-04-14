@@ -131,6 +131,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SimulatedTurretService.cs" />
+    <Compile Include="SimulatedTurretTypes.cs" />
+    <Compile Include="TurretEntity.cs" />
     <Compile Include="SimulatedInfraredRfRingService.cs" />
     <Compile Include="SimulatedInfraredRfRingTypes.cs" />
     <Compile Include="InfraredRfProperties.cs" />

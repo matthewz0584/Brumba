@@ -51,7 +51,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
                 chp.LocalPose.Position = new Vector3(0, chp.Dimensions.Y / 2.0f + _props.Clearance, -_props.WheelBase / 2.0f - _props.WheelRadius + chp.Dimensions.Z / 2);
                 chp.MassDensity.Mass = _props.ChassisMass;
                 chp.Material = new MaterialProperties("ChassisMaterial", 0.0f, 0.5f, 0.5f);
-                chp.DiffuseColor = new Vector4(1, 0, 0, 0);
+                chp.DiffuseColor = new Vector4(0.8f, 0, 0, 0);
             }
 
             private BoxShape BuildChassisPart(BoxShapeProperties partProps)

@@ -80,9 +80,11 @@ namespace Brumba.Simulation.SimulationTester
 
         IEnumerable<ISimulationTestFixture> GatherTestFixtures()
         {
-            var fixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimulationTestFixtureAttribute && !(a as SimulationTestFixtureAttribute).Ignore));
+            var wipFixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimulationTestFixtureAttribute && !(a as SimulationTestFixtureAttribute).Ignore && (a as SimulationTestFixtureAttribute).Wip));
+            var allFixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimulationTestFixtureAttribute && !(a as SimulationTestFixtureAttribute).Ignore));
+            var fixturesToCreate = wipFixtureTypes.Any() ? wipFixtureTypes : allFixtureTypes;
             var sf = new ServiceForwarder(this);
-            return fixtureTypes.Select(ft => Activator.CreateInstance(ft, new object[] { sf })).Cast<ISimulationTestFixture>();
+            return fixturesToCreate.Select(ft => Activator.CreateInstance(ft, new object[] { sf })).Cast<ISimulationTestFixture>();
         }
 
         IEnumerator<ITask> ExecuteTests()

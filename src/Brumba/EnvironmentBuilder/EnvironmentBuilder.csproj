@@ -100,6 +100,9 @@
       <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SimulatedTail.Y2013.M01.Proxy">
+      <HintPath>..\..\..\..\bin\SimulatedTail.Y2013.M01.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="SimulationCommon">
       <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
       <Private>False</Private>

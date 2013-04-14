@@ -156,8 +156,8 @@
     <Compile Include="SimulationTesterTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimulationTestFixtureAttribute.cs" />
+    <Compile Include="Tests\TurretTests.cs" />
     <Compile Include="Tests\InfraredRfRingTests.cs" />
-    <Compile Include="Tests\SingleVehicleTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SimulationTester.manifest.xml" />
