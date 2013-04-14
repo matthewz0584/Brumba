@@ -1,44 +1,57 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Xna.Framework.Graphics;
+using Vector2 = Microsoft.Robotics.PhysicalModel.Vector2;
+using Vector3 = Microsoft.Robotics.PhysicalModel.Vector3;
+using Vector4 = Microsoft.Robotics.PhysicalModel.Vector4;
 using xMatrix = Microsoft.Xna.Framework.Matrix;
 using xVector3 = Microsoft.Xna.Framework.Vector3;
 using xVector4 = Microsoft.Xna.Framework.Vector4;
 
-namespace Brumba.Simulation.SimulatedTail
+namespace Brumba.Simulation.SimulatedInfraredRfRing
 {
-    public class InfraredRfEntity : VisualEntity
+    [DataContract]
+    public class InfraredRfRingEntity : VisualEntity
     {
         float _elapsedSinceLastScan;
         float _appTime;
-                
+
+        VisualEntityMesh _rfBody;
         VisualEntityMesh _impactMesh;
         CachedEffect _impactPointEffect;
         CachedEffectParameter _ipEffectTimeAttenuationHandle;
-        private InfraredRfHelper _rfHelper;
+
+        List<InfraredRfHelper> _rfHelpers;
 
         [DataMember]
         public InfraredRfProperties Props { get; set; }
 
-        public InfraredRfEntity()
+        [DataMember]
+        [Description("Rfs polar coordinates: X - angle, Y - radius. Zero angle along +Z axis")]
+        public List<Vector2> RfPositionsPolar { get; set; }
+
+        public InfraredRfRingEntity()
         {
         }
 
-        public InfraredRfEntity(string name, Pose initialPose, InfraredRfProperties props)
+        public InfraredRfRingEntity(string name, Pose initialPose, InfraredRfProperties props)
             : this()
         {
             Props = props;
             State.Name = name;
             State.Pose = initialPose;
+            RfPositionsPolar = new List<Vector2>();
         }
 
-        public float Distance
+        public float[] GetDistances()
         {
-            get { return _rfHelper.GetDistance(); }
+            return _rfHelpers.Select(rfh => rfh.GetDistance()).ToArray();
         }
 
         public override void Initialize(GraphicsDevice device, PhysicsEngine physicsEngine)
@@ -50,11 +63,11 @@ namespace Brumba.Simulation.SimulatedTail
                 // set flag so rendering engine renders us last
                 Flags |= VisualEntityProperties.UsesAlphaBlending;
 
-                _rfHelper = new InfraredRfHelper(new Vector2(0, 0.001f), Props);
+                _rfHelpers = RfPositionsPolar.Select(rfPos => new InfraredRfHelper(rfPos, Props)).ToList();
 
                 base.Initialize(device, physicsEngine);
 
-                Meshes.Add(SimulationEngine.ResourceCache.CreateMesh(device, new BoxShapeProperties(0.005f, new Pose(), new Vector3(0.02f, 0.01f, 0.005f)) { DiffuseColor = new Vector4(0, 0, 0, 0) }));
+                InitBodyRendering(device);
 
                 InitImpactPointRendering(device);
             }
@@ -76,7 +89,8 @@ namespace Brumba.Simulation.SimulatedTail
 
             _elapsedSinceLastScan = 0;
 
-            _rfHelper.Update(World, PhysicsEngine);
+            foreach (var rfHelper in _rfHelpers)
+                rfHelper.Update(World, PhysicsEngine);
         }
 
         public override void Render(RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)
@@ -84,12 +98,21 @@ namespace Brumba.Simulation.SimulatedTail
             if (Flags.HasFlag(VisualEntityProperties.DisableRendering))
                 return;
 
-            base.Render(renderMode, transforms, currentCamera);
+            RenderBodies(renderMode, transforms);
 
-            RenderImpactPoints(renderMode, transforms);
+            RenderAllRfImpactPoints(renderMode, transforms);
         }
 
-        void RenderImpactPoints(RenderMode renderMode, MatrixTransforms transforms)
+        void RenderBodies(RenderMode renderMode, MatrixTransforms transforms)
+        {
+            foreach (var rfHelper in _rfHelpers)
+            {
+                transforms.World = rfHelper.GlobalTransfrom(World);
+                Render(renderMode, transforms, _rfBody);
+            }
+        }
+
+        void RenderAllRfImpactPoints(RenderMode renderMode, MatrixTransforms transforms)
         {
             var bs = Device.BlendState;
             var rs = Device.RasterizerState;
@@ -99,20 +122,32 @@ namespace Brumba.Simulation.SimulatedTail
             Effect = _impactPointEffect;
             _ipEffectTimeAttenuationHandle.SetValue(new xVector4(100 * (float)Math.Cos(_appTime * (1.0f / Props.ScanInterval)), 0, 0, 1));
 
-            foreach (var iPosition in _rfHelper.LastScanResult.Select(ip => new xVector3(ip.Position.X, ip.Position.Y, ip.Position.Z)))
+            foreach (var rfHelper in _rfHelpers)
+                RenderRfImpactPoints(renderMode, transforms, rfHelper);
+
+            Effect = oldEffect;
+            Device.BlendState = bs;
+            Device.RasterizerState = rs;
+            Device.DepthStencilState = ds;
+        }
+
+        void RenderRfImpactPoints(RenderMode renderMode, MatrixTransforms transforms, InfraredRfHelper rfHelper)
+        {
+            foreach (var iPosition in rfHelper.LastScanResult.Select(ip => new xVector3(ip.Position.X, ip.Position.Y, ip.Position.Z)))
             {
-                var ipDir = xVector3.Normalize(iPosition - _rfHelper.GlobalTransfrom(World).Translation);
+                var ipDir = xVector3.Normalize(iPosition - rfHelper.GlobalTransfrom(World).Translation);
                 var ipMeshNorm = new xVector3(0, 1, 0);
                 transforms.World = xMatrix.CreateFromAxisAngle(xVector3.Cross(ipMeshNorm, ipDir),
                                                               (float)Math.Acos(xVector3.Dot(ipDir, ipMeshNorm)));
                 transforms.World.Translation = iPosition - 0.01f * ipDir;
                 Render(renderMode, transforms, _impactMesh);
             }
+        }
 
-            Effect = oldEffect;
-            Device.BlendState = bs;
-            Device.RasterizerState = rs;
-            Device.DepthStencilState = ds;
+        void InitBodyRendering(GraphicsDevice device)
+        {
+            _rfBody = SimulationEngine.ResourceCache.CreateMesh(device,
+                new BoxShapeProperties(0.005f, new Pose(), new Vector3(0.005f, 0.01f, 0.02f)) { DiffuseColor = new Vector4(0, 0, 0, 0) });
         }
 
         void InitImpactPointRendering(GraphicsDevice device)

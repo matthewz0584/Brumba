@@ -130,41 +130,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AckermanVehicleEntity.cs" />
-    <Compile Include="AckermanVehicleEntityBuilder.cs" />
-    <Compile Include="AckermanVehicleExEntity.cs" />
-    <Compile Include="AckermanVehicleEntityBase.cs" />
-    <Compile Include="AckermanVehicleExEntityBuilder.cs" />
-    <Compile Include="AckermanVehicleProperties.cs" />
-    <Compile Include="AckermanVehicles.cs" />
-    <Compile Include="CompositeWheel.cs" />
-    <Compile Include="CompositeWheelBuilder.cs" />
-    <Compile Include="CompositeWheelProperties.cs" />
-    <Compile Include="InfraredRfEntity.cs" />
-    <Compile Include="InfraredRfHelper.cs" />
-    <Compile Include="InfraredRfProperties.cs" />
-    <Compile Include="InfraredRfRingEntity.cs" />
-    <Compile Include="SimulatedAckermanVehicleTypes.cs" />
+    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleEntity.cs" />
+    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleEntityBuilder.cs" />
+    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleExEntity.cs" />
+    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleEntityBase.cs" />
+    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleExEntityBuilder.cs" />
+    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleProperties.cs" />
+    <Compile Include="SimulatedAckermanVehicle\AckermanVehicles.cs" />
+    <Compile Include="SimulatedAckermanVehicle\CompositeWheel.cs" />
+    <Compile Include="SimulatedAckermanVehicle\CompositeWheelBuilder.cs" />
+    <Compile Include="SimulatedAckermanVehicle\CompositeWheelProperties.cs" />
+    <Compile Include="SimulatedInfraredRfRing\InfraredRfEntity.cs" />
+    <Compile Include="SimulatedInfraredRfRing\InfraredRfHelper.cs" />
+    <Compile Include="SimulatedInfraredRfRing\InfraredRfProperties.cs" />
+    <Compile Include="SimulatedInfraredRfRing\InfraredRfRingEntity.cs" />
+    <Compile Include="SimulatedAckermanVehicle\SimulatedAckermanVehicleTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <AppDesigner Include="Properties" />
-    <Compile Include="SimulatedAckermanVehicleService.cs" />
-    <Compile Include="SimulatedInfraredRfRingService.cs" />
-    <Compile Include="SimulatedInfraredRfRingTypes.cs" />
-    <Compile Include="SimulatedTailService.cs" />
-    <Compile Include="SimulatedTailTypes.cs" />
-    <Compile Include="SimulatedTimer.cs" />
-    <Compile Include="SimulatedTimerTypes.cs" />
-    <Compile Include="SimulatedTurretService.cs" />
-    <Compile Include="SimulatedTurretTypes.cs" />
-    <Compile Include="TailEntity.cs" />
-    <Compile Include="TimerEntity.cs" />
-    <Compile Include="TurretEntity.cs" />
+    <Compile Include="SimulatedAckermanVehicle\SimulatedAckermanVehicleService.cs" />
+    <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingService.cs" />
+    <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingTypes.cs" />
+    <Compile Include="SimulatedTail\SimulatedTailService.cs" />
+    <Compile Include="SimulatedTail\SimulatedTailTypes.cs" />
+    <Compile Include="SimulatedTimer\SimulatedTimerService.cs" />
+    <Compile Include="SimulatedTimer\SimulatedTimerTypes.cs" />
+    <Compile Include="SimulatedTurret\SimulatedTurretService.cs" />
+    <Compile Include="SimulatedTurret\SimulatedTurretTypes.cs" />
+    <Compile Include="SimulatedTail\TailEntity.cs" />
+    <Compile Include="SimulatedTimer\TimerEntity.cs" />
+    <Compile Include="SimulatedTurret\TurretEntity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SimulatedAckermanVehicle.manifest.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="SimulatedTail.manifest.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AckermanVehicle\AckermanVehicle.csproj">

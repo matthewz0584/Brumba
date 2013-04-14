@@ -10,7 +10,7 @@ using xVector3 = Microsoft.Xna.Framework.Vector3;
 using xQuaternion = Microsoft.Xna.Framework.Quaternion;
 using Vector2 = Microsoft.Robotics.PhysicalModel.Vector2;
 
-namespace Brumba.Simulation.SimulatedTail
+namespace Brumba.Simulation.SimulatedInfraredRfRing
 {
     public class InfraredRfHelper
     {

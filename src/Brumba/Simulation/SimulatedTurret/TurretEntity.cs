@@ -5,7 +5,7 @@ using Microsoft.Robotics.Simulation.Physics;
 using Quaternion = Microsoft.Robotics.PhysicalModel.Quaternion;
 using Vector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 
-namespace Brumba.Simulation.SimulatedTail
+namespace Brumba.Simulation.SimulatedTurret
 {
     [DataContract]
     public class TurretEntity : SingleShapeEntity

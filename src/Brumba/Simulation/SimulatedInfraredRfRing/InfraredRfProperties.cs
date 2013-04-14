@@ -1,6 +1,6 @@
 ﻿using Microsoft.Dss.Core.Attributes;
 
-namespace Brumba.Simulation.SimulatedTail
+namespace Brumba.Simulation.SimulatedInfraredRfRing
 {
     [DataContract]
     public class InfraredRfProperties

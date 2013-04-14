@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using Brumba.Simulation.SimulatedAckermanVehicle;
+using Brumba.Simulation.SimulatedInfraredRfRing;
 using Brumba.Simulation.SimulatedTail;
+using Brumba.Simulation.SimulatedTurret;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -52,7 +53,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             base.Start();
 
             Thread.Sleep(5000);
-            _tPort.SetBaseAngle((float) Math.PI/4);
+            //_tPort.SetBaseAngle((float) Math.PI/4);
             //_turret.BaseAngle = (float)Math.PI / 4;
         }
 
