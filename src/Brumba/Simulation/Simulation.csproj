@@ -4,15 +4,15 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{64124F6A-E6FF-44BD-8F50-4B599E848DB5}</ProjectGuid>
+    <ProjectGuid>{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>SimulatedTail.Y2013.M01</AssemblyName>
-    <RootNamespace>Brumba.Simulation.SimulatedTail</RootNamespace>
+    <AssemblyName>Brumba.Simulation</AssemblyName>
+    <RootNamespace>Brumba.Simulation</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
@@ -46,7 +46,7 @@
     <Optimize>false</Optimize>
     <RegisterForComInterop>false</RegisterForComInterop>
     <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -72,8 +72,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;INSTRUMENTED</DefineConstants>
-    <NoWarn>3003</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -84,10 +82,11 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+    <Reference Include="Microsoft.Dss.Runtime.proxy, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\libs\Microsoft.Xna.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Runtime.Proxy\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Runtime.proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Microsoft.Xna.Framework.Graphics.dll</HintPath>
@@ -107,22 +106,22 @@
     </Reference>
     <Reference Include="PhysicsEngine, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\PhysicsEngine.dll</HintPath>
+      <HintPath>..\..\..\..\bin\PhysicsEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RoboticsCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\RoboticsCommon.dll</HintPath>
+      <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SimulationCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\SimulationCommon.dll</HintPath>
+      <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SimulationEngine, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\SimulationEngine.dll</HintPath>
+      <HintPath>..\..\..\..\bin\SimulationEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System">
@@ -131,23 +130,47 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SimulatedTurretService.cs" />
-    <Compile Include="SimulatedTurretTypes.cs" />
-    <Compile Include="TurretEntity.cs" />
-    <Compile Include="SimulatedInfraredRfRingService.cs" />
-    <Compile Include="SimulatedInfraredRfRingTypes.cs" />
-    <Compile Include="InfraredRfProperties.cs" />
+    <Compile Include="AckermanVehicleEntity.cs" />
+    <Compile Include="AckermanVehicleEntityBuilder.cs" />
+    <Compile Include="AckermanVehicleExEntity.cs" />
+    <Compile Include="AckermanVehicleEntityBase.cs" />
+    <Compile Include="AckermanVehicleExEntityBuilder.cs" />
+    <Compile Include="AckermanVehicleProperties.cs" />
+    <Compile Include="AckermanVehicles.cs" />
+    <Compile Include="CompositeWheel.cs" />
+    <Compile Include="CompositeWheelBuilder.cs" />
+    <Compile Include="CompositeWheelProperties.cs" />
     <Compile Include="InfraredRfEntity.cs" />
     <Compile Include="InfraredRfHelper.cs" />
+    <Compile Include="InfraredRfProperties.cs" />
     <Compile Include="InfraredRfRingEntity.cs" />
+    <Compile Include="SimulatedAckermanVehicleTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <AppDesigner Include="Properties" />
+    <Compile Include="SimulatedAckermanVehicleService.cs" />
+    <Compile Include="SimulatedInfraredRfRingService.cs" />
+    <Compile Include="SimulatedInfraredRfRingTypes.cs" />
     <Compile Include="SimulatedTailService.cs" />
     <Compile Include="SimulatedTailTypes.cs" />
-    <AppDesigner Include="Properties" />
+    <Compile Include="SimulatedTimer.cs" />
+    <Compile Include="SimulatedTimerTypes.cs" />
+    <Compile Include="SimulatedTurretService.cs" />
+    <Compile Include="SimulatedTurretTypes.cs" />
     <Compile Include="TailEntity.cs" />
+    <Compile Include="TimerEntity.cs" />
+    <Compile Include="TurretEntity.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SimulatedAckermanVehicle.manifest.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="SimulatedTail.manifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AckermanVehicle\AckermanVehicle.csproj">
+      <Project>{f84e44c8-5728-4643-96e8-496b508086ae}</Project>
+      <Name>AckermanVehicle</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">
@@ -156,7 +179,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>$(MRDS_PATH)\bin\dssproxy.exe /dll:$(TargetPath) /proxyprojectpath:$(ProjectDir)Proxy /keyfile:$(ProjectDir)$(AssemblyOriginatorKeyFile) $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:$(TargetDir) /referencepath:$(TargetDir)
-copy "$(TargetDir)$(ProjectName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
+    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)"
+copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

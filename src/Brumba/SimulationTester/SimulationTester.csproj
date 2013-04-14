@@ -79,6 +79,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AckermanVehicle.Y2013.M02.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL" />
+    <Reference Include="Brumba.Simulation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.Simulation.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Simulation.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0">
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
@@ -111,11 +119,6 @@
       <HintPath>..\..\bin\RoboticsCommon.proxy.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SimulatedAckermanVehicle.Y2012.M10.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\SimulatedAckermanVehicle.Y2012.M10.Proxy.dll</HintPath>
-    </Reference>
-    <Reference Include="SimulatedTail.Y2013.M01.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL" />
     <Reference Include="SimulationCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\SimulationCommon.dll</HintPath>
@@ -163,10 +166,6 @@
     <Content Include="SimulationTester.manifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SimulatedAckermanVehicle\SimulatedAckermanVehicle.csproj">
-      <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>
-      <Name>SimulatedAckermanVehicle</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>
