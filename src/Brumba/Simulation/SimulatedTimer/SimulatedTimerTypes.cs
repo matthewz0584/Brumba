@@ -25,7 +25,7 @@ namespace Brumba.Simulation.SimulatedTimer
     }
 
     [ServicePort]
-    public class SimulatedTimerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, FirstInterleaveShutdown>
+    public class SimulatedTimerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
     {
     }
 
@@ -44,14 +44,5 @@ namespace Brumba.Simulation.SimulatedTimer
             : base(body, responsePort)
         {
         }
-    }
-
-    [DataContract]
-    public class FirstInterleaveShutdownRequest
-    {
-    }
-
-    public class FirstInterleaveShutdown : Update<FirstInterleaveShutdownRequest, PortSet<DefaultUpdateResponseType, Fault>>
-    {
     }
 }

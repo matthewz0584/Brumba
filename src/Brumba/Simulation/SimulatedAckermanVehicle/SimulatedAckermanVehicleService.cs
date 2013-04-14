@@ -3,15 +3,13 @@ using Brumba.AckermanVehicle;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
-using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using Microsoft.Robotics.Simulation.Engine;
 
 namespace Brumba.Simulation.SimulatedAckermanVehicle
 {
     [Contract(Contract.Identifier)]
     [DisplayName("Simulated Ackerman Vehicle")]
     [Description("no description provided")]
-    class SimulatedAckermanVehicleService : DsspServiceBase
+    class SimulatedAckermanVehicleService : SimulatedEntityServiceBase
     {
         [ServiceState]
         private SimulatedAckermanVehicleState _state = new SimulatedAckermanVehicleState();
@@ -22,69 +20,77 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         [ServicePort("/SimulatedAckermanVehicle", AllowMultipleInstances = true)]
         private SimulatedAckermanVehicleOperations _mainPort = new SimulatedAckermanVehicleOperations();
 
-        private SimulationEnginePort _simEngineNotifyPort = new SimulationEnginePort();
-        private AckermanVehicleEntityBase _vehicle;
-
         public SimulatedAckermanVehicleService(DsspServiceCreationPort creationPort)
-            : base(creationPort)
+            : base(creationPort, Contract.Identifier)
         {
         }
 
-        protected override void Start()
+        protected override Interleave ConcreteWaitingInterleave()
         {
-            SimulationEngine.GlobalInstancePort.Subscribe(ServiceInfo.PartnerList, _simEngineNotifyPort);
-
-            base.Start();
-
-            //Killing default main port interleave. From now on I control main port interleave
-            MainPortInterleave.CombineWith(new Interleave(
-                    new TeardownReceiverGroup(Arbiter.Receive<Break>(false, _ackermanVehiclePort, b => { })),
-                    new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup()));
-            _ackermanVehiclePort.Post(new Break());
-
-            SetUpForWaitingForEntity();
+            return new Interleave(
+                new TeardownReceiverGroup(
+                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
+                    Arbiter.Receive<DsspDefaultDrop>(false, _ackermanVehiclePort, DefaultDropHandler)
+                    ),
+                new ExclusiveReceiverGroup(),
+                new ConcurrentReceiverGroup(
+                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
+                    Arbiter.Receive<DsspDefaultLookup>(true, _ackermanVehiclePort, DefaultLookupHandler),
+                    Arbiter.Receive<Get>(true, _mainPort, DefaultGetHandler)
+                    ));
         }
 
-        void OnInsertEntity(InsertSimulationEntity entity)
+        protected override Interleave ConcreteActiveInterleave()
+        {
+            return new Interleave(
+                new TeardownReceiverGroup(
+                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
+                    Arbiter.Receive<DsspDefaultDrop>(false, _ackermanVehiclePort, DefaultDropHandler)
+                    ),
+                new ExclusiveReceiverGroup(
+                    Arbiter.Receive<UpdateDrivePower>(true, _ackermanVehiclePort, OnUpdateDrivePower),
+                    Arbiter.Receive<UpdateSteeringAngle>(true, _ackermanVehiclePort, OnUpdateSteeringAngle),
+                    Arbiter.Receive<Break>(true, _ackermanVehiclePort, OnBreak)
+                    ),
+                new ConcurrentReceiverGroup(
+                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
+                    Arbiter.Receive<DsspDefaultLookup>(true, _ackermanVehiclePort, DefaultLookupHandler),
+                    Arbiter.Receive<Get>(true, _mainPort, OnGet),
+                    Arbiter.Receive<AckermanVehicle.Get>(true, _ackermanVehiclePort, OnGet)
+                    ));
+        }
+
+        protected override void OnInsertEntity()
         {
             LogInfo("SimulatedAckermanVehcile OnInsertEntity called");
-
-            _vehicle = entity.Body as AckermanVehicleEntityBase;
-            _vehicle.ServiceContract = Contract.Identifier;
             _state.Connected = true;
-
-            SetUpForControlOfEntity();
         }
 
-        void OnDeleteEntity(DeleteSimulationEntity entity)
+        protected override void OnDeleteEntity()
         {
             LogInfo("SimulatedAckermanVehicle OnDeleteEntity called");
-
-            _vehicle = null;
             _state.Connected = false;
             _state.DriveAngularDistance = 0;
             _state.SteeringAngle = 0;
-
-            SetUpForWaitingForEntity();
         }
 
         void OnUpdateDrivePower(UpdateDrivePower powerRequest)
         {
-            _vehicle.SetDrivePower(powerRequest.Body.Value);
+            Vehicle.SetDrivePower(powerRequest.Body.Value);
 
             powerRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
         void OnUpdateSteeringAngle(UpdateSteeringAngle steeringRequest)
         {
-            _vehicle.SetSteeringAngle(steeringRequest.Body.Value);
+            Vehicle.SetSteeringAngle(steeringRequest.Body.Value);
 
             steeringRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
         void OnBreak(Break breakRequest)
         {
-            _vehicle.Break();
+            Vehicle.Break();
 
             breakRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
@@ -103,53 +109,12 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
             DefaultGetHandler(get);
         }
 
-        void SetUpForWaitingForEntity()
-        {
-            ResetMainPortInterleave(new Interleave(
-                                        new TeardownReceiverGroup(
-                                            Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
-                                            Arbiter.Receive<DsspDefaultDrop>(false, _ackermanVehiclePort, DefaultDropHandler),
-                                            Arbiter.Receive<InsertSimulationEntity>(false, _simEngineNotifyPort, OnInsertEntity)
-                                            ),
-                                        new ExclusiveReceiverGroup(),
-                                        new ConcurrentReceiverGroup(
-                                            Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                                            Arbiter.Receive<DsspDefaultLookup>(true, _ackermanVehiclePort, DefaultLookupHandler),
-                                            Arbiter.Receive<Get>(true, _mainPort, DefaultGetHandler)
-                                            )));
-        }
-
-        void SetUpForControlOfEntity()
-        {
-            ResetMainPortInterleave(new Interleave(
-                                        new TeardownReceiverGroup(
-                                            Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
-                                            Arbiter.Receive<DsspDefaultDrop>(false, _ackermanVehiclePort, DefaultDropHandler),
-                                            Arbiter.Receive<DeleteSimulationEntity>(false, _simEngineNotifyPort, OnDeleteEntity)
-                                            ),
-                                        new ExclusiveReceiverGroup(
-                                            Arbiter.Receive<UpdateDrivePower>(true, _ackermanVehiclePort, OnUpdateDrivePower),
-                                            Arbiter.Receive<UpdateSteeringAngle>(true, _ackermanVehiclePort, OnUpdateSteeringAngle),
-                                            Arbiter.Receive<Break>(true, _ackermanVehiclePort, OnBreak)
-                                            ),
-                                        new ConcurrentReceiverGroup(
-                                            Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                                            Arbiter.Receive<DsspDefaultLookup>(true, _ackermanVehiclePort, DefaultLookupHandler),
-                                            Arbiter.Receive<Get>(true, _mainPort, OnGet),
-                                            Arbiter.Receive<AckermanVehicle.Get>(true, _ackermanVehiclePort, OnGet)
-                                            )));
-        }
-
         void UpdateState()
         {
-            _state.DriveAngularDistance = _vehicle.GetDriveAngularDistance();
-            _state.SteeringAngle = _vehicle.GetSteeringAngle();
+            _state.DriveAngularDistance = Vehicle.GetDriveAngularDistance();
+            _state.SteeringAngle = Vehicle.GetSteeringAngle();
         }
 
-        void ResetMainPortInterleave(Interleave ileave)
-        {
-            Activate(ileave);
-            MainPortInterleave = ileave;
-        }
+        AckermanVehicleEntityBase Vehicle { get { return Entity as AckermanVehicleEntityBase; } }
     }
 }

@@ -47,13 +47,13 @@ namespace Brumba.Simulation.EnvironmentBuilder
 	        //PopulateEnvForGroundTail();
             //PopulatePuckRobot();
             //PopulateInfraredRfRing();
-            PopulateTurret();
-            //PopulateHamster();
+            //PopulateTurret();
+            PopulateHamster();
 
             base.Start();
 
             Thread.Sleep(5000);
-            //_tPort.SetBaseAngle((float) Math.PI/4);
+            _tPort.SetBaseAngle((float) Math.PI/4);
             //_turret.BaseAngle = (float)Math.PI / 4;
         }
 
