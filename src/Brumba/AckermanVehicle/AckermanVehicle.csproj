@@ -11,7 +11,7 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>AckermanVehicle.Y2013.M02</AssemblyName>
+    <AssemblyName>Brumba.AckermanVehicle</AssemblyName>
     <RootNamespace>Brumba.AckermanVehicle</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -130,6 +130,6 @@
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)\"
-copy "$(TargetDir)$(ProjectName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
+copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

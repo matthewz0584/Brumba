@@ -11,7 +11,7 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>AckermanVehicleDriverGuiService.Y2012.M10</AssemblyName>
+    <AssemblyName>Brumba.AckermanVehicleDriverGuiService</AssemblyName>
     <RootNamespace>Brumba.AckermanVehicleDriverGuiService</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>C:\Users\Матвей\Microsoft Robotics Dev Studio 4\bin\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -79,8 +79,8 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AckermanVehicle.Y2013.M02.Proxy">
-      <HintPath>..\..\..\..\bin\AckermanVehicle.Y2013.M02.Proxy.dll</HintPath>
+    <Reference Include="Brumba.AckermanVehicle.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.AckermanVehicle.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Ccr.Adapters.Wpf, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -142,6 +142,6 @@
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)\"
-copy "$(TargetDir)$(ProjectName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
+copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -11,7 +11,7 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>SimulationTester.Y2012.M11</AssemblyName>
+    <AssemblyName>Brumba.SimulationTester</AssemblyName>
     <RootNamespace>Brumba.Simulation.SimulationTester</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -78,7 +78,10 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AckermanVehicle.Y2013.M02.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL" />
+    <Reference Include="Brumba.AckermanVehicle.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.AckermanVehicle.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="Brumba.Simulation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.Simulation.dll</HintPath>
@@ -179,7 +182,7 @@
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)\"
-copy "$(TargetDir)$(ProjectName).*" "$(MRDS_PATH)\bin" /Y
+copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

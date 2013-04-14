@@ -12,7 +12,7 @@ using AckPxy = Brumba.AckermanVehicle.Proxy;
 using Quaternion = Microsoft.Robotics.PhysicalModel.Quaternion;
 using Vector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 
-namespace Brumba.Simulation.SimulationTester
+namespace Brumba.Simulation.SimulationTester.Tests
 {
     [SimulationTestFixture]
     public class AckermanVehicleExTests : SimulationTestFixture

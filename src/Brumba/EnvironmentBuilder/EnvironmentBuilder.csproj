@@ -11,7 +11,7 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>EnvironmentBuilder.Y2012.M10</AssemblyName>
+    <AssemblyName>Brumba.EnvironmentBuilder</AssemblyName>
     <RootNamespace>Brumba.Simulation.EnvironmentBuilder</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -140,6 +140,6 @@
     <PreBuildEvent>
     </PreBuildEvent>
     <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)\"
-copy "$(TargetDir)$(ProjectName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
+copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
