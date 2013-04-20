@@ -82,6 +82,9 @@
     <Reference Include="Brumba.AckermanVehicle.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.AckermanVehicle.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Brumba.Simulation.Proxy">
+      <HintPath>..\EnvironmentBuilder\bin\x86\Debug\Brumba.Simulation.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Ccr.Adapters.Wpf, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Ccr.Adapters.Wpf\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Ccr.Adapters.Wpf.dll</HintPath>

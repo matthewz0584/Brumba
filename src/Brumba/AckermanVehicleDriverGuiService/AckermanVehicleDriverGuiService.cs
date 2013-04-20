@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Brumba.AckermanVehicle.Proxy;
+using Brumba.Simulation.SimulatedTurret.Proxy;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -23,6 +24,9 @@ namespace Brumba.AckermanVehicleDriverGuiService
 
         [Partner("Ackerman Vehicle", Contract = AckermanVehicle.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         AckermanVehicleOperations _ackermanVehPort = new AckermanVehicleOperations();
+
+        [Partner("Camera Turret", Contract = Simulation.SimulatedTurret.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        SimulatedTurretOperations _turretPort = new SimulatedTurretOperations();
 
         MainWindowEvents _mainWindowEventsPort = new MainWindowEvents();
 		
@@ -51,25 +55,31 @@ namespace Brumba.AckermanVehicleDriverGuiService
             MainPortInterleave.CombineWith(new Interleave(
                 new ExclusiveReceiverGroup(),
                 new ConcurrentReceiverGroup(
-                    Arbiter.Receive<OnSteer>(true, _mainWindowEventsPort, OnSteerHandler),
-                    Arbiter.Receive<OnPower>(true, _mainWindowEventsPort, OnPowerHandler),
-                    Arbiter.Receive<OnBreak>(true, _mainWindowEventsPort, OnBreakHandler)
+                    Arbiter.Receive<SteerRequest>(true, _mainWindowEventsPort, OnSteerHandler),
+                    Arbiter.Receive<PowerRequest>(true, _mainWindowEventsPort, OnPowerHandler),
+                    Arbiter.Receive<BreakRequest>(true, _mainWindowEventsPort, OnBreakHandler),
+                    Arbiter.Receive<TurretBaseAngleRequest>(true, _mainWindowEventsPort, OnTurretBaseAngleRequest)
                     )));
         }
 
-        private void OnSteerHandler(OnSteer onSteerRequest)
+        void OnSteerHandler(SteerRequest onSteerRequest)
         {
-            _ackermanVehPort.UpdateSteeringAngle(new SteeringAngle { Value = onSteerRequest.Direction * 1f });
+            _ackermanVehPort.UpdateSteeringAngle(onSteerRequest.Value);
         }
 
-        private void OnPowerHandler(OnPower onPowerRequest)
+        void OnPowerHandler(PowerRequest onPowerRequest)
         {
-            _ackermanVehPort.UpdateDrivePower(new DrivePower { Value = onPowerRequest.Power * 1f });
+            _ackermanVehPort.UpdateDrivePower(onPowerRequest.Value);
         }
 
-        private void OnBreakHandler(OnBreak onBreakRequest)
+        void OnBreakHandler(BreakRequest onBreakRequest)
         {
             _ackermanVehPort.Break();
+        }
+
+        void OnTurretBaseAngleRequest(TurretBaseAngleRequest onTurretBaseRequest)
+        {
+            _turretPort.SetBaseAngle(onTurretBaseRequest.Value);
         }
     }
 }

@@ -155,6 +155,7 @@
     <Compile Include="SimulatedTimer\SimulatedTimerService.cs" />
     <Compile Include="SimulatedTimer\SimulatedTimerTypes.cs" />
     <Compile Include="SimulatedEntityServiceBase.cs" />
+    <Compile Include="HamsterBuilder.cs" />
     <Compile Include="SimulatedTurret\SimulatedTurretService.cs" />
     <Compile Include="SimulatedTurret\SimulatedTurretTypes.cs" />
     <Compile Include="SimulatedTail\TailEntity.cs" />

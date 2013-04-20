@@ -1,15 +1,21 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns:simulatedturret="http://brumba.ru/contracts/2013/04/simulatedturret.html" xmlns:this="urn:uuid:ef24dbcd-fd78-4db2-927a-2876590a2f90" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedinfraredrfring="http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns:simulatedturret="http://brumba.ru/contracts/2013/04/simulatedturret.html" xmlns:this="urn:uuid:145ac071-1897-475f-880f-7b46a7e3b8fb" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedinfraredrfring="http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Contract>http://brumba.ru/contracts/2012/10/simulatedackermanvehicle.html</dssp:Contract>
+          <dssp:Contract>http://brumba.ru/contracts/2013/02/genericackermanvehicle.html</dssp:Contract>
           <dssp:PartnerList />
-          <dssp:Name>ackermanvehiclesdriverguiservice:Simulated_x0020_Ackerman_x0020_Four_x0020_Wheels</dssp:Name>
+          <dssp:Name>ackermanvehiclesdriverguiservice:Ackerman_x0020_Vehicle</dssp:Name>
           <dssp:ServiceName>this:SimulatedAckermanVehicle</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2013/04/simulatedturret.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>ackermanvehiclesdriverguiservice:Camera_x0020_Turret</dssp:Name>
+          <dssp:ServiceName>this:Simulatedturret</dssp:ServiceName>
         </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:ackermanvehiclesdriverguiservice</Name>
@@ -18,17 +24,6 @@
       <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
       <dssp:PartnerList />
       <Name>this:EnvironmentBuilder</Name>
-    </ServiceRecordType>
-    <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html</dssp:Contract>
-      <dssp:PartnerList>
-        <dssp:Partner>
-          <dssp:Service>http://localhost/testee</dssp:Service>
-          <dssp:PartnerList />
-          <dssp:Name>simulation:Entity</dssp:Name>
-        </dssp:Partner>
-      </dssp:PartnerList>
-      <Name>this:SimulatedAckermanVehicle</Name>
     </ServiceRecordType>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html</dssp:Contract>
@@ -51,6 +46,17 @@
         </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:Simulatedturret</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/hamster</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedAckermanVehicle</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

@@ -1,5 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Brumba.AckermanVehicleDriverGuiService
 {
@@ -9,11 +13,16 @@ namespace Brumba.AckermanVehicleDriverGuiService
     public partial class MainWindow : Window
     {
         private MainWindowViewModel _vm;
+        private DispatcherTimer _timer;
 
         public MainWindow(MainWindowEvents servicePort)
             : this()
         {
             DataContext = _vm = new MainWindowViewModel(servicePort);
+
+            _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+            _timer.Tick += (sender, args) => ProcessControls();
+            _timer.Start();
         }
 
         public MainWindow()
@@ -21,41 +30,28 @@ namespace Brumba.AckermanVehicleDriverGuiService
             InitializeComponent();
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        void ProcessControls()
         {
-            switch (e.Key)
-            {
-                case Key.Up:
-                case Key.Down:
-                case Key.Left:
-                case Key.Right:
-                case Key.Space:
-                    ProcessControls();
-                    break;
-            }
-        }
+                if (Keyboard.IsKeyDown(Key.Space))
+                    _vm.Break();
+                else if (Keyboard.IsKeyDown(Key.Up))
+                    _vm.Power(1);
+                else if (Keyboard.IsKeyDown(Key.Down))
+                    _vm.Power(-1);
+                else
+                    _vm.Power(0);
 
-        private void Window_KeyUp(object sender, KeyEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case Key.Up:
-                case Key.Down:
-                case Key.Left:
-                case Key.Right:
-                case Key.Space:
-                    ProcessControls();
-                    break;
-            }
-        }
+                if (Keyboard.IsKeyDown(Key.Right))
+                    _vm.Steer(-1);
+                else if (Keyboard.IsKeyDown(Key.Left))
+                    _vm.Steer(1);
+                else
+                    _vm.Steer(0);
 
-        private void ProcessControls()
-        {
-            if (Keyboard.IsKeyDown(Key.Space))
-                _vm.Break();
-            else
-                _vm.Power(Keyboard.IsKeyDown(Key.Up) ? 1 : Keyboard.IsKeyDown(Key.Down) ? -1 : 0);
-            _vm.Steer(Keyboard.IsKeyDown(Key.Right) ? -1 : Keyboard.IsKeyDown(Key.Left) ? 1 : 0);
+                if (Keyboard.IsKeyDown(Key.A))
+                    _vm.SteerTurret(1);
+                else if (Keyboard.IsKeyDown(Key.D))
+                    _vm.SteerTurret(-1);
         }
     }
 }

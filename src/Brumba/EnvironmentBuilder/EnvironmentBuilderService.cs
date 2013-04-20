@@ -33,9 +33,9 @@ namespace Brumba.Simulation.EnvironmentBuilder
         {
         }
 
-        TurretEntity _turret;
-        [Partner("Turret", Contract = SimulatedTurret.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        SimulatedTurret.Proxy.SimulatedTurretOperations _tPort = new SimulatedTurret.Proxy.SimulatedTurretOperations();
+        //TurretEntity _turret;
+        //[Partner("Turret", Contract = SimulatedTurret.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        //SimulatedTurret.Proxy.SimulatedTurretOperations _tPort = new SimulatedTurret.Proxy.SimulatedTurretOperations();
 
         protected override void Start()
         {
@@ -52,8 +52,8 @@ namespace Brumba.Simulation.EnvironmentBuilder
 
             base.Start();
 
-            Thread.Sleep(5000);
-            _tPort.SetBaseAngle((float) Math.PI/4);
+            //Thread.Sleep(5000);
+            //_tPort.SetBaseAngle((float) Math.PI/4);
             //_turret.BaseAngle = (float)Math.PI / 4;
         }
 
@@ -61,49 +61,9 @@ namespace Brumba.Simulation.EnvironmentBuilder
         {
             PopulateSimpleEnvironment();
 
-            var sav = new AckermanVehicleExEntity("testee", new Vector3(0, 0.2f, 0), AckermanVehicles.Simplistic);
+            var hamster = HamsterBuilder.BuildHamster();
 
-            var ring = new InfraredRfRingEntity("rfring", new Pose(new Vector3(0, 0.08f, 0)),
-                                                new InfraredRfProperties
-                                                {
-                                                    DispersionConeAngle = 4f,
-                                                    Samples = 3f,
-                                                    MaximumRange = 1,
-                                                    ScanInterval = 0.1f
-                                                })
-            {
-                RfPositionsPolar =
-                            {
-                                new Vector2(0, 0.08f),
-                                new Vector2((float) Math.PI * 1/6, 0.085f),
-                                new Vector2((float) Math.PI * 2/6, 0.07f),
-                                new Vector2((float) Math.PI * 3/6, 0.06f),
-                                new Vector2((float) Math.PI, 0.1f),
-                                new Vector2((float) Math.PI * 9/6, 0.06f),
-                                new Vector2((float) Math.PI * 10/6, 0.07f),
-                                new Vector2((float) Math.PI * 11/6, 0.085f),
-                            }
-            };
-            sav.InsertEntity(ring);
-
-            //var camera = new CameraEntity(320, 240, (float) Math.PI/4, CameraEntity.CameraModelType.AttachedChild)
-            //    {
-            //        State = {Name = "camera", Pose = new Pose(new Vector3(0, 0.2f, 0))},
-            //        IsPhysicsVisible = true,
-            //        IsRealTimeCamera = true,
-                    
-            //    };
-            //sav.InsertEntity(camera);
-            var turretProps = new TurretEntity.Properties
-                {
-                    BaseHeight = 0.03f, BaseMass = 0.1f, SegmentRadius = 0.015f, TwistPower = 1000
-                };
-            _turret = new TurretEntity("turret",
-                        new Pose(new Vector3(0, AckermanVehicles.Simplistic.Clearance + AckermanVehicles.Simplistic.ChassisPartsProperties[0].Dimensions.Y + turretProps.SegmentRadius, 0)), turretProps);
-            TurretEntity.Builder.Build(_turret, sav);
-            sav.InsertEntity(_turret);
-
-            SimulationEngine.GlobalInstancePort.Insert(sav);
+            SimulationEngine.GlobalInstancePort.Insert(hamster);
 
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 1.5f)) { State = { Name = "wall1" } });
             SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(1.31f, 0.21f, 1f)) { State = { Name = "wall2" } });
@@ -123,16 +83,16 @@ namespace Brumba.Simulation.EnvironmentBuilder
                 SegmentRadius = 0.015f,
                 TwistPower = 1000
             };
-            _turret = new TurretEntity("turret",
+            var turret = new TurretEntity("turret",
                         new Pose(new Vector3(0, 0.1f + turretProps.BaseHeight / 2, 0)), turretProps);
-            TurretEntity.Builder.Build(_turret, turretOwner);
+            TurretEntity.Builder.Build(turret, turretOwner);
 
-            _turret.InsertEntity(new SingleShapeEntity(
+            turret.InsertEntity(new SingleShapeEntity(
                     new BoxShape(new BoxShapeProperties(0.05f, new Pose(new Vector3(0, turretProps.BaseHeight/2, 0)),
                                                         new Vector3(0.01f, 0.01f, 0.1f))), new Vector3())
                     { State = {Name = "turret flag"} });
 
-            turretOwner.InsertEntity(_turret);
+            turretOwner.InsertEntity(turret);
 
             SimulationEngine.GlobalInstancePort.Insert(turretOwner);
         }

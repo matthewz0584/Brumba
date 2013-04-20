@@ -38,21 +38,26 @@ namespace Brumba.AckermanVehicleDriverGuiService
 		}
 	}
 
-    public class MainWindowEvents : PortSet<OnPower, OnSteer, OnBreak>
+    public class MainWindowEvents : PortSet<PowerRequest, SteerRequest, BreakRequest, TurretBaseAngleRequest>
     {
     }
 
-    public class OnPower
+    public class PowerRequest
     {
-        public float Power { get; set; }
+        public float Value { get; set; }
     }
 
-    public class OnSteer
+    public class SteerRequest
     {
-        public float Direction { get; set; }
+        public float Value { get; set; }
     }
 
-    public class OnBreak
+    public class BreakRequest
     {
+    }
+
+    public class TurretBaseAngleRequest
+    {
+        public float Value { get; set; }
     }
 }
