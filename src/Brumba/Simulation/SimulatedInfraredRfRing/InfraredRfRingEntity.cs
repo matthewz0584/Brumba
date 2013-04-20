@@ -30,23 +30,18 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
         List<InfraredRfHelper> _rfHelpers;
 
         [DataMember]
-        public InfraredRfProperties Props { get; set; }
-
-        [DataMember]
-        [Description("Rfs polar coordinates: X - angle, Y - radius. Zero angle along +Z axis")]
-        public List<Vector2> RfPositionsPolar { get; set; }
+        public InfraredRfRingProperties Props { get; set; }
 
         public InfraredRfRingEntity()
         {
         }
 
-        public InfraredRfRingEntity(string name, Pose initialPose, InfraredRfProperties props)
+        public InfraredRfRingEntity(string name, Pose initialPose, InfraredRfRingProperties props)
             : this()
         {
             Props = props;
             State.Name = name;
             State.Pose = initialPose;
-            RfPositionsPolar = new List<Vector2>();
         }
 
         public float[] GetDistances()
@@ -63,7 +58,7 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
                 // set flag so rendering engine renders us last
                 Flags |= VisualEntityProperties.UsesAlphaBlending;
 
-                _rfHelpers = RfPositionsPolar.Select(rfPos => new InfraredRfHelper(rfPos, Props)).ToList();
+                _rfHelpers = Props.RfPositionsPolar.Select(rfPos => new InfraredRfHelper(rfPos, Props.InfraredRfProperties)).ToList();
 
                 base.Initialize(device, physicsEngine);
 
@@ -84,7 +79,7 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
 
             _appTime = (float)update.ApplicationTime;
 
-            if ((_elapsedSinceLastScan += (float)update.ElapsedTime) < Props.ScanInterval)
+            if ((_elapsedSinceLastScan += (float)update.ElapsedTime) < Props.InfraredRfProperties.ScanInterval)
                 return;
 
             _elapsedSinceLastScan = 0;
@@ -120,7 +115,7 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
             var oldEffect = Effect;
 
             Effect = _impactPointEffect;
-            _ipEffectTimeAttenuationHandle.SetValue(new xVector4(100 * (float)Math.Cos(_appTime * (1.0f / Props.ScanInterval)), 0, 0, 1));
+            _ipEffectTimeAttenuationHandle.SetValue(new xVector4(100 * (float)Math.Cos(_appTime * (1.0f / Props.InfraredRfProperties.ScanInterval)), 0, 0, 1));
 
             foreach (var rfHelper in _rfHelpers)
                 RenderRfImpactPoints(renderMode, transforms, rfHelper);

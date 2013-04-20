@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Brumba.Simulation.SimulatedAckermanVehicle;
 using Brumba.Simulation.SimulatedInfraredRfRing;
 using Brumba.Simulation.SimulatedTurret;
@@ -9,20 +10,19 @@ namespace Brumba.Simulation
 {
     public class HamsterBuilder
     {
-        public static AckermanVehicleExEntity BuildHamster()
+        public HamsterBuilder()
         {
-            var sav = new AckermanVehicleExEntity("hamster", new Vector3(0, 0.2f, 0), AckermanVehicles.Simplistic);
-
-            var ring = new InfraredRfRingEntity("rfring", new Pose(new Vector3(0, 0.08f, 0)),
-                                                new InfraredRfProperties
-                                                    {
-                                                        DispersionConeAngle = 4f,
-                                                        Samples = 3f,
-                                                        MaximumRange = 1,
-                                                        ScanInterval = 0.1f
-                                                    })
+            AckermanVehicleProps = AckermanVehicles.Simplistic;
+            InfraredRfRingProps = new InfraredRfRingProperties
                 {
-                    RfPositionsPolar =
+                    InfraredRfProperties = new InfraredRfProperties
+                        {
+                            DispersionConeAngle = 4f,
+                            Samples = 3f,
+                            MaximumRange = 1,
+                            ScanInterval = 0.1f
+                        },
+                    RfPositionsPolar = new List<Vector2>
                         {
                             new Vector2(0, 0.08f),
                             new Vector2((float) Math.PI*1/6, 0.085f),
@@ -34,30 +34,37 @@ namespace Brumba.Simulation
                             new Vector2((float) Math.PI*11/6, 0.085f),
                         }
                 };
-            sav.InsertEntity(ring);
-
-            var turretProps = new TurretEntity.Properties
+            TurretProps = new TurretProperties
                 {
                     BaseHeight = 0.03f,
                     BaseMass = 0.1f,
                     SegmentRadius = 0.015f,
                     TwistPower = 1000
                 };
+        }
 
-            var turret = new TurretEntity("turret",
-                                          new Pose(new Vector3(0,
-                                                               AckermanVehicles.Simplistic.Clearance +
-                                                               AckermanVehicles.Simplistic.ChassisPartsProperties[0].Dimensions.Y + turretProps.SegmentRadius, 0)),
-                                          turretProps);
-            TurretEntity.Builder.Build(turret, sav);
+        public AckermanVehicleProperties AckermanVehicleProps { set; get; }
+        public InfraredRfRingProperties InfraredRfRingProps { set; get; }
+        public TurretProperties TurretProps { set; get; }
+
+        public AckermanVehicleExEntity Build()
+        {
+            var sav = new AckermanVehicleExEntity("Hamster", new Vector3(0, 0.2f, 0), AckermanVehicleProps);
+
+            var ring = new InfraredRfRingEntity("Hamster Rfring", new Pose(new Vector3(0, 0.08f, 0)), InfraredRfRingProps);
+            sav.InsertEntity(ring);
+
+            var turret = new TurretEntity("Hamster Turret",
+                            new Pose(new Vector3(0, AckermanVehicles.Simplistic.Clearance + AckermanVehicles.Simplistic.ChassisPartsProperties[0].Dimensions.Y + TurretProps.SegmentRadius, 0)),
+                            TurretProps);
             sav.InsertEntity(turret);
 
             var camera = new CameraEntity(320, 240, (float)Math.PI / 4, CameraEntity.CameraModelType.AttachedChild)
                 {
                     State =
                         {
-                            Name = "camera",
-                            Pose = new Pose(new Vector3(0, turretProps.BaseHeight, turretProps.SegmentRadius),
+                            Name = "Hamster Camera",
+                            Pose = new Pose(new Vector3(0, TurretProps.BaseHeight, TurretProps.SegmentRadius),
                                          Quaternion.FromAxisAngle(0, 1, 0, (float) Math.PI)),
                             Assets = {Mesh = "WebCam.obj"}
                         },

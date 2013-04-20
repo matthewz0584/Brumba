@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns:simulatedturret="http://brumba.ru/contracts/2013/04/simulatedturret.html" xmlns:this="urn:uuid:145ac071-1897-475f-880f-7b46a7e3b8fb" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedinfraredrfring="http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns:simulatedturret="http://brumba.ru/contracts/2013/04/simulatedturret.html" xmlns:this="urn:uuid:ec27b12d-586d-4d7b-b723-3e8243319593" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedinfraredrfring="http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html" xmlns:ackermanvehiclesdriverguiservice="http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html</dssp:Contract>
@@ -29,7 +29,7 @@
       <dssp:Contract>http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Service>http://localhost/rfring</dssp:Service>
+          <dssp:Service>http://localhost/Hamster Rfring</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>simulation:Entity</dssp:Name>
         </dssp:Partner>
@@ -40,7 +40,7 @@
       <dssp:Contract>http://brumba.ru/contracts/2013/04/simulatedturret.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Service>http://localhost/turret</dssp:Service>
+          <dssp:Service>http://localhost/Hamster Turret</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>simulation:Entity</dssp:Name>
         </dssp:Partner>
@@ -51,7 +51,7 @@
       <dssp:Contract>http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Service>http://localhost/hamster</dssp:Service>
+          <dssp:Service>http://localhost/Hamster</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>simulation:Entity</dssp:Name>
         </dssp:Partner>

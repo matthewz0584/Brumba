@@ -6,7 +6,7 @@
     <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
   </Gravity>
   <RenderMode>Full</RenderMode>
-  <FramesPerSecond>0.189610273</FramesPerSecond>
+  <FramesPerSecond>59.54275</FramesPerSecond>
   <Pause>false</Pause>
   <CameraPosition>
     <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-1.65</X>
@@ -14,9 +14,9 @@
     <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-0.29</Z>
   </CameraPosition>
   <CameraLookAt>
-    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-0.09</X>
-    <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0.23</Y>
-    <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0.74</Z>
+    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0.02</X>
+    <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0.21</Y>
+    <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0.52</Z>
   </CameraLookAt>
   <CameraFieldOfView>0.781</CameraFieldOfView>
   <CameraNearPlane>0.1</CameraNearPlane>
@@ -632,29 +632,31 @@
         <physm:Z>0</physm:Z>
       </MeshTranslation>
       <Props>
-        <MaximumRange>1</MaximumRange>
-        <Samples>3</Samples>
-        <DispersionConeAngle>4</DispersionConeAngle>
-        <ScanInterval>0.025</ScanInterval>
+        <InfraredRfProperties>
+          <MaximumRange>1</MaximumRange>
+          <Samples>3</Samples>
+          <DispersionConeAngle>4</DispersionConeAngle>
+          <ScanInterval>0.1</ScanInterval>
+        </InfraredRfProperties>
+        <RfPositionsPolar>
+          <Vector2>
+            <physm:X>0</physm:X>
+            <physm:Y>0.1</physm:Y>
+          </Vector2>
+          <Vector2>
+            <physm:X>1.57079637</physm:X>
+            <physm:Y>0.2</physm:Y>
+          </Vector2>
+          <Vector2>
+            <physm:X>3.14159274</physm:X>
+            <physm:Y>0.3</physm:Y>
+          </Vector2>
+          <Vector2>
+            <physm:X>4.712389</physm:X>
+            <physm:Y>0.4</physm:Y>
+          </Vector2>
+        </RfPositionsPolar>
       </Props>
-      <RfPositionsPolar>
-        <Vector2>
-          <physm:X>0</physm:X>
-          <physm:Y>0.1</physm:Y>
-        </Vector2>
-        <Vector2>
-          <physm:X>1.57079637</physm:X>
-          <physm:Y>0.2</physm:Y>
-        </Vector2>
-        <Vector2>
-          <physm:X>3.14159274</physm:X>
-          <physm:Y>0.3</physm:Y>
-        </Vector2>
-        <Vector2>
-          <physm:X>4.712389</physm:X>
-          <physm:Y>0.4</physm:Y>
-        </Vector2>
-      </RfPositionsPolar>
     </InfraredRfRingEntity>
     <SingleShapeEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>

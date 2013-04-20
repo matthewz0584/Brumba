@@ -10,35 +10,33 @@ namespace Brumba.Simulation.SimulatedTurret
     [DataContract]
     public class TurretEntity : SingleShapeEntity
     {
-        [DataContract]
-        public class Properties
-        {
-            [DataMember]
-            public float TwistPower { get; set; }
-
-            [DataMember]
-            public float BaseHeight { get; set; }
-            [DataMember]
-            public float BaseMass { get; set; }
-
-            [DataMember]
-            public float SegmentRadius { get; set; }
-        }
-
         public class Builder
         {
-            public static void Build(TurretEntity turret, VisualEntity parent)
+            private readonly TurretProperties _props;
+
+            public Builder(TurretProperties props)
+            {
+                _props = props;
+            }
+
+            public TurretEntity Build(string name, Pose pose, VisualEntity parent)
+            {
+                var turret = new TurretEntity(name, pose, _props);
+                Build(turret);
+                return turret;
+            }
+
+            public void Build(TurretEntity turret)
             {
                 turret.CapsuleShape = new CapsuleShape(
-                        new CapsuleShapeProperties(turret.Props.BaseMass, new Pose(),
-                                                   turret.Props.SegmentRadius,
-                                                   turret.Props.BaseHeight)
-                            { DiffuseColor = new Vector4(0, 0, 0, 0) });
+                    new CapsuleShapeProperties(_props.BaseMass, new Pose(),
+                                               _props.SegmentRadius,
+                                               _props.BaseHeight) {DiffuseColor = new Vector4(0, 0, 0, 0)});
 
-                turret.ParentJoint = BuildTwistJoint(parent, turret, new Vector3(1, 0, 0), new Vector3(0, 1, 0),
-                                                      turret.State.Pose.Position - new Vector3(0, turret.Props.BaseHeight/2, 0),
-                                                      new Vector3(0, -turret.Props.BaseHeight/2, 0),
-                                                      turret.Props.TwistPower);
+                turret.ParentJoint = BuildTwistJoint(turret.Parent, turret, new Vector3(1, 0, 0), new Vector3(0, 1, 0),
+                                                     turret.State.Pose.Position - new Vector3(0, _props.BaseHeight/2, 0),
+                                                     new Vector3(0, -_props.BaseHeight/2, 0),
+                                                     _props.TwistPower);
             }
 
             static Joint BuildTwistJoint(VisualEntity parent, VisualEntity child, Vector3 axe1, Vector3 axe2, Vector3 parentPoint, Vector3 childPoint, float power)
@@ -62,22 +60,20 @@ namespace Brumba.Simulation.SimulatedTurret
         }
 
         [DataMember]
-        public Properties Props { get; set; }
+        public TurretProperties Props { get; set; }
 
         public TurretEntity()
         {}
 
-        public TurretEntity(string name, Pose pose, Properties props)
+        public TurretEntity(string name, Pose pose, TurretProperties props)
         {
             Props = props;
 
             State.Name = name;
             State.Pose = pose;
-
-            EndSegment = this;
         }
 
-        public SingleShapeEntity EndSegment { get; private set; }
+        public SingleShapeEntity EndSegment { get; set; }
 
 		float _baseAngle;
 		public float BaseAngle
@@ -92,6 +88,9 @@ namespace Brumba.Simulation.SimulatedTurret
 
         public override void Initialize(Microsoft.Xna.Framework.Graphics.GraphicsDevice device, PhysicsEngine physicsEngine)
         {
+            if (Props != null && EndSegment == null)
+                new Builder(Props).Build(this);
+            
             EndSegment = this;
 
             base.Initialize(device, physicsEngine);

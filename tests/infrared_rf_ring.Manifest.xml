@@ -1,18 +1,16 @@
 <?xml version="1.0"?>
-<!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedinfraredrfring="http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:8147a9c9-9ee6-4d3e-8cf0-6edcf4db5bea" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html</dssp:Contract>
+      <Contract xmlns="http://schemas.microsoft.com/xw/2004/10/dssp.html">http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html</Contract>
       <dssp:Service>http://localhost:80/testee_rf_ring</dssp:Service>
-      <dssp:PartnerList>
-        <dssp:Partner>
-          <dssp:Service>http://localhost/rfring</dssp:Service>
-          <dssp:PartnerList />
-          <dssp:Name>simulation:Entity</dssp:Name>
-        </dssp:Partner>
-      </dssp:PartnerList>
-      <Name>this:simulatedinfraredrfring</Name>
+      <PartnerList xmlns="http://schemas.microsoft.com/xw/2004/10/dssp.html">
+        <Partner>
+          <Service>http://localhost/rfring</Service>
+          <PartnerList />
+          <Name xmlns:q1="http://schemas.microsoft.com/robotics/2006/04/simulation.html">q1:Entity</Name>
+        </Partner>
+      </PartnerList>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

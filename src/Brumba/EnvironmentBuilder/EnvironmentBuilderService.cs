@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using Brumba.Simulation.SimulatedAckermanVehicle;
@@ -61,7 +62,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
         {
             PopulateSimpleEnvironment();
 
-            var hamster = HamsterBuilder.BuildHamster();
+            var hamster = new HamsterBuilder().Build();
 
             SimulationEngine.GlobalInstancePort.Insert(hamster);
 
@@ -76,7 +77,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 
             var turretOwner = new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 0)) { State = { Name = "turret owner" } };
 
-            var turretProps = new TurretEntity.Properties
+            var turretProps = new TurretProperties
             {
                 BaseHeight = 0.03f,
                 BaseMass = 0.1f,
@@ -85,7 +86,6 @@ namespace Brumba.Simulation.EnvironmentBuilder
             };
             var turret = new TurretEntity("turret",
                         new Pose(new Vector3(0, 0.1f + turretProps.BaseHeight / 2, 0)), turretProps);
-            TurretEntity.Builder.Build(turret, turretOwner);
 
             turret.InsertEntity(new SingleShapeEntity(
                     new BoxShape(new BoxShapeProperties(0.05f, new Pose(new Vector3(0, turretProps.BaseHeight/2, 0)),
@@ -102,22 +102,23 @@ namespace Brumba.Simulation.EnvironmentBuilder
             PopulateSimpleEnvironment();
 
             var ring = new InfraredRfRingEntity("rfring", new Pose(new Vector3()),
-                                                new InfraredRfProperties
+                                                new InfraredRfRingProperties
                                                     {
-                                                        DispersionConeAngle = 4f,
-                                                        Samples = 3f,
-                                                        MaximumRange = 1,
-                                                        ScanInterval = 0.1f
-                                                    })
-                {
-                    RfPositionsPolar =
-                            {
-                                new Vector2(0, 0.1f),
-                                new Vector2((float) Math.PI/2, 0.2f),
-                                new Vector2((float) Math.PI, 0.3f),
-                                new Vector2((float) Math.PI * 3 / 2, 0.4f)
-                            }
-                };
+                                                        InfraredRfProperties = new InfraredRfProperties
+                                                            {
+                                                                DispersionConeAngle = 4f,
+                                                                Samples = 3f,
+                                                                MaximumRange = 1,
+                                                                ScanInterval = 0.1f
+                                                            },
+                                                        RfPositionsPolar = new List<Vector2>
+                                                            {
+                                                                new Vector2(0, 0.1f),
+                                                                new Vector2((float) Math.PI/2, 0.2f),
+                                                                new Vector2((float) Math.PI, 0.3f),
+                                                                new Vector2((float) Math.PI*3/2, 0.4f)
+                                                            }
+                                                    });
 
             var ringOwner = new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 1)) { State = { Name = "ring owner" } };
 

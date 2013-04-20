@@ -161,6 +161,7 @@
     <Compile Include="SimulatedTail\TailEntity.cs" />
     <Compile Include="SimulatedTimer\TimerEntity.cs" />
     <Compile Include="SimulatedTurret\TurretEntity.cs" />
+    <Compile Include="SimulatedTurret\TurretProperties.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SimulatedAckermanVehicle.manifest.xml">
