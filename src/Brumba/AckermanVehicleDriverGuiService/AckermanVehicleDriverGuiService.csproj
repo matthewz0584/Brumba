@@ -107,10 +107,14 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RoboticsCommon.proxy">
+      <HintPath>..\..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml">
       <SpecificVersion>False</SpecificVersion>

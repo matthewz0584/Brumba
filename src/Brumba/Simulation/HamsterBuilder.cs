@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Brumba.Simulation.SimulatedAckermanVehicle;
 using Brumba.Simulation.SimulatedInfraredRfRing;
 using Brumba.Simulation.SimulatedTurret;
+using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 
@@ -41,11 +42,18 @@ namespace Brumba.Simulation
                     SegmentRadius = 0.015f,
                     TwistPower = 1000
                 };
+            CameraProps = new CameraProperties
+                {
+                    ViewSizeLength = 320,
+                    ViewSizeHeight = 240,
+                    ViewAngle = (float) Math.PI/4
+                };
         }
 
         public AckermanVehicleProperties AckermanVehicleProps { set; get; }
         public InfraredRfRingProperties InfraredRfRingProps { set; get; }
         public TurretProperties TurretProps { set; get; }
+        public CameraProperties CameraProps { set; get; }
 
         public AckermanVehicleExEntity Build()
         {
@@ -59,7 +67,7 @@ namespace Brumba.Simulation
                             TurretProps);
             sav.InsertEntity(turret);
 
-            var camera = new CameraEntity(320, 240, (float)Math.PI / 4, CameraEntity.CameraModelType.AttachedChild)
+            var camera = new CameraEntity(CameraProps.ViewSizeLength, CameraProps.ViewSizeHeight, CameraProps.ViewAngle, CameraEntity.CameraModelType.AttachedChild)
                 {
                     State =
                         {
@@ -75,5 +83,16 @@ namespace Brumba.Simulation
             turret.InsertEntity(camera);
             return sav;
         }
+    }
+
+    [DataContract]
+    public class CameraProperties
+    {
+        [DataMember]
+        public int ViewSizeLength { get; set; }
+        [DataMember]
+        public int ViewSizeHeight { get; set; }
+        [DataMember]
+        public float ViewAngle { get; set; }
     }
 }
