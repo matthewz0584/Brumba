@@ -19,16 +19,16 @@
       <Name>this:SimulatedAckermanVehicle</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/hamstercontrols.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
           <dssp:Contract>http://brumba.ru/contracts/2013/02/genericackermanvehicle.html</dssp:Contract>
           <dssp:PartnerList />
-          <dssp:Name>ackermanvehiclesdriverguiservice:Ackerman_x0020_Vehicle</dssp:Name>
+          <dssp:Name>hamstercontrols:Ackerman_x0020_Vehicle</dssp:Name>
           <dssp:ServiceName>this:SimulatedAckermanVehicle</dssp:ServiceName>
         </dssp:Partner>
       </dssp:PartnerList>
-      <Name>this:AckermanVehicleDriverGuiService</Name>
+      <Name>this:HamsterControls</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

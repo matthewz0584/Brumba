@@ -3,25 +3,25 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 
-namespace Brumba.AckermanVehicleDriverGuiService
+namespace Brumba.HamsterControls
 {
 	public sealed class Contract
 	{
 		[DataMember]
-        public const string Identifier = "http://brumba.ru/contracts/2012/10/ackermanvehiclesdriverguiservice.html";
+        public const string Identifier = "http://brumba.ru/contracts/2012/10/hamstercontrols.html";
 	}
 	
 	[DataContract]
-	public class AckermanVehicleDriverGuiServiceState
+	public class HamsterControlsState
 	{
 	}
 	
 	[ServicePort]
-	public class AckermanVehicleDriverGuiServiceOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+	public class HamsterControlsOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
 	{
 	}
 	
-	public class Get : Get<GetRequestType, PortSet<AckermanVehicleDriverGuiServiceState, Fault>>
+	public class Get : Get<GetRequestType, PortSet<HamsterControlsState, Fault>>
 	{
 		public Get()
 		{
@@ -32,7 +32,7 @@ namespace Brumba.AckermanVehicleDriverGuiService
 		{
 		}
 		
-		public Get(GetRequestType body, PortSet<AckermanVehicleDriverGuiServiceState, Fault> responsePort)
+		public Get(GetRequestType body, PortSet<HamsterControlsState, Fault> responsePort)
 			: base(body, responsePort)
 		{
 		}

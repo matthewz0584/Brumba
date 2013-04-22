@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace Brumba.AckermanVehicleDriverGuiService
+namespace Brumba.HamsterControls
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {

@@ -11,21 +11,21 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Ccr.Adapters.Wpf;
 using Microsoft.Robotics.Services.WebCam.Proxy;
 
-namespace Brumba.AckermanVehicleDriverGuiService
+namespace Brumba.HamsterControls
 {
 	[Contract(Contract.Identifier)]
-	[DisplayName("AckermanVehicleDriverGuiService")]
-	[Description("AckermanVehicleDriverGuiService service (no description provided)")]
-	class AckermanVehicleDriverGuiService : DsspServiceBase
+	[DisplayName("HamsterControlsService")]
+	[Description("HamsterControlsService service (no description provided)")]
+	class HamsterControlsService : DsspServiceBase
 	{
         int VIEW_SIZE_LENGTH = 320;
         int VIEW_SIZE_HEIGHT = 240;
 
 		[ServiceState]
-		AckermanVehicleDriverGuiServiceState _state = new AckermanVehicleDriverGuiServiceState();
+		HamsterControlsState _state = new HamsterControlsState();
 		
-		[ServicePort("/AckermanVehicleDriverGuiService", AllowMultipleInstances = true)]
-		AckermanVehicleDriverGuiServiceOperations _mainPort = new AckermanVehicleDriverGuiServiceOperations();
+		[ServicePort("/HamsterControlsService", AllowMultipleInstances = true)]
+		HamsterControlsOperations _mainPort = new HamsterControlsOperations();
 
         [Partner("Vehicle", Contract = AckermanVehicle.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         AckermanVehicleOperations _ackermanVehPort = new AckermanVehicleOperations();
@@ -46,7 +46,7 @@ namespace Brumba.AckermanVehicleDriverGuiService
         WpfServicePort _wpfPort;
         MainWindow _mainWindow;
 
-	    public AckermanVehicleDriverGuiService(DsspServiceCreationPort creationPort)
+	    public HamsterControlsService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
 		}

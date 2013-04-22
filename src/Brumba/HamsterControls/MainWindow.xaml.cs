@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace Brumba.AckermanVehicleDriverGuiService
+namespace Brumba.HamsterControls
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
