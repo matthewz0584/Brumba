@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Brumba.AckermanVehicle.Proxy;
+using Brumba.Simulation.SimulatedInfraredRfRing.Proxy;
 using Brumba.Simulation.SimulatedTurret.Proxy;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -35,7 +37,11 @@ namespace Brumba.AckermanVehicleDriverGuiService
         WebCamOperations _cameraPort = new WebCamOperations();
         WebCamOperations _cameraNotificationPort = new WebCamOperations();
 
+        [Partner("Rf ring", Contract = Simulation.SimulatedInfraredRfRing.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        SimulatedInfraredRfRingOperations _rfRingPort = new SimulatedInfraredRfRingOperations();
+
         MainWindowEvents _mainWindowEventsPort = new MainWindowEvents();
+        Port<DateTime> _rfPollingTimerPort = new Port<DateTime>();
 	    
         WpfServicePort _wpfPort;
         MainWindow _mainWindow;
@@ -69,16 +75,28 @@ namespace Brumba.AckermanVehicleDriverGuiService
                     Arbiter.Receive<PowerRequest>(true, _mainWindowEventsPort, OnPowerHandler),
                     Arbiter.Receive<BreakRequest>(true, _mainWindowEventsPort, OnBreakHandler),
                     Arbiter.Receive<TurretBaseAngleRequest>(true, _mainWindowEventsPort, OnTurretBaseAngleRequest),
-                    Arbiter.ReceiveWithIterator<UpdateFrame>(true, _cameraNotificationPort, OnNewCameraFrame)
+                    Arbiter.ReceiveWithIterator<UpdateFrame>(true, _cameraNotificationPort, OnNewCameraFrame),
+                    Arbiter.ReceiveWithIterator(true, _rfPollingTimerPort, PollRfRing)
                     )));
+            _rfPollingTimerPort.Post(DateTime.Now);
         }
 
-        IEnumerator<ITask> OnNewCameraFrame(UpdateFrame updateFrameRequest)
+	    IEnumerator<ITask> PollRfRing(DateTime dateTime)
+        {
+            var rfRingGetResponse = _rfRingPort.Get();
+            yield return (Choice)rfRingGetResponse;
+
+            yield return (Choice)_wpfPort.Invoke(() => _mainWindow.Vm.UpdateIrRfRing(((SimulatedInfraredRfRingState)rfRingGetResponse).Distances));
+
+            Activate(Arbiter.Receive(false, TimeoutPort(100), t => _rfPollingTimerPort.Post(t)));
+        }
+
+	    IEnumerator<ITask> OnNewCameraFrame(UpdateFrame updateFrameRequest)
 	    {
 	        var queryFrameResponse = _cameraPort.QueryFrame();
             yield return (Choice)(queryFrameResponse);
 
-            _wpfPort.Invoke(() => _mainWindow.Vm.UpdateCameraFrame(((QueryFrameResponse)queryFrameResponse).Frame, VIEW_SIZE_LENGTH, VIEW_SIZE_HEIGHT));
+            yield return (Choice)_wpfPort.Invoke(() => _mainWindow.Vm.UpdateCameraFrame(((QueryFrameResponse)queryFrameResponse).Frame, VIEW_SIZE_LENGTH, VIEW_SIZE_HEIGHT));
 	    }
 
 	    void OnSteerHandler(SteerRequest onSteerRequest)

@@ -114,7 +114,9 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml">
       <SpecificVersion>False</SpecificVersion>
@@ -131,12 +133,19 @@
     <Compile Include="AckermanVehicleDriverGuiService.cs" />
     <Compile Include="AckermanVehicleDriverGuiServiceTypes.cs" />
     <AppDesigner Include="Properties" />
+    <Compile Include="RangeFinderRingUserControl.xaml.cs">
+      <DependentUpon>RangeFinderRingUserControl.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="AckermanVehicleDriverGuiService.manifest.xml" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RangeFinderRingUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

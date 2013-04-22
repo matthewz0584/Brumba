@@ -2,9 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" d:DesignHeight="340" d:DesignWidth="380"
-             Width="380" Height="340">
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:q="clr-namespace:Brumba.AckermanVehicleDriverGuiService"
+             mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="580" 
+             Width="380" Height="580">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -17,6 +18,10 @@
         <TextBlock Text="Press Left/Right keys for steering" Grid.Row="1"/>
         <TextBlock Text="Press A/D keys for turret steering" Grid.Row="2"/>
         <Image Source="{Binding CameraFrame}" Grid.Row="3" Height="240" Width="320" Margin="0,5,0,0" />
-        <Image Grid.Row="4" Height="20" Width="320"/>
+        <q:RangeFinderRingUserControl DispersionConeAngle="{Binding IrRfDispersionConeAngle}" 
+                                      MaximumRange="{Binding IrRfMaximumRange}" 
+                                      PositionsPolar="{Binding IrRfPositionsPolar}"
+                                      Ranges="{Binding IrRfRingRanges}"
+                                      Grid.Row="4" Height="250" Width="250" Margin="0,5"/>
     </Grid>
 </Window>
