@@ -1,4 +1,5 @@
-﻿using Microsoft.Dss.Core.Attributes;
+﻿using Microsoft.Ccr.Core;
+using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
@@ -82,7 +83,7 @@ namespace Brumba.Simulation.SimulatedTurret
 			set
 			{
 				_baseAngle = value;
-				((PhysicsJoint)ParentJoint).SetAngularDriveOrientation(Quaternion.FromAxisAngle(1, 0, 0, value));
+                DeferredTaskQueue.Post(new Task(() => ((PhysicsJoint)ParentJoint).SetAngularDriveOrientation(Quaternion.FromAxisAngle(1, 0, 0, value))));
 			}
 		}
 

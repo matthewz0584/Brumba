@@ -87,6 +87,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
             }
             set
             {
+                //if WriteLocks show up DeferredTaskQueue.Post(new Task()) should be used
                 ((PhysicsJoint)ParentJoint).SetAngularDriveOrientation(Quaternion.FromAxisAngle(new AxisAngle(new Vector3(1, 0, 0), -value)));
             }
         }
