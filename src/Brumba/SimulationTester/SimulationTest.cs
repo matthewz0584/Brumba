@@ -8,8 +8,8 @@ namespace Brumba.Simulation.SimulationTester
 {
     public interface ISimulationTest
     {
-    	IEnumerable<EngPxy.VisualEntity> FindEntitiesToRestore(IEnumerable<EngPxy.VisualEntity> entityPxies);
-    	IEnumerable<VisualEntity> FindAndPrepareEntitiesForRestore(IEnumerable<VisualEntity> entities);
+    	bool NeedResetOnEachTry(EngPxy.VisualEntity entityProxy);
+        void PrepareForReset(VisualEntity entity);
 
         IEnumerator<ITask> Start();
         IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
@@ -25,23 +25,24 @@ namespace Brumba.Simulation.SimulationTester
         public double EstimatedTime { get; protected set; }
 
         public abstract bool IsProbabilistic { get; }
-        public abstract IEnumerable<EngPxy.VisualEntity> FindEntitiesToRestore(IEnumerable<EngPxy.VisualEntity> entityPxies);
-        public abstract IEnumerable<VisualEntity> FindAndPrepareEntitiesForRestore(IEnumerable<VisualEntity> entities);
+
+        public abstract bool NeedResetOnEachTry(EngPxy.VisualEntity entityProxy);
+        public abstract void PrepareForReset(VisualEntity entity);
+
         public abstract IEnumerator<ITask> Start();
         public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
     }
 
     public abstract class DeterministicTestBase : SimulationTestBase
     {
-        //Test is determinixtic, it is run once, no need reload any entities. Besides, it may alleviate some problems (some joint locks, for example)
-        public override IEnumerable<EngPxy.VisualEntity> FindEntitiesToRestore(IEnumerable<EngPxy.VisualEntity> entityPxies)
+        //Test is deterministic, it is run once, no need to reload any entities. Besides, it may alleviate some problems (some joint locks, for example).
+        public override bool NeedResetOnEachTry(EngPxy.VisualEntity entityProxy)
         {
-            return new EngPxy.VisualEntity[] {};
+            return false;
         }
 
-        public override IEnumerable<VisualEntity> FindAndPrepareEntitiesForRestore(IEnumerable<VisualEntity> entities)
+        public override void PrepareForReset(VisualEntity entity)
         {
-            return new VisualEntity[] {};
         }
 
         public override bool IsProbabilistic { get { return false; } }

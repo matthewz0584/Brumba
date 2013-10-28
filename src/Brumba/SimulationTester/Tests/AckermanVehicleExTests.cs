@@ -34,16 +34,14 @@ namespace Brumba.Simulation.SimulationTester.Tests
     {
         public const string VEHICLE_NAME = "testee";
 
-        public override IEnumerable<EngPxy.VisualEntity> FindEntitiesToRestore(IEnumerable<EngPxy.VisualEntity> entityPxies)
+        public override bool NeedResetOnEachTry(EngPxy.VisualEntity entityProxy)
         {
-            return entityPxies.Where(pxy => pxy.State.Name == VEHICLE_NAME);
+            return entityProxy.State.Name == VEHICLE_NAME;
         }
 
-        public override IEnumerable<VisualEntity> FindAndPrepareEntitiesForRestore(IEnumerable<VisualEntity> entities)
+        public override void PrepareForReset(VisualEntity entity)
         {
-            var testee = entities.Single(e => e.State.Name == VEHICLE_NAME);
-            testee.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
-            return new[] { testee };
+            entity.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
         }
     }
 
@@ -64,7 +62,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 
         public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
         {
-			var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(FindEntitiesToRestore(simStateEntities).First().State.Pose.Position));
+            var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single(NeedResetOnEachTry).State.Pose.Position));
             @return(pos.Length() > 50);
             yield break;
         }
@@ -89,7 +87,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 
         public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
         {
-			var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(FindEntitiesToRestore(simStateEntities).First().State.Pose.Orientation));
+            var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single(NeedResetOnEachTry).State.Pose.Orientation));
             @return(Math.Abs(orientation.X) < 90 && elapsedTime > EstimatedTime);
             yield break;
         }
@@ -128,7 +126,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 
             var deltaT = elapsedTime - _prevElapsedTime;
             var deltaAnglularDistance = vehState.DriveAngularDistance - _prevDriveAngularDistance;
-            var vehProps = (FindEntitiesToRestore(simStateEntities).First() as SafwPxy.AckermanVehicleExEntity).Props;
+            var vehProps = (simStateEntities.Single(NeedResetOnEachTry) as SafwPxy.AckermanVehicleExEntity).Props;
             var expectedDeltaAngularDistance = vehProps.MaxVelocity * 0.2f / vehProps.WheelsProperties.First().Radius * deltaT;
 
             @return(vehState.SteeringAngle > 0.9 * 0.5 * vehProps.MaxSteeringAngle && vehState.SteeringAngle < 1.1 * 0.5 * vehProps.MaxSteeringAngle &&
