@@ -156,12 +156,12 @@
     <Compile Include="ServiceForwarder.cs" />
     <Compile Include="SimulationTesterPresenterConsole.cs" />
     <Compile Include="SimulationTest.cs" />
-    <Compile Include="SimulationTestFixture.cs" />
+    <Compile Include="SimulationTestFixtureInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimulationTesterService.cs" />
     <Compile Include="SimulationTesterTypes.cs" />
     <AppDesigner Include="Properties" />
-    <Compile Include="SimulationTestFixtureAttribute.cs" />
+    <Compile Include="SimTestFixtureAttribute.cs" />
     <Compile Include="Tests\TurretTests.cs" />
     <Compile Include="Tests\InfraredRfRingTests.cs" />
   </ItemGroup>

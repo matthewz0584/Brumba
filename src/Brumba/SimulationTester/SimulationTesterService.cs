@@ -26,6 +26,9 @@ namespace Brumba.Simulation.SimulationTester
 	[Description("Simulation Tester service (no description provided)")]
 	public class SimulationTesterService : DsspServiceBase
 	{
+        public const string MANIFEST_EXTENSION = "manifest.xml";
+        public const string ENVIRONMENT_EXTENSION = "xml";
+
 		public const int TRIES_NUMBER = 100;
 		public const float SUCCESS_THRESHOLD = 0.79f;
 		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
@@ -47,12 +50,12 @@ namespace Brumba.Simulation.SimulationTester
 		[Partner("Manifest loader", Contract = Microsoft.Dss.Services.ManifestLoaderClient.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		ManifestLoaderClientPort _manifestLoader = new ManifestLoaderClientPort();
 
-        readonly List<ISimulationTestFixture> _testFixtures = new List<ISimulationTestFixture>();
+        readonly List<SimulationTestFixtureInfo> _testFixtureInfos = new List<SimulationTestFixtureInfo>();
 		readonly Dictionary<ISimulationTest, float> _testResults = new Dictionary<ISimulationTest, float>();
 
 		public event Action OnStarted = delegate { };
 		public event Action<Dictionary<ISimulationTest, float>> OnEnded = delegate { };
-		public event Action<ISimulationTestFixture> OnFixtureStarted = delegate { };
+		public event Action<SimulationTestFixtureInfo> OnFixtureStarted = delegate { };
 		public event Action<ISimulationTest> OnTestStarted = delegate { };
 		public event Action<ISimulationTest, float> OnTestEnded = delegate { };
 		public event Action<ISimulationTest, bool> OnTestTryEnded = delegate { };
@@ -74,18 +77,43 @@ namespace Brumba.Simulation.SimulationTester
 
 			base.Start();
 
-            _testFixtures.AddRange(GatherTestFixtures());
+            _testFixtureInfos.AddRange(GatherTestFixtures());
 
             SpawnIterator(ExecuteTests);
 		}
 
-        IEnumerable<ISimulationTestFixture> GatherTestFixtures()
+        IEnumerable<SimulationTestFixtureInfo> GatherTestFixtures()
         {
-            var wipFixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimulationTestFixtureAttribute && !(a as SimulationTestFixtureAttribute).Ignore && (a as SimulationTestFixtureAttribute).Wip));
-            var allFixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimulationTestFixtureAttribute && !(a as SimulationTestFixtureAttribute).Ignore));
+            var wipFixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestFixtureAttribute && !(a as SimTestFixtureAttribute).Ignore && (a as SimTestFixtureAttribute).Wip));
+            var allFixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestFixtureAttribute && !(a as SimTestFixtureAttribute).Ignore));
             var fixturesToCreate = wipFixtureTypes.Any() ? wipFixtureTypes : allFixtureTypes;
-            var sf = new ServiceForwarder(this);
-            return fixturesToCreate.Select(ft => Activator.CreateInstance(ft, new object[] { sf })).Cast<ISimulationTestFixture>();
+
+            return fixturesToCreate.Select(CreateFixtureInfo);
+        }
+
+        SimulationTestFixtureInfo CreateFixtureInfo(Type fixtureType)
+        {
+            var fixtureInfo = new SimulationTestFixtureInfo();
+
+            fixtureInfo.Fixture = Activator.CreateInstance(fixtureType);
+            
+            fixtureInfo.EnvironmentXmlFile =
+                fixtureType.GetCustomAttributes(false).OfType<SimTestFixtureAttribute>().Single().EnvironmentFile;
+
+            fixtureInfo.SetUp =
+                sf =>
+                fixtureType.GetMethods().Single(mi => mi.GetCustomAttributes(false).Any(a => a is SimSetUpAttribute))
+                           .Invoke(fixtureInfo.Fixture, new object[] {sf});
+
+            var testsToCreate = fixtureType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
+                           .Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestAttribute));
+            foreach (var testType in testsToCreate)
+            {
+                var test = Activator.CreateInstance(testType) as ISimulationTest;
+                test.Fixture = fixtureInfo.Fixture;
+                fixtureInfo.Tests.Add(test);
+            }
+            return fixtureInfo;
         }
 
         IEnumerator<ITask> ExecuteTests()
@@ -93,25 +121,25 @@ namespace Brumba.Simulation.SimulationTester
             yield return To.Exec(SetUpSimulator);
 
 			OnStarted();
-			foreach (var fixture in _testFixtures)
+			foreach (var fixtureInfo in _testFixtureInfos)
 			{
-				OnFixtureStarted(fixture);
+				OnFixtureStarted(fixtureInfo);
 
-                //Start fixture manifest
-                yield return To.Exec(StartFixtureManifest, fixture);
+                //Start fixtureInfo manifest
+                yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
                 
                 //Connect to necessary services
-                fixture.SetUpServicePorts();
+                fixtureInfo.SetUp(new ServiceForwarder(this));
 
                 //Full restore: static and dynamic objects
-                yield return To.Exec(RestoreEnvironment, fixture.EnvironmentXmlFile, new Func<EngPxy.VisualEntity, bool>(es => true), new Action<VisualEntity>(e => {}));
+                yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, new Func<EngPxy.VisualEntity, bool>(es => true), new Action<VisualEntity>(e => {}));
 
-				foreach (var test in fixture.Tests)
+				foreach (var test in fixtureInfo.Tests)
 				{
 					OnTestStarted(test);
 
 					float result = 0;
-					yield return To.Exec(ExecuteTest, (float r) => result = r, test);
+                    yield return To.Exec(ExecuteTest, (float r) => result = r, fixtureInfo, test);
 					_testResults.Add(test, result);
 
 					OnTestEnded(test, result);
@@ -122,7 +150,7 @@ namespace Brumba.Simulation.SimulationTester
 			LogInfo(_testResults.Aggregate("All tests are run: ", (message, test) => string.Format("{0} {1}-{2:P0}\n", message, test.Key.GetType().Name, test.Value)));
         }
 
-        IEnumerator<ITask> StartFixtureManifest(ISimulationTestFixture fixture)
+        IEnumerator<ITask> StartManifest(string manifest)
         {
             yield return To.Exec(
                 _manifestLoader.Insert(new InsertRequest
@@ -132,8 +160,8 @@ namespace Brumba.Simulation.SimulationTester
                                                  ServiceInfo.HttpServiceAlias.Authority,
                                                  ServicePaths.MountPoint,
                                                  TESTS_PATH,
-                                                 fixture.EnvironmentXmlFile,
-                                                 SimulationTestFixture.MANIFEST_EXTENSION)
+                                                 manifest,
+                                                 MANIFEST_EXTENSION)
                     }));
         }
 
@@ -149,7 +177,7 @@ namespace Brumba.Simulation.SimulationTester
             yield return To.Exec(_simEngine.Replace(simState));
         }
 
-        IEnumerator<ITask> ExecuteTest(Action<float> @return, ISimulationTest test)
+        IEnumerator<ITask> ExecuteTest(Action<float> @return, SimulationTestFixtureInfo fixtureInfo, ISimulationTest test)
         {
         	int successful = 0, i;
 			for (i = 0; i < (test.IsProbabilistic ? TRIES_NUMBER : 1); ++i)
@@ -157,7 +185,7 @@ namespace Brumba.Simulation.SimulationTester
 				if (HasEarlyResults(i, successful))
 					break;
 
-                yield return To.Exec(RestoreEnvironment, test.Fixture.EnvironmentXmlFile, (Func<EngPxy.VisualEntity, bool>)test.NeedResetOnEachTry, (Action<VisualEntity>)test.PrepareForReset);
+                yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<EngPxy.VisualEntity, bool>)test.NeedResetOnEachTry, (Action<VisualEntity>)test.PrepareForReset);
 
                 yield return To.Exec(test.Start);
 
@@ -205,7 +233,7 @@ namespace Brumba.Simulation.SimulationTester
             yield return To.Exec(_simEngine.Replace(simState));
 
             var get = new DsspDefaultGet();
-            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, SimulationTestFixture.ENVIRONMENT_EXTENSION)).Post(get);
+            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
             yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (Microsoft.Robotics.Simulation.Proxy.SimulationState)success);
 
             IEnumerable<VisualEntity> entities = null;

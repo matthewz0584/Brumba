@@ -16,12 +16,12 @@ namespace Brumba.Simulation.SimulationTester
 
         double EstimatedTime { get; }
         bool IsProbabilistic { get; }
-        ISimulationTestFixture Fixture { get; set; }
+        object Fixture { get; set; }
     }
 
     public abstract class SimulationTestBase : ISimulationTest
     {
-        public ISimulationTestFixture Fixture { get; set; }
+        public object Fixture { get; set; }
         public double EstimatedTime { get; protected set; }
 
         public abstract bool IsProbabilistic { get; }

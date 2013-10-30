@@ -10,36 +10,33 @@ using VisualEntityPxy = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
 namespace Brumba.Simulation.SimulationTester.Tests
 {
-    [SimulationTestFixture]
-    public class TurretTests : SimulationTestFixture
+    [SimTestFixture("turret")]
+    public class TurretTests
     {
-        public TurretTests(ServiceForwarder serviceForwarder)
-            : base(new ISimulationTest[] { new SetBaseAngleTest() }, "turret", serviceForwarder)
-        {
-        }
-
         public TrtPxy.SimulatedTurretOperations TurretPort { get; set; }
 
-        protected override void SetUpServicePorts(ServiceForwarder serviceForwarder)
+        [SimSetUp]
+        public void SetUp(ServiceForwarder serviceForwarder)
         {
             TurretPort = serviceForwarder.ForwardTo<TrtPxy.SimulatedTurretOperations>("testee_turret");
         }
-    }
 
-    public class SetBaseAngleTest : DeterministicTestBase
-    {
-        public override IEnumerator<ITask> Start()
+        [SimTest]
+        public class SetBaseAngleTest : DeterministicTestBase
         {
-            EstimatedTime = 3;
-            (Fixture as TurretTests).TurretPort.SetBaseAngle((float) Math.PI/4);
-            yield break;
-        }
+            public override IEnumerator<ITask> Start()
+            {
+                EstimatedTime = 3;
+                (Fixture as TurretTests).TurretPort.SetBaseAngle((float)Math.PI / 4);
+                yield break;
+            }
 
-        public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntityPxy> simStateEntities, double elapsedTime)
-        {
-            var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single(pxy => pxy.State.Name == "turret").State.Pose.Orientation));
-            @return(orientation.Y > 45 * 0.95 && orientation.Y < 45 * 1.05 && elapsedTime > EstimatedTime);
-            yield break;
+            public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntityPxy> simStateEntities, double elapsedTime)
+            {
+                var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single(pxy => pxy.State.Name == "turret").State.Pose.Orientation));
+                @return(orientation.Y > 45 * 0.95 && orientation.Y < 45 * 1.05 && elapsedTime > EstimatedTime);
+                yield break;
+            }
         }
     }
 }
