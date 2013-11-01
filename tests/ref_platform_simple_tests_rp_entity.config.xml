@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ReferencePlatform2011State xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2009/03/simulatedreferenceplatform2011.html">
+	<InitialPosition>
+		<X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+		<Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Y>
+		<Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
+	</InitialPosition>
+	<EntityName>stupid_waiter</EntityName>
+	<driveState xmlns="http://schemas.microsoft.com/robotics/2006/05/drive.html">
+		<LeftWheel xmlns="http://schemas.microsoft.com/robotics/2006/05/motor.html">
+			<Name />
+			<Radius>1</Radius>
+			<GearRatio>1</GearRatio>
+		</LeftWheel>
+		<RightWheel xmlns="http://schemas.microsoft.com/robotics/2006/05/motor.html">
+			<Name />
+			<Radius>1</Radius>
+			<GearRatio>1</GearRatio>
+		</RightWheel>
+		<DistanceBetweenWheels>1</DistanceBetweenWheels>
+		<IsEnabled>true</IsEnabled>
+		<DriveDistanceStage>InitialRequest</DriveDistanceStage>
+		<RotateDegreesStage>InitialRequest</RotateDegreesStage>
+	</driveState>
+</ReferencePlatform2011State>

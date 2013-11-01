@@ -102,9 +102,18 @@
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ReferencePlatform2011.Simulation.Y2011.M08">
+      <HintPath>..\..\..\..\bin\ReferencePlatform2011.Simulation.Y2011.M08.dll</HintPath>
+    </Reference>
+    <Reference Include="ReferencePlatform2011.Simulation.Y2011.M08.proxy">
+      <HintPath>..\..\..\..\bin\ReferencePlatform2011.Simulation.Y2011.M08.proxy.dll</HintPath>
+    </Reference>
     <Reference Include="RoboticsCommon">
       <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="RoboticsCommon.proxy">
+      <HintPath>..\..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
     </Reference>
     <Reference Include="SimulationCommon">
       <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>

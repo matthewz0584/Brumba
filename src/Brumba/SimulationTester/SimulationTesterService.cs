@@ -27,12 +27,12 @@ namespace Brumba.Simulation.SimulationTester
 	public class SimulationTesterService : DsspServiceBase
 	{
         public const string MANIFEST_EXTENSION = "manifest.xml";
-        public const string ENVIRONMENT_EXTENSION = "xml";
+        public const string ENVIRONMENT_EXTENSION = "environ.xml";
 
 		public const int TRIES_NUMBER = 100;
 		public const float SUCCESS_THRESHOLD = 0.79f;
-		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
-		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
+		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
+		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
         public const string TESTS_PATH = "brumba/tests";
 
 		[ServiceState]

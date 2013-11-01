@@ -162,6 +162,7 @@
     <Compile Include="SimulationTesterTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimTestFixtureAttribute.cs" />
+    <Compile Include="Tests\RefPlatformSimpleTests.cs" />
     <Compile Include="Tests\TurretTests.cs" />
     <Compile Include="Tests\InfraredRfRingTests.cs" />
   </ItemGroup>

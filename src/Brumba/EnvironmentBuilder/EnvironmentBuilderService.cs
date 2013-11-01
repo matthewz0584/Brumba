@@ -9,6 +9,7 @@ using Brumba.Simulation.SimulatedTurret;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Robotics.Services.Simulation.ReferencePlatform2011;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
@@ -38,6 +39,12 @@ namespace Brumba.Simulation.EnvironmentBuilder
         //[Partner("Turret", Contract = SimulatedTurret.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         //SimulatedTurret.Proxy.SimulatedTurretOperations _tPort = new SimulatedTurret.Proxy.SimulatedTurretOperations();
 
+		//[Partner("Waiter", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+		//Microsoft.Robotics.Services.Drive.Proxy.DriveOperations _waiter = new Microsoft.Robotics.Services.Drive.Proxy.DriveOperations();
+
+		[Partner("qq", Contract = Microsoft.Robotics.Services.Simulation.ReferencePlatform2011.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExistingOrCreate)]
+		Microsoft.Robotics.Services.Simulation.ReferencePlatform2011.Proxy.ReferencePlatform2011Operations _dummy = new Microsoft.Robotics.Services.Simulation.ReferencePlatform2011.Proxy.ReferencePlatform2011Operations();
+
         protected override void Start()
         {
 			//CrossCountryGenerator.Generate(257, 0.1f).Save("terrain00.bmp");
@@ -49,7 +56,8 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulatePuckRobot();
             //PopulateInfraredRfRing();
             //PopulateTurret();
-            PopulateHamster();
+            //PopulateHamster();
+	        PopulateReferencePlatform();
 
             base.Start();
 
@@ -58,7 +66,15 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //_turret.BaseAngle = (float)Math.PI / 4;
         }
 
-        void PopulateHamster()
+	    private void PopulateReferencePlatform()
+	    {
+			PopulateSimpleEnvironment();
+
+		    var refPlatform = new ReferencePlatform2011Entity { State = {Name = "stupid_waiter"}};
+			SimulationEngine.GlobalInstancePort.Insert(refPlatform);
+	    }
+
+	    void PopulateHamster()
         {
             PopulateSimpleEnvironment();
 

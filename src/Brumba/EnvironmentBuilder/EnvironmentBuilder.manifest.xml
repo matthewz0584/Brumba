@@ -7,6 +7,7 @@
       <dssp:PartnerList />
       <Name>this:environmentbuilder</Name>
     </ServiceRecordType>
+    <!--Hamster with controls
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html</dssp:Contract>
       <dssp:PartnerList />
@@ -33,6 +34,26 @@
         </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:Simulatedturret</Name>
-    </ServiceRecordType>
+    </ServiceRecordType>-->
+    <!--<ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/2009/03/simulatedreferenceplatform2011.html</dssp:Contract>
+      <dssp:Service>http://localhost:80/stupid_waiter_ref_platform</dssp:Service>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/stupid_waiter</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>
+            http://schemas.microsoft.com/2009/03/simulatedreferenceplatform2011.html
+          </dssp:Contract>
+          <dssp:Service>referenceplatformrobot.config.xml</dssp:Service>
+          <dssp:PartnerList/>
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedReferencePlatformRobot</Name>
+    </ServiceRecordType>-->
   </CreateServiceList>
 </Manifest>
