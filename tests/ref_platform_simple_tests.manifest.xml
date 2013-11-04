@@ -11,14 +11,6 @@
           <dssp:PartnerList />
           <dssp:Name>simulation:Entity</dssp:Name>
         </dssp:Partner>
-        <dssp:Partner>
-            <dssp:Contract>
-                http://schemas.microsoft.com/2009/03/simulatedreferenceplatform2011.html
-            </dssp:Contract>
-            <dssp:Service>ref_platform_simple_tests_rp_entity.config.xml</dssp:Service>
-            <dssp:PartnerList/>
-            <dssp:Name>dssp:StateService</dssp:Name>
-        </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:SimulatedReferencePlatformRobot</Name>
     </ServiceRecordType>

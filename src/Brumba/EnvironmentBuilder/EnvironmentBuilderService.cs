@@ -4,12 +4,12 @@ using System.ComponentModel;
 using System.Threading;
 using Brumba.Simulation.SimulatedAckermanVehicle;
 using Brumba.Simulation.SimulatedInfraredRfRing;
+using Brumba.Simulation.SimulatedReferencePlatform2011;
 using Brumba.Simulation.SimulatedTail;
 using Brumba.Simulation.SimulatedTurret;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using Microsoft.Robotics.Services.Simulation.ReferencePlatform2011;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
@@ -42,8 +42,8 @@ namespace Brumba.Simulation.EnvironmentBuilder
 		//[Partner("Waiter", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		//Microsoft.Robotics.Services.Drive.Proxy.DriveOperations _waiter = new Microsoft.Robotics.Services.Drive.Proxy.DriveOperations();
 
-		[Partner("qq", Contract = Microsoft.Robotics.Services.Simulation.ReferencePlatform2011.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExistingOrCreate)]
-		Microsoft.Robotics.Services.Simulation.ReferencePlatform2011.Proxy.ReferencePlatform2011Operations _dummy = new Microsoft.Robotics.Services.Simulation.ReferencePlatform2011.Proxy.ReferencePlatform2011Operations();
+		//[Partner("qq", Contract = SimulatedReferencePlatform2011.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExistingOrCreate)]
+        //SimulatedReferencePlatform2011.Proxy.ReferencePlatform2011Operations _dummy = new SimulatedReferencePlatform2011.Proxy.ReferencePlatform2011Operations();
 
         protected override void Start()
         {
