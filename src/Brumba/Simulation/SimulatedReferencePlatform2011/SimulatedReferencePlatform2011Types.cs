@@ -34,6 +34,9 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// </summary>
         [DataMember]
         public Microsoft.Robotics.Services.Drive.DriveDifferentialTwoWheelState DriveState { get; set; }
+
+		[DataMember]
+		public Microsoft.Robotics.Services.Battery.BatteryState BatteryState { get; set; }
     }
 
     /// <summary>

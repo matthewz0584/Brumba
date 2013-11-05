@@ -3,7 +3,7 @@
 <Manifest xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulatedreferenceplatform2011="http://schemas.microsoft.com/2009/03/simulatedreferenceplatform2011.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:17530cba-f8c6-458c-8465-3883a7bbe835" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.microsoft.com/2009/03/simulatedreferenceplatform2011.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html</dssp:Contract>
       <dssp:Service>http://localhost:80/stupid_waiter_ref_platform</dssp:Service>
       <dssp:PartnerList>
         <dssp:Partner>

@@ -1,12 +1,7 @@
-//------------------------------------------------------------------------------
-//  <copyright file="ReferencePlatform2011.cs" company="Microsoft Corporation">
-//      Copyright (C) Microsoft Corporation.  All rights reserved.
-//  </copyright>
-//------------------------------------------------------------------------------
-
 using System.ComponentModel;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
+using Microsoft.Dss.Core.DsspHttp;
 using Microsoft.Dss.ServiceModel.Dssp;
 using drive = Microsoft.Robotics.Services.Drive;
 using battery = Microsoft.Robotics.Services.Battery;
@@ -25,32 +20,39 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
     [Description("Simulated Reference Platform 2011 for Robotics Developer Studio")]
     partial class SimulatedReferencePlatform2011Service : SimulatedEntityServiceBase
     {
-        /// <summary>
-        /// Service state
-        /// </summary>
-        [ServiceState]
-        private ReferencePlatform2011State _state = new ReferencePlatform2011State
-            {
-                DriveState = new drive.DriveDifferentialTwoWheelState
-                    {
-                        LeftWheel = new WheeledMotorState
-                            {
-                                MotorState = new MotorState(),
-                                EncoderState = new EncoderState()
-                            },
-                        RightWheel = new WheeledMotorState
-                            {
-                                MotorState = new MotorState(),
-                                EncoderState = new EncoderState()
-                            }
-                    }
-            };
+	    /// <summary>
+	    /// Service state
+	    /// </summary>
+	    [ServiceState]
+		private ReferencePlatform2011State _state = new ReferencePlatform2011State
+		    {
+			    DriveState = new drive.DriveDifferentialTwoWheelState
+				    {
+					    LeftWheel = new WheeledMotorState
+						    {
+							    MotorState = new MotorState(),
+							    EncoderState = new EncoderState()
+						    },
+					    RightWheel = new WheeledMotorState
+						    {
+							    MotorState = new MotorState(),
+							    EncoderState = new EncoderState()
+						    }
+				    },
+			    BatteryState = new battery.BatteryState
+					    {
+						    MaxBatteryPower = 12, PercentBatteryPower = 80, PercentCriticalBattery = 20
+					    }
+		    };
 
         /// <summary>
         /// Main service port
         /// </summary>
         [ServicePort("/SimulatedReferencePlatform2011", AllowMultipleInstances = true)]
         private ReferencePlatform2011Operations _mainPort = new ReferencePlatform2011Operations();
+
+		[SubscriptionManagerPartner("SubMgr")]
+		private Microsoft.Dss.Services.SubscriptionManager.SubscriptionManagerPort _subMgrPort = new Microsoft.Dss.Services.SubscriptionManager.SubscriptionManagerPort();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimulatedReferencePlatform2011Service"/> class.
@@ -100,12 +102,14 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                     
                     Arbiter.Receive<DsspDefaultLookup>(true, _drivePort, DefaultLookupHandler),
                     Arbiter.Receive<drive.Get>(true, _drivePort, DriveGetHandler),
+					Arbiter.Receive<HttpGet>(true, _drivePort, DriveHttpGetHandler),
                     Arbiter.ReceiveWithIterator<drive.Subscribe>(true, _drivePort, DriveSubscribeHandler),
                     Arbiter.ReceiveWithIterator<drive.ReliableSubscribe>(true, _drivePort, DriveReliableSubscribeHandler),
                     Arbiter.Receive<drive.EnableDrive>(true, _drivePort, DriveEnableHandler),
 
                     Arbiter.Receive<DsspDefaultLookup>(true, _batteryPort, DefaultLookupHandler),
-                    Arbiter.Receive<battery.Get>(true, _batteryPort, GetHandler),
+                    Arbiter.Receive<battery.Get>(true, _batteryPort, BatteryGetHandler),
+					Arbiter.Receive<HttpGet>(true, _batteryPort, BatteryHttpGetHandler),
                     Arbiter.Receive<battery.Replace>(true, _batteryPort, ReplaceHandler),
                     Arbiter.ReceiveWithIterator<battery.Subscribe>(true, _batteryPort, SubscribeHandler),
                     Arbiter.Receive<battery.SetCriticalLevel>(true, _batteryPort, SetCriticalLevelHandler)
