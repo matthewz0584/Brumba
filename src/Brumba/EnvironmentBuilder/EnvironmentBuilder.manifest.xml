@@ -1,40 +1,12 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedturret="http://brumba.ru/contracts/2013/04/simulatedturret.html" xmlns:this="urn:uuid:91895e55-405f-4a62-95bc-1e4a17f7cd12" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedinfraredrfring="http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html" xmlns:simulatedackermanvehicle="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:this="urn:uuid:886dbbb0-3650-4fc8-bc73-02b8b1ee85e4" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedlrf="http://schemas.microsoft.com/robotics/simulation/services/2006/05/simulatedlrf.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
       <dssp:PartnerList />
       <Name>this:environmentbuilder</Name>
     </ServiceRecordType>
-    <!--Hamster with controls
-    <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html</dssp:Contract>
-      <dssp:PartnerList />
-      <Name>this:SimulatedAckermanVehicle</Name>
-    </ServiceRecordType>
-    <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2013/03/simulatedinfraredrfring.html</dssp:Contract>
-      <dssp:PartnerList>
-        <dssp:Partner>
-          <dssp:Service>http://localhost/rfring</dssp:Service>
-          <dssp:PartnerList />
-          <dssp:Name>simulation:Entity</dssp:Name>
-        </dssp:Partner>
-      </dssp:PartnerList>
-      <Name>this:SimulatedInfraredRangefinderRing</Name>
-    </ServiceRecordType>
-    <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2013/04/simulatedturret.html</dssp:Contract>
-      <dssp:PartnerList>
-        <dssp:Partner>
-          <dssp:Service>http://localhost/turret</dssp:Service>
-          <dssp:PartnerList />
-          <dssp:Name>simulation:Entity</dssp:Name>
-        </dssp:Partner>
-      </dssp:PartnerList>
-      <Name>this:Simulatedturret</Name>
-    </ServiceRecordType>-->
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html</dssp:Contract>
       <dssp:Service>http://localhost:80/stupid_waiter_ref_platform</dssp:Service>
@@ -46,6 +18,18 @@
         </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:SimulatedReferencePlatformRobot</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/robotics/simulation/services/2006/05/simulatedlrf.html</dssp:Contract>
+      <dssp:Service>http://localhost:80/stupid_waiter_lidar</dssp:Service>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/stupid_waiter_lidar</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedLaserRangeFinder</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

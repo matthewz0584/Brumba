@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Threading;
 using Brumba.Simulation.SimulatedAckermanVehicle;
 using Brumba.Simulation.SimulatedInfraredRfRing;
+using Brumba.Simulation.SimulatedLrf;
 using Brumba.Simulation.SimulatedReferencePlatform2011;
 using Brumba.Simulation.SimulatedTail;
 using Brumba.Simulation.SimulatedTurret;
@@ -45,6 +46,9 @@ namespace Brumba.Simulation.EnvironmentBuilder
 		//[Partner("qq", Contract = SimulatedReferencePlatform2011.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExistingOrCreate)]
         //SimulatedReferencePlatform2011.Proxy.ReferencePlatform2011Operations _dummy = new SimulatedReferencePlatform2011.Proxy.ReferencePlatform2011Operations();
 
+		[Partner("qq", Contract = SimulatedLrf.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExistingOrCreate)]
+		Brumba.Simulation.SimulatedLrf.Operations _dummy = new Brumba.Simulation.SimulatedLrf.Operations();
+
         protected override void Start()
         {
 			//CrossCountryGenerator.Generate(257, 0.1f).Save("terrain00.bmp");
@@ -71,7 +75,25 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			PopulateSimpleEnvironment();
 
 		    var refPlatform = new ReferencePlatform2011Entity { State = {Name = "stupid_waiter"}};
+			var lidar = new LrfExEntity
+			    {
+				    State = {Name = "stupid_waiter_lidar"},
+				    LaserBox = new BoxShape(new BoxShapeProperties(0.16f, new Pose(new Vector3(0, 0.2f, -0.2f)),
+					                                        new Vector3(0.04f, 0.07f, 0.04f))),
+				    RaycastProperties = new RaycastProperties
+					    {
+						    StartAngle = -120,
+						    EndAngle = +120,
+						    AngleIncrement = 0.36f,
+						    Range = 5600,
+						    OriginPose = new Pose()
+					    }
+			    };
+
+		    refPlatform.InsertEntity(lidar);
 			SimulationEngine.GlobalInstancePort.Insert(refPlatform);
+			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(8, 0.501f, 0)) { State = { Name = "golden_brick_out_of_range" } });
+			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(-5f, 0.501f, 0)) { State = { Name = "golden_brick_in_range" } });
 	    }
 
 	    void PopulateHamster()

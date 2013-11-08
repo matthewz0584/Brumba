@@ -33,7 +33,7 @@ namespace Brumba.Simulation.SimulationTester
         public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
     }
 
-    public abstract class DeterministicTestBase : SimulationTestBase
+    public abstract class DeterministicTest : SimulationTestBase
     {
         //Test is deterministic, it is run once, no need to reload any entities. Besides, it may alleviate some problems (some joint locks, for example).
         public override bool NeedResetOnEachTry(EngPxy.VisualEntity entityProxy)
@@ -48,7 +48,7 @@ namespace Brumba.Simulation.SimulationTester
         public override bool IsProbabilistic { get { return false; } }
     }
 
-    public abstract class StochasticTestBase : SimulationTestBase
+    public abstract class StochasticTest : SimulationTestBase
     {
         static readonly Random _randomG = new Random((int)DateTime.Now.Ticks);
         protected static Random RandomG { get { return _randomG; } }

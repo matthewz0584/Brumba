@@ -148,6 +148,8 @@ namespace Brumba.Simulation.SimulationTester
         	OnEnded(_testResults);
 
 			LogInfo(_testResults.Aggregate("All tests are run: ", (message, test) => string.Format("{0} {1}-{2:P0}\n", message, test.Key.GetType().Name, test.Value)));
+
+			//_simEngine.DsspDefaultDrop();
         }
 
         IEnumerator<ITask> StartManifest(string manifest)

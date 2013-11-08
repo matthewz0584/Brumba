@@ -14,5 +14,17 @@
       </dssp:PartnerList>
       <Name>this:SimulatedReferencePlatformRobot</Name>
     </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedlrf.html</dssp:Contract>
+      <dssp:Service>http://localhost:80/stupid_waiter_lidar</dssp:Service>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/stupid_waiter_lidar</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedLaserRangeFinder</Name>
+    </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

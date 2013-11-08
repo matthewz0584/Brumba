@@ -18,7 +18,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
         }
 
         [SimTest]
-        public class DistancesTest : DeterministicTestBase
+        public class DistancesTest : DeterministicTest
         {
             public override IEnumerator<ITask> Start()
             {

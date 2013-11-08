@@ -25,7 +25,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
             VehiclePort = serviceForwarder.ForwardTo<AckPxy.AckermanVehicleOperations>("testee_veh_service/genericackermanvehicle");
         }
 
-        public abstract class SingleVehicleTestBase : StochasticTestBase
+        public abstract class SingleVehicleTest : StochasticTest
         {
             public const string VEHICLE_NAME = "testee";
 
@@ -41,7 +41,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
         }
 
         [SimTest]
-        public class StraightPathTest : SingleVehicleTestBase
+        public class StraightPathTest : SingleVehicleTest
         {
             public override IEnumerator<ITask> Start()
             {
@@ -59,7 +59,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
         }
 
         [SimTest]
-        public class CurvedPathTest : SingleVehicleTestBase
+        public class CurvedPathTest : SingleVehicleTest
         {
             public override IEnumerator<ITask> Start()
             {
@@ -78,7 +78,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
         }
 
         [SimTest]
-        public class VehicleAnglesTest : SingleVehicleTestBase
+        public class VehicleAnglesTest : SingleVehicleTest
         {
             float _prevDriveAngularDistance = -1;
             double _prevElapsedTime;

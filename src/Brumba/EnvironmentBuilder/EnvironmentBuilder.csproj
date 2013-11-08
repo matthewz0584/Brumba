@@ -109,6 +109,10 @@
     <Reference Include="RoboticsCommon.proxy">
       <HintPath>..\..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
     </Reference>
+    <Reference Include="SickLRF.Y2005.M12.proxy, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\SickLRF.Y2005.M12.proxy.dll</HintPath>
+    </Reference>
     <Reference Include="SimulationCommon">
       <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
       <Private>False</Private>
@@ -133,7 +137,9 @@
     <AppDesigner Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="EnvironmentBuilder.manifest.xml" />
+    <Content Include="EnvironmentBuilder.manifest.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">

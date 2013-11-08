@@ -117,6 +117,12 @@
     <Reference Include="RoboticsCommon.proxy">
       <HintPath>..\..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
     </Reference>
+    <Reference Include="SickLRF.Y2005.M12">
+      <HintPath>..\..\..\..\bin\SickLRF.Y2005.M12.dll</HintPath>
+    </Reference>
+    <Reference Include="SickLRF.Y2005.M12.proxy">
+      <HintPath>..\..\..\..\bin\SickLRF.Y2005.M12.proxy.dll</HintPath>
+    </Reference>
     <Reference Include="SimulationCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
@@ -153,6 +159,9 @@
     <Compile Include="SimulatedAckermanVehicle\SimulatedAckermanVehicleService.cs" />
     <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingService.cs" />
     <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingTypes.cs" />
+    <Compile Include="SimulatedLrf\LrfExEntity.cs" />
+    <Compile Include="SimulatedLrf\SimulatedLrfService.cs" />
+    <Compile Include="SimulatedLrf\SimulatedLrfTypes.cs" />
     <Compile Include="SimulatedReferencePlatform2011\SimulatedReferencePlatform2011Service.cs" />
     <Compile Include="SimulatedReferencePlatform2011\ReferencePlatform2011Entity.cs" />
     <Compile Include="SimulatedReferencePlatform2011\SimulatedReferencePlatform2011Types.cs" />

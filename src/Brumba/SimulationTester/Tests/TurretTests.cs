@@ -22,7 +22,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
         }
 
         [SimTest]
-        public class SetBaseAngleTest : DeterministicTestBase
+        public class SetBaseAngleTest : DeterministicTest
         {
             public override IEnumerator<ITask> Start()
             {
