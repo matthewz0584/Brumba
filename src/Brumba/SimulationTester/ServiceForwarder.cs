@@ -16,5 +16,10 @@ namespace Brumba.Simulation.SimulationTester
         {
             return _sts.ForwardTo<T>(serviceUri);
         }
+
+        public void Activate<T>(params T[] tasks) where T : ITask
+        {
+            _sts.Activate(tasks);
+        }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.Robotics.Simulation.Engine.Proxy;
 
 namespace Brumba.Simulation.SimulationTester.Tests
 {
-    [SimTestFixture("infrared_rf_ring")]
+    [SimTestFixture("infrared_rf_ring", Wip = true)]
     public class InfraredRfRingTests
     {
         public IrrPxy.SimulatedInfraredRfRingOperations IfRfRingPort { get; set; }

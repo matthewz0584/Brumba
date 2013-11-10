@@ -20,7 +20,7 @@
       <Name>this:SimulatedReferencePlatformRobot</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://schemas.microsoft.com/robotics/simulation/services/2006/05/simulatedlrf.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedlrf.html</dssp:Contract>
       <dssp:Service>http://localhost:80/stupid_waiter_lidar</dssp:Service>
       <dssp:PartnerList>
         <dssp:Partner>

@@ -5,7 +5,7 @@ using Microsoft.Robotics.Simulation.Physics;
 namespace Brumba.Simulation.SimulatedLrf
 {
 	[DataContract]
-	public class LrfExEntity : LaserRangeFinderEntity
+	public class LaserRangeFinderExEntity : LaserRangeFinderEntity
 	{
 		[DataMember]
 		public RaycastProperties RaycastProperties_FORDB

@@ -159,7 +159,7 @@
     <Compile Include="SimulatedAckermanVehicle\SimulatedAckermanVehicleService.cs" />
     <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingService.cs" />
     <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingTypes.cs" />
-    <Compile Include="SimulatedLrf\LrfExEntity.cs" />
+    <Compile Include="SimulatedLrf\LaserRangeFinderExEntity.cs" />
     <Compile Include="SimulatedLrf\SimulatedLrfService.cs" />
     <Compile Include="SimulatedLrf\SimulatedLrfTypes.cs" />
     <Compile Include="SimulatedReferencePlatform2011\SimulatedReferencePlatform2011Service.cs" />

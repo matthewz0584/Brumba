@@ -1,229 +1,158 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
-using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Dss.ServiceModel.Dssp;
+using Microsoft.Dss.Services.SubscriptionManager;
 using Microsoft.Robotics.Simulation.Physics;
 using System.ComponentModel;
 using Microsoft.Dss.Core.DsspHttp;
-using System.Net;
+using sickPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 
 namespace Brumba.Simulation.SimulatedLrf
 {
-	/// <summary>
-	/// Provides access to a simulated Laser Range Finder contract
-	/// using physics raycasting and the LaserRangeFinderEntity
-	/// </summary>
 	[DisplayName("Simulated Laser Range Finder")]
-	[Description("Provides access to a simulated laser range finder.\n(Uses the Sick Laser Range Finder contract.)")]
-	[AlternateContract(Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Contract.Identifier)]
+    [AlternateContract(sickPxy.Contract.Identifier)]
 	[Contract(Contract.Identifier)]
-	public class SimulatedLrfService : DsspServiceBase
+	class SimulatedLrfService : SimulatedEntityServiceBase
 	{
-		#region Simulation Variables
-		Microsoft.Robotics.Simulation.Engine.LaserRangeFinderEntity _entity;
-		Microsoft.Robotics.Simulation.Engine.SimulationEnginePort _notificationTarget;
-		Port<RaycastResult> _raycastResults = new Port<RaycastResult>();
-		#endregion
+	    [ServiceState]
+        private sickPxy.State _state = new sickPxy.State {Units = sickPxy.Units.Millimeters};
 
-		private Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.State _state = new Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.State();
-
-		[ServicePort("/SimulatedLrf", AllowMultipleInstances = true)]
-		private Operations _mainPort = new Operations();
-
-		[AlternateServicePort("/SickLRF", AllowMultipleInstances = true, AlternateContract = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Contract.Identifier)]
-		private Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.SickLRFOperations _sickLrfPort = new Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.SickLRFOperations();
-
+        [ServicePort("/SickLrf", AllowMultipleInstances = true)]
+        private sickPxy.SickLRFOperations _mainPort = new sickPxy.SickLRFOperations();
+		
 		[Partner("SubMgr", Contract = Microsoft.Dss.Services.SubscriptionManager.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.CreateAlways)]
-		Microsoft.Dss.Services.SubscriptionManager.SubscriptionManagerPort _subMgrPort = new Microsoft.Dss.Services.SubscriptionManager.SubscriptionManagerPort();
+		SubscriptionManagerPort _subMgrPort = new SubscriptionManagerPort();
 
-		/// <summary>
-		/// SimulatedLRFService constructor that takes a PortSet to notify when the service is created
-		/// </summary>
-		/// <param name="creationPort"></param>
-		public SimulatedLrfService(Microsoft.Dss.ServiceModel.Dssp.DsspServiceCreationPort creationPort) :
-			base(creationPort)
+	    Port<sickPxy.Replace> _internalReplacePort = new Port<sickPxy.Replace>();
+        Port<RaycastResult> _raycastResultsPort = new Port<RaycastResult>();
+
+		public SimulatedLrfService(DsspServiceCreationPort creationPort) :
+			base(creationPort, Contract.Identifier)
 		{
 		}
 
-		/// <summary>
-		/// Start initializes SimulatedLRFService and listens for drop messages
-		/// </summary>
-		protected override void Start()
+        protected override Interleave ConcreteWaitingInterleave()
+        {
+            return new Interleave(
+                new TeardownReceiverGroup(
+                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)),
+                new ExclusiveReceiverGroup(),
+                new ConcurrentReceiverGroup(
+                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
+                    Arbiter.Receive<sickPxy.Get>(true, _mainPort, GetHandler),
+                    Arbiter.Receive<HttpGet>(true, _mainPort, GetHandler))
+                );
+        }
+
+        protected override Interleave ConcreteActiveInterleave()
+        {
+            return new Interleave(
+                new TeardownReceiverGroup(
+                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
+                    ),
+                new ExclusiveReceiverGroup(
+                    Arbiter.Receive<sickPxy.Replace>(true, _mainPort, ReplaceHandler),
+                    Arbiter.Receive<sickPxy.Replace>(true, _internalReplacePort, InternalReplaceHandler),
+                    Arbiter.ReceiveWithIterator<sickPxy.Subscribe>(true, _mainPort, SubscribeHandler),
+                    Arbiter.ReceiveWithIterator<sickPxy.ReliableSubscribe>(true, _mainPort, ReliableSubscribeHandler)
+                    ),
+                new ConcurrentReceiverGroup(
+                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
+                    Arbiter.Receive<sickPxy.Get>(true, _mainPort, GetHandler),
+                    Arbiter.Receive<HttpGet>(true, _mainPort, GetHandler)
+                    ));
+        }
+
+        protected override void OnInsertEntity()
+        {
+            _state.AngularRange = (int)Math.Abs(LrfEntity.RaycastProperties.EndAngle - LrfEntity.RaycastProperties.StartAngle);
+            _state.AngularResolution = LrfEntity.RaycastProperties.AngleIncrement;
+
+            try
+            {
+                LrfEntity.Register(_raycastResultsPort);
+            }
+            catch (Exception ex)
+            {
+                LogError(ex);
+            }
+
+            Activate(Arbiter.Receive(true, _raycastResultsPort, RaycastResultsHandler));
+        }
+
+        // we just receive ray cast information from physics. Currently we just use
+        // the distance measurement for each impact point reported. However, our simulation
+        // engine also provides you the material properties so you can decide here to simulate
+        // scattering, reflections, noise etc.
+        void RaycastResultsHandler(RaycastResult result)
 		{
-			_notificationTarget = new Microsoft.Robotics.Simulation.Engine.SimulationEnginePort();
+		    var newState = new sickPxy.State
+		        {
+		            DistanceMeasurements =
+		                Enumerable.Repeat((int) Math.Round(LrfEntity.RaycastProperties.Range*1000), result.SampleCount + 1).ToArray(),
+		            AngularRange = _state.AngularRange,
+		            AngularResolution = _state.AngularResolution,
+		            Units = _state.Units,
+		            LinkState = "Measurement received",
+		            TimeStamp = DateTime.Now
+		        };
 
-			// PartnerType.Service is the entity instance name.
-			Microsoft.Robotics.Simulation.Engine.SimulationEngine.GlobalInstancePort.Subscribe(ServiceInfo.PartnerList, _notificationTarget);
-
-
-			// dont start listening to DSSP operations, other than drop, until notification of entity
-			Activate(new Interleave(
-				new TeardownReceiverGroup
-				(
-					Arbiter.Receive<Microsoft.Robotics.Simulation.Engine.InsertSimulationEntity>(false, _notificationTarget, InsertEntityNotificationHandlerFirstTime),
-					Arbiter.Receive<Microsoft.Dss.ServiceModel.Dssp.DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-				),
-				new ExclusiveReceiverGroup(),
-				new ConcurrentReceiverGroup()
-			));
-
-		}
-
-		void DeleteEntityNotificationHandler(Microsoft.Robotics.Simulation.Engine.DeleteSimulationEntity del)
-		{
-			_entity = null;
-		}
-
-		void InsertEntityNotificationHandlerFirstTime(Microsoft.Robotics.Simulation.Engine.InsertSimulationEntity ins)
-		{
-			InsertEntityNotificationHandler(ins);
-			base.Start();
-			MainPortInterleave.CombineWith(
-				new Interleave(
-					new TeardownReceiverGroup(),
-					new ExclusiveReceiverGroup(
-						Arbiter.Receive<Microsoft.Robotics.Simulation.Engine.InsertSimulationEntity>(true, _notificationTarget, InsertEntityNotificationHandler),
-						Arbiter.Receive<Microsoft.Robotics.Simulation.Engine.DeleteSimulationEntity>(true, _notificationTarget, DeleteEntityNotificationHandler)
-					),
-					new ConcurrentReceiverGroup()
-				)
-			);
-		}
-
-		void InsertEntityNotificationHandler(Microsoft.Robotics.Simulation.Engine.InsertSimulationEntity ins)
-		{
-			_entity = (Microsoft.Robotics.Simulation.Engine.LaserRangeFinderEntity)ins.Body;
-			_entity.ServiceContract = Contract.Identifier;
-
-			_state.Units = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Units.Millimeters;
-			_state.AngularRange = (int)Math.Abs(_entity.RaycastProperties.EndAngle - _entity.RaycastProperties.StartAngle);
-			_state.AngularResolution = _entity.RaycastProperties.AngleIncrement;
-
-			try
-			{
-				_entity.Register(_raycastResults);
-			}
-			catch (Exception ex)
-			{
-				LogError(ex);
-			}
-
-			// attach handler to raycast results port
-			Activate(Arbiter.Receive(true, _raycastResults, RaycastResultsHandler));
-		}
-
-		private void RaycastResultsHandler(Microsoft.Robotics.Simulation.Physics.RaycastResult result)
-		{
-			// we just receive ray cast information from physics. Currently we just use
-			// the distance measurement for each impact point reported. However, our simulation
-			// engine also provides you the material properties so you can decide here to simulate
-			// scattering, reflections, noise etc.
-
-			Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.State latestResults = new Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.State();
-			latestResults.DistanceMeasurements = new int[result.SampleCount + 1];
-			int initValue = (int)(_entity.RaycastProperties.Range * 1000f);
-			for (int i = 0; i < (result.SampleCount + 1); i++)
-				latestResults.DistanceMeasurements[i] = initValue;
-
-			foreach (Microsoft.Robotics.Simulation.Physics.RaycastImpactPoint pt in result.ImpactPoints)
-			{
+            foreach (var pt in result.ImpactPoints)
 				// the distance to the impact has been pre-calculted from the origin
 				// and it's in the fourth element of the vector
-				latestResults.DistanceMeasurements[pt.ReadingIndex] = (int)(pt.Position.W * 1000f);
-			}
+				newState.DistanceMeasurements[pt.ReadingIndex] = (int)(pt.Position.W * 1000);
 
-			latestResults.AngularRange = (int)Math.Abs(_entity.RaycastProperties.EndAngle - _entity.RaycastProperties.StartAngle);
-			latestResults.AngularResolution = _entity.RaycastProperties.AngleIncrement;
-			latestResults.Units = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Units.Millimeters;
-			latestResults.LinkState = "Measurement received";
-			latestResults.TimeStamp = DateTime.Now;
-
-			// send replace message to self
-			Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Replace replace = new Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Replace();
-			// for perf reasons dont set response port, we are just talking to ourself anyway
-			replace.ResponsePort = null;
-			replace.Body = latestResults;
-			_sickLrfPort.Post(replace);
+            // posting message to port in main interleave's exclusive section for synchronization purposes
+            _internalReplacePort.Post(new sickPxy.Replace(newState));
 		}
 
-		/// <summary>
-		/// Get the SimulatedLRF state
-		/// </summary>
-		/// <param name="get"></param>
-		/// <returns></returns>
-		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
-		public IEnumerator<ITask> GetHandler(Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Get get)
+        public void GetHandler(sickPxy.Get get)
 		{
 			get.ResponsePort.Post(_state);
-			yield break;
 		}
 
-		/// <summary>
-		/// Get the SimulatedLRF state
-		/// </summary>
-		/// <param name="get"></param>
-		/// <returns></returns>
-		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
-		public IEnumerator<ITask> GetHandler(HttpGet get)
-		{
-			get.ResponsePort.Post(new HttpResponseType(HttpStatusCode.OK, _state));
-			yield break;
-		}
+        public void GetHandler(HttpGet get)
+        {
+            get.ResponsePort.Post(new HttpResponseType(_state));
+        }
 
-		/// <summary>
-		/// Processes a replace message
-		/// </summary>
-		/// <param name="replace"></param>
-		/// <returns></returns>
-		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
-		public IEnumerator<ITask> ReplaceHandler(Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Replace replace)
-		{
-			_state = replace.Body;
-			if (replace.ResponsePort != null)
-				replace.ResponsePort.Post(Microsoft.Dss.ServiceModel.Dssp.DefaultReplaceResponseType.Instance);
+        public void ReplaceHandler(sickPxy.Replace replace)
+        {
+            LogError("SimulatedLrfService.Replace not implemented");
+        }
 
-			// issue notification
-			_subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Submit(_state, Microsoft.Dss.ServiceModel.Dssp.DsspActions.ReplaceRequest));
-			yield break;
-		}
+        public void InternalReplaceHandler(sickPxy.Replace replace)
+        {
+            _state = replace.Body;
+            _subMgrPort.Post(new Submit(_state, DsspActions.ReplaceRequest));
+        }
 
-		/// <summary>
-		/// Subscribe to SimulatedLRF service
-		/// </summary>
-		/// <param name="subscribe"></param>
-		/// <returns></returns>
-		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
-		public IEnumerator<ITask> SubscribeHandler(Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Subscribe subscribe)
-		{
-			yield return Arbiter.Choice(
-				SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort),
-				delegate(SuccessResult success)
-				{
-					_subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Submit(
-						subscribe.Body.Subscriber, Microsoft.Dss.ServiceModel.Dssp.DsspActions.ReplaceRequest, _state, null));
-				},
-				delegate(Exception ex) { LogError(ex); }
-			);
-		}
+        public IEnumerator<ITask> SubscribeHandler(sickPxy.Subscribe subscribe)
+        {
+            yield return Arbiter.Choice(
+                SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort),
+                success =>
+                    _subMgrPort.Post(new Submit(subscribe.Body.Subscriber, DsspActions.ReplaceRequest, _state, null)),
+                LogError
+                );
+        }
 
-		/// <summary>
-		/// Subscribe to SimulatedLRF service
-		/// </summary>
-		/// <param name="subscribe"></param>
-		/// <returns></returns>
-		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
-		public IEnumerator<ITask> ReliableSubscribeHandler(Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.ReliableSubscribe subscribe)
-		{
-			yield return Arbiter.Choice(
-				SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort),
-				delegate(SuccessResult success)
-				{
-					_subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Submit(
-						subscribe.Body.Subscriber, Microsoft.Dss.ServiceModel.Dssp.DsspActions.ReplaceRequest, _state, null));
-				},
-				delegate(Exception ex) { LogError(ex); }
-			);
-		}
+        public IEnumerator<ITask> ReliableSubscribeHandler(sickPxy.ReliableSubscribe subscribe)
+        {
+            yield return Arbiter.Choice(
+                SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort),
+                success =>
+                    _subMgrPort.Post(new Submit(subscribe.Body.Subscriber, DsspActions.ReplaceRequest, _state, null)),
+                LogError
+                );
+        }
+
+        LaserRangeFinderExEntity LrfEntity
+	    {
+            get { return Entity as LaserRangeFinderExEntity; }
+	    }
 	}
 }
