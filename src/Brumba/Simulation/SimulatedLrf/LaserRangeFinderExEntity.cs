@@ -1,6 +1,9 @@
-﻿using Microsoft.Dss.Core.Attributes;
+﻿using System;
+using Microsoft.Ccr.Core;
+using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
+using xna = Microsoft.Xna.Framework;
 
 namespace Brumba.Simulation.SimulatedLrf
 {
@@ -13,5 +16,55 @@ namespace Brumba.Simulation.SimulatedLrf
 			get { return RaycastProperties; }
 			set { RaycastProperties = value; }
 		}
+
+	    public Port<RaycastResult> ServiceNotification { get; private set; }
+
+        public override void Update(FrameUpdate update)
+        {
+            base.Update(update);
+
+            if (RaycastProperties == null)
+                return;
+
+            ApplicationTime = (float)update.ApplicationTime;
+
+            ElapsedSinceLastScan += (float)update.ElapsedTime;
+            // only retrieve raycast results every SCAN_INTERVAL.
+            // For entities that are compute intenisve, you should consider giving them
+            // their own task queue so they dont flood a shared queue
+            if (!(ElapsedSinceLastScan > ScanInterval))
+                return;
+
+            ElapsedSinceLastScan = 0;
+            // the LRF looks towards the negative Z axis (towards the user), not the positive Z axis
+            // which is the default orientation. So we have to rotate its orientation by 180 degrees
+
+            RaycastProperties.OriginPose.Orientation = TypeConversion.FromXNA(
+                TypeConversion.ToXNA(State.Pose.Orientation) * xna.Quaternion.CreateFromAxisAngle(new xna.Vector3(0, 1, 0), (float)Math.PI));
+
+            // to calculate the position of the origin of the raycast, we must first rotate the LocalPose position
+            // of the raycast (an offset from the origin of the parent entity) by the orientation of the parent entity.
+            // The origin of the raycast is then this rotated offset added to the parent position.
+            xna.Matrix parentOrientation = xna.Matrix.CreateFromQuaternion(TypeConversion.ToXNA(State.Pose.Orientation));
+            xna.Vector3 localOffset = xna.Vector3.Transform(TypeConversion.ToXNA(LaserBox.State.LocalPose.Position), parentOrientation);
+
+            RaycastProperties.OriginPose.Position = State.Pose.Position + TypeConversion.FromXNA(localOffset);
+
+            RaycastResultsPort = PhysicsEngine.Raycast2D(RaycastProperties);
+
+            RaycastResult lastResults;
+            RaycastResultsPort.Test(out lastResults);
+            if (ServiceNotification != null && LastResults != null)
+                ServiceNotification.Post(LastResults = lastResults);
+        }
+
+        public new void Register(Port<RaycastResult> notificationTarget)
+        {
+            if (notificationTarget == null)
+                throw new ArgumentNullException("notificationTarget");
+            if (ServiceNotification != null)
+                throw new InvalidOperationException("A notification target is already registered");
+            ServiceNotification = notificationTarget;
+        }
 	}
 }
