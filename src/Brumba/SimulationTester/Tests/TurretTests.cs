@@ -10,7 +10,7 @@ using VisualEntityPxy = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
 namespace Brumba.Simulation.SimulationTester.Tests
 {
-    [SimTestFixture("turret", Wip = true)]
+    [SimTestFixture("turret")]
     public class TurretTests
     {
         public TrtPxy.SimulatedTurretOperations TurretPort { get; set; }

@@ -31,8 +31,8 @@ namespace Brumba.Simulation.SimulationTester
 
 		public const int TRIES_NUMBER = 100;
 		public const float SUCCESS_THRESHOLD = 0.79f;
-		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
-		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
+		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
+		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
         public const string TESTS_PATH = "brumba/tests";
 
 		[ServiceState]
@@ -228,7 +228,7 @@ namespace Brumba.Simulation.SimulationTester
             IEnumerable<EngPxy.VisualEntity> entityPxies = null;
 			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<EngPxy.VisualEntity> ePxies) => entityPxies = ePxies, simState);
             foreach (var entityPxy in entityPxies.Where(resetFilter).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
-                yield return To.Exec(_simEngine.DeleteSimulationEntity(entityPxy));
+                yield return Arbiter.Choice(_simEngine.DeleteSimulationEntity(entityPxy), deleted => {}, failed => {});
 
             simState.Pause = false;
             simState.RenderMode = renderMode;
