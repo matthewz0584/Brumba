@@ -21,7 +21,19 @@ namespace Brumba.Simulation.SimulatedLrf
 
         public override void Update(FrameUpdate update)
         {
-            base.Update(update);
+			//Cheat for base.Update: i need only call to VisualEntity.Update to happen, nothing more
+			//LaserRangeFinderEntity.Update method {
+			//using (Profiler.AutoPop autoPop = Profiler.PushAutoPopSection("LaserRangeFinderEntity.Update(FrameUpdate update)", Profiler.SectionType.Update))
+			//{
+			//	if (_raycastProperties == null)
+			//	{
+			//		base.Update(update);
+			//		return;
+			//	}
+			var curRp = RaycastProperties;
+			RaycastProperties = null;
+			base.Update(update);
+			RaycastProperties = curRp;
 
             if (RaycastProperties == null)
                 return;
@@ -32,7 +44,7 @@ namespace Brumba.Simulation.SimulatedLrf
             // only retrieve raycast results every SCAN_INTERVAL.
             // For entities that are compute intenisve, you should consider giving them
             // their own task queue so they dont flood a shared queue
-            if (!(ElapsedSinceLastScan > ScanInterval))
+            if (ElapsedSinceLastScan <= RaycastProperties.ScanInterval)
                 return;
 
             ElapsedSinceLastScan = 0;
@@ -45,8 +57,8 @@ namespace Brumba.Simulation.SimulatedLrf
             // to calculate the position of the origin of the raycast, we must first rotate the LocalPose position
             // of the raycast (an offset from the origin of the parent entity) by the orientation of the parent entity.
             // The origin of the raycast is then this rotated offset added to the parent position.
-            xna.Matrix parentOrientation = xna.Matrix.CreateFromQuaternion(TypeConversion.ToXNA(State.Pose.Orientation));
-            xna.Vector3 localOffset = xna.Vector3.Transform(TypeConversion.ToXNA(LaserBox.State.LocalPose.Position), parentOrientation);
+            var parentOrientation = xna.Matrix.CreateFromQuaternion(TypeConversion.ToXNA(State.Pose.Orientation));
+            var localOffset = xna.Vector3.Transform(TypeConversion.ToXNA(LaserBox.State.LocalPose.Position), parentOrientation);
 
             RaycastProperties.OriginPose.Position = State.Pose.Position + TypeConversion.FromXNA(localOffset);
 
@@ -54,7 +66,7 @@ namespace Brumba.Simulation.SimulatedLrf
 
             RaycastResult lastResults;
             RaycastResultsPort.Test(out lastResults);
-            if (ServiceNotification != null && LastResults != null)
+            if (ServiceNotification != null && lastResults != null)
                 ServiceNotification.Post(LastResults = lastResults);
         }
 

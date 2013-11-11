@@ -96,7 +96,8 @@ namespace Brumba.Simulation.EnvironmentBuilder
                             EndAngle = +120,
                             AngleIncrement = 0.36f,
                             Range = 5.6f,
-                            OriginPose = new Pose()
+                            OriginPose = new Pose(),
+							ScanInterval = 0.1f
                         }
                 };
 

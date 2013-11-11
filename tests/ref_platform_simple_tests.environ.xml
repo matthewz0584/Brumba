@@ -2375,7 +2375,7 @@
         <phys:EndAngle>120</phys:EndAngle>
         <phys:AngleIncrement>0.36</phys:AngleIncrement>
         <phys:Range>5.6</phys:Range>
-        <phys:ScanInterval>0</phys:ScanInterval>
+        <phys:ScanInterval>0.1</phys:ScanInterval>
       </RaycastProperties_FORDB>
     </LaserRangeFinderExEntity>
     <IREntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
