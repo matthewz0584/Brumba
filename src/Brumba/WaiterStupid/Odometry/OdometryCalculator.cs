@@ -8,33 +8,21 @@ namespace Brumba.WaiterStupid.Odometry
 	{
 		public OdometryCalculator()
 		{
-			WheelBase = 0.406f;
-			WheelRadius = 0.0762f;
-			//TicksPerRotation = 144;
-			TicksPerRotation = 36;
+			Constants = new OdometryConstants();
 		}
 
-		public int TicksPerRotation { get; set; }
-
-		public float RadiansPerTick
-		{
-			get { return MathHelper.TwoPi/TicksPerRotation; }
-		}
-
-		public float WheelRadius { get; set; }
-
-		public float WheelBase { get; set; }
+		public OdometryConstants Constants { get; set; }
 
 		public float TicksToAngularVelocity(int deltaTicks, float deltaT)
 		{
-			return deltaTicks/deltaT*RadiansPerTick;
+			return deltaTicks / deltaT * Constants.RadiansPerTick;
 		}
 
 		public Vector3 CalculateVelocity(float omegaR, float omegaL, float theta)
 		{
-			return new Vector3(WheelRadius/2*(omegaR + omegaL)*(float) Math.Cos(theta),
-			                   WheelRadius/2*(omegaR + omegaL)*(float) Math.Sin(theta),
-			                   WheelRadius/WheelBase*(omegaR - omegaL));
+			return new Vector3(Constants.WheelRadius / 2 * (omegaR + omegaL) * (float)Math.Cos(theta),
+							   Constants.WheelRadius / 2 * (omegaR + omegaL) * (float)Math.Sin(theta),
+							   Constants.WheelRadius / Constants.WheelBase * (omegaR - omegaL));
 		}
 
 		public Vector3 CalculatePose(Vector3 oldPose, Vector3 velocity, float deltaT)
@@ -65,5 +53,26 @@ namespace Brumba.WaiterStupid.Odometry
 		public int LeftTicks { get; set; }
 		[DataMember]
 		public int RightTicks { get; set; }
+	}
+
+	[DataContract]
+	public class OdometryConstants
+	{
+		[DataMember, DataMemberConstructor]
+		public int TicksPerRotation { get; set; }
+
+		[DataMember, DataMemberConstructor]
+		public float WheelRadius { get; set; }
+
+		[DataMember, DataMemberConstructor]
+		public float WheelBase { get; set; }
+
+		[DataMember, DataMemberConstructor]
+		public float DeltaT { get; set; }
+
+		public float RadiansPerTick
+		{
+			get { return MathHelper.TwoPi / TicksPerRotation; }
+		}
 	}
 }

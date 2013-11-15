@@ -13,14 +13,14 @@ namespace Brumba.WaiterStupid.Tests
 		[SetUp]
 		public void SetUp()
 		{
-			m_odometry = new OdometryCalculator { WheelBase = 1, WheelRadius = 1 };			
+			m_odometry = new OdometryCalculator { Constants = { WheelBase = 1, WheelRadius = 1 } };
 		}
 
 		[Test]
 		public void TicksToAngularVelocity()
 		{
 			float deltaT = 2;
-			Assert.That(m_odometry.TicksToAngularVelocity(10, deltaT), Is.EqualTo(5 * m_odometry.RadiansPerTick).Within(1e-6));
+			Assert.That(m_odometry.TicksToAngularVelocity(10, deltaT), Is.EqualTo(5 * m_odometry.Constants.RadiansPerTick).Within(1e-6));
 		}
 
 		[Test]
@@ -72,8 +72,8 @@ namespace Brumba.WaiterStupid.Tests
 		[Test]
 		public void Acceptance()
 		{
-			m_odometry.TicksPerRotation = 2;
-			m_odometry.WheelRadius = 1 / MathHelper.Pi;
+			m_odometry.Constants.TicksPerRotation = 2;
+			m_odometry.Constants.WheelRadius = 1 / MathHelper.Pi;
 			var previousOdometry = new OdometryState {LeftTicks = 2, RightTicks = 2};
 			var deltaT = 0.1f;
 			var leftTicks = 2;

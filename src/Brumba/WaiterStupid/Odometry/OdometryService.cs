@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -15,7 +15,18 @@ namespace Brumba.WaiterStupid.Odometry
 	public class OdometryService : DsspServiceBase
 	{
 		[ServiceState]
-		OdometryState _state = new OdometryState();
+		OdometryServiceState _state = new OdometryServiceState
+			{
+				State = new OdometryState(),
+				Constants = new OdometryConstants
+				{
+					WheelBase = 0.406f,
+					WheelRadius = 0.0762f,
+					TicksPerRotation = 36,
+					//TicksPerRotation = 144,
+					DeltaT = 0.1f
+				}
+			};
 
 		[ServicePort("/Odometry", AllowMultipleInstances = true)]
 		OdometryOperations _mainPort = new OdometryOperations();
@@ -23,12 +34,14 @@ namespace Brumba.WaiterStupid.Odometry
 		[Partner("DiffDrive", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		DriveOperations _diffDrive = new DriveOperations();
 
+		Port<DateTime> _timerPort = new Port<DateTime>();
+
 	    readonly OdometryCalculator _odometryCalc;
 
 		public OdometryService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
-			_odometryCalc = new OdometryCalculator();
+			_odometryCalc = new OdometryCalculator { Constants = _state.Constants };
 		}
 
 		protected override void Start()
@@ -36,7 +49,6 @@ namespace Brumba.WaiterStupid.Odometry
 		    base.Start();
 
 			//1. Разобраться со временем: симулированным или нет
-			//2. Разобраться с установкой констант для сервиса: делта т и константы
 			//try
 			//{
 			//	ServiceForwarder<SimulatedTimerOperations>(String.Format(@"{0}://{1}/{2}", ServiceInfo.HttpServiceAlias.Scheme, ServiceInfo.HttpServiceAlias.Authority, "SimulatedTimer"));
@@ -45,26 +57,43 @@ namespace Brumba.WaiterStupid.Odometry
 			//{
 
 			//}
-			
 
-		    SpawnIterator(Execute);
+			Activate(Arbiter.Receive(false, _diffDrive.Get(), 
+				(DriveDifferentialTwoWheelState ds) =>
+				{
+					_state.State.LeftTicks = ds.LeftWheel.EncoderState.CurrentReading;
+					_state.State.RightTicks = ds.RightWheel.EncoderState.CurrentReading;
+
+					//To synchronize with UpdateConstants
+					MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
+						Arbiter.ReceiveWithIterator(true, _timerPort, UpdateOdometry))));
+
+					TaskQueue.EnqueueTimer(DeltaTSpan, _timerPort);
+				}));
 		}
 
-		IEnumerator<ITask> Execute()
+		IEnumerator<ITask> UpdateOdometry(DateTime dt)
 		{
-			DriveDifferentialTwoWheelState driveState = null;
-			yield return Arbiter.Receive(false, _diffDrive.Get(), (DriveDifferentialTwoWheelState ds) => driveState = ds);
-			_state.LeftTicks = driveState.LeftWheel.EncoderState.CurrentReading;
-			_state.RightTicks = driveState.RightWheel.EncoderState.CurrentReading;
+			yield return Arbiter.Receive(false, _diffDrive.Get(), (DriveDifferentialTwoWheelState ds) =>
+				{
+					_state.State = _odometryCalc.UpdateOdometry(_state.State, (int) (_state.Constants.DeltaT * 1000),
+					                                            ds.LeftWheel.EncoderState.CurrentReading,
+					                                            ds.RightWheel.EncoderState.CurrentReading);
 
-			while (true)
-			{
-				yield return To.Exec(TimeoutPort(100));
+					TaskQueue.EnqueueTimer(DeltaTSpan, _timerPort);
+				});
+		}
 
-				yield return Arbiter.Receive(false, _diffDrive.Get(), (DriveDifferentialTwoWheelState ds) => driveState = ds);
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+		public void OnUpdateConstants(UpdateConstants updateConstantsRq)
+		{
+			_odometryCalc.Constants = _state.Constants = updateConstantsRq.Body;
+			updateConstantsRq.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+		}
 
-				_state = _odometryCalc.UpdateOdometry(_state, 100, driveState.LeftWheel.EncoderState.CurrentReading, driveState.RightWheel.EncoderState.CurrentReading);
-			}
+		TimeSpan DeltaTSpan
+		{
+			get { return new TimeSpan(0, 0, 0, 0, (int)(_state.Constants.DeltaT * 1000)); }
 		}
 	}
 }
