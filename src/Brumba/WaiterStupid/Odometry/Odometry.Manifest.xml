@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:odometryservice="http://brumba.ru/contracts/2013/11/odometryservice.html" xmlns:this="urn:uuid:9a3e744f-79c8-4c11-8874-1d3f85366e6b" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedlrf="http://brumba.ru/contracts/2013/11/simulatedlrf.html" xmlns:simpledashboard="http://schemas.microsoft.com/robotics/2006/01/simpledashboard.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
+      <dssp:PartnerList />
+      <Name>this:environmentbuilder</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html</dssp:Contract>
+      <dssp:Service>http://localhost:80/stupid_waiter_ref_platform</dssp:Service>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/stupid_waiter</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedReferencePlatformRobot</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedlrf.html</dssp:Contract>
+      <dssp:Service>http://localhost:80/stupid_waiter_lidar</dssp:Service>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Service>http://localhost/stupid_waiter_lidar</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>simulation:Entity</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:SimulatedLaserRangeFinder</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2013/11/odometryservice.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/robotics/2006/05/drive.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>odometryservice:DiffDrive</dssp:Name>
+          <dssp:ServiceName>this:SimulatedReferencePlatformRobot</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:Brumbadiffdriveodometryservice</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/robotics/2006/01/simpledashboard.html</dssp:Contract>
+      <dssp:PartnerList />
+      <Name>this:SimpleDashboard</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
+</Manifest>
