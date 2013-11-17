@@ -7,6 +7,7 @@ using Brumba.Simulation.SimulatedInfraredRfRing;
 using Brumba.Simulation.SimulatedLrf;
 using Brumba.Simulation.SimulatedReferencePlatform2011;
 using Brumba.Simulation.SimulatedTail;
+using Brumba.Simulation.SimulatedTimer;
 using Brumba.Simulation.SimulatedTurret;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -78,6 +79,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			PopulateSimpleEnvironment();
 
 	        SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter"));
+     SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(8, 0.501f, 0)) { State = { Name = "golden_brick_out_of_range" } });
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(-5f, 0.501f, 0)) { State = { Name = "golden_brick_in_range" } });
 	    }

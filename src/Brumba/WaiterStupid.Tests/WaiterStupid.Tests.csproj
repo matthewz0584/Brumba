@@ -63,10 +63,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MultiTimerTests.cs" />
     <Compile Include="OdometryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Simulation\Simulation.csproj">
+      <Project>{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}</Project>
+      <Name>Simulation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WaiterStupid\WaiterStupid.csproj">
       <Project>{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}</Project>
       <Name>WaiterStupid</Name>

@@ -78,6 +78,7 @@
     <Compile Include="Odometry\OdometryCalculator.cs" />
     <Compile Include="Odometry\OdometryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimerFacade.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Utils\Utils.csproj">

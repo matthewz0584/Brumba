@@ -6,6 +6,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Services.Drive.Proxy;
+using simTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
 
 namespace Brumba.WaiterStupid.Odometry
 {
@@ -20,9 +21,11 @@ namespace Brumba.WaiterStupid.Odometry
 				State = new OdometryState(),
 				Constants = new OdometryConstants
 				{
-					WheelBase = 0.406f,
+                    WheelBase = 0.3033f,
+                    //WheelRadius = 0.0799846f, //The value from sim, it differs from physical characteristics, but sim service uses constant "MetersPerEncoderTick", that is probably acquired from manufacturer
+                    TicksPerRotation = 36,
+					//WheelBase = 0.406f,
 					WheelRadius = 0.0762f,
-					TicksPerRotation = 36,
 					//TicksPerRotation = 144,
 					DeltaT = 0.1f
 				}
@@ -33,6 +36,10 @@ namespace Brumba.WaiterStupid.Odometry
 
 		[Partner("DiffDrive", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		DriveOperations _diffDrive = new DriveOperations();
+
+        [Partner("SimTimer", Contract = simTimerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        simTimerPxy.SimulatedTimerOperations _timer = new simTimerPxy.SimulatedTimerOperations();
+        simTimerPxy.SimulatedTimerOperations _timerNotification = new simTimerPxy.SimulatedTimerOperations();
 
 		Port<DateTime> _timerPort = new Port<DateTime>();
 
@@ -58,28 +65,45 @@ namespace Brumba.WaiterStupid.Odometry
 
 			//}
 
+            _timer.Subscribe(new simTimerPxy.SubscribeRequest { Interval = 0.1f }, _timerNotification);
+
 			Activate(Arbiter.Receive(false, _diffDrive.Get(), 
 				(DriveDifferentialTwoWheelState ds) =>
 				{
 					_state.State.LeftTicks = ds.LeftWheel.EncoderState.CurrentReading;
 					_state.State.RightTicks = ds.RightWheel.EncoderState.CurrentReading;
 
-					//To synchronize with UpdateConstants
+                    //To synchronize with UpdateOdometry with UpdateConstants
 					MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
-						Arbiter.ReceiveWithIterator(true, _timerPort, UpdateOdometry))));
+                        Arbiter.ReceiveWithIterator<simTimerPxy.Update>(true, _timerNotification, UpdateOdometry))));
+                    //    Arbiter.ReceiveWithIterator(true, _timerPort, UpdateOdometry))));
 
-					TaskQueue.EnqueueTimer(DeltaTSpan, _timerPort);
+                    //TaskQueue.EnqueueTimer(DeltaTSpan, _timerPort);
 				}));
 		}
 
+        IEnumerator<ITask> UpdateOdometry(simTimerPxy.Update dt)
+        {
+            yield return Arbiter.Receive(false, _diffDrive.Get(), (DriveDifferentialTwoWheelState ds) =>
+            {
+                _state.State = _odometryCalc.UpdateOdometry(_state.State, (int)(_state.Constants.DeltaT * 1000),
+                                                            ds.LeftWheel.EncoderState.CurrentReading,
+                                                            ds.RightWheel.EncoderState.CurrentReading);
+                Console.WriteLine((DateTime.Now - _lastTime).Milliseconds);
+                _lastTime = DateTime.Now;
+            });
+        }
+
+	    DateTime _lastTime; 
 		IEnumerator<ITask> UpdateOdometry(DateTime dt)
 		{
 			yield return Arbiter.Receive(false, _diffDrive.Get(), (DriveDifferentialTwoWheelState ds) =>
 				{
-					_state.State = _odometryCalc.UpdateOdometry(_state.State, (int) (_state.Constants.DeltaT * 1000),
+                    _state.State = _odometryCalc.UpdateOdometry(_state.State, (float)(DateTime.Now - _lastTime).Milliseconds / 1000,
 					                                            ds.LeftWheel.EncoderState.CurrentReading,
 					                                            ds.RightWheel.EncoderState.CurrentReading);
-
+				    Console.WriteLine((DateTime.Now - _lastTime).Milliseconds);
+                    _lastTime = DateTime.Now;
 					TaskQueue.EnqueueTimer(DeltaTSpan, _timerPort);
 				});
 		}

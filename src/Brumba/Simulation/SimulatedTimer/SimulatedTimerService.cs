@@ -1,7 +1,9 @@
-﻿using Microsoft.Dss.Core.Attributes;
+﻿using System.Collections.Generic;
+using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using System.ComponentModel;
 using Microsoft.Ccr.Core;
+using Microsoft.Dss.Services.SubscriptionManager;
 
 namespace Brumba.Simulation.SimulatedTimer
 {
@@ -16,9 +18,15 @@ namespace Brumba.Simulation.SimulatedTimer
         [ServicePort("/SimulatedTimer", AllowMultipleInstances = true)]
         private SimulatedTimerOperations _mainPort = new SimulatedTimerOperations();
 
+        [SubscriptionManagerPartner("SubMgr")]
+        private SubscriptionManagerPort _subMgrPort = new SubscriptionManagerPort();
+
+        readonly MultiTimer _multiTimer = new MultiTimer();
+
         public SimulatedTimerService(DsspServiceCreationPort creationPort)
             : base(creationPort, Contract.Identifier)
         {
+            _multiTimer.Tick += (subscr, time) => SendNotificationToTarget(subscr, _subMgrPort, new Update(new SimulatedTimerState { ElapsedTime = time }));
         }
 
         protected override Interleave ConcreteWaitingInterleave()
@@ -28,9 +36,8 @@ namespace Brumba.Simulation.SimulatedTimer
                     Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
                     ),
                 new ExclusiveReceiverGroup(),
-                new ConcurrentReceiverGroup(
-                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler)
-                    ));
+                new ConcurrentReceiverGroup()
+                );
         }
 
         protected override Interleave ConcreteActiveInterleave()
@@ -42,13 +49,15 @@ namespace Brumba.Simulation.SimulatedTimer
                 new ExclusiveReceiverGroup(),
                 new ConcurrentReceiverGroup(
                     Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                    Arbiter.Receive<Get>(true, _mainPort, OnGet)
+                    Arbiter.Receive<Get>(true, _mainPort, OnGet),
+                    Arbiter.ReceiveWithIterator<Subscribe>(true, _mainPort, OnSubscribe)
                     ));
         }
 
         protected override void OnInsertEntity()
         {
             LogInfo("SimulatedTimer OnInsertEntity called");
+            (Entity as TimerEntity).Tick += time => _multiTimer.Update((float)time);
         }
 
         protected override void OnDeleteEntity()
@@ -58,14 +67,19 @@ namespace Brumba.Simulation.SimulatedTimer
             _state.StartTime = 0;
         }
 
-        private void OnGet(Get getRequest)
+        void OnGet(Get getRequest)
         {
-            if (Entity != null)
-            {
-                _state.ElapsedTime = (Entity as TimerEntity).ElapsedTime;
-                _state.StartTime = (Entity as TimerEntity).StartTime;
-            }
+            _state.ElapsedTime = (Entity as TimerEntity).ElapsedTime;
+            _state.StartTime = (Entity as TimerEntity).StartTime;
             DefaultGetHandler(getRequest);
+        }
+
+        IEnumerator<ITask> OnSubscribe(Subscribe subscribeRq)
+        {
+            yield return Arbiter.Choice(
+                SubscribeHelper(_subMgrPort, subscribeRq.Body, subscribeRq.ResponsePort),
+                success => _multiTimer.Subscribe(subscribeRq.Body.Subscriber, subscribeRq.Body.Interval),
+                LogError);
         }
     }
 }

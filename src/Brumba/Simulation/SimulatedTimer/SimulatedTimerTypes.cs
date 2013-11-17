@@ -25,8 +25,22 @@ namespace Brumba.Simulation.SimulatedTimer
     }
 
     [ServicePort]
-    public class SimulatedTimerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+    public class SimulatedTimerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Subscribe, Update>
     {
+    }
+
+    [DataContract]
+    public class SubscribeRequest : SubscribeRequestType
+    {
+        [DataMember, DataMemberConstructor]
+        public float Interval { get; set; }
+
+        public override object Clone()
+        {
+ 	        var cloned = base.Clone() as SubscribeRequest;
+            cloned.Interval = Interval;
+            return cloned;
+        }
     }
 
     public class Get : Get<GetRequestType, PortSet<SimulatedTimerState, Fault>>
@@ -43,6 +57,35 @@ namespace Brumba.Simulation.SimulatedTimer
         public Get(GetRequestType body, PortSet<SimulatedTimerState, Fault> responsePort)
             : base(body, responsePort)
         {
+        }
+    }
+
+    public class Subscribe : Subscribe<SubscribeRequest, PortSet<SubscribeResponseType, Fault>>
+    {
+        public Subscribe()
+        {
+        }
+
+        public Subscribe(SubscribeRequest body)
+            : base(body)
+        {
+        }
+
+        public Subscribe(SubscribeRequest body, PortSet<SubscribeResponseType, Fault> responsePort)
+            : base(body, responsePort)
+        {
+        }
+    }
+
+    public class Update : Update<SimulatedTimerState, PortSet<DefaultUpdateResponseType, Fault>>
+    {
+        public Update()
+        {
+        }
+
+        public Update(SimulatedTimerState state)
+        {
+            Body = state;
         }
     }
 }

@@ -169,6 +169,7 @@
     <Compile Include="SimulatedReferencePlatform2011\SimulatedReferencePlatform2011Service.Drive.cs" />
     <Compile Include="SimulatedTail\SimulatedTailService.cs" />
     <Compile Include="SimulatedTail\SimulatedTailTypes.cs" />
+    <Compile Include="SimulatedTimer\MultiTimer.cs" />
     <Compile Include="SimulatedTimer\SimulatedTimerService.cs" />
     <Compile Include="SimulatedTimer\SimulatedTimerTypes.cs" />
     <Compile Include="SimulatedEntityServiceBase.cs" />
