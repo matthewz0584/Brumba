@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
-using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Services.Drive.Proxy;
-using simTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
 
 namespace Brumba.WaiterStupid.Odometry
 {
 	[Contract(Contract.Identifier)]
 	[DisplayName("Brumba diff drive odometry service")]
 	[Description("no description provided")]
-	public class OdometryService : DsspServiceBase
+	public class OdometryService : DsspServiceExposing
 	{
 		[ServiceState]
 		OdometryServiceState _state = new OdometryServiceState
@@ -37,87 +36,54 @@ namespace Brumba.WaiterStupid.Odometry
 		[Partner("DiffDrive", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		DriveOperations _diffDrive = new DriveOperations();
 
-        [Partner("SimTimer", Contract = simTimerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        simTimerPxy.SimulatedTimerOperations _timer = new simTimerPxy.SimulatedTimerOperations();
-        simTimerPxy.SimulatedTimerOperations _timerNotification = new simTimerPxy.SimulatedTimerOperations();
-
-		Port<DateTime> _timerPort = new Port<DateTime>();
-
 	    readonly OdometryCalculator _odometryCalc;
+		readonly TimerFacade _timerFacade;
 
 		public OdometryService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
 			_odometryCalc = new OdometryCalculator { Constants = _state.Constants };
+			_timerFacade = new TimerFacade(this, _state.Constants.DeltaT);
 		}
 
 		protected override void Start()
 		{
 		    base.Start();
 
-			//1. Разобраться со временем: симулированным или нет
-			//try
-			//{
-			//	ServiceForwarder<SimulatedTimerOperations>(String.Format(@"{0}://{1}/{2}", ServiceInfo.HttpServiceAlias.Scheme, ServiceInfo.HttpServiceAlias.Authority, "SimulatedTimer"));
-			//}
-			//catch (Exception)
-			//{
+			SpawnIterator(StartIt);
+		}
 
-			//}
-
-            _timer.Subscribe(new simTimerPxy.SubscribeRequest { Interval = 0.1f }, _timerNotification);
-
-			Activate(Arbiter.Receive(false, _diffDrive.Get(), 
-				(DriveDifferentialTwoWheelState ds) =>
+		IEnumerator<ITask> StartIt()
+		{
+			yield return _diffDrive.Get().Receive(ds =>
 				{
 					_state.State.LeftTicks = ds.LeftWheel.EncoderState.CurrentReading;
 					_state.State.RightTicks = ds.RightWheel.EncoderState.CurrentReading;
+				});
 
-                    //To synchronize with UpdateOdometry with UpdateConstants
-					MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
-                        Arbiter.ReceiveWithIterator<simTimerPxy.Update>(true, _timerNotification, UpdateOdometry))));
-                    //    Arbiter.ReceiveWithIterator(true, _timerPort, UpdateOdometry))));
+			//To synchronize UpdateOdometry with UpdateConstants
+			MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
+					Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateOdometry))));
 
-                    //TaskQueue.EnqueueTimer(DeltaTSpan, _timerPort);
-				}));
+			yield return To.Exec(() => _timerFacade.Set());
 		}
 
-        IEnumerator<ITask> UpdateOdometry(simTimerPxy.Update dt)
-        {
-            yield return Arbiter.Receive(false, _diffDrive.Get(), (DriveDifferentialTwoWheelState ds) =>
-            {
-                _state.State = _odometryCalc.UpdateOdometry(_state.State, (int)(_state.Constants.DeltaT * 1000),
-                                                            ds.LeftWheel.EncoderState.CurrentReading,
-                                                            ds.RightWheel.EncoderState.CurrentReading);
-                Console.WriteLine((DateTime.Now - _lastTime).Milliseconds);
-                _lastTime = DateTime.Now;
-            });
-        }
-
-	    DateTime _lastTime; 
-		IEnumerator<ITask> UpdateOdometry(DateTime dt)
+		IEnumerator<ITask> UpdateOdometry(TimeSpan dt)
 		{
-			yield return Arbiter.Receive(false, _diffDrive.Get(), (DriveDifferentialTwoWheelState ds) =>
-				{
-                    _state.State = _odometryCalc.UpdateOdometry(_state.State, (float)(DateTime.Now - _lastTime).Milliseconds / 1000,
-					                                            ds.LeftWheel.EncoderState.CurrentReading,
-					                                            ds.RightWheel.EncoderState.CurrentReading);
-				    Console.WriteLine((DateTime.Now - _lastTime).Milliseconds);
-                    _lastTime = DateTime.Now;
-					TaskQueue.EnqueueTimer(DeltaTSpan, _timerPort);
-				});
+			yield return _diffDrive.Get().Receive(ds =>
+			{
+				_state.State = _odometryCalc.UpdateOdometry(_state.State, dt.Milliseconds * 1000f,
+															ds.LeftWheel.EncoderState.CurrentReading,
+															ds.RightWheel.EncoderState.CurrentReading);
+				Console.WriteLine(dt.Milliseconds);
+			});
 		}
 
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
-		public void OnUpdateConstants(UpdateConstants updateConstantsRq)
+		public void OnUpdateConstants(UpdateConstants updateConstantsRq) 
 		{
 			_odometryCalc.Constants = _state.Constants = updateConstantsRq.Body;
 			updateConstantsRq.ResponsePort.Post(DefaultUpdateResponseType.Instance);
-		}
-
-		TimeSpan DeltaTSpan
-		{
-			get { return new TimeSpan(0, 0, 0, 0, (int)(_state.Constants.DeltaT * 1000)); }
 		}
 	}
 }
