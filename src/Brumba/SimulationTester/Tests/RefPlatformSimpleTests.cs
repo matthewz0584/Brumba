@@ -43,7 +43,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 
 			public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
 			{
-				var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single(epxy => epxy.State.Name == "stupid_waiter").State.Pose.Position));
+				var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single(epxy => epxy.State.Name == "stupid_waiter*").State.Pose.Position));
 				@return(pos.Length() > 2);
 				yield break;
 			}
@@ -54,11 +54,6 @@ namespace Brumba.Simulation.SimulationTester.Tests
 		{
             Port<lrfPxy.Replace> _lrfNotify = new Port<lrfPxy.Replace>();
             bool _correctNotificationReceived;
-
-		    public override bool NeedResetOnEachTry(VisualEntityPxy entityProxy)
-		    {
-                return entityProxy.State.Name == "stupid_waiter";
-		    }
 
 		    public override void PrepareForReset(VisualEntity entity)
 		    {

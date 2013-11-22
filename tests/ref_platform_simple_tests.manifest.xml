@@ -7,7 +7,7 @@
       <dssp:Service>http://localhost:80/stupid_waiter_ref_platform</dssp:Service>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Service>http://localhost/stupid_waiter</dssp:Service>
+          <dssp:Service>http://localhost/stupid_waiter*</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>simulation:Entity</dssp:Name>
         </dssp:Partner>

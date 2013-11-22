@@ -7,7 +7,7 @@
       <dssp:Service>http://localhost:80/testee_veh_service</dssp:Service>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Service>http://localhost/testee</dssp:Service>
+          <dssp:Service>http://localhost/testee*</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>simulation:Entity</dssp:Name>
         </dssp:Partner>

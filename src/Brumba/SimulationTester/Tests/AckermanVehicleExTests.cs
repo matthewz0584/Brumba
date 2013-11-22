@@ -27,14 +27,9 @@ namespace Brumba.Simulation.SimulationTester.Tests
 
         public abstract class SingleVehicleTest : StochasticTest
         {
-            public const string VEHICLE_NAME = "testee";
+            public const string VEHICLE_NAME = "testee*";
 
-            public override bool NeedResetOnEachTry(EngPxy.VisualEntity entityProxy)
-            {
-                return entityProxy.State.Name == VEHICLE_NAME;
-            }
-
-            public override void PrepareForReset(VisualEntity entity)
+	        public override void PrepareForReset(VisualEntity entity)
             {
                 entity.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
             }
@@ -52,7 +47,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 
             public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
             {
-                var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single(NeedResetOnEachTry).State.Pose.Position));
+                var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single(entityProxy => entityProxy.State.Name == VEHICLE_NAME).State.Pose.Position));
                 @return(pos.Length() > 50);
                 yield break;
             }
@@ -71,7 +66,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 
             public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
             {
-                var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single(NeedResetOnEachTry).State.Pose.Orientation));
+                var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single(entityProxy => entityProxy.State.Name == VEHICLE_NAME).State.Pose.Orientation));
                 @return(Math.Abs(orientation.X) < 90 && elapsedTime > EstimatedTime);
                 yield break;
             }
@@ -111,7 +106,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 
                 var deltaT = elapsedTime - _prevElapsedTime;
                 var deltaAnglularDistance = vehState.DriveAngularDistance - _prevDriveAngularDistance;
-                var vehProps = (simStateEntities.Single(NeedResetOnEachTry) as SafwPxy.AckermanVehicleExEntity).Props;
+                var vehProps = (simStateEntities.Single(entityProxy => entityProxy.State.Name == VEHICLE_NAME) as SafwPxy.AckermanVehicleExEntity).Props;
                 var expectedDeltaAngularDistance = vehProps.MaxVelocity * 0.2f / vehProps.WheelsProperties.First().Radius * deltaT;
 
                 @return(vehState.SteeringAngle > 0.9 * 0.5 * vehProps.MaxSteeringAngle && vehState.SteeringAngle < 1.1 * 0.5 * vehProps.MaxSteeringAngle &&

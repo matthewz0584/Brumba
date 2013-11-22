@@ -10,7 +10,7 @@ using Microsoft.Robotics.Services.Drive.Proxy;
 namespace Brumba.WaiterStupid.Odometry
 {
 	[Contract(Contract.Identifier)]
-	[DisplayName("Brumba diff drive odometry service")]
+	[DisplayName("Brumba Differential Drive Odometry")]
 	[Description("no description provided")]
 	public class OdometryService : DsspServiceExposing
 	{
@@ -33,7 +33,7 @@ namespace Brumba.WaiterStupid.Odometry
 		[ServicePort("/Odometry", AllowMultipleInstances = true)]
 		OdometryOperations _mainPort = new OdometryOperations();
 
-		[Partner("DiffDrive", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+		[Partner("DifferentialDrive", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		DriveOperations _diffDrive = new DriveOperations();
 
 	    readonly OdometryCalculator _odometryCalc;
@@ -75,7 +75,7 @@ namespace Brumba.WaiterStupid.Odometry
 				_state.State = _odometryCalc.UpdateOdometry(_state.State, dt.Milliseconds * 1000f,
 															ds.LeftWheel.EncoderState.CurrentReading,
 															ds.RightWheel.EncoderState.CurrentReading);
-				Console.WriteLine(dt.Milliseconds);
+				//Console.WriteLine(dt.Milliseconds);
 			});
 		}
 

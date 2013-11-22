@@ -8,7 +8,6 @@ namespace Brumba.Simulation.SimulationTester
 {
     public interface ISimulationTest
     {
-    	bool NeedResetOnEachTry(EngPxy.VisualEntity entityProxy);
         void PrepareForReset(VisualEntity entity);
 
         IEnumerator<ITask> Start();
@@ -26,7 +25,6 @@ namespace Brumba.Simulation.SimulationTester
 
         public abstract bool IsProbabilistic { get; }
 
-        public abstract bool NeedResetOnEachTry(EngPxy.VisualEntity entityProxy);
         public abstract void PrepareForReset(VisualEntity entity);
 
         public abstract IEnumerator<ITask> Start();
@@ -36,11 +34,6 @@ namespace Brumba.Simulation.SimulationTester
     public abstract class DeterministicTest : SimulationTestBase
     {
         //Test is deterministic, it is run once, no need to reload any entities. Besides, it may alleviate some problems (some joint locks, for example).
-        public override bool NeedResetOnEachTry(EngPxy.VisualEntity entityProxy)
-        {
-            return false;
-        }
-
         public override void PrepareForReset(VisualEntity entity)
         {
         }

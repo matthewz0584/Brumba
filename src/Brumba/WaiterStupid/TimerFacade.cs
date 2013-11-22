@@ -28,17 +28,17 @@ namespace Brumba.WaiterStupid
 
 			yield return Arbiter.Choice(
 				_srv.TimeoutPort(1000).Receive(timeout => StartInternalTimer()),
-				directoryResponcePort.Receive((Fault f) => StartInternalTimer()),
-				directoryResponcePort.Receive((ServiceInfoType f) => StartSimulatedTimer(f)));
+				directoryResponcePort.Receive((Fault fault) => StartInternalTimer()),
+				directoryResponcePort.Receive(serviceInfo => StartSimulatedTimer(serviceInfo)));
 		}
 
-		readonly simTimerPxy.SimulatedTimerOperations _simTimerNotification = new simTimerPxy.SimulatedTimerOperations();
+		readonly simTimerPxy.SimulatedTimerOperations _simTimerNotificationPort = new simTimerPxy.SimulatedTimerOperations();
 		double _lastTime;
 		void StartSimulatedTimer(ServiceInfoType f)
 		{
 			var simTimer = _srv.ServiceForwarder<simTimerPxy.SimulatedTimerOperations>(f.HttpServiceAlias);
-			simTimer.Subscribe(_interval, _simTimerNotification);
-			_srv.Activate(Arbiter.Receive<simTimerPxy.Update>(true, _simTimerNotification, u =>
+			simTimer.Subscribe(_interval, _simTimerNotificationPort);
+			_srv.Activate(Arbiter.Receive<simTimerPxy.Update>(true, _simTimerNotificationPort, u =>
 			{
 				if (_lastTime != 0)
 					TickPort.Post(IntervalToSpan(u.Body.ElapsedTime - _lastTime));

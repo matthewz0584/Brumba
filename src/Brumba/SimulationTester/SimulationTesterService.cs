@@ -7,6 +7,7 @@ using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Dss.Services.Forwarders;
 using Microsoft.Dss.Services.ManifestLoaderClient.Proxy;
 using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using SimPxy = Microsoft.Robotics.Simulation.Proxy;
@@ -34,6 +35,7 @@ namespace Brumba.Simulation.SimulationTester
 		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
 		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
         public const string TESTS_PATH = "brumba/tests";
+	    public const string RESET_SYMBOL = "*";
 
 		[ServiceState]
 		SimulationTesterState _state = new SimulationTesterState();
@@ -127,7 +129,7 @@ namespace Brumba.Simulation.SimulationTester
 
                 //Start fixtureInfo manifest
                 yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
-                
+
                 //Connect to necessary services
                 fixtureInfo.SetUp(new ServiceForwarder(this));
 
@@ -144,6 +146,10 @@ namespace Brumba.Simulation.SimulationTester
 
 					OnTestEnded(test, result);
 				}
+
+				//var directoryGetRq = new Microsoft.Dss.Services.Directory.Get();
+				//DirectoryPort.Post(directoryGetRq);
+				//yield return directoryGetRq.ResponsePort.Receive(dSt => Kill(dSt.RecordList));
 			}
         	OnEnded(_testResults);
 
@@ -151,6 +157,19 @@ namespace Brumba.Simulation.SimulationTester
 
 			//_simEngine.DsspDefaultDrop();
         }
+
+		void Kill(ServiceInfoType[] serviceInfos)
+		{
+			foreach (var service in serviceInfos)
+			{
+				var qq = service.HttpServiceAlias.LocalPath;
+				if (qq.IndexOf("*") == -1)
+					continue;
+				
+				var ww = ServiceForwarder<PortSet<DsspDefaultLookup, DsspDefaultDrop>>(service.HttpServiceAlias);
+				ww.P1.Post(new DsspDefaultDrop());
+			}
+		}
 
         IEnumerator<ITask> StartManifest(string manifest)
         {
@@ -187,7 +206,7 @@ namespace Brumba.Simulation.SimulationTester
 				if (HasEarlyResults(i, successful))
 					break;
 
-                yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<EngPxy.VisualEntity, bool>)test.NeedResetOnEachTry, (Action<VisualEntity>)test.PrepareForReset);
+				yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<EngPxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), (Action<VisualEntity>)test.PrepareForReset);
 
                 yield return To.Exec(test.Start);
 

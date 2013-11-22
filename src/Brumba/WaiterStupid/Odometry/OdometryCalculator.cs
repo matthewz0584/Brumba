@@ -27,7 +27,9 @@ namespace Brumba.WaiterStupid.Odometry
 
 		public Vector3 CalculatePose(Vector3 oldPose, Vector3 velocity, float deltaT)
 		{
-			return oldPose + velocity*deltaT;
+			var newPose = oldPose + velocity * deltaT;
+			newPose.Z = newPose.Z % MathHelper.TwoPi;
+			return newPose;
 		}
 
 		public OdometryState UpdateOdometry(OdometryState previousOdometry, float deltaT, int leftTicks, int rightTicks)
@@ -37,7 +39,7 @@ namespace Brumba.WaiterStupid.Odometry
 				TicksToAngularVelocity(newOdometry.RightTicks - previousOdometry.RightTicks, deltaT),
 				TicksToAngularVelocity(newOdometry.LeftTicks - previousOdometry.LeftTicks, deltaT),
 				previousOdometry.Pose.Z);
-			newOdometry.Pose = previousOdometry.Pose + 0.5f*(newOdometry.Velocity + previousOdometry.Velocity)*deltaT;
+			newOdometry.Pose = CalculatePose(previousOdometry.Pose, 0.5f*(newOdometry.Velocity + previousOdometry.Velocity), deltaT);
 			return newOdometry;
 		}
 	}
