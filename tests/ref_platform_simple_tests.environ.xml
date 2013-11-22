@@ -393,7 +393,7 @@
     </HeightFieldEntity>
     <ReferencePlatform2011Entity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html">
       <sim:State>
-        <sim:Name>stupid_waiter*</sim:Name>
+        <sim:Name>stupid_waiter@</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>

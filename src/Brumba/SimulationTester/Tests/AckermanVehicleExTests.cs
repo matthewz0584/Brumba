@@ -27,7 +27,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 
         public abstract class SingleVehicleTest : StochasticTest
         {
-            public const string VEHICLE_NAME = "testee*";
+            public const string VEHICLE_NAME = "testee@";
 
 	        public override void PrepareForReset(VisualEntity entity)
             {

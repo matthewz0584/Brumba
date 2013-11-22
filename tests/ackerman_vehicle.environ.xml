@@ -307,7 +307,7 @@
     </LightSourceEntity>
     <AckermanVehicleEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html">
       <sim:State>
-        <sim:Name>testee*</sim:Name>
+        <sim:Name>testee@</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>

@@ -16,7 +16,7 @@
       <Contract xmlns="http://schemas.microsoft.com/xw/2004/10/dssp.html">http://brumba.ru/contracts/2013/02/simulatedackermanvehicle.html</Contract>
       <PartnerList xmlns="http://schemas.microsoft.com/xw/2004/10/dssp.html">
         <Partner>
-          <Service>http://localhost/testee*</Service>
+          <Service>http://localhost/testee@</Service>
           <PartnerList />
           <Name xmlns:q1="http://schemas.microsoft.com/robotics/2006/04/simulation.html">q1:Entity</Name>
         </Partner>

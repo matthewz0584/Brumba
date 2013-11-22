@@ -90,6 +90,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Brumba.WaiterStupid.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6116ea904cc50a06, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.WaiterStupid.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0">
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
@@ -167,6 +171,7 @@
     <AppDesigner Include="Properties" />
     <Compile Include="SimTestFixtureAttribute.cs" />
     <Compile Include="Tests\RefPlatformSimpleTests.cs" />
+    <Compile Include="Tests\WaiterStupidOdometryTests.cs" />
     <Compile Include="Tests\TurretTests.cs" />
     <Compile Include="Tests\InfraredRfRingTests.cs" />
   </ItemGroup>
