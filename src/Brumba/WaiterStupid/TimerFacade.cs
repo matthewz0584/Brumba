@@ -8,7 +8,7 @@ using simTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
 
 namespace Brumba.WaiterStupid
 {
-	public class TimerFacade
+	public class TimerFacade : IDisposable
 	{
 		private readonly DsspServiceExposing _srv;
 		private readonly float _interval;
@@ -27,40 +27,59 @@ namespace Brumba.WaiterStupid
 			var directoryResponcePort = _srv.DirectoryQuery(Simulation.SimulatedTimer.Proxy.Contract.Identifier, new TimeSpan(0, 0, 3));
 
 			yield return Arbiter.Choice(
-				_srv.TimeoutPort(1000).Receive(timeout => StartInternalTimer()),
-				directoryResponcePort.Receive((Fault fault) => StartInternalTimer()),
+                _srv.TimeoutPort(1000).Receive(timeout => InternalTimerHandler(DateTime.Now)),
+                directoryResponcePort.Receive((Fault fault) => InternalTimerHandler(DateTime.Now)),
 				directoryResponcePort.Receive(serviceInfo => StartSimulatedTimer(serviceInfo)));
 		}
 
+	    bool _disposed;
+        public void Dispose()
+        {
+            _disposed = true;
+            if (_simTimerUnsubscribePort != null)
+                _simTimerUnsubscribePort.Post(new Shutdown());
+        }
+
 		readonly simTimerPxy.SimulatedTimerOperations _simTimerNotificationPort = new simTimerPxy.SimulatedTimerOperations();
-		double _lastTime;
+        Port<Shutdown> _simTimerUnsubscribePort;
+        double _lastTime;
 		void StartSimulatedTimer(ServiceInfoType f)
 		{
 			var simTimer = _srv.ServiceForwarder<simTimerPxy.SimulatedTimerOperations>(f.HttpServiceAlias);
-			simTimer.Subscribe(_interval, _simTimerNotificationPort);
-			_srv.Activate(Arbiter.Receive<simTimerPxy.Update>(true, _simTimerNotificationPort, u =>
-			{
-				if (_lastTime != 0)
-					TickPort.Post(IntervalToSpan(u.Body.ElapsedTime - _lastTime));
-				_lastTime = u.Body.ElapsedTime;
-			}));
+		    _simTimerUnsubscribePort = new Port<Shutdown>();
+		    simTimer.Post(
+		        new simTimerPxy.Subscribe
+		            {
+		                Body = new simTimerPxy.SubscribeRequest(_interval),
+		                NotificationPort = _simTimerNotificationPort,
+		                NotificationShutdownPort = _simTimerUnsubscribePort
+		            });
+
+		    SimulationTimerHandler(new simTimerPxy.Update {Body = {ElapsedTime = 0}});
 		}
 
-		readonly Port<DateTime> _timerPort = new Port<DateTime>();
-		DateTime _lastDate;
-		void StartInternalTimer()
-		{
-			_srv.Activate(Arbiter.Receive(true, _timerPort, dt =>
-			{
-				if (_lastDate != new DateTime())
-					TickPort.Post(dt - _lastDate);
-				_lastDate = dt;
-				_srv.TaskQueue.EnqueueTimer(IntervalToSpan(_interval), _timerPort);
-			}));
-			_srv.TaskQueue.EnqueueTimer(IntervalToSpan(_interval), _timerPort);
-		}
+	    void SimulationTimerHandler(simTimerPxy.Update simTimerUpdate)
+	    {
+            if (_disposed)
+                return;
+	        if (_lastTime != 0)
+	            TickPort.Post(IntervalToSpan(simTimerUpdate.Body.ElapsedTime - _lastTime));
+	        _lastTime = simTimerUpdate.Body.ElapsedTime;
+            _srv.Activate(_simTimerNotificationPort.P4.Receive(SimulationTimerHandler));
+	    }
 
-		static TimeSpan IntervalToSpan(double interval)
+	    DateTime _lastDate;
+	    void InternalTimerHandler(DateTime time)
+	    {
+            if (_disposed)
+                return;
+	        if (_lastDate != new DateTime())
+                TickPort.Post(time - _lastDate);
+            _lastDate = time;
+	        _srv.Activate(_srv.TimeoutPort(IntervalToSpan(_interval).Milliseconds).Receive(InternalTimerHandler));
+	    }
+
+	    static TimeSpan IntervalToSpan(double interval)
 		{
 			return new TimeSpan(0, 0, 0, 0, (int)(interval * 1000));
 		}

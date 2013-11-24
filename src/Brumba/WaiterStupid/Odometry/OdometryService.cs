@@ -66,6 +66,8 @@ namespace Brumba.WaiterStupid.Odometry
 					Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateOdometry))));
 
 			yield return To.Exec(() => _timerFacade.Set());
+
+		    //Activate(TimeoutPort(5000).Receive(_ => _timerFacade.Dispose()));
 		}
 
 		IEnumerator<ITask> UpdateOdometry(TimeSpan dt)
@@ -85,5 +87,12 @@ namespace Brumba.WaiterStupid.Odometry
 			_odometryCalc.Constants = _state.Constants = updateConstantsRq.Body;
 			updateConstantsRq.ResponsePort.Post(DefaultUpdateResponseType.Instance);
 		}
+
+        [ServiceHandler(ServiceHandlerBehavior.Teardown)]
+        public void OnDropDown(DsspDefaultDrop dropDownRq)
+        {
+            _timerFacade.Dispose();
+            DefaultDropHandler(dropDownRq);
+        }
 	}
 }

@@ -20,22 +20,22 @@ namespace Brumba.Utils
 		{
 		}
 
-		public T ServiceForwarder<T>(Uri uri) where T : IPort, IPortSet, new()
+		public new T ServiceForwarder<T>(Uri uri) where T : IPort, IPortSet, new()
 		{
 			return base.ServiceForwarder<T>(uri);
 		}
 
-		public DsspResponsePort<ServiceInfoType> DirectoryQuery(string contract, TimeSpan expiration)
+		public new DsspResponsePort<ServiceInfoType> DirectoryQuery(string contract, TimeSpan expiration)
 		{
 			return base.DirectoryQuery(contract, expiration);
 		}
 
-		public Port<DateTime> TimeoutPort(int milliseconds)
+		public new Port<DateTime> TimeoutPort(int milliseconds)
 		{
 			return base.TimeoutPort(milliseconds);
 		}
 
-		public DispatcherQueue TaskQueue
+		public new DispatcherQueue TaskQueue
 		{
 			get { return base.TaskQueue; }
 		}

@@ -35,6 +35,7 @@ namespace Brumba.Simulation.SimulationTester
 		public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.None;
 		//public const SimPxy.RenderMode RENDER_MODE = SimPxy.RenderMode.Full;
         public const string TESTS_PATH = "brumba/tests";
+        public const float PHYSICS_TIME_STEP = 0.01f;
 	    public const string RESET_SYMBOL = "@";
 
 		[ServiceState]
@@ -183,7 +184,7 @@ namespace Brumba.Simulation.SimulationTester
 
         IEnumerator<ITask> SetUpSimulator()
         {
-            yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(0.01f));
+            yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(PHYSICS_TIME_STEP));
             //yield return To.Exec(_simEngine.UpdateSimulatorConfiguration(new EngPxy.SimulatorConfiguration { Headless = true }));
 
             SimPxy.SimulationState simState = null;
@@ -201,20 +202,20 @@ namespace Brumba.Simulation.SimulationTester
 				if (HasEarlyResults(i, successful))
 					break;
 
-				//Restart services from fixture manifest
-				yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
-
-				//Reconnect to necessary services
-				fixtureInfo.SetUp(new ServiceForwarder(this));
-
 				yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<EngPxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), (Action<VisualEntity>)test.PrepareForReset);
+
+                //Restart services from fixture manifest
+                yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
+
+                //Reconnect to necessary services
+                fixtureInfo.SetUp(new ServiceForwarder(this));
 
                 yield return To.Exec(test.Start);
 
                 var testSucceed = false;
                 
                 var elapsedTime = 0.0;                
-                while (!testSucceed && elapsedTime <= test.EstimatedTime * 2)
+                while (!testSucceed && elapsedTime <= test.EstimatedTime * 1.25)
                 {
                     SimPxy.SimulationState simState = null;
                     yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
@@ -232,7 +233,7 @@ namespace Brumba.Simulation.SimulationTester
 
                 if (testSucceed) ++successful;
 
-	            //Drop services taht need to be restarted
+	            //Drop services that need to be restarted
 				yield return To.Exec(DropServices);
             }
 

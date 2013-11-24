@@ -110,5 +110,53 @@ namespace Brumba.WaiterStupid.Tests
             timer.Subscribe("1", 0.1f);
             timer.Subscribe("1", 0.2f);
         }
+
+        [Test]
+        public void Reset()
+        {
+            var timer = new MultiTimer();
+            timer.Subscribe("1", 0.1f);
+            timer.Subscribe("2", 0.15f);
+
+            timer.Update(0.21f);
+
+            float time = 0;
+            var subscriber = "";
+            timer.Tick += (s, t) => { time = t; subscriber = s; };
+
+            timer.Reset(new []{"1"});
+
+            Assert.That(timer.Subscribers, Is.EquivalentTo(new[] { "1" }));
+
+            timer.Subscribe("3", 0.25f);
+            timer.Update(0.05f);
+
+            Assert.That(time, Is.EqualTo(0));
+            Assert.That(subscriber, Is.EqualTo(""));
+
+            timer.Update(0.11f);
+
+            Assert.That(time, Is.EqualTo(0.11f));
+            Assert.That(subscriber, Is.EqualTo("1"));
+
+            timer.Update(0.26f);
+
+            Assert.That(time, Is.EqualTo(0.26f));
+            Assert.That(subscriber, Is.EqualTo("3"));
+        }
+
+        [Test]
+        public void Subscribers()
+        {
+            var timer = new MultiTimer();
+            timer.Subscribe("1", 0.1f);
+            timer.Subscribe("2", 0.15f);
+
+            Assert.That(timer.Subscribers, Is.EquivalentTo(new []{"1", "2"}));
+
+            timer.Subscribe("3", 0.15f);
+
+            Assert.That(timer.Subscribers, Is.EquivalentTo(new[] { "1", "2", "3" }));
+        }
     }
 }

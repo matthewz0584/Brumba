@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using System.ComponentModel;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Services.SubscriptionManager;
+using W3C.Soap;
 
 namespace Brumba.Simulation.SimulatedTimer
 {
@@ -26,7 +28,8 @@ namespace Brumba.Simulation.SimulatedTimer
         public SimulatedTimerService(DsspServiceCreationPort creationPort)
             : base(creationPort, Contract.Identifier)
         {
-            _multiTimer.Tick += (subscr, time) => SendNotificationToTarget(subscr, _subMgrPort, new Update(new SimulatedTimerState { ElapsedTime = time }));
+            _multiTimer.Tick += (subscr, time) => 
+                    SendNotificationToTarget(subscr, _subMgrPort, new Update(new SimulatedTimerState { ElapsedTime = time }));
         }
 
         protected override Interleave ConcreteWaitingInterleave()
@@ -65,6 +68,18 @@ namespace Brumba.Simulation.SimulatedTimer
             LogInfo("SimulatedTimer OnDeleteEntity called");
             _state.ElapsedTime = 0;
             _state.StartTime = 0;
+
+            var subscrMgrGetResponse = new PortSet<SubscriptionListType, Fault>();
+            _subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Get { ResponsePort = subscrMgrGetResponse });
+            //To keep on the safe side reset all internal timers for all registered subscribers right now
+            _multiTimer.Reset(_multiTimer.Subscribers);
+            Activate(subscrMgrGetResponse.Choice(
+                //Well-behaved services will unsubscribe from notifications on drop down via subscription shutdown port. I will never know about it - there is no way to do it.
+                //In simulation tester environment every service with timer subscription will be dead for sure by the moment of environment restoration. So there should be no alive subscriptions for it.
+                //Synchronize multitimer subscriptions with subscription manager subscriptions. To save resources.
+                //POSSIBLE PROBLEM - asynchronous call, no guarantee that it will be executed to the end by the moment of next OnInsertEntity - but it's very unlikely
+                subMgrState => _multiTimer.Reset(subMgrState.Subscription.Select(st => st.Subscriber).ToArray()),
+                LogError));
         }
 
         void OnGet(Get getRequest)
@@ -76,8 +91,7 @@ namespace Brumba.Simulation.SimulatedTimer
 
         IEnumerator<ITask> OnSubscribe(Subscribe subscribeRq)
         {
-            yield return Arbiter.Choice(
-                SubscribeHelper(_subMgrPort, subscribeRq.Body, subscribeRq.ResponsePort),
+            yield return SubscribeHelper(_subMgrPort, subscribeRq.Body, subscribeRq.ResponsePort).Choice(
                 success => _multiTimer.Subscribe(subscribeRq.Body.Subscriber, subscribeRq.Body.Interval),
                 LogError);
         }
