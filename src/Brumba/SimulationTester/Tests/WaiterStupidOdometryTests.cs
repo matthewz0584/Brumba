@@ -5,29 +5,26 @@ using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.PhysicalModel;
-using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Xna.Framework;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
-using drivePxy = Microsoft.Robotics.Services.Drive.Proxy;
-using engPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
-using odometryPxy = Brumba.WaiterStupid.Odometry.Proxy;
+using VisualEntity = Microsoft.Robotics.Simulation.Engine.VisualEntity;
 
-namespace Brumba.Simulation.SimulationTester.Tests
+namespace Brumba.SimulationTester.Tests
 {
 	[SimTestFixture("waiter_stupid_odometry_tests", Wip = true)]
 	public class WaiterStupidOdometryTests
 	{
 		public ServiceForwarder ServiceForwarder { get; private set; }
-		public drivePxy.DriveOperations RefPlDrivePort { get; private set; }
-		public odometryPxy.OdometryOperations OdometryPort { get; set; }
+		public Microsoft.Robotics.Services.Drive.Proxy.DriveOperations RefPlDrivePort { get; private set; }
+		public WaiterStupid.Odometry.Proxy.OdometryOperations OdometryPort { get; set; }
 
 		[SimSetUp]
 		public void SetUp(ServiceForwarder serviceForwarder)
 		{
 			ServiceForwarder = serviceForwarder;
-			RefPlDrivePort = serviceForwarder.ForwardTo<drivePxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
-			OdometryPort = serviceForwarder.ForwardTo<odometryPxy.OdometryOperations>("odometry@");
+			RefPlDrivePort = serviceForwarder.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
+			OdometryPort = serviceForwarder.ForwardTo<WaiterStupid.Odometry.Proxy.OdometryOperations>("odometry@");
 		}
 
 		[SimTest]
@@ -49,7 +46,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 				yield return To.Exec((Fixture as WaiterStupidOdometryTests).RefPlDrivePort.SetDrivePower(1.0, 1.0));
 			}
 
-			public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<engPxy.VisualEntity> simStateEntities, double elapsedTime)
+			public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
 			{
 				if (elapsedTime < 0.9 * EstimatedTime || _failed)
 				{
@@ -58,7 +55,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 				}
 
 				var simPose = (Pose)DssTypeHelper.TransformFromProxy(simStateEntities.Single(epxy => epxy.State.Name == "stupid_waiter@").State.Pose);
-				odometryPxy.OdometryServiceState odometryState = null;
+				WaiterStupid.Odometry.Proxy.OdometryServiceState odometryState = null;
 				yield return (Fixture as WaiterStupidOdometryTests).OdometryPort.Get().Receive(os => odometryState = os);
 
 				var poseDifference = odometryState.State.Pose - SimPoseToEgocentricPose(simPose);
@@ -94,7 +91,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
 				yield return To.Exec((Fixture as WaiterStupidOdometryTests).RefPlDrivePort.SetDrivePower(-0.2, 0.2));
 			}
 
-			public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<engPxy.VisualEntity> simStateEntities, double elapsedTime)
+			public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
 			{
                 if (elapsedTime < 0.9 * EstimatedTime || _failed)
                 {
@@ -103,7 +100,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
                 }
 
 				var simPose = (Pose)DssTypeHelper.TransformFromProxy(simStateEntities.Single(epxy => epxy.State.Name == "stupid_waiter@").State.Pose);
-				odometryPxy.OdometryServiceState odometryState = null;
+				WaiterStupid.Odometry.Proxy.OdometryServiceState odometryState = null;
 				yield return (Fixture as WaiterStupidOdometryTests).OdometryPort.Get().Receive(os => odometryState = os);
 
 				var thetaDifference = Math.Abs(odometryState.State.Pose.Z - SimPoseToEgocentricPose(simPose).Z);

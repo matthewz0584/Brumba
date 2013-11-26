@@ -3,7 +3,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 
-namespace Brumba.Simulation.SimulationTester
+namespace Brumba.SimulationTester
 {
 	public sealed class Contract
 	{
@@ -14,6 +14,10 @@ namespace Brumba.Simulation.SimulationTester
 	[DataContract]
 	public class SimulationTesterState
 	{
+		[DataMember]
+		public bool ToRender { get; set; }
+		[DataMember]
+		public bool ToDropHostOnFinish { get; set; }
 	}
 	
 	[ServicePort]

@@ -7,7 +7,7 @@
       <dssp:PartnerList>
         <dssp:Partner>
           <dssp:Contract>http://brumba.ru/contracts/2012/11/simulationtester.html</dssp:Contract>
-          <dssp:Service>simulationtester.config.xml</dssp:Service>
+          <dssp:Service>simulationtester_nonvisual.config.xml</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>dssp:StateService</dssp:Name>
         </dssp:Partner>

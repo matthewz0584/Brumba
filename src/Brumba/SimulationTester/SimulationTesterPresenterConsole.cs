@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Brumba.Simulation.SimulationTester
+namespace Brumba.SimulationTester
 {
 	class SimulationTesterPresenterConsole
 	{

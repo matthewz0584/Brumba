@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Brumba.Simulation.SimulationTester
+namespace Brumba.Utils
 {
     public class CrossCountryGenerator
     {

@@ -1,6 +1,6 @@
 using Microsoft.Ccr.Core;
 
-namespace Brumba.Simulation.SimulationTester
+namespace Brumba.SimulationTester
 {
     //Wrapper for SimulationTesterService.ForwardTo method to remove direct dependency
     public class ServiceForwarder

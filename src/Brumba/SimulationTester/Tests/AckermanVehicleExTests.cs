@@ -1,28 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.Simulation;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
+using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Physics;
-using SafwPxy = Brumba.Simulation.SimulatedAckermanVehicle.Proxy;
-using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
-using AckPxy = Brumba.AckermanVehicle.Proxy;
-using Quaternion = Microsoft.Robotics.PhysicalModel.Quaternion;
-using Vector3 = Microsoft.Robotics.PhysicalModel.Vector3;
+using VisualEntity = Microsoft.Robotics.Simulation.Engine.VisualEntity;
 
-namespace Brumba.Simulation.SimulationTester.Tests
+namespace Brumba.SimulationTester.Tests
 {
     [SimTestFixture("ackerman_vehicle_ex_on_terrain03")]
     public class AckermanVehicleExTests
     {
-        public AckPxy.AckermanVehicleOperations VehiclePort { get; set; }
+        public AckermanVehicle.Proxy.AckermanVehicleOperations VehiclePort { get; set; }
 
         [SimSetUp]
         public void SetUp(ServiceForwarder serviceForwarder)
         {
-            VehiclePort = serviceForwarder.ForwardTo<AckPxy.AckermanVehicleOperations>("testee_veh_service/genericackermanvehicle");
+            VehiclePort = serviceForwarder.ForwardTo<AckermanVehicle.Proxy.AckermanVehicleOperations>("testee_veh_service/genericackermanvehicle");
         }
 
         public abstract class SingleVehicleTest : StochasticTest
@@ -45,7 +43,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
                 yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateDrivePower(motorPower));
             }
 
-            public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
+            public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single(entityProxy => entityProxy.State.Name == VEHICLE_NAME).State.Pose.Position));
                 @return(pos.Length() > 50);
@@ -64,7 +62,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
                 yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateDrivePower(0.5f));
             }
 
-            public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
+            public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single(entityProxy => entityProxy.State.Name == VEHICLE_NAME).State.Pose.Orientation));
                 @return(Math.Abs(orientation.X) < 90 && elapsedTime > EstimatedTime);
@@ -85,7 +83,7 @@ namespace Brumba.Simulation.SimulationTester.Tests
                 yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateDrivePower(0.2f));
             }
 
-            public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime)
+            public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 if (elapsedTime < EstimatedTime / 2)
                 {
@@ -101,12 +99,12 @@ namespace Brumba.Simulation.SimulationTester.Tests
                     yield break;
                 }
 
-                AckPxy.AckermanVehicleState vehState = null;
+                AckermanVehicle.Proxy.AckermanVehicleState vehState = null;
                 yield return Arbiter.Receive<AckermanVehicle.Proxy.AckermanVehicleState>(false, (Fixture as AckermanVehicleExTests).VehiclePort.Get(), vs => vehState = vs);
 
                 var deltaT = elapsedTime - _prevElapsedTime;
                 var deltaAnglularDistance = vehState.DriveAngularDistance - _prevDriveAngularDistance;
-                var vehProps = (simStateEntities.Single(entityProxy => entityProxy.State.Name == VEHICLE_NAME) as SafwPxy.AckermanVehicleExEntity).Props;
+                var vehProps = (simStateEntities.Single(entityProxy => entityProxy.State.Name == VEHICLE_NAME) as Simulation.SimulatedAckermanVehicle.Proxy.AckermanVehicleExEntity).Props;
                 var expectedDeltaAngularDistance = vehProps.MaxVelocity * 0.2f / vehProps.WheelsProperties.First().Radius * deltaT;
 
                 @return(vehState.SteeringAngle > 0.9 * 0.5 * vehProps.MaxSteeringAngle && vehState.SteeringAngle < 1.1 * 0.5 * vehProps.MaxSteeringAngle &&

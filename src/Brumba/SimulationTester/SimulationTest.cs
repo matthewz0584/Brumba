@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Ccr.Core;
-using Microsoft.Robotics.Simulation.Engine;
-using EngPxy = Microsoft.Robotics.Simulation.Engine.Proxy;
+using VisualEntity = Microsoft.Robotics.Simulation.Engine.VisualEntity;
 
-namespace Brumba.Simulation.SimulationTester
+namespace Brumba.SimulationTester
 {
     public interface ISimulationTest
     {
         void PrepareForReset(VisualEntity entity);
 
         IEnumerator<ITask> Start();
-        IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
+        IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime);
 
         double EstimatedTime { get; }
         bool IsProbabilistic { get; }
@@ -28,7 +27,7 @@ namespace Brumba.Simulation.SimulationTester
         public abstract void PrepareForReset(VisualEntity entity);
 
         public abstract IEnumerator<ITask> Start();
-        public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<EngPxy.VisualEntity> simStateEntities, double elapsedTime);
+        public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime);
     }
 
     public abstract class DeterministicTest : SimulationTestBase
