@@ -45,7 +45,7 @@ namespace Brumba.WaiterStupid
         double _lastTime;
 		void StartSimulatedTimer(ServiceInfoType f)
 		{
-			var simTimer = _srv.ServiceForwarder<simTimerPxy.SimulatedTimerOperations>(f.HttpServiceAlias);
+			var simTimer = _srv.ServiceForwarder<simTimerPxy.SimulatedTimerOperations>(new Uri(f.Service));
 		    _simTimerUnsubscribePort = new Port<Shutdown>();
 		    simTimer.Post(
 		        new simTimerPxy.Subscribe

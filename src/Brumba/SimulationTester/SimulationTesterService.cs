@@ -67,7 +67,8 @@ namespace Brumba.SimulationTester
         //Exposes DsspServiceBase capabilities to access other services by URI
         public T ForwardTo<T>(string serviceUri) where T : IPortSet, new()
         {
-            return ServiceForwarder<T>(String.Format(@"{0}://{1}/{2}", ServiceInfo.HttpServiceAlias.Scheme, ServiceInfo.HttpServiceAlias.Authority, serviceUri));
+	        var serviceTcpUri = new Uri(ServiceInfo.Service);
+			return ServiceForwarder<T>(String.Format(@"{0}://{1}/{2}", serviceTcpUri.Scheme, serviceTcpUri.Authority, serviceUri));
         }
 		
 		protected override void Start()
