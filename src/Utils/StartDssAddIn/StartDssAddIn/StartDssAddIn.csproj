@@ -116,9 +116,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="E:\Desktop\My Documents\Visual Studio 2012\Addins\StartDssAddIn - For Testing.AddIn">
-      <Link>StartDssAddIn - For Testing.AddIn</Link>
-    </Content>
     <Content Include="StartDssAddIn.AddIn" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />

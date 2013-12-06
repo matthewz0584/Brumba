@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using Extensibility;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.CommandBars;
-using System.Resources;
-using System.Reflection;
-using System.Globalization;
-using Process = EnvDTE.Process;
+using dteProcess = EnvDTE.Process;
+using Process = System.Diagnostics.Process;
 
 namespace StartDssAddIn
 {
@@ -22,6 +23,14 @@ namespace StartDssAddIn
 	    private const string MANIFEST_EXTENSION = "manifest.xml";
 	    private const string DSS_EXE_PATH = @"C:\MRDS4\bin\DssHost32.exe";
         private const string SECURITY_FILE_PATH = @"C:\MRDS4\brumba\config\DssHost32.security";
+
+
+        [DllImport("ole32.dll")]
+        public static extern int CreateBindCtx(int reserved, out IBindCtx ppbc);
+
+        [DllImport("ole32.dll")]
+        public static extern int GetRunningObjectTable(int reserved, out IRunningObjectTable prot);
+
 		/// <summary>Implements the constructor for the Add-in object. Place your initialization code within this method.</summary>
 		public Connect()
 		{
@@ -138,7 +147,10 @@ namespace StartDssAddIn
                 FileName = DSS_EXE_PATH,
                 Arguments = "/port:50000 /tcpport:50001 /manifest:" + selectedManifest.FullName + " /s:" + SECURITY_FILE_PATH
             };
-	        System.Diagnostics.Process.Start(startInfo);
+
+            var proc = Process.Start(startInfo);
+	        var vsProc = GetVisualStudioForSolution("brumba.sln");
+	        AttachVisualStudioToProcess(vsProc, proc);
 	    }
 
 	    private FileInfo GetSelectedItemInfo()
@@ -149,6 +161,99 @@ namespace StartDssAddIn
             var projItem = item.Object as ProjectItem;
             return new FileInfo(projItem.Properties.Item("FullPath").Value.ToString());
 	    }
+
+
+
+        private static IEnumerable<Process> GetVisualStudioProcesses()
+        {
+            Process[] processes = Process.GetProcesses();
+            return processes.Where(o => o.ProcessName.Contains("devenv"));
+        }
+
+        public static void AttachVisualStudioToProcess(Process visualStudioProcess, Process applicationProcess)
+        {
+            _DTE visualStudioInstance;
+
+            if (TryGetVsInstance(visualStudioProcess.Id, out visualStudioInstance))
+            {
+                //Find the process you want the VS instance to attach to...
+                dteProcess processToAttachTo = visualStudioInstance.Debugger.LocalProcesses.Cast<dteProcess>().FirstOrDefault(process => process.ProcessID == applicationProcess.Id);
+
+                //Attach to the process.
+                if (processToAttachTo != null)
+                {
+                    processToAttachTo.Attach();
+                }
+                else
+                {
+                    throw new InvalidOperationException("Visual Studio process cannot find specified application '" + applicationProcess.Id + "'");
+                }
+            }
+        }
+
+        private static bool TryGetVsInstance(int processId, out _DTE instance)
+        {
+            IntPtr numFetched = IntPtr.Zero;
+            IRunningObjectTable runningObjectTable;
+            IEnumMoniker monikerEnumerator;
+            IMoniker[] monikers = new IMoniker[1];
+
+            GetRunningObjectTable(0, out runningObjectTable);
+            runningObjectTable.EnumRunning(out monikerEnumerator);
+            monikerEnumerator.Reset();
+
+            while (monikerEnumerator.Next(1, monikers, numFetched) == 0)
+            {
+                IBindCtx ctx;
+                CreateBindCtx(0, out ctx);
+
+                string runningObjectName;
+                monikers[0].GetDisplayName(ctx, null, out runningObjectName);
+
+                object runningObjectVal;
+                runningObjectTable.GetObject(monikers[0], out runningObjectVal);
+
+                if (runningObjectVal is _DTE && runningObjectName.StartsWith("!VisualStudio"))
+                {
+                    int currentProcessId = int.Parse(runningObjectName.Split(':')[1]);
+
+                    if (currentProcessId == processId)
+                    {
+                        instance = (_DTE)runningObjectVal;
+                        return true;
+                    }
+                }
+            }
+
+            instance = null;
+            return false;
+        }
+
+        public static Process GetVisualStudioForSolution(string solutionName)
+        {
+            IEnumerable<Process> visualStudios = GetVisualStudioProcesses();
+
+            foreach (Process visualStudio in visualStudios)
+            {
+                _DTE visualStudioInstance;
+                if (TryGetVsInstance(visualStudio.Id, out visualStudioInstance))
+                {
+                    try
+                    {
+                        string actualSolutionName = Path.GetFileName(visualStudioInstance.Solution.FullName);
+
+                        if (string.Compare(actualSolutionName, solutionName, StringComparison.InvariantCultureIgnoreCase) == 0)
+                        {
+                            return visualStudio;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+            return null;
+        }
 
 	}
 }
