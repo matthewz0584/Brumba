@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
 
@@ -11,9 +12,9 @@ namespace Brumba.SimulationTester.Tests
         public Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingOperations IfRfRingPort { get; set; }
 
         [SimSetUp]
-        public void SetUp(ServiceForwarder serviceForwarder)
+		public void SetUp(SimulationTesterService testerService)
         {
-            IfRfRingPort = serviceForwarder.ForwardTo<Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingOperations>("testee_rf_ring");
+            IfRfRingPort = testerService.ForwardTo<Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingOperations>("testee_rf_ring");
         }
 
         [SimTest]

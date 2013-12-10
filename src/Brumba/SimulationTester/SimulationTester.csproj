@@ -161,7 +161,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Tests\AckermanVehicleExTests.cs" />
-    <Compile Include="ServiceForwarder.cs" />
     <Compile Include="SimulationTesterPresenterConsole.cs" />
     <Compile Include="SimulationTest.cs" />
     <Compile Include="SimulationTestFixtureInfo.cs" />

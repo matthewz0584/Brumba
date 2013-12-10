@@ -15,19 +15,19 @@ namespace Brumba.SimulationTester.Tests
 	[SimTestFixture("waiter_stupid_odometry_tests", Wip = true)]
 	public class WaiterStupidOdometryTests
 	{
-		public ServiceForwarder ServiceForwarder { get; private set; }
+		public SimulationTesterService TesterService { get; private set; }
 		public Microsoft.Robotics.Services.Drive.Proxy.DriveOperations RefPlDrivePort { get; private set; }
 		public WaiterStupid.Odometry.Proxy.OdometryOperations OdometryPort { get; set; }
 
 		[SimSetUp]
-		public void SetUp(ServiceForwarder serviceForwarder)
+		public void SetUp(SimulationTesterService testerService)
 		{
-			ServiceForwarder = serviceForwarder;
-			RefPlDrivePort = serviceForwarder.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
-			OdometryPort = serviceForwarder.ForwardTo<WaiterStupid.Odometry.Proxy.OdometryOperations>("odometry@");
+			TesterService = testerService;
+			RefPlDrivePort = testerService.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
+			OdometryPort = testerService.ForwardTo<WaiterStupid.Odometry.Proxy.OdometryOperations>("odometry@");
 		}
 
-		[SimTest]
+		//[SimTest]
 		public class DriveStraight : StochasticTest
 		{
             private bool _failed;
@@ -59,9 +59,10 @@ namespace Brumba.SimulationTester.Tests
 				yield return (Fixture as WaiterStupidOdometryTests).OdometryPort.Get().Receive(os => odometryState = os);
 
 				var poseDifference = odometryState.State.Pose - SimPoseToEgocentricPose(simPose);
-                //Console.WriteLine("From Odometry ******{0}", odometryState.State.Pose);
-                //Console.WriteLine("From Simulation ****{0}", SimPoseToEgocentricPose(simPose));
-                //Console.WriteLine("Ratio **************{0}", poseDifference.Length() / SimPoseToEgocentricPose(simPose).Length());
+
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Odometry {0}", odometryState.State.Pose);
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Simulation {0}", SimPoseToEgocentricPose(simPose));
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("Ratio {0}", poseDifference.Length() / SimPoseToEgocentricPose(simPose).Length());
 
                 @return(!(_failed = poseDifference.Length() / SimPoseToEgocentricPose(simPose).Length() > 0.05));
 			}
@@ -103,19 +104,31 @@ namespace Brumba.SimulationTester.Tests
 				WaiterStupid.Odometry.Proxy.OdometryServiceState odometryState = null;
 				yield return (Fixture as WaiterStupidOdometryTests).OdometryPort.Get().Receive(os => odometryState = os);
 
-				var thetaDifference = Math.Abs(odometryState.State.Pose.Z - SimPoseToEgocentricPose(simPose).Z);
-                thetaDifference = Math.Min(thetaDifference, MathHelper.TwoPi - thetaDifference);
-				Console.WriteLine("From Odometry ******{0}", odometryState.State.Pose.Z);
-				Console.WriteLine("From Simulation ****{0}", SimPoseToEgocentricPose(simPose).Z);
-                Console.WriteLine("Ratio **************{0}", thetaDifference / MathHelper.TwoPi);
+				var thetaDifference = AngleDelta(odometryState.State.Pose.Z, SimPoseToEgocentricPose(simPose).Z);//Math.Abs(ToPositiveAngle(odometryState.State.Pose.Z) - ToPositiveAngle(SimPoseToEgocentricPose(simPose).Z));
+				@return(!(_failed = thetaDifference / MathHelper.TwoPi > 0.05));
 
-                @return(!(_failed = thetaDifference / MathHelper.TwoPi > 0.05));
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Odometry {0}", ToPositiveAngle(odometryState.State.Pose.Z));
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Simulation {0}", ToPositiveAngle(SimPoseToEgocentricPose(simPose).Z));
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("Ratio {0}", thetaDifference / MathHelper.TwoPi);
 			}
 
 			static Vector3 SimPoseToEgocentricPose(Pose pose)
 			{
                 return new Vector3(-pose.Position.Z, pose.Position.X, MathHelper.ToRadians(UIMath.QuaternionToEuler(pose.Orientation).Y));
 			}
+
+			public static float ToPositiveAngle(float angle)
+			{
+				var angleRem = angle % MathHelper.TwoPi;
+				return angleRem + (angleRem < 0 ? MathHelper.TwoPi : 0);
+			}
+
+			public static float AngleDelta(float angle1, float angle2)
+			{
+				var delta = ToPositiveAngle(angle2) - ToPositiveAngle(angle1);
+				return Math.Sign(delta) * Math.Min(Math.Abs(delta), MathHelper.TwoPi - Math.Abs(delta));
+			}
+
 		}
 	}
 }

@@ -77,7 +77,7 @@ namespace Brumba.WaiterStupid.Odometry
 				_state.State = _odometryCalc.UpdateOdometry(_state.State, dt.Milliseconds * 1000f,
 															ds.LeftWheel.EncoderState.CurrentReading,
 															ds.RightWheel.EncoderState.CurrentReading);
-				//Console.WriteLine(dt.Milliseconds);
+				//LogInfo("Delta t {0}", dt.Milliseconds);
 			});
 		}
 

@@ -18,9 +18,9 @@ namespace Brumba.SimulationTester.Tests
         public AckermanVehicle.Proxy.AckermanVehicleOperations VehiclePort { get; set; }
 
         [SimSetUp]
-        public void SetUp(ServiceForwarder serviceForwarder)
+		public void SetUp(SimulationTesterService testerService)
         {
-            VehiclePort = serviceForwarder.ForwardTo<AckermanVehicle.Proxy.AckermanVehicleOperations>("testee_veh_service/genericackermanvehicle");
+            VehiclePort = testerService.ForwardTo<AckermanVehicle.Proxy.AckermanVehicleOperations>("testee_veh_service/genericackermanvehicle");
         }
 
         public abstract class SingleVehicleTest : StochasticTest

@@ -23,7 +23,7 @@ namespace Brumba.SimulationTester
     [Contract(Contract.Identifier)]
 	[DisplayName("Simulation Tester")]
 	[Description("Simulation Tester service (no description provided)")]
-	public class SimulationTesterService : DsspServiceBase
+	public class SimulationTesterService : DsspServiceExposing
 	{
         public const string MANIFEST_EXTENSION = "manifest.xml";
         public const string ENVIRONMENT_EXTENSION = "environ.xml";
@@ -209,7 +209,7 @@ namespace Brumba.SimulationTester
                 yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
 
                 //Reconnect to necessary services
-                fixtureInfo.SetUp(new ServiceForwarder(this));
+                fixtureInfo.SetUp(this);
 
                 yield return To.Exec(test.Start);
 

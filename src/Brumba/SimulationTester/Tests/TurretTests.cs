@@ -15,9 +15,9 @@ namespace Brumba.SimulationTester.Tests
         public Simulation.SimulatedTurret.Proxy.SimulatedTurretOperations TurretPort { get; set; }
 
         [SimSetUp]
-        public void SetUp(ServiceForwarder serviceForwarder)
+		public void SetUp(SimulationTesterService hostService)
         {
-            TurretPort = serviceForwarder.ForwardTo<Simulation.SimulatedTurret.Proxy.SimulatedTurretOperations>("testee_turret");
+            TurretPort = hostService.ForwardTo<Simulation.SimulatedTurret.Proxy.SimulatedTurretOperations>("testee_turret");
         }
 
         [SimTest]

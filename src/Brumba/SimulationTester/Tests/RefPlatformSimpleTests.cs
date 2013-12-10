@@ -14,16 +14,16 @@ namespace Brumba.SimulationTester.Tests
     [SimTestFixture("ref_platform_simple_tests")]
     public class RefPlatformSimpleTests
     {
-        public ServiceForwarder ServiceForwarder { get; private set; }
+		public SimulationTesterService TesterService { get; private set; }
         public Microsoft.Robotics.Services.Drive.Proxy.DriveOperations RefPlDrivePort { get; private set; }
 		public Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.SickLRFOperations SickLrfPort { get; private set; }
 
         [SimSetUp]
-        public void SetUp(ServiceForwarder serviceForwarder)
+		public void SetUp(SimulationTesterService testerService)
         {
-            ServiceForwarder = serviceForwarder;
-            RefPlDrivePort = serviceForwarder.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
-			SickLrfPort = serviceForwarder.ForwardTo<Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.SickLRFOperations>("stupid_waiter_lidar/sicklrf");
+            TesterService = testerService;
+            RefPlDrivePort = testerService.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
+			SickLrfPort = testerService.ForwardTo<Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.SickLRFOperations>("stupid_waiter_lidar/sicklrf");
         }
 
         [SimTest]
@@ -61,7 +61,7 @@ namespace Brumba.SimulationTester.Tests
 			{
 				EstimatedTime = 1;
 		        (Fixture as RefPlatformSimpleTests).SickLrfPort.Subscribe(_lrfNotify);
-		        (Fixture as RefPlatformSimpleTests).ServiceForwarder.Activate(Arbiter.Receive(true, _lrfNotify, OnLrfNotification));
+		        (Fixture as RefPlatformSimpleTests).TesterService.Activate(Arbiter.Receive(true, _lrfNotify, OnLrfNotification));
 				yield break;
 			}
 

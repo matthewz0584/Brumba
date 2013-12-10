@@ -25,6 +25,11 @@ namespace Brumba.Utils
 			return base.ServiceForwarder<T>(uri);
 		}
 
+		public new T ServiceForwarder<T>(string uri) where T : IPort, IPortSet, new()
+		{
+			return base.ServiceForwarder<T>(uri);
+		}
+
 		public new DsspResponsePort<ServiceInfoType> DirectoryQuery(string contract, TimeSpan expiration)
 		{
 			return base.DirectoryQuery(contract, expiration);
@@ -38,6 +43,11 @@ namespace Brumba.Utils
 		public new DispatcherQueue TaskQueue
 		{
 			get { return base.TaskQueue; }
+		}
+
+		public void LogInfo(string text, params object[] args)
+		{
+			base.LogInfo(string.Format(text, args));
 		}
 	}
 }

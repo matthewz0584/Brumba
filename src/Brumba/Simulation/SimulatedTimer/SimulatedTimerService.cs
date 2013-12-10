@@ -78,7 +78,8 @@ namespace Brumba.Simulation.SimulatedTimer
                 //In simulation tester environment every service with timer subscription will be dead for sure by the moment of environment restoration. So there should be no alive subscriptions for it.
                 //Synchronize multitimer subscriptions with subscription manager subscriptions. To save resources.
                 //POSSIBLE PROBLEM - asynchronous call, no guarantee that it will be executed to the end by the moment of next OnInsertEntity - but it's very unlikely
-                subMgrState => _multiTimer.Reset(subMgrState.Subscription.Select(st => st.Subscriber).ToArray()),
+                subMgrState => 
+					_multiTimer.Reset(subMgrState.Subscription.Select(st => st.Subscriber).ToArray()),
                 LogError));
         }
 
