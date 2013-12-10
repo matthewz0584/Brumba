@@ -104,11 +104,11 @@ namespace Brumba.SimulationTester.Tests
 				WaiterStupid.Odometry.Proxy.OdometryServiceState odometryState = null;
 				yield return (Fixture as WaiterStupidOdometryTests).OdometryPort.Get().Receive(os => odometryState = os);
 
-				var thetaDifference = AngleDelta(odometryState.State.Pose.Z, SimPoseToEgocentricPose(simPose).Z);//Math.Abs(ToPositiveAngle(odometryState.State.Pose.Z) - ToPositiveAngle(SimPoseToEgocentricPose(simPose).Z));
+				var thetaDifference = MathHelper2.AngleDifference(odometryState.State.Pose.Z, SimPoseToEgocentricPose(simPose).Z);//Math.Abs(ToPositiveAngle(odometryState.State.Pose.Z) - ToPositiveAngle(SimPoseToEgocentricPose(simPose).Z));
 				@return(!(_failed = thetaDifference / MathHelper.TwoPi > 0.05));
 
-				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Odometry {0}", ToPositiveAngle(odometryState.State.Pose.Z));
-				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Simulation {0}", ToPositiveAngle(SimPoseToEgocentricPose(simPose).Z));
+                (Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Odometry {0}", MathHelper2.ToPositiveAngle(odometryState.State.Pose.Z));
+                (Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Simulation {0}", MathHelper2.ToPositiveAngle(SimPoseToEgocentricPose(simPose).Z));
 				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("Ratio {0}", thetaDifference / MathHelper.TwoPi);
 			}
 
@@ -116,19 +116,6 @@ namespace Brumba.SimulationTester.Tests
 			{
                 return new Vector3(-pose.Position.Z, pose.Position.X, MathHelper.ToRadians(UIMath.QuaternionToEuler(pose.Orientation).Y));
 			}
-
-			public static float ToPositiveAngle(float angle)
-			{
-				var angleRem = angle % MathHelper.TwoPi;
-				return angleRem + (angleRem < 0 ? MathHelper.TwoPi : 0);
-			}
-
-			public static float AngleDelta(float angle1, float angle2)
-			{
-				var delta = ToPositiveAngle(angle2) - ToPositiveAngle(angle1);
-				return Math.Sign(delta) * Math.Min(Math.Abs(delta), MathHelper.TwoPi - Math.Abs(delta));
-			}
-
 		}
 	}
 }
