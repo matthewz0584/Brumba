@@ -66,15 +66,10 @@ namespace Brumba.SimulationTester.Tests
 
                 @return(!(_failed = poseDifference.Length() / SimPoseToEgocentricPose(simPose).Length() > 0.05));
 			}
-
-			static Vector3 SimPoseToEgocentricPose(Pose pose)
-			{
-				return new Vector3(-pose.Position.Z, pose.Position.X, UIMath.QuaternionToEuler(pose.Orientation).X);
-			}
 		}
 
 		[SimTest]
-		public class RotateInPlace : StochasticTest
+		public class RotateOnPlace : StochasticTest
 		{
             private bool _failed;
 
@@ -85,7 +80,7 @@ namespace Brumba.SimulationTester.Tests
 			public override IEnumerator<ITask> Start()
 			{
                 _failed = false;
-				EstimatedTime = 5;
+				EstimatedTime = 4;
 
 				//Execs for synchronization, otherwise set power message can arrive before enable message
 				yield return To.Exec((Fixture as WaiterStupidOdometryTests).RefPlDrivePort.EnableDrive(true));
@@ -94,28 +89,30 @@ namespace Brumba.SimulationTester.Tests
 
 			public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
 			{
-                if (elapsedTime < 0.9 * EstimatedTime || _failed)
-                {
-                    @return(false);
-                    yield break;
-                }
+				var angleFromOdometry = 0f;
+				yield return (Fixture as WaiterStupidOdometryTests).OdometryPort.Get().Receive(os => angleFromOdometry = os.State.Pose.Z);
 
-				var simPose = (Pose)DssTypeHelper.TransformFromProxy(simStateEntities.Single(epxy => epxy.State.Name == "stupid_waiter@").State.Pose);
-				WaiterStupid.Odometry.Proxy.OdometryServiceState odometryState = null;
-				yield return (Fixture as WaiterStupidOdometryTests).OdometryPort.Get().Receive(os => odometryState = os);
+				if (Math.Abs(angleFromOdometry) < MathHelper2.TwoPi || _failed)
+				{
+					@return(false);
+					yield break;
+				}
 
-				var thetaDifference = MathHelper2.AngleDifference(odometryState.State.Pose.Z, SimPoseToEgocentricPose(simPose).Z);//Math.Abs(ToPositiveAngle(odometryState.State.Pose.Z) - ToPositiveAngle(SimPoseToEgocentricPose(simPose).Z));
-				@return(!(_failed = thetaDifference / MathHelper.TwoPi > 0.05));
+				var angleFromSim = SimPoseToEgocentricPose((Pose)DssTypeHelper.TransformFromProxy(simStateEntities.Single(epxy => epxy.State.Name == "stupid_waiter@").State.Pose)).Z;
 
-                (Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Odometry {0}", MathHelper2.ToPositiveAngle(odometryState.State.Pose.Z));
-                (Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Simulation {0}", MathHelper2.ToPositiveAngle(SimPoseToEgocentricPose(simPose).Z));
-				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("Ratio {0}", thetaDifference / MathHelper.TwoPi);
+				var thetaDifference = MathHelper2.AngleDifference(angleFromOdometry, angleFromSim);
+				@return(!(_failed = thetaDifference / Math.Abs(angleFromOdometry) > 0.05));
+
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Odometry {0}", angleFromOdometry);
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Odometry {0} truncated", MathHelper2.ToPositiveAngle(angleFromOdometry));
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Simulation {0}", MathHelper2.ToPositiveAngle(angleFromSim));
+				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("Ratio {0}", thetaDifference / Math.Abs(angleFromOdometry));
 			}
+		}
 
-			static Vector3 SimPoseToEgocentricPose(Pose pose)
-			{
-                return new Vector3(-pose.Position.Z, pose.Position.X, MathHelper.ToRadians(UIMath.QuaternionToEuler(pose.Orientation).Y));
-			}
+		static Vector3 SimPoseToEgocentricPose(Pose pose)
+		{
+			return new Vector3(-pose.Position.Z, pose.Position.X, UIMath.QuaternionToEuler(pose.Orientation).X);
 		}
 	}
 }

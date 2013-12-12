@@ -1,8 +1,8 @@
 ﻿<NUnitProject>
-  <Settings activeconfig="Debug" processModel="Default" domainUsage="Default" />
+  <Settings activeconfig="Debug" />
   <Config name="Debug" binpathtype="Auto">
-    <assembly path="WaiterStupid.Tests\bin\Debug\Brumba.WaiterStupid.Tests.dll" />
-    <assembly path="Utils.Tests\bin\Debug\Brumba.Utils.Tests.dll" />
+    <assembly path="WaiterStupid.Tests\bin\x86\Debug\Brumba.WaiterStupid.Tests.dll" />
+    <assembly path="Utils.Tests\bin\x86\Debug\Brumba.Utils.Tests.dll" />
   </Config>
   <Config name="Release" binpathtype="Auto" />
 </NUnitProject>

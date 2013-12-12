@@ -69,7 +69,7 @@ namespace Brumba.WaiterStupid.Tests
 			Assert.That(m_odometry.CalculatePose(oldPose, velocity, deltaT), Is.EqualTo(new Vector3(0, 0, 0.1f)));
 
 			velocity = new Vector3(0, 0, 1);
-			Assert.That(m_odometry.CalculatePose(oldPose, velocity, 10), Is.EqualTo(new Vector3(0, 0, 10f % MathHelper.TwoPi)));
+			Assert.That(m_odometry.CalculatePose(oldPose, velocity, 10), Is.EqualTo(new Vector3(0, 0, 10f)));
 		}
 
 		[Test]
