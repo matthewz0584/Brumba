@@ -129,7 +129,7 @@ namespace Brumba.SimulationTester
 				OnFixtureStarted(fixtureInfo);
 
                 //Full restore: static and dynamic objects
-                yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, new Func<VisualEntity, bool>(es => true), new Action<Microsoft.Robotics.Simulation.Engine.VisualEntity>(e => {}));
+				yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<VisualEntity, bool>)(ve => !ve.State.Name.Contains(RESET_SYMBOL)), (Action<Microsoft.Robotics.Simulation.Engine.VisualEntity>)null);
 
 				foreach (var test in fixtureInfo.Tests)
 				{
@@ -252,7 +252,7 @@ namespace Brumba.SimulationTester
 
             IEnumerable<VisualEntity> entityPxies = null;
 			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<VisualEntity> ePxies) => entityPxies = ePxies, simState);
-            foreach (var entityPxy in entityPxies.Where(resetFilter).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
+            foreach (var entityPxy in entityPxies.Where(resetFilter ?? (pxy => true)).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
                 yield return Arbiter.Choice(_simEngine.DeleteSimulationEntity(entityPxy), deleted => {}, failed => {});
 
             simState.Pause = false;
@@ -267,7 +267,8 @@ namespace Brumba.SimulationTester
             yield return To.Exec(DeserializeTopLevelEntities, (IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> ens) => entities = ens, simState);
             foreach (var entity in entities.Where(entity => resetFilter((Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity)DssTypeHelper.TransformToProxy(entity))))
 			{
-                prepareEntityForReset(entity);
+				if (prepareEntityForReset != null)
+					prepareEntityForReset(entity);
 			    var insRequest = new InsertSimulationEntity(entity);
 				SimulationEngine.GlobalInstancePort.Post(insRequest);
 				yield return To.Exec(insRequest.ResponsePort);
