@@ -2,21 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using Brumba.Simulation.SimulatedTimer;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Dss.Services.ManifestLoaderClient.Proxy;
-using Microsoft.Robotics.Simulation.Engine;
 using System.Linq;
 using System.Xml;
 using Microsoft.Dss.Services.Serializer;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.Services.MountService;
-using InsertSimulationEntity = Microsoft.Robotics.Simulation.Engine.InsertSimulationEntity;
-using TimerEntity = Brumba.Simulation.SimulatedTimer.TimerEntity;
-using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
+using Mrse = Microsoft.Robotics.Simulation.Engine;
+using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
+using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
 
 namespace Brumba.SimulationTester
 {
@@ -129,7 +129,7 @@ namespace Brumba.SimulationTester
 				OnFixtureStarted(fixtureInfo);
 
                 //Full restore: static and dynamic objects
-				yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<VisualEntity, bool>)(ve => !ve.State.Name.Contains(RESET_SYMBOL)), (Action<Microsoft.Robotics.Simulation.Engine.VisualEntity>)null);
+                yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<MrsePxy.VisualEntity, bool>)(ve => !ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)null);
 
 				foreach (var test in fixtureInfo.Tests)
 				{
@@ -188,10 +188,10 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(PHYSICS_TIME_STEP));
             //yield return To.Exec(_simEngine.UpdateSimulatorConfiguration(new EngPxy.SimulatorConfiguration { Headless = true }));
 
-            Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
+            MrsPxy.SimulationState simState = null;
             yield return Arbiter.Choice(_simEngine.Get(), s => simState = s, LogError);
 
-			simState.RenderMode = _state.ToRender ? Microsoft.Robotics.Simulation.Proxy.RenderMode.Full : Microsoft.Robotics.Simulation.Proxy.RenderMode.None;
+			simState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
             yield return To.Exec(_simEngine.Replace(simState));
         }
 
@@ -203,7 +203,7 @@ namespace Brumba.SimulationTester
 				if (HasEarlyResults(i, successful))
 					break;
 
-				yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), (Action<Microsoft.Robotics.Simulation.Engine.VisualEntity>)test.PrepareForReset);
+                yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)test.PrepareForReset);
 
                 //Restart services from fixture manifest
                 yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
@@ -221,14 +221,20 @@ namespace Brumba.SimulationTester
                     Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
                     yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
 
-					IEnumerable<VisualEntity> simStateEntities = null;
-					yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<VisualEntity> ens) => simStateEntities = ens, simState);
-                    yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, simStateEntities, elapsedTime);
+                    //IEnumerable<MrsePxy.VisualEntity> simStateEntities = null;
+                    //yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> ens) => simStateEntities = ens, simState);
+                    //yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, simStateEntities, elapsedTime);
+                    IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;
+                    yield return To.Exec(DeserializaTopLevelEntityProxies,
+                                (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens, simState,
+                                (Func<XmlElement, bool>)
+                                (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
+                    yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, elapsedTime);
 
                     yield return Arbiter.Choice(_timer.Get(), s => elapsedTime = s.ElapsedTime, LogError);
 
                     if (!testSucceed)
-                        yield return To.Exec(TimeoutPort(50));
+                        yield return To.Exec(TimeoutPort(20));
                 }
             	OnTestTryEnded(test, testSucceed);
 
@@ -241,17 +247,17 @@ namespace Brumba.SimulationTester
             @return((float)successful / i);
         }
 
-        IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<VisualEntity, bool> resetFilter, Action<Microsoft.Robotics.Simulation.Engine.VisualEntity> prepareEntityForReset)
+        IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<MrsePxy.VisualEntity, bool> resetFilter, Action<Mrse.VisualEntity> prepareEntityForReset)
         {
-            Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
+            MrsPxy.SimulationState simState = null;
             yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
 
             var renderMode = simState.RenderMode;
             simState.Pause = true;
             yield return To.Exec(_simEngine.Replace(simState));
 
-            IEnumerable<VisualEntity> entityPxies = null;
-			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<VisualEntity> ePxies) => entityPxies = ePxies, simState);
+            IEnumerable<MrsePxy.VisualEntity> entityPxies = null;
+            yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> ePxies) => entityPxies = ePxies, simState, (Func<XmlElement, bool>)null);
             foreach (var entityPxy in entityPxies.Where(resetFilter ?? (pxy => true)).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
                 yield return Arbiter.Choice(_simEngine.DeleteSimulationEntity(entityPxy), deleted => {}, failed => {});
 
@@ -261,29 +267,29 @@ namespace Brumba.SimulationTester
 
             var get = new DsspDefaultGet();
             ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
-            yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (Microsoft.Robotics.Simulation.Proxy.SimulationState)success);
+            yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (MrsPxy.SimulationState)success);
 
             IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> entities = null;
-            yield return To.Exec(DeserializeTopLevelEntities, (IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> ens) => entities = ens, simState);
-            foreach (var entity in entities.Where(entity => resetFilter((Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity)DssTypeHelper.TransformToProxy(entity))))
+            yield return To.Exec(DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> ens) => entities = ens, simState);
+            foreach (var entity in entities.Where(entity => resetFilter((MrsePxy.VisualEntity)DssTypeHelper.TransformToProxy(entity))))
 			{
 				if (prepareEntityForReset != null)
 					prepareEntityForReset(entity);
-			    var insRequest = new InsertSimulationEntity(entity);
-				SimulationEngine.GlobalInstancePort.Post(insRequest);
+                var insRequest = new Mrse.InsertSimulationEntity(entity);
+                Mrse.SimulationEngine.GlobalInstancePort.Post(insRequest);
 				yield return To.Exec(insRequest.ResponsePort);
 			}
 
-			SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
+            Mrse.SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
         }
 
-		IEnumerator<ITask> DeserializaTopLevelEntityProxies(Action<IEnumerable<VisualEntity>> @return, Microsoft.Robotics.Simulation.Proxy.SimulationState simState)
+        IEnumerator<ITask> DeserializaTopLevelEntityProxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, MrsPxy.SimulationState simState, Func<XmlElement, bool> filter)
 		{
-			var entities = new List<VisualEntity>();
-			foreach (var entityNode in simState.SerializedEntities.XmlNodes.Cast<XmlElement>())
+			var entities = new List<MrsePxy.VisualEntity>();
+			foreach (var entityNode in simState.SerializedEntities.XmlNodes.Cast<XmlElement>().Where(filter ?? (xe => true)))
 			{
-				Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity entityPxy = null;
-				yield return To.Exec(DeserializeEntityFromXml, (Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity e) => entityPxy = e, entityNode);
+                MrsePxy.VisualEntity entityPxy = null;
+                yield return To.Exec(DeserializeEntityPxyFromXml, (MrsePxy.VisualEntity e) => entityPxy = e, entityNode);
 				if (entityPxy.State.Name == "MainCamera")
 					continue;
 				entities.Add(entityPxy);
@@ -291,40 +297,40 @@ namespace Brumba.SimulationTester
 			@return(entities);
 		}
 
-        IEnumerator<ITask> DeserializeTopLevelEntities(Action<IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity>> @return, Microsoft.Robotics.Simulation.Proxy.SimulationState simState)
+        IEnumerator<ITask> DeserializeTopLevelEntities(Action<IEnumerable<Mrse.VisualEntity>> @return, MrsPxy.SimulationState simState)
         {
-			IEnumerable<VisualEntity> entitiesFlatPxies = null;
-			yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<VisualEntity> es) => entitiesFlatPxies = es, simState);
+            IEnumerable<MrsePxy.VisualEntity> entitiesFlatPxies = null;
+            yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> es) => entitiesFlatPxies = es, simState, (Func<XmlElement, bool>)null);
 
-			var entitiesFlat = entitiesFlatPxies.Select(ePxy => (Microsoft.Robotics.Simulation.Engine.VisualEntity)DssTypeHelper.TransformFromProxy(ePxy));
+            var entitiesFlat = entitiesFlatPxies.Select(ePxy => (Mrse.VisualEntity)DssTypeHelper.TransformFromProxy(ePxy));
 
-            var entitiesTop = new List<Microsoft.Robotics.Simulation.Engine.VisualEntity>();
+            var entitiesTop = new List<Mrse.VisualEntity>();
             while (entitiesFlat.Any())
             {
                 entitiesTop.Add(entitiesFlat.First());
-                yield return To.Exec(ReuniteEntity, (IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> withoutChildren) => entitiesFlat = withoutChildren.ToList(), entitiesFlat.First(), entitiesFlat.Skip(1));
+                yield return To.Exec(ReuniteEntity, (IEnumerable<Mrse.VisualEntity> withoutChildren) => entitiesFlat = withoutChildren.ToList(), entitiesFlat.First(), entitiesFlat.Skip(1));
             }
             @return(entitiesTop);
         }
 
-        IEnumerator<ITask> ReuniteEntity(Action<IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity>> @return, Microsoft.Robotics.Simulation.Engine.VisualEntity parent, IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> entitiesFlat)
+        IEnumerator<ITask> ReuniteEntity(Action<IEnumerable<Mrse.VisualEntity>> @return, Mrse.VisualEntity parent, IEnumerable<Mrse.VisualEntity> entitiesFlat)
         {
             if (parent.ChildCount != 0)
 	            for (var i = 0; i < parent.ChildCount; ++i)
 		        {
 			        parent.InsertEntity(entitiesFlat.First());
-				    yield return To.Exec(ReuniteEntity, (IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> withoutChildren) => entitiesFlat = withoutChildren, entitiesFlat.First(), entitiesFlat.Skip(1));
+                    yield return To.Exec(ReuniteEntity, (IEnumerable<Mrse.VisualEntity> withoutChildren) => entitiesFlat = withoutChildren, entitiesFlat.First(), entitiesFlat.Skip(1));
 				}
             @return(entitiesFlat);
         }
 
-        IEnumerator<ITask> DeserializeEntityFromXml(Action<VisualEntity> @return, XmlElement entityNode)
+        IEnumerator<ITask> DeserializeEntityPxyFromXml(Action<MrsePxy.VisualEntity> @return, XmlElement entityNode)
         {
             var desRequest = new Deserialize(new XmlNodeReader(entityNode));
             SerializerPort.Post(desRequest);
             DeserializeResult desEntity = null;
             yield return Arbiter.Choice(desRequest.ResultPort, v => desEntity = v, LogError);
-            @return((Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity)desEntity.Instance);
+            @return((MrsePxy.VisualEntity)desEntity.Instance);
         }
 
         static bool HasEarlyResults(int i, int successful)

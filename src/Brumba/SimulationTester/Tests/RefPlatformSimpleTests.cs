@@ -41,7 +41,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
-				var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single(epxy => epxy.State.Name == "stupid_waiter@").State.Pose.Position));
+				var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose.Position));
 				@return(pos.Length() > 2);
 				yield break;
 			}

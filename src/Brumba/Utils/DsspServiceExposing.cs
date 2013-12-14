@@ -49,5 +49,10 @@ namespace Brumba.Utils
 		{
 			base.LogInfo(string.Format(text, args));
 		}
+
+        public new void LogInfo(Enum category, params object[] args)
+        {
+            base.LogInfo(category, args);
+        }
 	}
 }
