@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using Brumba.Simulation.SimulatedTimer;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -17,6 +16,8 @@ using Microsoft.Dss.Services.MountService;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
+using BrSimTimer = Brumba.Simulation.SimulatedTimer;
+using BrSimTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
 
 namespace Brumba.SimulationTester
 {
@@ -40,11 +41,11 @@ namespace Brumba.SimulationTester
 		[ServicePort("/SimulationTester", AllowMultipleInstances = true)]
 		SimulationTesterOperations _mainPort = new SimulationTesterOperations();
 
-        [Partner("SimEngine", Contract = Microsoft.Robotics.Simulation.Engine.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.CreateAlways)]
-        Microsoft.Robotics.Simulation.Engine.Proxy.SimulationEnginePort _simEngine = new Microsoft.Robotics.Simulation.Engine.Proxy.SimulationEnginePort();
+        [Partner("SimEngine", Contract = MrsePxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.CreateAlways)]
+        MrsePxy.SimulationEnginePort _simEngine = new MrsePxy.SimulationEnginePort();
 
-        [Partner("SimTimer", Contract = Simulation.SimulatedTimer.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UsePartnerListEntry)]
-        Simulation.SimulatedTimer.Proxy.SimulatedTimerOperations _timer = new Simulation.SimulatedTimer.Proxy.SimulatedTimerOperations();
+        [Partner("SimTimer", Contract = BrSimTimerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UsePartnerListEntry)]
+        BrSimTimerPxy.SimulatedTimerOperations _timer = new BrSimTimerPxy.SimulatedTimerOperations();
 
 		[Partner("Manifest loader", Contract = Microsoft.Dss.Services.ManifestLoaderClient.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		ManifestLoaderClientPort _manifestLoader = new ManifestLoaderClientPort();
@@ -197,51 +198,95 @@ namespace Brumba.SimulationTester
 
         IEnumerator<ITask> ExecuteTest(Action<float> @return, SimulationTestFixtureInfo fixtureInfo, ISimulationTest test)
         {
+            LogInfo("ExecuteTest.1");
         	int successful = 0, i;
 			for (i = 0; i < (test.IsProbabilistic ? TRIES_NUMBER : 1); ++i)
             {
 				if (HasEarlyResults(i, successful))
 					break;
 
+                LogInfo("ExecuteTest.2");
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)test.PrepareForReset);
 
+                yield return TimeoutPort(500).Receive();
+
+                LogInfo("ExecuteTest.3");
                 //Restart services from fixture manifest
                 yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
 
+                LogInfo("ExecuteTest.4");
                 //Reconnect to necessary services
                 fixtureInfo.SetUp(this);
 
+                LogInfo("ExecuteTest.5");
                 yield return To.Exec(test.Start);
 
                 var testSucceed = false;
+
+                LogInfo("ExecuteTest.6");
+
+
+
+                var subscribeRq = _timer.Subscribe((float) test.EstimatedTime);
+                var elapsedTime = 0.0;
+                yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => elapsedTime = u.Body.ElapsedTime);
+                subscribeRq.NotificationShutdownPort.Post(new Shutdown());
+
+                LogInfo("ExecuteTest.7");
+                Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
+                yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
+
+                LogInfo("ExecuteTest.8");
+                IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;
+                yield return To.Exec(DeserializaTopLevelEntityProxies,
+                            (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens, simState,
+                            (Func<XmlElement, bool>)
+                            (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
                 
-                var elapsedTime = 0.0;                
-                while (!testSucceed && elapsedTime <= test.EstimatedTime * 1.25)
-                {
-                    Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
-                    yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
+                LogInfo("ExecuteTest.9");
+                yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, elapsedTime);
+                LogInfo("ExecuteTest.10");
 
-                    //IEnumerable<MrsePxy.VisualEntity> simStateEntities = null;
-                    //yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> ens) => simStateEntities = ens, simState);
-                    //yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, simStateEntities, elapsedTime);
-                    IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;
-                    yield return To.Exec(DeserializaTopLevelEntityProxies,
-                                (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens, simState,
-                                (Func<XmlElement, bool>)
-                                (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
-                    yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, elapsedTime);
 
-                    yield return Arbiter.Choice(_timer.Get(), s => elapsedTime = s.ElapsedTime, LogError);
 
-                    if (!testSucceed)
-                        yield return To.Exec(TimeoutPort(20));
-                }
+
+                //var elapsedTime = 0.0;
+                //var startTime = 0.0;
+                //yield return Arbiter.Choice(_timer.Get(), s => startTime = elapsedTime = s.ElapsedTime, LogError);
+
+                //while (!testSucceed && (elapsedTime - startTime) <= test.EstimatedTime * 1.25)
+                //{
+                //    LogInfo("ExecuteTest.7");
+                //    //LogInfo(string.Format());
+                //    Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
+                //    yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
+
+                //    LogInfo("ExecuteTest.8");
+                //    //IEnumerable<MrsePxy.VisualEntity> simStateEntities = null;
+                //    //yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> ens) => simStateEntities = ens, simState);
+                //    //yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, simStateEntities, elapsedTime);
+                //    IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;
+                //    yield return To.Exec(DeserializaTopLevelEntityProxies,
+                //                (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens, simState,
+                //                (Func<XmlElement, bool>)
+                //                (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
+                //    LogInfo("ExecuteTest.9");
+                //    yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, elapsedTime);
+                //    LogInfo("ExecuteTest.10");
+                //    yield return Arbiter.Choice(_timer.Get(), s => elapsedTime = s.ElapsedTime, LogError);
+
+                //    LogInfo("ExecuteTest.11");
+                //    if (!testSucceed)
+                //        yield return TimeoutPort(20).Receive();
+                //}
+                LogInfo("ExecuteTest.12");
             	OnTestTryEnded(test, testSucceed);
 
                 if (testSucceed) ++successful;
 
 	            //Drop services that need to be restarted
 				yield return To.Exec(DropServices);
+                LogInfo("ExecuteTest.13");
             }
 
             @return((float)successful / i);
@@ -280,7 +325,9 @@ namespace Brumba.SimulationTester
 				yield return To.Exec(insRequest.ResponsePort);
 			}
 
-            Mrse.SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
+            var timerInsRequest = new Mrse.InsertSimulationEntity(new BrSimTimer.TimerEntity("timer"));
+            Mrse.SimulationEngine.GlobalInstancePort.Post(timerInsRequest);
+            yield return To.Exec(timerInsRequest.ResponsePort);
         }
 
         IEnumerator<ITask> DeserializaTopLevelEntityProxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, MrsPxy.SimulationState simState, Func<XmlElement, bool> filter)
@@ -338,6 +385,21 @@ namespace Brumba.SimulationTester
 			return i == TRIES_NUMBER / 10 && ((float)successful / i > SUCCESS_THRESHOLD || (float)successful / i < 1 - SUCCESS_THRESHOLD);
 		}
 	}
+
+    public static class SimulatedTimerUtils
+    {
+        public static BrSimTimerPxy.Subscribe Subscribe(this BrSimTimerPxy.SimulatedTimerOperations me, float interval)
+        {
+            var subscribeRq = new BrSimTimerPxy.Subscribe
+                {
+                    Body = new BrSimTimerPxy.SubscribeRequest(interval),
+                    NotificationPort = new BrSimTimerPxy.SimulatedTimerOperations(),
+                    NotificationShutdownPort = new Port<Shutdown>()
+                };
+            me.Post(subscribeRq);
+            return subscribeRq;
+        }
+    }
 }
 
 

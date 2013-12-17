@@ -62,7 +62,8 @@ namespace Brumba.Simulation.SimulatedLrf
                 new ConcurrentReceiverGroup(
                     Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
                     Arbiter.Receive<sickPxy.Get>(true, _mainPort, GetHandler),
-                    Arbiter.Receive<HttpGet>(true, _mainPort, GetHandler)
+                    Arbiter.Receive<HttpGet>(true, _mainPort, GetHandler),
+                    Arbiter.Receive(true, _raycastResultsPort, RaycastResultsHandler)
                     ));
         }
 
@@ -79,8 +80,6 @@ namespace Brumba.Simulation.SimulatedLrf
             {
                 LogError(ex);
             }
-
-            Activate(Arbiter.Receive(true, _raycastResultsPort, RaycastResultsHandler));
         }
 
         // we just receive ray cast information from physics. Currently we just use
@@ -89,6 +88,10 @@ namespace Brumba.Simulation.SimulatedLrf
         // scattering, reflections, noise etc.
         void RaycastResultsHandler(RaycastResult result)
 		{
+            if (LrfEntity == null)
+                LogError("Lrf is null!!!");
+            if (_state == null)
+                LogError("_state is null!!!");
 		    var newState = new sickPxy.State
 		        {
 		            DistanceMeasurements =

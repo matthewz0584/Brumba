@@ -9,12 +9,13 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Xna.Framework;
-using Vector3 = Microsoft.Xna.Framework.Vector3;
+using xVector2 = Microsoft.Xna.Framework.Vector2;
+using xVector3 = Microsoft.Xna.Framework.Vector3;
 using VisualEntity = Microsoft.Robotics.Simulation.Engine.VisualEntity;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("waiter_stupid_odometry_tests", Wip = true)]
+    [SimTestFixture("waiter_stupid_odometry_tests")]
 	public class WaiterStupidOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }
@@ -29,7 +30,7 @@ namespace Brumba.SimulationTester.Tests
 			OdometryPort = testerService.ForwardTo<WaiterStupid.Odometry.Proxy.OdometryOperations>("odometry@");
 		}
 
-		//[SimTest]
+		[SimTest]
 		public class DriveStraight : StochasticTest
 		{
             private bool _failed;
@@ -41,32 +42,32 @@ namespace Brumba.SimulationTester.Tests
 			public override IEnumerator<ITask> Start()
 			{
 			    _failed = false;
-				EstimatedTime = 5;
+				EstimatedTime = 8;
 
 				//Execs for synchronization, otherwise set power message can arrive before enable message
 				yield return To.Exec((Fixture as WaiterStupidOdometryTests).RefPlDrivePort.EnableDrive(true));
-				yield return To.Exec((Fixture as WaiterStupidOdometryTests).RefPlDrivePort.SetDrivePower(1.0, 1.0));
+				yield return To.Exec((Fixture as WaiterStupidOdometryTests).RefPlDrivePort.SetDrivePower(0.5, 0.5));
 			}
 
 			public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
 			{
-				if (elapsedTime < 0.9 * EstimatedTime || _failed)
+                var odometryPosition = new xVector2();
+                yield return (Fixture as WaiterStupidOdometryTests).OdometryPort.Get().Receive(os => odometryPosition = new xVector2(os.State.Pose.X, os.State.Pose.Y));
+
+				if (odometryPosition.Length() < 5 || _failed)
 				{
 					@return(false);
 					yield break;
 				}
+                
+                var simPose = SimPoseToEgocentricPose(ExtractStupidWaiterPose(simStateEntities));
+			    var simPosition = new xVector2(simPose.X, simPose.Y);
 
-				var simPose = ExtractStupidWaiterPose(simStateEntities);
-				WaiterStupid.Odometry.Proxy.OdometryServiceState odometryState = null;
-				yield return (Fixture as WaiterStupidOdometryTests).OdometryPort.Get().Receive(os => odometryState = os);
+                @return(!(_failed = (odometryPosition - simPosition).Length() / simPosition.Length() > 0.05));
 
-				var poseDifference = odometryState.State.Pose - SimPoseToEgocentricPose(simPose);
-
-				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Odometry {0}", odometryState.State.Pose);
-				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Simulation {0}", SimPoseToEgocentricPose(simPose));
-				(Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("Ratio {0}", poseDifference.Length() / SimPoseToEgocentricPose(simPose).Length());
-
-                @return(!(_failed = poseDifference.Length() / SimPoseToEgocentricPose(simPose).Length() > 0.05));
+                (Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Odometry {0}", odometryPosition);
+                (Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("From Simulation {0}", simPosition);
+                (Fixture as WaiterStupidOdometryTests).TesterService.LogInfo("Ratio {0}", (odometryPosition - simPosition).Length() / simPosition.Length());
 			}
 		}
 
@@ -117,9 +118,9 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}
 
-		static Vector3 SimPoseToEgocentricPose(Pose pose)
+		static xVector3 SimPoseToEgocentricPose(Pose pose)
 		{
-			return new Vector3(-pose.Position.Z, pose.Position.X, MathHelper.ToRadians(UIMath.QuaternionToEuler(pose.Orientation).Y));
+			return new xVector3(-pose.Position.Z, pose.Position.X, MathHelper.ToRadians(UIMath.QuaternionToEuler(pose.Orientation).Y));
 		}
 
 		static Pose ExtractStupidWaiterPose(IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities)

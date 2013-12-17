@@ -548,7 +548,7 @@
     </SingleShapeEntity>
     <TurretEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/04/simulatedturret.html">
       <sim:State>
-        <sim:Name>turret</sim:Name>
+        <sim:Name>turret@</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
@@ -637,7 +637,7 @@
               </physm:JointConnectPoint>
             </physm:EntityJointConnector>
             <physm:EntityJointConnector>
-              <physm:EntityName>turret</physm:EntityName>
+              <physm:EntityName>turret@</physm:EntityName>
               <physm:JointNormal>
                 <physm:X>1</physm:X>
                 <physm:Y>0</physm:Y>

@@ -6,7 +6,8 @@ using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
-using Replace = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Replace;
+using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
+using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
 namespace Brumba.SimulationTester.Tests
@@ -15,15 +16,15 @@ namespace Brumba.SimulationTester.Tests
     public class RefPlatformSimpleTests
     {
 		public SimulationTesterService TesterService { get; private set; }
-        public Microsoft.Robotics.Services.Drive.Proxy.DriveOperations RefPlDrivePort { get; private set; }
-		public Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.SickLRFOperations SickLrfPort { get; private set; }
+        public DrivePxy.DriveOperations RefPlDrivePort { get; private set; }
+        public SickLrfPxy.SickLRFOperations SickLrfPort { get; private set; }
 
         [SimSetUp]
 		public void SetUp(SimulationTesterService testerService)
         {
             TesterService = testerService;
-            RefPlDrivePort = testerService.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
-			SickLrfPort = testerService.ForwardTo<Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.SickLRFOperations>("stupid_waiter_lidar/sicklrf");
+            RefPlDrivePort = testerService.ForwardTo<DrivePxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
+            SickLrfPort = testerService.ForwardTo<SickLrfPxy.SickLRFOperations>("stupid_waiter_lidar/sicklrf");
         }
 
         [SimTest]
@@ -32,7 +33,7 @@ namespace Brumba.SimulationTester.Tests
 	        public override IEnumerator<ITask> Start()
             {
 				//Max speed = 1,6 m/s, distance 2 meters
-				EstimatedTime = 2 * 2 / 1.6;
+				EstimatedTime = 2f / 1.6;
 
                 //Execs for synchronization, otherwise set power message can arrive before enable message
                 yield return To.Exec((Fixture as RefPlatformSimpleTests).RefPlDrivePort.EnableDrive(true));
@@ -50,7 +51,7 @@ namespace Brumba.SimulationTester.Tests
 		[SimTest]
 		public class LrfTest : StochasticTest
 		{
-            Port<Replace> _lrfNotify = new Port<Replace>();
+            Port<SickLrfPxy.Replace> _lrfNotify = new Port<SickLrfPxy.Replace>();
             bool _correctNotificationReceived;
 
 		    public override void PrepareForReset(Microsoft.Robotics.Simulation.Engine.VisualEntity entity)
@@ -65,7 +66,7 @@ namespace Brumba.SimulationTester.Tests
 				yield break;
 			}
 
-		    private void OnLrfNotification(Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.Replace replace)
+            private void OnLrfNotification(SickLrfPxy.Replace replace)
 		    {
 		        _correctNotificationReceived = CheckStateAndMeasurements(replace.Body);
 		    }
@@ -73,7 +74,7 @@ namespace Brumba.SimulationTester.Tests
 		    public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
 				Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.State lrfState = null;
-				yield return Arbiter.Receive<Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.State>(false, (Fixture as RefPlatformSimpleTests).SickLrfPort.Get(), ss => lrfState = ss);
+                yield return Arbiter.Receive<SickLrfPxy.State>(false, (Fixture as RefPlatformSimpleTests).SickLrfPort.Get(), ss => lrfState = ss);
 
 			    @return(CheckStateAndMeasurements(lrfState) && _correctNotificationReceived);
 		        _correctNotificationReceived = false;

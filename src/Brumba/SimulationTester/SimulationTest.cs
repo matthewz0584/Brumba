@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Ccr.Core;
-using VisualEntity = Microsoft.Robotics.Simulation.Engine.VisualEntity;
+using Mrse = Microsoft.Robotics.Simulation.Engine;
+using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 
 namespace Brumba.SimulationTester
 {
     public interface ISimulationTest
     {
-        void PrepareForReset(VisualEntity entity);
+        void PrepareForReset(Mrse.VisualEntity entity);
 
         IEnumerator<ITask> Start();
-        IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime);
+        IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<MrsePxy.VisualEntity> simStateEntities, double elapsedTime);
 
         double EstimatedTime { get; }
         bool IsProbabilistic { get; }
@@ -24,16 +25,16 @@ namespace Brumba.SimulationTester
 
         public abstract bool IsProbabilistic { get; }
 
-        public abstract void PrepareForReset(VisualEntity entity);
+        public abstract void PrepareForReset(Mrse.VisualEntity entity);
 
         public abstract IEnumerator<ITask> Start();
-        public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime);
+        public abstract IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<MrsePxy.VisualEntity> simStateEntities, double elapsedTime);
     }
 
     public abstract class DeterministicTest : SimulationTestBase
     {
         //Test is deterministic, it is run once, no need to reload any entities. Besides, it may alleviate some problems (some joint locks, for example).
-        public override void PrepareForReset(VisualEntity entity)
+        public override void PrepareForReset(Mrse.VisualEntity entity)
         {
         }
 

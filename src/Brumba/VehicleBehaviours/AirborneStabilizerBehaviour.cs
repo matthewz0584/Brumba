@@ -169,7 +169,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
                 //if (!float.IsNaN(angleShoulder.Y))
                 //    _stabilizer.ChangeTailShoulder(angleShoulder.Y);
 
-                yield return To.Exec(TimeoutPort((int)(_state.ScanInterval * 1000)));
+                yield return TimeoutPort((int)(_state.ScanInterval * 1000)).Receive();
             }
         }
 

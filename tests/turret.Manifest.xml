@@ -6,7 +6,7 @@
       <dssp:Service>http://localhost:80/testee_turret</dssp:Service>
       <PartnerList xmlns="http://schemas.microsoft.com/xw/2004/10/dssp.html">
         <Partner>
-          <Service>http://localhost/turret</Service>
+          <Service>http://localhost/turret@</Service>
           <PartnerList />
           <Name xmlns:q1="http://schemas.microsoft.com/robotics/2006/04/simulation.html">q1:Entity</Name>
         </Partner>

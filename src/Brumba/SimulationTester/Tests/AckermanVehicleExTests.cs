@@ -37,14 +37,14 @@ namespace Brumba.SimulationTester.Tests
             public override IEnumerator<ITask> Start()
             {
                 float motorPower = 0.6f;
-                EstimatedTime = 50 / (AckermanVehicles.HardRearDriven.MaxVelocity * motorPower);//50 meters
+                EstimatedTime = (50 / (AckermanVehicles.HardRearDriven.MaxVelocity * motorPower));//50 meters
                 yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateDrivePower(motorPower));
             }
 
             public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
-                var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose.Position));
-                @return(pos.Length() > 50);
+                var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose.Orientation));
+                @return(Math.Abs(orientation.X) < 90);
                 yield break;
             }
         }
@@ -63,7 +63,7 @@ namespace Brumba.SimulationTester.Tests
             public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose.Orientation));
-                @return(Math.Abs(orientation.X) < 90 && elapsedTime > EstimatedTime);
+                @return(Math.Abs(orientation.X) < 90);
                 yield break;
             }
         }

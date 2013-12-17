@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Ccr.Core;
+using W3C.Soap;
 
 namespace Brumba.Utils
 {
@@ -204,14 +205,14 @@ namespace Brumba.Utils
             return Arbiter.FromIteratorHandler(new ActionCall(call).Call);
         }
 
-        public static ITask Exec<T1>(Port<T1> portSet)
-        {
-            return Arbiter.Receive(false, portSet, val => { });
-        }
-
         public static ITask Exec<T1, T2>(PortSet<T1, T2> portSet)
+            where T2 : Fault
         {
-            return Arbiter.Choice(portSet, p1 => { }, p2 => Console.WriteLine("Choice on {0} returned error {1}", portSet, p2));
+            return Arbiter.Choice(portSet, p1 => { }, p2 =>
+                {
+                    Console.WriteLine("Choice on {0} returned error {1}", portSet, p2);
+                    throw p2.ToException();
+                });
         }
     }
 }
