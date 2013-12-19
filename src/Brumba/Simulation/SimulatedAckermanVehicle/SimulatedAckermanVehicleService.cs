@@ -60,16 +60,8 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
                     ));
         }
 
-        protected override void OnInsertEntity()
-        {
-            LogInfo("SimulatedAckermanVehcile OnInsertEntity called");
-            _state.Connected = true;
-        }
-
         protected override void OnDeleteEntity()
         {
-            LogInfo("SimulatedAckermanVehicle OnDeleteEntity called");
-            _state.Connected = false;
             _state.DriveAngularDistance = 0;
             _state.SteeringAngle = 0;
         }
@@ -113,6 +105,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         {
             _state.DriveAngularDistance = Vehicle.GetDriveAngularDistance();
             _state.SteeringAngle = Vehicle.GetSteeringAngle();
+	        _state.Connected = Connected;
         }
 
         AckermanVehicleEntityBase Vehicle { get { return Entity as AckermanVehicleEntityBase; } }

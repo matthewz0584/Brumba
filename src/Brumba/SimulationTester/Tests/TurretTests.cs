@@ -25,6 +25,11 @@ namespace Brumba.SimulationTester.Tests
         {
             public override IEnumerator<ITask> Start()
             {
+				var connected = false;
+				yield return (Fixture as TurretTests).TurretPort.Get().Receive(s => connected = s.Connected);
+				if (!connected)
+					yield break;
+
                 EstimatedTime = 3;
                 (Fixture as TurretTests).TurretPort.SetBaseAngle((float)Math.PI / 4);
                 yield break;

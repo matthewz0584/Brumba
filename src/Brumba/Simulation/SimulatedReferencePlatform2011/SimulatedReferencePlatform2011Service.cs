@@ -118,19 +118,12 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
         protected override void OnInsertEntity()
         {
-            LogInfo("SimulatedReferencePlatform2011Service OnInsertEntity called");
-
             if (RpEntity.ChassisShape != null)
             {
                 _state.DriveState.DistanceBetweenWheels = RpEntity.ChassisShape.BoxState.Dimensions.X;
             }
             _state.DriveState.LeftWheel.MotorState.PowerScalingFactor = RpEntity.MotorTorqueScaling;
             _state.DriveState.RightWheel.MotorState.PowerScalingFactor = RpEntity.MotorTorqueScaling;
-        }
-
-        protected override void OnDeleteEntity()
-        {
-            LogInfo("SimulatedReferencePlatform2011Service OnDeleteEntity called");
         }
 
         void OnSubscribe(Subscribe subscribe)

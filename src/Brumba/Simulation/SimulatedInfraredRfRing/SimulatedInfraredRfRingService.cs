@@ -49,21 +49,15 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
 	                ));
 	    }
 
-	    protected override void OnInsertEntity()
-        {
-            LogInfo("SimulatedInfraredRfRing OnInsertEntity called");
-            _state.Connected = true;
-        }
-
         protected override void OnDeleteEntity()
         {
-            LogInfo("SimulatedInfraredRfRing OnDeleteEntity called");
-            _state.Connected = false;
             _state.Distances = new List<float>();
         }
 
         void OnGet(Get getRequest)
         {
+			_state.Connected = Connected;
+
             if (Entity != null)
                 _state.Distances = (Entity as InfraredRfRingEntity).GetDistances().ToList();
 

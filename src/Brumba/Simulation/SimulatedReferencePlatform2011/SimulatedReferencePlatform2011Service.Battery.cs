@@ -39,12 +39,11 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
         public IEnumerator<ITask> SubscribeHandler(battery.Subscribe subscribe)
         {
-	        yield return
-		        SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort).
-			        Choice(success =>
-			               SendNotificationToTarget(subscribe.Body.Subscriber, _subMgrPort,
-													new battery.Replace { Body = _state.BatteryState }),
-			               EmptyHandler);
+	        yield return SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort).Choice(success =>
+		        {
+			        UpdateStateFromSimulation();
+			        SendNotificationToTarget(subscribe.Body.Subscriber, _subMgrPort, new battery.Replace {Body = _state.BatteryState});
+		        }, EmptyHandler);
         }
 
         public void SetCriticalLevelHandler(battery.SetCriticalLevel request)

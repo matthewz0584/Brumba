@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Brumba.Simulation.SimulatedReferencePlatform2011.Proxy;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Diagnostics;
@@ -28,7 +29,10 @@ namespace Brumba.SimulationTester.Tests
 			TesterService = testerService;
 			RefPlDrivePort = testerService.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
 			OdometryPort = testerService.ForwardTo<WaiterStupid.Odometry.Proxy.OdometryOperations>("odometry@");
+			SimRefPlDrivePort = testerService.ForwardTo<ReferencePlatform2011Operations>("stupid_waiter_ref_platform");
 		}
+
+		protected ReferencePlatform2011Operations SimRefPlDrivePort { get; set; }
 
 		[SimTest]
 		public class DriveStraight : StochasticTest
@@ -41,6 +45,11 @@ namespace Brumba.SimulationTester.Tests
 
 			public override IEnumerator<ITask> Start()
 			{
+				var connected = false;
+				yield return (Fixture as WaiterStupidOdometryTests).SimRefPlDrivePort.Get().Receive(s => connected = s.Connected);
+				if (!connected)
+					yield break;
+
 			    _failed = false;
 				EstimatedTime = 8;
 
@@ -82,6 +91,11 @@ namespace Brumba.SimulationTester.Tests
 
 			public override IEnumerator<ITask> Start()
 			{
+				var connected = false;
+				yield return (Fixture as WaiterStupidOdometryTests).SimRefPlDrivePort.Get().Receive(s => connected = s.Connected);
+				if (!connected)
+					yield break;
+
                 _failed = false;
 				EstimatedTime = 4 * 2;
 

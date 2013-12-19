@@ -49,20 +49,10 @@ namespace Brumba.Simulation.SimulatedTurret
                         ));
 	    }
 
-	    protected override void OnInsertEntity()
-        {
-            LogInfo("SimulatedTurret OnInsertEntity called");
-            _state.Connected = true;
-        }
-
-        protected override void OnDeleteEntity()
-        {
-            LogInfo("SimulatedTurret OnDeleteEntity called");
-            _state.Connected = false;
-        }
-
         void OnGet(Get getRequest)
         {
+	        _state.Connected = Connected;
+
             if (Entity != null)
                 _state.BaseAngle = (Entity as TurretEntity).BaseAngle;
 

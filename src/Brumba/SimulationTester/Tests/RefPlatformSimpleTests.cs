@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.Simulation.SimulatedLrf.Proxy;
+using Brumba.Simulation.SimulatedReferencePlatform2011.Proxy;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -25,13 +27,26 @@ namespace Brumba.SimulationTester.Tests
             TesterService = testerService;
             RefPlDrivePort = testerService.ForwardTo<DrivePxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
             SickLrfPort = testerService.ForwardTo<SickLrfPxy.SickLRFOperations>("stupid_waiter_lidar/sicklrf");
+			SimRefPlDrivePort = testerService.ForwardTo<ReferencePlatform2011Operations>("stupid_waiter_ref_platform");
+			SimSickLrfPort = testerService.ForwardTo<SimulatedLrfOperations>("stupid_waiter_lidar");
         }
 
-        [SimTest]
+	    protected ReferencePlatform2011Operations SimRefPlDrivePort { get; set; }
+		protected SimulatedLrfOperations SimSickLrfPort { get; set; }
+
+	    [SimTest]
         public class DriveForwardTest : DeterministicTest
         {
 	        public override IEnumerator<ITask> Start()
             {
+				var connected = false;
+		        yield return Arbiter.JoinedReceive(false,
+											(Fixture as RefPlatformSimpleTests).SimRefPlDrivePort.Get().P0,
+											(Fixture as RefPlatformSimpleTests).SimSickLrfPort.Get().P0,
+											(rs, ls) => connected = rs.Connected & ls.Connected);
+				if (!connected)
+					yield break;
+
 				//Max speed = 1,6 m/s, distance 2 meters
 				EstimatedTime = 2f / 1.6;
 
@@ -60,6 +75,14 @@ namespace Brumba.SimulationTester.Tests
 
 		    public override IEnumerator<ITask> Start()
 			{
+				var connected = false;
+				yield return Arbiter.JoinedReceive(false,
+											(Fixture as RefPlatformSimpleTests).SimRefPlDrivePort.Get().P0,
+											(Fixture as RefPlatformSimpleTests).SimSickLrfPort.Get().P0,
+											(rs, ls) => connected = rs.Connected & ls.Connected);
+				if (!connected)
+					yield break;
+
 				EstimatedTime = 1;
 		        (Fixture as RefPlatformSimpleTests).SickLrfPort.Subscribe(_lrfNotify);
 		        (Fixture as RefPlatformSimpleTests).TesterService.Activate(Arbiter.Receive(true, _lrfNotify, OnLrfNotification));

@@ -59,13 +59,11 @@ namespace Brumba.Simulation.SimulatedTimer
 
         protected override void OnInsertEntity()
         {
-            LogInfo("SimulatedTimer OnInsertEntity called");
             (Entity as TimerEntity).Tick += time => _multiTimer.Update((float)time);
         }
 
         protected override void OnDeleteEntity()
         {
-            LogInfo("SimulatedTimer OnDeleteEntity called");
             _state.ElapsedTime = 0;
             _state.StartTime = 0;
 
@@ -87,6 +85,7 @@ namespace Brumba.Simulation.SimulatedTimer
         {
             _state.ElapsedTime = (Entity as TimerEntity).ElapsedTime;
             _state.StartTime = (Entity as TimerEntity).StartTime;
+			_state.Connected = Connected;
             DefaultGetHandler(getRequest);
         }
 

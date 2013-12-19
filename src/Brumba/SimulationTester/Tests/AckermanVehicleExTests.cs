@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.AckermanVehicle.Proxy;
 using Brumba.Simulation;
+using Brumba.Simulation.SimulatedAckermanVehicle.Proxy;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.PhysicalModel;
@@ -16,11 +18,13 @@ namespace Brumba.SimulationTester.Tests
     public class AckermanVehicleExTests
     {
         public AckermanVehicle.Proxy.AckermanVehicleOperations VehiclePort { get; set; }
+		public SimulatedAckermanVehicleOperations SimVeh { get; set; }
 
         [SimSetUp]
 		public void SetUp(SimulationTesterService testerService)
         {
             VehiclePort = testerService.ForwardTo<AckermanVehicle.Proxy.AckermanVehicleOperations>("testee_veh_service/genericackermanvehicle");
+			SimVeh = testerService.ForwardTo<SimulatedAckermanVehicleOperations>("testee_veh_service");
         }
 
         public abstract class SingleVehicleTest : StochasticTest
@@ -36,6 +40,11 @@ namespace Brumba.SimulationTester.Tests
         {
             public override IEnumerator<ITask> Start()
             {
+	            var connected = false;
+	            yield return (Fixture as AckermanVehicleExTests).SimVeh.Get().Receive(s => connected = s.Connected);
+				if (!connected)
+					yield break;
+
                 float motorPower = 0.6f;
                 EstimatedTime = (50 / (AckermanVehicles.HardRearDriven.MaxVelocity * motorPower));//50 meters
                 yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateDrivePower(motorPower));
@@ -54,6 +63,11 @@ namespace Brumba.SimulationTester.Tests
         {
             public override IEnumerator<ITask> Start()
             {
+				var connected = false;
+				yield return (Fixture as AckermanVehicleExTests).SimVeh.Get().Receive(s => connected = s.Connected);
+				if (!connected)
+					yield break;
+
                 EstimatedTime = 20;
                 var steerAngle = RandomG.Next(0, 1) == 1 ? 0.1f : -0.1f;
                 yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateSteeringAngle(steerAngle));
@@ -76,6 +90,11 @@ namespace Brumba.SimulationTester.Tests
 
             public override IEnumerator<ITask> Start()
             {
+				var connected = false;
+				yield return (Fixture as AckermanVehicleExTests).SimVeh.Get().Receive(s => connected = s.Connected);
+				if (!connected)
+					yield break;
+
                 EstimatedTime = 4;
                 yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateSteeringAngle(0.5f));
                 yield return To.Exec((Fixture as AckermanVehicleExTests).VehiclePort.UpdateDrivePower(0.2f));

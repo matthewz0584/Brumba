@@ -22,6 +22,11 @@ namespace Brumba.SimulationTester.Tests
         {
             public override IEnumerator<ITask> Start()
             {
+				var connected = false;
+				yield return (Fixture as InfraredRfRingTests).IfRfRingPort.Get().Receive(s => connected = s.Connected);
+				if (!connected)
+					yield break;
+
                 EstimatedTime = 1;
                 yield break;
             }

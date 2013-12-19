@@ -208,7 +208,7 @@ namespace Brumba.SimulationTester
                 LogInfo("ExecuteTest.2");
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)test.PrepareForReset);
 
-                yield return TimeoutPort(500).Receive();
+                //yield return TimeoutPort(500).Receive();
 
                 LogInfo("ExecuteTest.3");
                 //Restart services from fixture manifest

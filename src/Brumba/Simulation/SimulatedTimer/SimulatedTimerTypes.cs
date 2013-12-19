@@ -22,6 +22,10 @@ namespace Brumba.Simulation.SimulatedTimer
         [DataMember]
         [Description("Simulation time at the moment of entity initialization")]
         public double StartTime { get; set; }
+
+		[DataMember]
+		[Description("If there is any simulation entity under control of this service")]
+		public bool Connected { get; set; }
     }
 
     [ServicePort]

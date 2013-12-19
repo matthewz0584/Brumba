@@ -8,11 +8,13 @@ namespace Brumba.Simulation
 	abstract class SimulatedEntityServiceBase : DsspServiceBase
 	{
 	    readonly SimulationEnginePort _simEngineNotifyPort = new SimulationEnginePort();
-	    private readonly string _contract;
+	    readonly string _contract;
 
-	    public VisualEntity Entity { get; set; }
+		public VisualEntity Entity { get; set; }
 
-	    protected SimulatedEntityServiceBase(DsspServiceCreationPort creationPort, string contract)
+		public bool Connected { get; set; }
+
+		protected SimulatedEntityServiceBase(DsspServiceCreationPort creationPort, string contract)
 			: base(creationPort)
 	    {
 	        _contract = contract;
@@ -47,10 +49,16 @@ namespace Brumba.Simulation
             OnInsertEntity();
 
             SetUpForControlOfEntity();
+
+			LogInfo(string.Format("{0} entity inserted", entity.Body));
+	        Connected = true;
         }
 
         void OnDeleteEntity(DeleteSimulationEntity entity)
         {
+	        Connected = false;
+			LogInfo(string.Format("{0} entity deleted", entity.Body));
+
             Entity = null;
             
             OnDeleteEntity();

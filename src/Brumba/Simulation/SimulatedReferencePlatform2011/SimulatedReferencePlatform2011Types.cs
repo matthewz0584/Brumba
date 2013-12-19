@@ -1,9 +1,4 @@
-//------------------------------------------------------------------------------
-//  <copyright file="ReferencePlatform2011Types.cs" company="Microsoft Corporation">
-//      Copyright (C) Microsoft Corporation.  All rights reserved.
-//  </copyright>
-//------------------------------------------------------------------------------
-
+using System.ComponentModel;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -29,6 +24,10 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
     [DataContract]
     public class ReferencePlatform2011State
     {
+		[DataMember]
+		[Description("If there is any simulation entity under control of this service")]
+		public bool Connected { get; set; }
+
         /// <summary>
         /// Gets or sets the differential drive state
         /// </summary>

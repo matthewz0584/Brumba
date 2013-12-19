@@ -53,20 +53,10 @@ namespace Brumba.Simulation.SimulatedTail
 	                ));
 	    }
 
-        protected override void OnInsertEntity()
-        {
-            LogInfo("SimulatedTail OnInsertEntity called");
-            _state.Connected = true;
-        }
-
-        protected override void OnDeleteEntity()
-        {
-            LogInfo("SimulatedTail OnDeleteEntity called");
-            _state.Connected = false;
-        }
-
         void OnGet(Get getRequest)
         {
+	        _state.Connected = Connected;
+
             if (TailEntity != null)
             {
                 _state.WheelToGroundDistances = TailEntity.GroundRangefinders.Select(grf => grf.Distance).ToList();
