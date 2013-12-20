@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 
@@ -11,7 +10,7 @@ namespace Brumba.Simulation.SimulatedTurret
     class SimulatedTurretService : SimulatedEntityServiceBase
 	{
 		[ServiceState]
-        SimulatedTurretState _state = new SimulatedTurretState();
+        readonly SimulatedTurretState _state = new SimulatedTurretState();
 		
 		[ServicePort("/SimulatedTurret", AllowMultipleInstances = true)]
         SimulatedTurretOperations _mainPort = new SimulatedTurretOperations();
@@ -24,10 +23,9 @@ namespace Brumba.Simulation.SimulatedTurret
         [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
 		public void OnGet(Get getRequest)
         {
-			if (Connected)
+			if (IsConnected)
                 _state.BaseAngle = (Entity as TurretEntity).BaseAngle;
 
-			_state.Connected = Connected;
             DefaultGetHandler(getRequest);
         }
 
@@ -40,5 +38,7 @@ namespace Brumba.Simulation.SimulatedTurret
             (Entity as TurretEntity).BaseAngle = angleRequest.Body.Angle;
             angleRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
+
+		protected override ISimulationEntityServiceState GetState() { return _state; }
 	}
 }

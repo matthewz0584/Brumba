@@ -14,11 +14,11 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
 	}
 	
 	[DataContract]
-    public class SimulatedInfraredRfRingState
+    public class SimulatedInfraredRfRingState : ISimulationEntityServiceState
 	{
         [DataMember]
         [Description("If there is any simulation entity under control of this service")]
-        public bool Connected { get; set; }
+        public bool IsConnected { get; set; }
         
         [DataMember]
         [Description("Rangefinders measurements, order as given to entity")]

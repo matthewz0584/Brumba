@@ -7,6 +7,11 @@ using W3C.Soap;
 
 namespace Brumba.Simulation
 {
+	interface ISimulationEntityServiceState
+	{
+		bool IsConnected { get; set; }
+	}
+
 	abstract class SimulatedEntityServiceBase : DsspServiceBase
 	{
 	    readonly SimulationEnginePort _simEngineNotifyPort = new SimulationEnginePort();
@@ -14,15 +19,15 @@ namespace Brumba.Simulation
 
 		public VisualEntity Entity { get; set; }
 
-		public bool Connected { get; set; }
+		public bool IsConnected { get { return GetState().IsConnected; } }
 
 		protected SimulatedEntityServiceBase(DsspServiceCreationPort creationPort, string contract)
 			: base(creationPort)
-	    {
-	        _contract = contract;
-	    }
+		{
+			_contract = contract;
+		}
 
-	    protected override void Start()
+		protected override void Start()
 		{
             SimulationEngine.GlobalInstancePort.Subscribe(ServiceInfo.PartnerList, _simEngineNotifyPort);
 
@@ -36,6 +41,8 @@ namespace Brumba.Simulation
         protected virtual void OnInsertEntity() {}
         protected virtual void OnDeleteEntity() {}
 
+		protected abstract ISimulationEntityServiceState GetState();
+
         void OnInsertEntity(InsertSimulationEntity entity)
         {
             Entity = entity.Body;
@@ -44,7 +51,7 @@ namespace Brumba.Simulation
             OnInsertEntity();
 
 			LogInfo(string.Format("{0} entity inserted", entity.Body));
-	        Connected = true;
+			GetState().IsConnected = true;
 
 	        MainPortInterleave.CombineWith(new Interleave(
 				new ExclusiveReceiverGroup(Arbiter.Receive<DeleteSimulationEntity>(false, _simEngineNotifyPort, OnDeleteEntity)),
@@ -53,7 +60,7 @@ namespace Brumba.Simulation
 
         void OnDeleteEntity(DeleteSimulationEntity entity)
         {
-	        Connected = false;
+			GetState().IsConnected = false;
 			LogInfo(string.Format("{0} entity deleted", entity.Body));
 
             Entity = null;
@@ -65,13 +72,13 @@ namespace Brumba.Simulation
 				new ConcurrentReceiverGroup()));
         }
 
-		protected bool FaultIfNotConnected<TBody, TResponseSuccess>(DsspOperation<TBody, PortSet<TResponseSuccess, Fault>> message)
+		public bool FaultIfNotConnected<TBody, TResponseSuccess>(DsspOperation<TBody, PortSet<TResponseSuccess, Fault>> message)
 			where TBody : new()
 		{
 			return FaultIfNotConnected(message.ResponsePort, message.GetType());
 		}
 
-		protected bool FaultIfNotConnected<TBody, TResponseSuccess>(DsspOperation<TBody, DsspResponsePort<TResponseSuccess>> message)
+		public bool FaultIfNotConnected<TBody, TResponseSuccess>(DsspOperation<TBody, DsspResponsePort<TResponseSuccess>> message)
 			where TBody : new()
 		{
 			return FaultIfNotConnected(message.ResponsePort, message.GetType());
@@ -79,7 +86,7 @@ namespace Brumba.Simulation
 
 		bool FaultIfNotConnected<TResponseSuccess>(PortSet<TResponseSuccess, Fault> responsePort, Type messageType)
 		{
-			if (Connected)
+			if (IsConnected)
 				return false;
 
 			LogError(string.Format("Call of simulation service handler for {0} operation while entity is not connected.", messageType));

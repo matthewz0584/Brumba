@@ -1,9 +1,6 @@
 using System.ComponentModel;
-using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
-using Microsoft.Dss.Core.DsspHttp;
 using Microsoft.Dss.ServiceModel.Dssp;
-using W3C.Soap;
 using drive = Microsoft.Robotics.Services.Drive;
 using battery = Microsoft.Robotics.Services.Battery;
 using Microsoft.Robotics.Services.Motor;
@@ -25,7 +22,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 	    /// Service state
 	    /// </summary>
 	    [ServiceState]
-		private ReferencePlatform2011State _state = new ReferencePlatform2011State
+		readonly ReferencePlatform2011State _state = new ReferencePlatform2011State
 		    {
 			    DriveState = new drive.DriveDifferentialTwoWheelState
 				    {
@@ -50,10 +47,10 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// Main service port
         /// </summary>
         [ServicePort("/SimulatedReferencePlatform2011", AllowMultipleInstances = true)]
-        private ReferencePlatform2011Operations _mainPort = new ReferencePlatform2011Operations();
+        ReferencePlatform2011Operations _mainPort = new ReferencePlatform2011Operations();
 
 		[SubscriptionManagerPartner("SubMgr")]
-		private Microsoft.Dss.Services.SubscriptionManager.SubscriptionManagerPort _subMgrPort = new Microsoft.Dss.Services.SubscriptionManager.SubscriptionManagerPort();
+		Microsoft.Dss.Services.SubscriptionManager.SubscriptionManagerPort _subMgrPort = new Microsoft.Dss.Services.SubscriptionManager.SubscriptionManagerPort();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimulatedReferencePlatform2011Service"/> class.
@@ -85,12 +82,13 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
 		public void OnGet(Get get)
         {
-			if (Connected)
+			if (IsConnected)
 				UpdateStateFromSimulation();
 
-			_state.Connected = Connected;
             DefaultGetHandler(get);
         }
+
+		protected override ISimulationEntityServiceState GetState() { return _state; }
 
         ReferencePlatform2011Entity RpEntity { get { return Entity as ReferencePlatform2011Entity; } }
     }

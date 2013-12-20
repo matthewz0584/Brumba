@@ -13,7 +13,7 @@ namespace Brumba.Simulation.SimulatedTimer
     }
 
     [DataContract]
-    public class SimulatedTimerState
+    public class SimulatedTimerState : ISimulationEntityServiceState
     {
         [DataMember]
         [Description("Elapsed simulation time since entity initialization")]
@@ -25,7 +25,7 @@ namespace Brumba.Simulation.SimulatedTimer
 
 		[DataMember]
 		[Description("If there is any simulation entity under control of this service")]
-		public bool Connected { get; set; }
+		public bool IsConnected { get; set; }
     }
 
     [ServicePort]

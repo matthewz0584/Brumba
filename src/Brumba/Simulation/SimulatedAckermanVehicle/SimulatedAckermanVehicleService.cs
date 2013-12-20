@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using Brumba.AckermanVehicle;
-using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 
@@ -12,7 +11,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
     class SimulatedAckermanVehicleService : SimulatedEntityServiceBase
     {
         [ServiceState]
-        private SimulatedAckermanVehicleState _state = new SimulatedAckermanVehicleState();
+        readonly SimulatedAckermanVehicleState _state = new SimulatedAckermanVehicleState();
 
         [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = AckermanVehicle.Contract.Identifier)]
         private AckermanVehicleOperations _ackermanVehiclePort = new AckermanVehicleOperations();
@@ -58,20 +57,18 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_ackermanVehiclePort")]
 		public void OnGet(AckermanVehicle.Get get)
         {
-			if (Connected)
+			if (IsConnected)
 				UpdateState();
 
-			_state.Connected = Connected;
             DefaultGetHandler(get);
         }
 
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
         public void OnGet(Get get)
         {
-			if (Connected)
+			if (IsConnected)
 				UpdateState();
 
-			_state.Connected = Connected;
             DefaultGetHandler(get);
         }
 
@@ -81,6 +78,8 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
             _state.SteeringAngle = Vehicle.GetSteeringAngle();
         }
 
-        AckermanVehicleEntityBase Vehicle { get { return Entity as AckermanVehicleEntityBase; } }
+		protected override ISimulationEntityServiceState GetState() { return _state; }
+
+		AckermanVehicleEntityBase Vehicle { get { return Entity as AckermanVehicleEntityBase; } }
     }
 }

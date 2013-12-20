@@ -12,7 +12,7 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
     class SimulatedInfraredRfRingService : SimulatedEntityServiceBase
 	{
 		[ServiceState]
-		SimulatedInfraredRfRingState _state = new SimulatedInfraredRfRingState();
+		readonly SimulatedInfraredRfRingState _state = new SimulatedInfraredRfRingState();
 		
 		[ServicePort("/SimulatedInfraredRfRing", AllowMultipleInstances = true)]
 		SimulatedInfraredRfRingOperations _mainPort = new SimulatedInfraredRfRingOperations();
@@ -30,11 +30,12 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
         [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
 		public void OnGet(Get getRequest)
         {
-            if (Connected)
+            if (IsConnected)
                 _state.Distances = (Entity as InfraredRfRingEntity).GetDistances().ToList();
 
-			_state.Connected = Connected;
             DefaultGetHandler(getRequest);
         }
+
+		protected override ISimulationEntityServiceState GetState() { return _state; }
 	}
 }

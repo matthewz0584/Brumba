@@ -14,11 +14,11 @@ namespace Brumba.Simulation.SimulatedTail
 	}
 	
 	[DataContract]
-	public class SimulatedTailState
+	public class SimulatedTailState : ISimulationEntityServiceState
 	{
         [DataMember]
         [Description("If there is any simulation entity under control of this service")]
-        public bool Connected { get; set; }
+        public bool IsConnected { get; set; }
         
         [DataMember]
         [Description("Ground rangefinders measurements clockwise from left front one")]

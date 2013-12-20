@@ -15,13 +15,13 @@ namespace Brumba.Simulation.SimulatedTimer
     class SimulatedTimerService : SimulatedEntityServiceBase
     {
         [ServiceState]
-        private SimulatedTimerState _state = new SimulatedTimerState();
+        readonly SimulatedTimerState _state = new SimulatedTimerState();
 
         [ServicePort("/SimulatedTimer", AllowMultipleInstances = true)]
-        private SimulatedTimerOperations _mainPort = new SimulatedTimerOperations();
+        SimulatedTimerOperations _mainPort = new SimulatedTimerOperations();
 
         [SubscriptionManagerPartner("SubMgr")]
-        private SubscriptionManagerPort _subMgrPort = new SubscriptionManagerPort();
+        SubscriptionManagerPort _subMgrPort = new SubscriptionManagerPort();
 
         readonly MultiTimer _multiTimer = new MultiTimer();
 
@@ -34,7 +34,7 @@ namespace Brumba.Simulation.SimulatedTimer
 
         protected override void OnInsertEntity()
         {
-            (Entity as TimerEntity).Tick += time => _multiTimer.Update((float)time);
+            TimerEntity.Tick += time => _multiTimer.Update((float)time);
         }
 
         protected override void OnDeleteEntity()
@@ -59,21 +59,24 @@ namespace Brumba.Simulation.SimulatedTimer
         [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
 		public void OnGet(Get getRequest)
         {
-			if (Connected)
+			if (IsConnected)
 			{
-				_state.ElapsedTime = (Entity as TimerEntity).ElapsedTime;
-				_state.StartTime = (Entity as TimerEntity).StartTime;
+				_state.ElapsedTime = TimerEntity.ElapsedTime;
+				_state.StartTime = TimerEntity.StartTime;
 			}
-	        _state.Connected = Connected;
             DefaultGetHandler(getRequest);
         }
 
-		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+	    [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
         public IEnumerator<ITask> OnSubscribe(Subscribe subscribeRq)
         {
             yield return SubscribeHelper(_subMgrPort, subscribeRq.Body, subscribeRq.ResponsePort).Choice(
                 success => _multiTimer.Subscribe(subscribeRq.Body.Subscriber, subscribeRq.Body.Interval),
                 LogError);
         }
+
+		protected override ISimulationEntityServiceState GetState() { return _state; }
+
+		TimerEntity TimerEntity { get { return Entity as TimerEntity; } }
     }
 }

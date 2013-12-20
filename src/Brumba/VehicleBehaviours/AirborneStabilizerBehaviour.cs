@@ -159,7 +159,7 @@ namespace Brumba.VehicleBrains.Behaviours.AirborneStabilizerBehaviour
             {
                 TailPxy.SimulatedTailState stabState = null;
                 yield return Arbiter.Choice(_stabilizer.Get(), st => stabState = st, LogError);
-				if (!stabState.Connected)
+				if (!stabState.IsConnected)
 					continue;
 
                 var angleShoulder = _c.Cycle(stabState.WheelToGroundDistances);

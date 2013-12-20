@@ -22,11 +22,11 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
     /// ReferencePlatform2011 state
     /// </summary>
     [DataContract]
-    public class ReferencePlatform2011State
+    public class ReferencePlatform2011State : ISimulationEntityServiceState
     {
 		[DataMember]
 		[Description("If there is any simulation entity under control of this service")]
-		public bool Connected { get; set; }
+		public bool IsConnected { get; set; }
 
         /// <summary>
         /// Gets or sets the differential drive state

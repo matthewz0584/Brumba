@@ -19,7 +19,7 @@ namespace Brumba.Simulation.SimulatedLrf
 	}
 
 	[DataContract]
-	public class SimulatedLrfState
+	public class SimulatedLrfState : ISimulationEntityServiceState
 	{
 		[DataMember]
 		public SickLrf.State SickLrfState { get; set; }
@@ -30,7 +30,7 @@ namespace Brumba.Simulation.SimulatedLrf
 
 		[DataMember]
 		[Description("If there is any simulation entity under control of this service")]
-		public bool Connected { get; set; }
+		public bool IsConnected { get; set; }
 	}
 
 	[ServicePort]

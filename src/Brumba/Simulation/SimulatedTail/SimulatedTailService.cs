@@ -13,7 +13,7 @@ namespace Brumba.Simulation.SimulatedTail
     class SimulatedTailService : SimulatedEntityServiceBase
 	{
 		[ServiceState]
-		SimulatedTailState _state = new SimulatedTailState();
+		readonly SimulatedTailState _state = new SimulatedTailState();
 		
 		[ServicePort("/SimulatedTail", AllowMultipleInstances = true)]
 		SimulatedTailOperations _mainPort = new SimulatedTailOperations();
@@ -26,14 +26,13 @@ namespace Brumba.Simulation.SimulatedTail
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
         public void OnGet(Get getRequest)
         {
-            if (Connected)
+            if (IsConnected)
             {
                 _state.WheelToGroundDistances = TailEntity.GroundRangefinders.Select(grf => grf.Distance).ToList();
                 _state.Segment1Angle = TailEntity.Segment1Angle;
                 _state.Segment2Angle = TailEntity.Segment2Angle;
             }
 
-			_state.Connected = Connected;
             DefaultGetHandler(getRequest);
         }
 
@@ -68,6 +67,8 @@ namespace Brumba.Simulation.SimulatedTail
             parkRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-        TailEntity TailEntity { get { return Entity as TailEntity; } }
+		protected override ISimulationEntityServiceState GetState() { return _state; }
+
+		TailEntity TailEntity { get { return Entity as TailEntity; } }
 	}
 }

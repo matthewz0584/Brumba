@@ -17,7 +17,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// The drive operation port
         /// </summary>
         [AlternateServicePort("/DifferentialDrive", AllowMultipleInstances = true, AlternateContract = Drive.Contract.Identifier)]
-		private Drive.DriveOperations _drivePort = new Drive.DriveOperations();
+		Drive.DriveOperations _drivePort = new Drive.DriveOperations();
 
         /// <summary>
         /// The encoder value of the left wheel at last reset
@@ -32,20 +32,18 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
 		public void DriveHttpGetHandler(HttpGet get)
         {
-			if (Connected)
+			if (IsConnected)
 				UpdateStateFromSimulation();
 
-			_state.Connected = Connected;
             get.ResponsePort.Post(new HttpResponseType(_state.DriveState));
         }
 
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
 		public void DriveGetHandler(Drive.Get get)
         {
-			if (Connected)
+			if (IsConnected)
 				UpdateStateFromSimulation();
 
-			_state.Connected = Connected;
             get.ResponsePort.Post(_state.DriveState);
         }
 

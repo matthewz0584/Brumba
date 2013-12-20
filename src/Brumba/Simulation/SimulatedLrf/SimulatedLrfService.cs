@@ -20,13 +20,13 @@ namespace Brumba.Simulation.SimulatedLrf
 	class SimulatedLrfService : SimulatedEntityServiceBase
 	{
 		[ServiceState]
-		private SimulatedLrfState _state = new SimulatedLrfState { SickLrfState = new SickLrf.State { Units = SickLrf.Units.Millimeters } };
+		readonly SimulatedLrfState _state = new SimulatedLrfState { SickLrfState = new SickLrf.State { Units = SickLrf.Units.Millimeters } };
 
         [AlternateServicePort("/SickLrf", AllowMultipleInstances = true, AlternateContract = SickLrfPxy.Contract.Identifier)]
-        private SickLrfPxy.SickLRFOperations _sickLrfPort = new SickLrfPxy.SickLRFOperations();
+        SickLrfPxy.SickLRFOperations _sickLrfPort = new SickLrfPxy.SickLRFOperations();
 
 		[ServicePort(AllowMultipleInstances = true)]
-		private SimulatedLrfOperations _mainPort = new SimulatedLrfOperations();
+		SimulatedLrfOperations _mainPort = new SimulatedLrfOperations();
 		
 		[Partner("SubMgr", Contract = Microsoft.Dss.Services.SubscriptionManager.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.CreateAlways)]
 		SubscriptionManagerPort _subMgrPort = new SubscriptionManagerPort();
@@ -96,25 +96,20 @@ namespace Brumba.Simulation.SimulatedLrf
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_sickLrfPort")]
         public void GetHandler(SickLrfPxy.Get get)
         {
-			if (FaultIfNotConnected(get))
-				return;
 	        get.ResponsePort.Post(DssTypeHelper.TransformToProxy(_state.SickLrfState) as SickLrfPxy.State);
         }
 
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_sickLrfPort")]
 		public void GetHandler(HttpGet get)
         {
-			if (FaultIfNotConnected(get))
-				return;
 			get.ResponsePort.Post(new HttpResponseType(DssTypeHelper.TransformToProxy(_state.SickLrfState) as SickLrfPxy.State));
         }
 
-		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
-		public void GetHandler(Get get)
-		{
-			_state.Connected = Connected;
-			get.ResponsePort.Post(_state);
-		}
+		//[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+		//public void GetHandler(Get get)
+		//{
+		//	get.ResponsePort.Post(_state);
+		//}
 
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_sickLrfPort")]
 		public void ReplaceHandler(SickLrfPxy.Replace replace)
@@ -149,6 +144,8 @@ namespace Brumba.Simulation.SimulatedLrf
                 LogError
                 );
         }
+
+		protected override ISimulationEntityServiceState GetState() { return _state; }
 
         LaserRangeFinderExEntity LrfEntity
 	    {

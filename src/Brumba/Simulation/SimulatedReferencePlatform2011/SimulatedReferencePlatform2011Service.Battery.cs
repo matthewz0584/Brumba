@@ -16,25 +16,23 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// The battery port
         /// </summary>
         [AlternateServicePort("/Battery", AlternateContract = battery.Contract.Identifier, AllowMultipleInstances = true)]
-        private battery.BatteryOperations _batteryPort = new battery.BatteryOperations();
+        battery.BatteryOperations _batteryPort = new battery.BatteryOperations();
 
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_batteryPort")]
 		public void BatteryHttpGetHandler(HttpGet get)
 		{
-			if (Connected)
+			if (IsConnected)
 				UpdateStateFromSimulation();
 
-			_state.Connected = Connected;
 			get.ResponsePort.Post(new HttpResponseType(_state.BatteryState));
 		}
 
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_batteryPort")]
 		public void BatteryGetHandler(battery.Get get)
         {
-			if (Connected)
+			if (IsConnected)
 				UpdateStateFromSimulation();
 
-			_state.Connected = Connected;
 			get.ResponsePort.Post(_state.BatteryState);
         }
 
