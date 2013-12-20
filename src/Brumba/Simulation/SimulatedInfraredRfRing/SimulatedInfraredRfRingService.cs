@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 
@@ -23,44 +22,18 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
 		{
 		}
 
-	    protected override Interleave ConcreteWaitingInterleave()
-	    {
-	        return new Interleave(
-	            new TeardownReceiverGroup(
-	                Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-	                ),
-	            new ExclusiveReceiverGroup(),
-	            new ConcurrentReceiverGroup(
-	                Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-	                Arbiter.Receive<Get>(true, _mainPort, OnGet)
-	                ));
-	    }
-
-	    protected override Interleave ConcreteActiveInterleave()
-	    {
-	        return new Interleave(
-	            new TeardownReceiverGroup(
-	                Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-	                ),
-	            new ExclusiveReceiverGroup(),
-	            new ConcurrentReceiverGroup(
-	                Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-	                Arbiter.Receive<Get>(true, _mainPort, OnGet)
-	                ));
-	    }
-
         protected override void OnDeleteEntity()
         {
             _state.Distances = new List<float>();
         }
 
-        void OnGet(Get getRequest)
+        [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+		public void OnGet(Get getRequest)
         {
-			_state.Connected = Connected;
-
-            if (Entity != null)
+            if (Connected)
                 _state.Distances = (Entity as InfraredRfRingEntity).GetDistances().ToList();
 
+			_state.Connected = Connected;
             DefaultGetHandler(getRequest);
         }
 	}

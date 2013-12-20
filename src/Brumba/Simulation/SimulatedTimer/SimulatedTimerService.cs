@@ -32,31 +32,6 @@ namespace Brumba.Simulation.SimulatedTimer
                     SendNotificationToTarget(subscr, _subMgrPort, new Update(new SimulatedTimerState { ElapsedTime = time }));
         }
 
-        protected override Interleave ConcreteWaitingInterleave()
-        {
-            return new Interleave(
-                new TeardownReceiverGroup(
-                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-                    ),
-                new ExclusiveReceiverGroup(),
-                new ConcurrentReceiverGroup()
-                );
-        }
-
-        protected override Interleave ConcreteActiveInterleave()
-        {
-            return new Interleave(
-                new TeardownReceiverGroup(
-                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-                    ),
-                new ExclusiveReceiverGroup(),
-                new ConcurrentReceiverGroup(
-                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                    Arbiter.Receive<Get>(true, _mainPort, OnGet),
-                    Arbiter.ReceiveWithIterator<Subscribe>(true, _mainPort, OnSubscribe)
-                    ));
-        }
-
         protected override void OnInsertEntity()
         {
             (Entity as TimerEntity).Tick += time => _multiTimer.Update((float)time);
@@ -81,15 +56,20 @@ namespace Brumba.Simulation.SimulatedTimer
                 LogError));
         }
 
-        void OnGet(Get getRequest)
+        [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+		public void OnGet(Get getRequest)
         {
-            _state.ElapsedTime = (Entity as TimerEntity).ElapsedTime;
-            _state.StartTime = (Entity as TimerEntity).StartTime;
-			_state.Connected = Connected;
+			if (Connected)
+			{
+				_state.ElapsedTime = (Entity as TimerEntity).ElapsedTime;
+				_state.StartTime = (Entity as TimerEntity).StartTime;
+			}
+	        _state.Connected = Connected;
             DefaultGetHandler(getRequest);
         }
 
-        IEnumerator<ITask> OnSubscribe(Subscribe subscribeRq)
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+        public IEnumerator<ITask> OnSubscribe(Subscribe subscribeRq)
         {
             yield return SubscribeHelper(_subMgrPort, subscribeRq.Body, subscribeRq.ResponsePort).Choice(
                 success => _multiTimer.Subscribe(subscribeRq.Body.Subscriber, subscribeRq.Body.Interval),

@@ -23,64 +23,46 @@ namespace Brumba.Simulation.SimulatedTail
 		{
 		}
 
-	    protected override Interleave ConcreteWaitingInterleave()
-	    {
-	        return new Interleave(
-	            new TeardownReceiverGroup(
-	                Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-	                ),
-	            new ExclusiveReceiverGroup(),
-	            new ConcurrentReceiverGroup(
-	                Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-	                Arbiter.Receive<Get>(true, _mainPort, OnGet)
-	                ));
-	    }
-
-	    protected override Interleave ConcreteActiveInterleave()
-	    {
-	        return new Interleave(
-	            new TeardownReceiverGroup(
-	                Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-	                ),
-	            new ExclusiveReceiverGroup(
-	                Arbiter.Receive<Park>(true, _mainPort, OnPark),
-	                Arbiter.Receive<ChangeSegment1Angle>(true, _mainPort, OnChangeSegment1Angle),
-	                Arbiter.Receive<ChangeSegment2Angle>(true, _mainPort, OnChangeSegment2Angle)
-	                ),
-	            new ConcurrentReceiverGroup(
-	                Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-	                Arbiter.Receive<Get>(true, _mainPort, OnGet)
-	                ));
-	    }
-
-        void OnGet(Get getRequest)
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+        public void OnGet(Get getRequest)
         {
-	        _state.Connected = Connected;
-
-            if (TailEntity != null)
+            if (Connected)
             {
                 _state.WheelToGroundDistances = TailEntity.GroundRangefinders.Select(grf => grf.Distance).ToList();
                 _state.Segment1Angle = TailEntity.Segment1Angle;
                 _state.Segment2Angle = TailEntity.Segment2Angle;
             }
 
+			_state.Connected = Connected;
             DefaultGetHandler(getRequest);
         }
 
-        void OnChangeSegment1Angle(ChangeSegment1Angle angleRequest)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+        public void OnChangeSegment1Angle(ChangeSegment1Angle angleRequest)
         {
+			if (FaultIfNotConnected(angleRequest))
+				return;
+
             TailEntity.Segment1Angle = angleRequest.Body.Angle;
             angleRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-        void OnChangeSegment2Angle(ChangeSegment2Angle shoulderRequest)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+		public void OnChangeSegment2Angle(ChangeSegment2Angle shoulderRequest)
         {
+			if (FaultIfNotConnected(shoulderRequest))
+				return;
+
             TailEntity.Segment2Angle = shoulderRequest.Body.Angle;
             shoulderRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-        void OnPark(Park parkRequest)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+        public void OnPark(Park parkRequest)
         {
+			if (FaultIfNotConnected(parkRequest))
+				return;
+
             TailEntity.Segment1Angle = 0;
             TailEntity.Segment2Angle = MathHelper.PiOver2;
             parkRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);

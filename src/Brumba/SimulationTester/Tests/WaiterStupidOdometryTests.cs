@@ -45,11 +45,6 @@ namespace Brumba.SimulationTester.Tests
 
 			public override IEnumerator<ITask> Start()
 			{
-				var connected = false;
-				yield return (Fixture as WaiterStupidOdometryTests).SimRefPlDrivePort.Get().Receive(s => connected = s.Connected);
-				if (!connected)
-					yield break;
-
 			    _failed = false;
 				EstimatedTime = 8;
 
@@ -91,11 +86,6 @@ namespace Brumba.SimulationTester.Tests
 
 			public override IEnumerator<ITask> Start()
 			{
-				var connected = false;
-				yield return (Fixture as WaiterStupidOdometryTests).SimRefPlDrivePort.Get().Receive(s => connected = s.Connected);
-				if (!connected)
-					yield break;
-
                 _failed = false;
 				EstimatedTime = 4 * 2;
 

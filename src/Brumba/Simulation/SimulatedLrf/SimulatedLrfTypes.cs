@@ -26,6 +26,10 @@ namespace Brumba.Simulation.SimulatedLrf
 
 		[DataMember]
 		[Description("If there is any simulation entity under control of this service")]
+		public float MaxRange { get; set; }
+
+		[DataMember]
+		[Description("If there is any simulation entity under control of this service")]
 		public bool Connected { get; set; }
 	}
 

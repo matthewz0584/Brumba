@@ -29,20 +29,32 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// </summary>
         private int lastResetRightWheelEncoderValue;
 
-        public void DriveHttpGetHandler(HttpGet get)
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
+		public void DriveHttpGetHandler(HttpGet get)
         {
-            UpdateStateFromSimulation();
+			if (Connected)
+				UpdateStateFromSimulation();
+
+			_state.Connected = Connected;
             get.ResponsePort.Post(new HttpResponseType(_state.DriveState));
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
 		public void DriveGetHandler(Drive.Get get)
         {
-            UpdateStateFromSimulation();
+			if (Connected)
+				UpdateStateFromSimulation();
+
+			_state.Connected = Connected;
             get.ResponsePort.Post(_state.DriveState);
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
 		public IEnumerator<ITask> DriveSubscribeHandler(Drive.Subscribe subscribe)
         {
+			if (FaultIfNotConnected(subscribe))
+				yield break;
+
             yield return Arbiter.Choice(
                 SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort),
                 success =>
@@ -53,8 +65,12 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 LogError);
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
 		public IEnumerator<ITask> DriveReliableSubscribeHandler(Drive.ReliableSubscribe subscribe)
         {
+			if (FaultIfNotConnected(subscribe))
+				yield break;
+
             yield return Arbiter.Choice(
                 SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort),
                 success =>
@@ -65,15 +81,23 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 LogError);
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
 		public void ResetEncodersHandler(Drive.ResetEncoders resetEncoders)
         {
+			if (FaultIfNotConnected(resetEncoders))
+				return;
+
             lastResetLeftWheelEncoderValue += _state.DriveState.LeftWheel.EncoderState.CurrentReading;
             lastResetRightWheelEncoderValue += _state.DriveState.RightWheel.EncoderState.CurrentReading;
             resetEncoders.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-        public void DriveDistanceHandler(Drive.DriveDistance driveDistance)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
+		public void DriveDistanceHandler(Drive.DriveDistance driveDistance)
         {
+			if (FaultIfNotConnected(driveDistance))
+				return;
+
             if (!EnableCheck(driveDistance.ResponsePort, "DriveDistance")) return;
 
             if ((driveDistance.Body.Power > 1.0f) || (driveDistance.Body.Power < -1.0f))
@@ -125,8 +149,12 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             driveDistance.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
 	    public void DriveRotateHandler(Drive.RotateDegrees rotate)
         {
+			if (FaultIfNotConnected(rotate))
+				return;
+
 			if (!EnableCheck(rotate.ResponsePort, "RotateDegrees")) return;
 
             _state.DriveState.RotateDegreesStage = rotate.Body.RotateDegreesStage;
@@ -170,8 +198,12 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             rotate.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
 		public void DriveSetPowerHandler(Drive.SetDrivePower setPower)
         {
+			if (FaultIfNotConnected(setPower))
+				return;
+
 			if (!EnableCheck(setPower.ResponsePort, "SetPower")) return;
 
             if ((setPower.Body.LeftWheelPower > 1.0f) || (setPower.Body.LeftWheelPower < -1.0f) ||
@@ -193,8 +225,12 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             _subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Submit(_state.DriveState, DsspActions.UpdateRequest));
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
 		public void DriveSetSpeedHandler(Drive.SetDriveSpeed setSpeed)
         {
+			if (FaultIfNotConnected(setSpeed))
+				return;
+
 			if (!EnableCheck(setSpeed.ResponsePort, "SetSpeed")) return;
 
             RpEntity.SetVelocity((float)setSpeed.Body.LeftWheelSpeed, (float)setSpeed.Body.RightWheelSpeed);
@@ -206,8 +242,12 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             _subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Submit(_state.DriveState, DsspActions.UpdateRequest));
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
 		public void DriveEnableHandler(Drive.EnableDrive enable)
         {
+			if (FaultIfNotConnected(enable))
+				return;
+
             _state.DriveState.IsEnabled = enable.Body.Enable;
             RpEntity.IsEnabled = _state.DriveState.IsEnabled;
 
@@ -218,8 +258,12 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             _subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Submit(_state.DriveState, DsspActions.UpdateRequest));
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
 		public void DriveAllStopHandler(Drive.AllStop estop)
         {
+			if (FaultIfNotConnected(estop))
+				return;
+
             RpEntity.SetMotorTorque(0, 0);
             RpEntity.SetVelocity(0);
 
@@ -250,7 +294,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// </summary>
         private void UpdateStateFromSimulation()
         {
-			_state.Connected = Connected;
 	        _state.DriveState.TimeStamp = DateTime.Now;
 
 	        // Reverse out the encoder ticks

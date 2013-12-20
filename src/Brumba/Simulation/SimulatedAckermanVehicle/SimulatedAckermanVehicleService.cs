@@ -25,79 +25,53 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         {
         }
 
-        protected override Interleave ConcreteWaitingInterleave()
-        {
-            return new Interleave(
-                new TeardownReceiverGroup(
-                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
-                    Arbiter.Receive<DsspDefaultDrop>(false, _ackermanVehiclePort, DefaultDropHandler)
-                    ),
-                new ExclusiveReceiverGroup(),
-                new ConcurrentReceiverGroup(
-                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                    Arbiter.Receive<DsspDefaultLookup>(true, _ackermanVehiclePort, DefaultLookupHandler),
-                    Arbiter.Receive<Get>(true, _mainPort, DefaultGetHandler)
-                    ));
-        }
-
-        protected override Interleave ConcreteActiveInterleave()
-        {
-            return new Interleave(
-                new TeardownReceiverGroup(
-                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
-                    Arbiter.Receive<DsspDefaultDrop>(false, _ackermanVehiclePort, DefaultDropHandler)
-                    ),
-                new ExclusiveReceiverGroup(
-                    Arbiter.Receive<UpdateDrivePower>(true, _ackermanVehiclePort, OnUpdateDrivePower),
-                    Arbiter.Receive<UpdateSteeringAngle>(true, _ackermanVehiclePort, OnUpdateSteeringAngle),
-                    Arbiter.Receive<Break>(true, _ackermanVehiclePort, OnBreak)
-                    ),
-                new ConcurrentReceiverGroup(
-                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                    Arbiter.Receive<DsspDefaultLookup>(true, _ackermanVehiclePort, DefaultLookupHandler),
-                    Arbiter.Receive<Get>(true, _mainPort, OnGet),
-                    Arbiter.Receive<AckermanVehicle.Get>(true, _ackermanVehiclePort, OnGet)
-                    ));
-        }
-
         protected override void OnDeleteEntity()
         {
             _state.DriveAngularDistance = 0;
             _state.SteeringAngle = 0;
         }
 
-        void OnUpdateDrivePower(UpdateDrivePower powerRequest)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_ackermanVehiclePort")]
+        public void OnUpdateDrivePower(UpdateDrivePower powerRequest)
         {
             Vehicle.SetDrivePower(powerRequest.Body.Value);
 
             powerRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-        void OnUpdateSteeringAngle(UpdateSteeringAngle steeringRequest)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_ackermanVehiclePort")]
+		public void OnUpdateSteeringAngle(UpdateSteeringAngle steeringRequest)
         {
             Vehicle.SetSteeringAngle(steeringRequest.Body.Value);
 
             steeringRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-        void OnBreak(Break breakRequest)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_ackermanVehiclePort")]
+        public void OnBreak(Break breakRequest)
         {
             Vehicle.Break();
 
             breakRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-        void OnGet(AckermanVehicle.Get get)
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_ackermanVehiclePort")]
+		public void OnGet(AckermanVehicle.Get get)
         {
-            UpdateState();
+			if (Connected)
+				UpdateState();
 
+			_state.Connected = Connected;
             DefaultGetHandler(get);
         }
 
-        void OnGet(Get get)
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+        public void OnGet(Get get)
         {
-            UpdateState();
+			if (Connected)
+				UpdateState();
 
+			_state.Connected = Connected;
             DefaultGetHandler(get);
         }
 
@@ -105,7 +79,6 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
         {
             _state.DriveAngularDistance = Vehicle.GetDriveAngularDistance();
             _state.SteeringAngle = Vehicle.GetSteeringAngle();
-	        _state.Connected = Connected;
         }
 
         AckermanVehicleEntityBase Vehicle { get { return Entity as AckermanVehicleEntityBase; } }

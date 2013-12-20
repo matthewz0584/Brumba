@@ -1,7 +1,9 @@
+using System;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
+using W3C.Soap;
 
 namespace Brumba.Simulation
 {
@@ -26,18 +28,11 @@ namespace Brumba.Simulation
 
             base.Start();
 
-            //Killing default main port interleave. From now on I control main port interleave
-            var shutdownInterleave = new Port<bool>();
-            MainPortInterleave.CombineWith(new Interleave(
-                    new TeardownReceiverGroup(Arbiter.Receive(false, shutdownInterleave, shutdown => { })),
-                    new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup()));
-            shutdownInterleave.Post(true);
-
-            SetUpForWaitingForEntity();
+			MainPortInterleave.CombineWith(new Interleave(
+				new ExclusiveReceiverGroup(Arbiter.Receive<InsertSimulationEntity>(false, _simEngineNotifyPort, OnInsertEntity)),
+				new ConcurrentReceiverGroup()));
 		}
 
-        protected abstract Interleave ConcreteWaitingInterleave();
-        protected abstract Interleave ConcreteActiveInterleave();
         protected virtual void OnInsertEntity() {}
         protected virtual void OnDeleteEntity() {}
 
@@ -48,10 +43,12 @@ namespace Brumba.Simulation
 
             OnInsertEntity();
 
-            SetUpForControlOfEntity();
-
 			LogInfo(string.Format("{0} entity inserted", entity.Body));
 	        Connected = true;
+
+	        MainPortInterleave.CombineWith(new Interleave(
+				new ExclusiveReceiverGroup(Arbiter.Receive<DeleteSimulationEntity>(false, _simEngineNotifyPort, OnDeleteEntity)),
+				new ConcurrentReceiverGroup()));
         }
 
         void OnDeleteEntity(DeleteSimulationEntity entity)
@@ -63,35 +60,31 @@ namespace Brumba.Simulation
             
             OnDeleteEntity();
 
-            SetUpForWaitingForEntity();
+			MainPortInterleave.CombineWith(new Interleave(
+				new ExclusiveReceiverGroup(Arbiter.Receive<InsertSimulationEntity>(false, _simEngineNotifyPort, OnInsertEntity)),
+				new ConcurrentReceiverGroup()));
         }
 
-        void SetUpForWaitingForEntity()
-        {
-            ResetMainPortInterleave(ConcreteWaitingInterleave());
-            MainPortInterleave.CombineWith(new Interleave(
-                                               new TeardownReceiverGroup(
-                                                   Arbiter.Receive<InsertSimulationEntity>(false, _simEngineNotifyPort, OnInsertEntity)
-                                                   ),
-                                               new ExclusiveReceiverGroup(),
-                                               new ConcurrentReceiverGroup()));
-        }
+		protected bool FaultIfNotConnected<TBody, TResponseSuccess>(DsspOperation<TBody, PortSet<TResponseSuccess, Fault>> message)
+			where TBody : new()
+		{
+			return FaultIfNotConnected(message.ResponsePort, message.GetType());
+		}
 
-	    void SetUpForControlOfEntity()
-        {
-            ResetMainPortInterleave(ConcreteActiveInterleave());
-            MainPortInterleave.CombineWith(new Interleave(
-                    new TeardownReceiverGroup(
-                        Arbiter.Receive<DeleteSimulationEntity>(false, _simEngineNotifyPort, OnDeleteEntity)
-                        ),
-                    new ExclusiveReceiverGroup(),
-                    new ConcurrentReceiverGroup()));
-        }
+		protected bool FaultIfNotConnected<TBody, TResponseSuccess>(DsspOperation<TBody, DsspResponsePort<TResponseSuccess>> message)
+			where TBody : new()
+		{
+			return FaultIfNotConnected(message.ResponsePort, message.GetType());
+		}
 
-	    void ResetMainPortInterleave(Interleave ileave)
-        {
-            Activate(ileave);
-            MainPortInterleave = ileave;
-        }
+		bool FaultIfNotConnected<TResponseSuccess>(PortSet<TResponseSuccess, Fault> responsePort, Type messageType)
+		{
+			if (Connected)
+				return false;
+
+			LogError(string.Format("Call of simulation service handler for {0} operation while entity is not connected.", messageType));
+			responsePort.Post(new Fault { Reason = new[] { new ReasonText { Lang = "en-EN", Value = "Simulation entity is not connected." } } });
+			return true;			
+		}
 	}
 }

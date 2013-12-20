@@ -39,59 +39,26 @@ namespace Brumba.Simulation.SimulatedLrf
 		{
 		}
 
-        protected override Interleave ConcreteWaitingInterleave()
-        {
-            return new Interleave(
-                new TeardownReceiverGroup(
-                    Arbiter.Receive<DsspDefaultDrop>(false, _sickLrfPort, DefaultDropHandler),
-					
-					Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)),
-                new ExclusiveReceiverGroup(),
-                new ConcurrentReceiverGroup(
-                    Arbiter.Receive<DsspDefaultLookup>(true, _sickLrfPort, DefaultLookupHandler),
-                    Arbiter.Receive<SickLrfPxy.Get>(true, _sickLrfPort, GetHandler),
-                    Arbiter.Receive<HttpGet>(true, _sickLrfPort, GetHandler),
-					
-					Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-					Arbiter.Receive<Get>(true, _mainPort, GetHandler)
-					)
-                );
-        }
+		protected override void Start()
+		{
+			base.Start();
 
-        protected override Interleave ConcreteActiveInterleave()
-        {
-            return new Interleave(
-                new TeardownReceiverGroup(
-                    Arbiter.Receive<DsspDefaultDrop>(false, _sickLrfPort, DefaultDropHandler),
-					
-					Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-                    ),
-                new ExclusiveReceiverGroup(
-                    Arbiter.Receive<SickLrfPxy.Replace>(true, _sickLrfPort, ReplaceHandler),
-                    Arbiter.ReceiveWithIterator<SickLrfPxy.Subscribe>(true, _sickLrfPort, SubscribeHandler),
-                    Arbiter.ReceiveWithIterator<SickLrfPxy.ReliableSubscribe>(true, _sickLrfPort, ReliableSubscribeHandler),
-
-					Arbiter.Receive(true, _internalReplacePort, InternalReplaceHandler)
-                    ),
-                new ConcurrentReceiverGroup(
-                    Arbiter.Receive<DsspDefaultLookup>(true, _sickLrfPort, DefaultLookupHandler),
-                    Arbiter.Receive<SickLrfPxy.Get>(true, _sickLrfPort, GetHandler),
-                    Arbiter.Receive<HttpGet>(true, _sickLrfPort, GetHandler),
-                    
-					Arbiter.Receive(true, _raycastResultsPort, RaycastResultsHandler),
-
-					Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-					Arbiter.Receive<Get>(true, _mainPort, GetHandler)
-                    ));
-        }
+			MainPortInterleave.CombineWith(
+				new Interleave(new ExclusiveReceiverGroup(Arbiter.Receive(true, _internalReplacePort, InternalReplaceHandler)),
+				   new ConcurrentReceiverGroup()));
+		}
 
         protected override void OnInsertEntity()
         {
             _state.SickLrfState.AngularRange = (int)Math.Abs(LrfEntity.RaycastProperties.EndAngle - LrfEntity.RaycastProperties.StartAngle);
 			_state.SickLrfState.AngularResolution = LrfEntity.RaycastProperties.AngleIncrement;
+	        _state.MaxRange = LrfEntity.RaycastProperties.Range;
 
             try
             {
+				MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(),
+					new ConcurrentReceiverGroup(Arbiter.Receive(true, _raycastResultsPort, RaycastResultsHandler))));
+
                 LrfEntity.Register(_raycastResultsPort);
             }
             catch (Exception ex)
@@ -106,14 +73,10 @@ namespace Brumba.Simulation.SimulatedLrf
         // scattering, reflections, noise etc.
         void RaycastResultsHandler(RaycastResult result)
 		{
-            if (LrfEntity == null)
-                LogError("Lrf is null!!!");
-            if (_state == null)
-                LogError("_state is null!!!");
 			var newState = new SickLrf.State
 		        {
 		            DistanceMeasurements =
-		                Enumerable.Repeat((int) Math.Round(LrfEntity.RaycastProperties.Range*1000), result.SampleCount + 1).ToArray(),
+						Enumerable.Repeat((int)Math.Round(_state.MaxRange * 1000), result.SampleCount + 1).ToArray(),
 		            AngularRange = _state.SickLrfState.AngularRange,
 					AngularResolution = _state.SickLrfState.AngularResolution,
 					Units = _state.SickLrfState.Units,
@@ -130,34 +93,43 @@ namespace Brumba.Simulation.SimulatedLrf
             _internalReplacePort.Post(newState);
 		}
 
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_sickLrfPort")]
         public void GetHandler(SickLrfPxy.Get get)
         {
+			if (FaultIfNotConnected(get))
+				return;
 	        get.ResponsePort.Post(DssTypeHelper.TransformToProxy(_state.SickLrfState) as SickLrfPxy.State);
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_sickLrfPort")]
 		public void GetHandler(HttpGet get)
         {
+			if (FaultIfNotConnected(get))
+				return;
 			get.ResponsePort.Post(new HttpResponseType(DssTypeHelper.TransformToProxy(_state.SickLrfState) as SickLrfPxy.State));
         }
 
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
 		public void GetHandler(Get get)
 		{
 			_state.Connected = Connected;
 			get.ResponsePort.Post(_state);
 		}
 
-        public void ReplaceHandler(SickLrfPxy.Replace replace)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_sickLrfPort")]
+		public void ReplaceHandler(SickLrfPxy.Replace replace)
         {
             LogError("SimulatedLrfService.Replace not implemented");
         }
 
-		public void InternalReplaceHandler(SickLrf.State sickLrfState)
+		void InternalReplaceHandler(SickLrf.State sickLrfState)
         {
 			_state.SickLrfState = sickLrfState;
 			_subMgrPort.Post(new Submit(DssTypeHelper.TransformToProxy(_state.SickLrfState) as SickLrfPxy.State, DsspActions.ReplaceRequest));
         }
 
-        public IEnumerator<ITask> SubscribeHandler(SickLrfPxy.Subscribe subscribe)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_sickLrfPort")]
+		public IEnumerator<ITask> SubscribeHandler(SickLrfPxy.Subscribe subscribe)
         {
             yield return Arbiter.Choice(
                 SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort),
@@ -167,7 +139,8 @@ namespace Brumba.Simulation.SimulatedLrf
                 );
         }
 
-        public IEnumerator<ITask> ReliableSubscribeHandler(SickLrfPxy.ReliableSubscribe subscribe)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_sickLrfPort")]
+		public IEnumerator<ITask> ReliableSubscribeHandler(SickLrfPxy.ReliableSubscribe subscribe)
         {
             yield return Arbiter.Choice(
                 SubscribeHelper(_subMgrPort, subscribe.Body, subscribe.ResponsePort),

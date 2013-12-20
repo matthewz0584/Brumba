@@ -3,6 +3,7 @@ using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.Core.DsspHttp;
 using Microsoft.Dss.ServiceModel.Dssp;
+using W3C.Soap;
 using drive = Microsoft.Robotics.Services.Drive;
 using battery = Microsoft.Robotics.Services.Battery;
 using Microsoft.Robotics.Services.Motor;
@@ -63,59 +64,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         {
         }
 
-        protected override Interleave ConcreteWaitingInterleave()
-        {
-            return new Interleave(
-                new TeardownReceiverGroup(
-                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
-                    Arbiter.Receive<DsspDefaultDrop>(false, _drivePort, DefaultDropHandler),
-                    Arbiter.Receive<DsspDefaultDrop>(false, _batteryPort, DefaultDropHandler)),
-                new ExclusiveReceiverGroup(),
-                new ConcurrentReceiverGroup(
-                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                    Arbiter.Receive<DsspDefaultLookup>(true, _drivePort, DefaultLookupHandler),
-                    Arbiter.Receive<DsspDefaultLookup>(true, _batteryPort, DefaultLookupHandler),
-                    Arbiter.Receive<Get>(true, _mainPort, DefaultGetHandler))
-                );
-        }
-
-        protected override Interleave ConcreteActiveInterleave()
-        {
-            return new Interleave(
-                new TeardownReceiverGroup(
-                    Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler),
-                    Arbiter.Receive<DsspDefaultDrop>(false, _drivePort, DefaultDropHandler),
-                    Arbiter.Receive<DsspDefaultDrop>(false, _batteryPort, DefaultDropHandler)
-                    ),
-                new ExclusiveReceiverGroup(
-                    Arbiter.Receive<drive.ResetEncoders>(true, _drivePort, ResetEncodersHandler),
-                    Arbiter.Receive<drive.DriveDistance>(true, _drivePort, DriveDistanceHandler),
-                    Arbiter.Receive<drive.RotateDegrees>(true, _drivePort, DriveRotateHandler),
-                    Arbiter.Receive<drive.SetDrivePower>(true, _drivePort, DriveSetPowerHandler),
-                    Arbiter.Receive<drive.SetDriveSpeed>(true, _drivePort, DriveSetSpeedHandler),
-                    Arbiter.Receive<drive.AllStop>(true, _drivePort, DriveAllStopHandler)
-                    ),
-                new ConcurrentReceiverGroup(
-                    Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                    Arbiter.Receive<Get>(true, _mainPort, OnGet),
-                    Arbiter.Receive<Subscribe>(true, _mainPort, OnSubscribe),
-                    
-                    Arbiter.Receive<DsspDefaultLookup>(true, _drivePort, DefaultLookupHandler),
-                    Arbiter.Receive<drive.Get>(true, _drivePort, DriveGetHandler),
-					Arbiter.Receive<HttpGet>(true, _drivePort, DriveHttpGetHandler),
-                    Arbiter.ReceiveWithIterator<drive.Subscribe>(true, _drivePort, DriveSubscribeHandler),
-                    Arbiter.ReceiveWithIterator<drive.ReliableSubscribe>(true, _drivePort, DriveReliableSubscribeHandler),
-                    Arbiter.Receive<drive.EnableDrive>(true, _drivePort, DriveEnableHandler),
-
-                    Arbiter.Receive<DsspDefaultLookup>(true, _batteryPort, DefaultLookupHandler),
-                    Arbiter.Receive<battery.Get>(true, _batteryPort, BatteryGetHandler),
-					Arbiter.Receive<HttpGet>(true, _batteryPort, BatteryHttpGetHandler),
-                    Arbiter.Receive<battery.Replace>(true, _batteryPort, ReplaceHandler),
-                    Arbiter.ReceiveWithIterator<battery.Subscribe>(true, _batteryPort, SubscribeHandler),
-                    Arbiter.Receive<battery.SetCriticalLevel>(true, _batteryPort, SetCriticalLevelHandler)
-                    ));
-        }
-
         protected override void OnInsertEntity()
         {
             if (RpEntity.ChassisShape != null)
@@ -126,15 +74,21 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             _state.DriveState.RightWheel.MotorState.PowerScalingFactor = RpEntity.MotorTorqueScaling;
         }
 
-        void OnSubscribe(Subscribe subscribe)
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+        public void OnSubscribe(Subscribe subscribe)
         {
+			if (FaultIfNotConnected(subscribe))
+				return;
             LogInfo("SimulatedReferencePlatform2011Service.Subscribe NOT IMPLEMENTED");
         }
 
-        void OnGet(Get get)
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+		public void OnGet(Get get)
         {
-            UpdateStateFromSimulation();
+			if (Connected)
+				UpdateStateFromSimulation();
 
+			_state.Connected = Connected;
             DefaultGetHandler(get);
         }
 

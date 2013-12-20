@@ -21,46 +21,22 @@ namespace Brumba.Simulation.SimulatedTurret
 		{
 		}
 
-	    protected override Interleave ConcreteWaitingInterleave()
-	    {
-	        return new Interleave(
-	            new TeardownReceiverGroup(
-	                Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-	                ),
-	            new ExclusiveReceiverGroup(),
-	            new ConcurrentReceiverGroup(
-	                Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-	                Arbiter.Receive<Get>(true, _mainPort, OnGet)
-	                ));
-	    }
-
-	    protected override Interleave ConcreteActiveInterleave()
-	    {
-	        return new Interleave(
-                    new TeardownReceiverGroup(
-                        Arbiter.Receive<DsspDefaultDrop>(false, _mainPort, DefaultDropHandler)
-                        ),
-                    new ExclusiveReceiverGroup(
-                        Arbiter.Receive<SetBaseAngle>(true, _mainPort, OnSetBaseAngle)
-                        ),
-                    new ConcurrentReceiverGroup(
-                        Arbiter.Receive<DsspDefaultLookup>(true, _mainPort, DefaultLookupHandler),
-                        Arbiter.Receive<Get>(true, _mainPort, OnGet)
-                        ));
-	    }
-
-        void OnGet(Get getRequest)
+        [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+		public void OnGet(Get getRequest)
         {
-	        _state.Connected = Connected;
-
-            if (Entity != null)
+			if (Connected)
                 _state.BaseAngle = (Entity as TurretEntity).BaseAngle;
 
+			_state.Connected = Connected;
             DefaultGetHandler(getRequest);
         }
 
-        void OnSetBaseAngle(SetBaseAngle angleRequest)
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+        public void OnSetBaseAngle(SetBaseAngle angleRequest)
         {
+			if (FaultIfNotConnected(angleRequest))
+				return;
+
             (Entity as TurretEntity).BaseAngle = angleRequest.Body.Angle;
             angleRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
