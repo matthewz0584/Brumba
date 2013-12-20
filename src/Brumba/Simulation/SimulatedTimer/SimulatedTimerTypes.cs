@@ -16,12 +16,12 @@ namespace Brumba.Simulation.SimulatedTimer
     public class SimulatedTimerState : ISimulationEntityServiceState
     {
         [DataMember]
-        [Description("Elapsed simulation time since entity initialization")]
-        public double ElapsedTime { get; set; }
+        [Description("Simulation time")]
+        public double Time { get; set; }
 
         [DataMember]
-        [Description("Simulation time at the moment of entity initialization")]
-        public double StartTime { get; set; }
+        [Description("Time elapsed since last tick")]
+        public double Delta { get; set; }
 
 		[DataMember]
 		[Description("If there is any simulation entity under control of this service")]

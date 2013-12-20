@@ -208,8 +208,6 @@ namespace Brumba.SimulationTester
                 LogInfo("ExecuteTest.2");
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)test.PrepareForReset);
 
-                //yield return TimeoutPort(500).Receive();
-
                 LogInfo("ExecuteTest.3");
                 //Restart services from fixture manifest
                 yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
@@ -228,8 +226,8 @@ namespace Brumba.SimulationTester
 
 
                 var subscribeRq = _timer.Subscribe((float) test.EstimatedTime);
-                var elapsedTime = 0.0;
-                yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => elapsedTime = u.Body.ElapsedTime);
+                var dt = 0.0;
+                yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => dt = u.Body.Delta);
                 subscribeRq.NotificationShutdownPort.Post(new Shutdown());
 
                 LogInfo("ExecuteTest.7");
@@ -244,7 +242,7 @@ namespace Brumba.SimulationTester
                             (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
                 
                 LogInfo("ExecuteTest.9");
-                yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, elapsedTime);
+                yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, dt);
                 LogInfo("ExecuteTest.10");
 
 

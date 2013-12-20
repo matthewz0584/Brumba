@@ -28,19 +28,20 @@ namespace Brumba.Simulation.SimulatedTimer
         public SimulatedTimerService(DsspServiceCreationPort creationPort)
             : base(creationPort, Contract.Identifier)
         {
-            _multiTimer.Tick += (subscr, time) => 
-                    SendNotificationToTarget(subscr, _subMgrPort, new Update(new SimulatedTimerState { ElapsedTime = time }));
+            _multiTimer.Tick += (subscr, t, dt) => 
+                    SendNotificationToTarget(subscr, _subMgrPort, new Update(new SimulatedTimerState { Time = t, Delta = dt }));
         }
 
         protected override void OnInsertEntity()
         {
-            TimerEntity.Tick += time => _multiTimer.Update((float)time);
+            TimerEntity.Tick += 
+				time => 
+					_multiTimer.Update((float)time);
         }
 
         protected override void OnDeleteEntity()
         {
-            _state.ElapsedTime = 0;
-            _state.StartTime = 0;
+            _state.Time = 0;
 
             var subscrMgrGetResponse = new PortSet<SubscriptionListType, Fault>();
             _subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Get { ResponsePort = subscrMgrGetResponse });
@@ -60,10 +61,7 @@ namespace Brumba.Simulation.SimulatedTimer
 		public void OnGet(Get getRequest)
         {
 			if (IsConnected)
-			{
-				_state.ElapsedTime = TimerEntity.ElapsedTime;
-				_state.StartTime = TimerEntity.StartTime;
-			}
+				_state.Time = TimerEntity.Time;
             DefaultGetHandler(getRequest);
         }
 

@@ -15,7 +15,12 @@ namespace Brumba.WaiterStupid.Tests
             timer.Subscribe("1", 0.1f);
 
             float time = 0;
-            timer.Tick += (_, t) => time = t;
+	        float deltaTime = 0;
+	        timer.Tick += (_, t, dt) =>
+		        {
+			        time = t;
+			        deltaTime = dt;
+		        };
 
             Assert.That(time, Is.EqualTo(0));
 
@@ -30,14 +35,17 @@ namespace Brumba.WaiterStupid.Tests
             timer.Update(0.11f);
 
             Assert.That(time, Is.EqualTo(0.11f));
+			Assert.That(deltaTime, Is.EqualTo(0.11f));
 
             timer.Update(0.20f);
 
             Assert.That(time, Is.EqualTo(0.11f));
+			Assert.That(deltaTime, Is.EqualTo(0.11f));
 
             timer.Update(0.211f);
 
             Assert.That(time, Is.EqualTo(0.211f));
+			Assert.That(deltaTime, Is.EqualTo(0.101f).Within(1e-5));
         }
 
         [Test]
@@ -48,7 +56,7 @@ namespace Brumba.WaiterStupid.Tests
 
             float time = 0;
             string subscriber = "";
-            timer.Tick += (s, t) => { time = t; subscriber = s; };
+            timer.Tick += (s, t, _) => { time = t; subscriber = s; };
 
             Assert.That(time, Is.EqualTo(0));
 
@@ -88,7 +96,7 @@ namespace Brumba.WaiterStupid.Tests
 
             float time = 0;
             var subscribers = new List<string>();
-            timer.Tick += (s, t) => { time = t; subscribers.Add(s); };
+            timer.Tick += (s, t, _) => { time = t; subscribers.Add(s); };
 
             timer.Update(0.21f);
 
@@ -122,7 +130,7 @@ namespace Brumba.WaiterStupid.Tests
 
             float time = 0;
             var subscriber = "";
-            timer.Tick += (s, t) => { time = t; subscriber = s; };
+            timer.Tick += (s, t, _) => { time = t; subscriber = s; };
 
             timer.Reset(new []{"1"});
 

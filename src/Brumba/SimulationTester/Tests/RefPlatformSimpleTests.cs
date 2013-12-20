@@ -12,7 +12,7 @@ using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("ref_platform_simple_tests")]
+    [SimTestFixture("ref_platform_simple_tests", Wip = true)]
     public class RefPlatformSimpleTests
     {
 		public SimulationTesterService TesterService { get; private set; }

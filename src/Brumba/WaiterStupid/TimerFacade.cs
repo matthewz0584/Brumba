@@ -42,7 +42,6 @@ namespace Brumba.WaiterStupid
 
 		readonly simTimerPxy.SimulatedTimerOperations _simTimerNotificationPort = new simTimerPxy.SimulatedTimerOperations();
         Port<Shutdown> _simTimerUnsubscribePort;
-        double _lastTime;
 		void StartSimulatedTimer(ServiceInfoType f)
 		{
 			var simTimer = _srv.ServiceForwarder<simTimerPxy.SimulatedTimerOperations>(new Uri(f.Service));
@@ -55,16 +54,14 @@ namespace Brumba.WaiterStupid
 		                NotificationShutdownPort = _simTimerUnsubscribePort
 		            });
 
-		    SimulationTimerHandler(new simTimerPxy.Update {Body = {ElapsedTime = 0}});
+			_srv.Activate(_simTimerNotificationPort.P4.Receive(SimulationTimerHandler));
 		}
 
 	    void SimulationTimerHandler(simTimerPxy.Update simTimerUpdate)
 	    {
             if (_disposed)
                 return;
-	        if (_lastTime != 0)
-	            TickPort.Post(IntervalToSpan(simTimerUpdate.Body.ElapsedTime - _lastTime));
-	        _lastTime = simTimerUpdate.Body.ElapsedTime;
+	        TickPort.Post(IntervalToSpan(simTimerUpdate.Body.Delta));
             _srv.Activate(_simTimerNotificationPort.P4.Receive(SimulationTimerHandler));
 	    }
 
