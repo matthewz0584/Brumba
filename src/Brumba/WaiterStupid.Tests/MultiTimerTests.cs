@@ -9,43 +9,43 @@ namespace Brumba.WaiterStupid.Tests
     public class MultiTimerTests
     {
         [Test]
-        public void Notifications()
+        public void Tick()
         {
             var timer = new MultiTimer();
             timer.Subscribe("1", 0.1f);
 
             float time = 0;
-	        float deltaTime = 0;
-	        timer.Tick += (_, t, dt) =>
+	        float delta = 0;
+	        timer.Tick += (_, dt, t) =>
 		        {
 			        time = t;
-			        deltaTime = dt;
+			        delta = dt;
 		        };
 
-            Assert.That(time, Is.EqualTo(0));
-
-            timer.Update(0.01f);
+            timer.Update(0.01f, 0.01f);
 
             Assert.That(time, Is.EqualTo(0));
+            Assert.That(delta, Is.EqualTo(0));
 
-            timer.Update(0.09f);
+            timer.Update(0.08f, 0.09f);
 
             Assert.That(time, Is.EqualTo(0));
+            Assert.That(delta, Is.EqualTo(0));
 
-            timer.Update(0.11f);
+            timer.Update(0.02f, 0.11f);
 
             Assert.That(time, Is.EqualTo(0.11f));
-			Assert.That(deltaTime, Is.EqualTo(0.11f));
+			Assert.That(delta, Is.EqualTo(0.11f));
 
-            timer.Update(0.20f);
+            timer.Update(0.09f, 0.20f);
 
             Assert.That(time, Is.EqualTo(0.11f));
-			Assert.That(deltaTime, Is.EqualTo(0.11f));
+			Assert.That(delta, Is.EqualTo(0.11f));
 
-            timer.Update(0.211f);
+            timer.Update(0.011f, 0.211f);
 
             Assert.That(time, Is.EqualTo(0.211f));
-			Assert.That(deltaTime, Is.EqualTo(0.101f).Within(1e-5));
+			Assert.That(delta, Is.EqualTo(0.101f).Within(1e-5));
         }
 
         [Test]
@@ -54,36 +54,29 @@ namespace Brumba.WaiterStupid.Tests
             var timer = new MultiTimer();
             timer.Subscribe("1", 0.1f);
 
-            float time = 0;
-            string subscriber = "";
-            timer.Tick += (s, t, _) => { time = t; subscriber = s; };
+            var subscriber = "";
+            timer.Tick += (s, _, __) => subscriber = s;
 
-            Assert.That(time, Is.EqualTo(0));
+            timer.Update(0.01f, 0.01f);
 
-            timer.Update(0.01f);
+            Assert.That(subscriber, Is.EqualTo(""));
 
-            Assert.That(time, Is.EqualTo(0));
+            timer.Update(0.1f, 0.11f);
 
-            timer.Update(0.11f);
-
-            Assert.That(time, Is.EqualTo(0.11f));
             Assert.That(subscriber, Is.EqualTo("1"));
 
             timer.Subscribe("2", 0.25f);
 
-            timer.Update(0.22f);
+            timer.Update(0.11f, 0.22f);
 
-            Assert.That(time, Is.EqualTo(0.22f));
             Assert.That(subscriber, Is.EqualTo("1"));
 
-            timer.Update(0.33f);
+            timer.Update(0.11f, 0.33f);
 
-            Assert.That(time, Is.EqualTo(0.33f));
             Assert.That(subscriber, Is.EqualTo("1"));
 
-            timer.Update(0.37f);
+            timer.Update(0.04f, 0.37f);
 
-            Assert.That(time, Is.EqualTo(0.37f));
             Assert.That(subscriber, Is.EqualTo("2"));
         }
 
@@ -98,14 +91,14 @@ namespace Brumba.WaiterStupid.Tests
             var subscribers = new List<string>();
             timer.Tick += (s, t, _) => { time = t; subscribers.Add(s); };
 
-            timer.Update(0.21f);
+            timer.Update(0.21f, 0.21f);
 
             Assert.That(subscribers, Is.EquivalentTo(new []{"1", "2"}));
 
             timer.Unsubscribe("1");
             subscribers.Clear();
 
-            timer.Update(0.5f);
+            timer.Update(0.29f, 0.5f);
 
             Assert.That(subscribers, Is.EquivalentTo(new[] { "2" }));
         }
@@ -126,30 +119,30 @@ namespace Brumba.WaiterStupid.Tests
             timer.Subscribe("1", 0.1f);
             timer.Subscribe("2", 0.15f);
 
-            timer.Update(0.21f);
+            timer.Update(0.21f, 0.21f);
 
-            float time = 0;
+            float delta = 0;
             var subscriber = "";
-            timer.Tick += (s, t, _) => { time = t; subscriber = s; };
+            timer.Tick += (s, dt, _) => { delta = dt; subscriber = s; };
 
-            timer.Reset(new []{"1"});
+            timer.Reset(new[] { "1" });
 
             Assert.That(timer.Subscribers, Is.EquivalentTo(new[] { "1" }));
 
             timer.Subscribe("3", 0.25f);
-            timer.Update(0.05f);
+            timer.Update(0.05f, 0.05f);
 
-            Assert.That(time, Is.EqualTo(0));
+            Assert.That(delta, Is.EqualTo(0));
             Assert.That(subscriber, Is.EqualTo(""));
 
-            timer.Update(0.11f);
+            timer.Update(0.06f, 0.11f);
 
-            Assert.That(time, Is.EqualTo(0.11f));
+            Assert.That(delta, Is.EqualTo(0.11f));
             Assert.That(subscriber, Is.EqualTo("1"));
 
-            timer.Update(0.26f);
+            timer.Update(0.15f, 0.26f);
 
-            Assert.That(time, Is.EqualTo(0.26f));
+            Assert.That(delta, Is.EqualTo(0.26f));
             Assert.That(subscriber, Is.EqualTo("3"));
         }
 

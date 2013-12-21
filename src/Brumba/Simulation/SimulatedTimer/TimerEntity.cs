@@ -7,7 +7,8 @@ namespace Brumba.Simulation.SimulatedTimer
     [DataContract]
     public class TimerEntity : VisualEntity
     {
-        public event Action<double> Tick = delegate {};
+        //delta, time
+        public event Action<double, double> Tick = delegate {};
 		public double Time { get; set; }
 
         public TimerEntity()
@@ -22,17 +23,8 @@ namespace Brumba.Simulation.SimulatedTimer
         public override void Update(FrameUpdate update)
         {
             base.Update(update);
-			//if (StartTime == 0d)
-			//	StartTime = update.ApplicationTime;
-			//else
-			//{
-			//	ElapsedTime = update.ApplicationTime - StartTime;
-			//	Tick(ElapsedTime);
-			//}
-	        //ElapsedTime = update.ApplicationTime;
 	        Time = update.ApplicationTime;
-			update.ElapsedTime
-			Tick(update.ApplicationTime);
+			Tick(update.ElapsedTime, update.ApplicationTime);
         }
     }
 }

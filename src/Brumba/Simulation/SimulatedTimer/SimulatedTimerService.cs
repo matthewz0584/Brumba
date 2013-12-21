@@ -28,15 +28,14 @@ namespace Brumba.Simulation.SimulatedTimer
         public SimulatedTimerService(DsspServiceCreationPort creationPort)
             : base(creationPort, Contract.Identifier)
         {
-            _multiTimer.Tick += (subscr, t, dt) => 
+            _multiTimer.Tick += (subscr, dt, t) => 
                     SendNotificationToTarget(subscr, _subMgrPort, new Update(new SimulatedTimerState { Time = t, Delta = dt }));
         }
 
         protected override void OnInsertEntity()
         {
-            TimerEntity.Tick += 
-				time => 
-					_multiTimer.Update((float)time);
+            TimerEntity.Tick += (dt, t) => 
+					_multiTimer.Update((float)dt, (float)t);
         }
 
         protected override void OnDeleteEntity()

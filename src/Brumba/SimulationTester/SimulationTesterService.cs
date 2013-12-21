@@ -223,16 +223,15 @@ namespace Brumba.SimulationTester
 
                 LogInfo("ExecuteTest.6");
 
-
-
                 var subscribeRq = _timer.Subscribe((float) test.EstimatedTime);
-                var dt = 0.0;
-                yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => dt = u.Body.Delta);
+                yield return To.Exec(subscribeRq.ResponsePort);
+                var t = 0.0;
+                yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => t = u.Body.Time);
                 subscribeRq.NotificationShutdownPort.Post(new Shutdown());
 
                 LogInfo("ExecuteTest.7");
                 Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
-                yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
+                yield return _simEngine.Get().Choice(st => simState = st, LogError);
 
                 LogInfo("ExecuteTest.8");
                 IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;

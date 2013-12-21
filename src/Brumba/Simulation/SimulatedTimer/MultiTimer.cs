@@ -10,19 +10,19 @@ namespace Brumba.Simulation.SimulatedTimer
         {
             public string Name { get; set; }
             public float Interval { get; set; }
-            public float LastTickTime { get; set; }
+            public float ElapsedTime { get; set; }
         }
 
         readonly List<SubscriberState> _subscriberStates = new List<SubscriberState>();
-        float _currentTime;
         
+        //subsriber name, delta, time
         public event Action<string, float, float> Tick = delegate {};
 
         public void Subscribe(string name, float interval)
         {
             if (_subscriberStates.Any(ss => ss.Name == name))
                 throw new Exception(string.Format("Subscriber with name {0} is already registered", name));
-            _subscriberStates.Add(new SubscriberState {Name = name, Interval = interval, LastTickTime = _currentTime});
+            _subscriberStates.Add(new SubscriberState {Name = name, Interval = interval, ElapsedTime = 0});
         }
 
         public string[] Subscribers
@@ -35,13 +35,15 @@ namespace Brumba.Simulation.SimulatedTimer
             _subscriberStates.Remove(_subscriberStates.Single(ss => ss.Name == name));
         }
 
-        public void Update(float time)
+        public void Update(float dt, float t)
         {
-            _currentTime = time;
-            foreach (var subscr in _subscriberStates.Where(subscr => (time - subscr.LastTickTime) > subscr.Interval))
+            foreach (var subscr in _subscriberStates)
+                subscr.ElapsedTime += dt;
+
+            foreach (var subscr in _subscriberStates.Where(subscr => subscr.ElapsedTime > subscr.Interval))
             {
-				Tick(subscr.Name, time, time - subscr.LastTickTime);
-                subscr.LastTickTime = time;
+                Tick(subscr.Name, subscr.ElapsedTime, t);
+                subscr.ElapsedTime = 0;
             }
         }
 
@@ -50,8 +52,7 @@ namespace Brumba.Simulation.SimulatedTimer
             foreach (var removedSubscriber in Subscribers.Except(survivedSubscribers))
                 Unsubscribe(removedSubscriber);
             foreach (var subscr in _subscriberStates)
-                subscr.LastTickTime = 0;
-            _currentTime = 0 не имеет смысла, когда время не начинается с нуля для нового таймера. Станет лучше если перейти на Апдейт по делта Т;
+                subscr.ElapsedTime = 0;
         }
     }
 }

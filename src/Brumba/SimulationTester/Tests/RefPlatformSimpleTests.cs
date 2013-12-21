@@ -33,7 +33,7 @@ namespace Brumba.SimulationTester.Tests
 	        public override IEnumerator<ITask> Start()
             {
 				//Max speed = 1,6 m/s, distance 2 meters
-				EstimatedTime = 2f / 1.6;
+				EstimatedTime = 2f / 1.6 * 1.05;
 
                 //Execs for synchronization, otherwise set power message can arrive before enable message
                 yield return To.Exec((Fixture as RefPlatformSimpleTests).RefPlDrivePort.EnableDrive(true));
