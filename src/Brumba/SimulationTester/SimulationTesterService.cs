@@ -198,96 +198,62 @@ namespace Brumba.SimulationTester
 
         IEnumerator<ITask> ExecuteTest(Action<float> @return, SimulationTestFixtureInfo fixtureInfo, ISimulationTest test)
         {
-            LogInfo("ExecuteTest.1");
+            LogInfo("ExecuteTest: Test execution started");
         	int successful = 0, i;
 			for (i = 0; i < (test.IsProbabilistic ? TRIES_NUMBER : 1); ++i)
             {
 				if (HasEarlyResults(i, successful))
 					break;
 
-                LogInfo("ExecuteTest.2");
+                //Restore only those entities that need it
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)test.PrepareForReset);
+                LogInfo("ExecuteTest: Environment restored");
 
-                LogInfo("ExecuteTest.3");
                 //Restart services from fixture manifest
                 yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
+                LogInfo("ExecuteTest: Manifest restarted");
 
-                LogInfo("ExecuteTest.4");
                 //Reconnect to necessary services
                 fixtureInfo.SetUp(this);
+                LogInfo("ExecuteTest: Fixture set up");
 
-                LogInfo("ExecuteTest.5");
                 yield return To.Exec(test.Start);
+                LogInfo("ExecuteTest: Test try started");
                 //Test has started, but timer has not. There will be some simulation time period (dtX) when test would work but timer would not.
 
                 var testSucceed = false;
-
-                LogInfo("ExecuteTest.6");
 
                 var subscribeRq = _timer.Subscribe((float) test.EstimatedTime);
                 yield return To.Exec(subscribeRq.ResponsePort);
                 var dt = 0.0;
                 yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => dt = u.Body.Delta);
                 subscribeRq.NotificationShutdownPort.Post(new Shutdown());
+                LogInfo("ExecuteTest: Test estimated time elapsed");
 
-                LogInfo("ExecuteTest.7");
                 Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
                 yield return _simEngine.Get().Choice(st => simState = st, LogError);
+                LogInfo("ExecuteTest: Simulation engine state acquired");
 
-                LogInfo("ExecuteTest.8");
                 IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;
                 yield return To.Exec(DeserializaTopLevelEntityProxies,
                             (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens, simState,
                             (Func<XmlElement, bool>)
                             (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
-                
-                LogInfo("ExecuteTest.9");
+                LogInfo("ExecuteTest: Testee entities deserialized");
+
                 //Actually, test has been working for (dt + dtX).
                 //Without rendering sim engine will go farther in time by the moment of timer start, so dtX would be longer, than with rendering.
                 //That's why results from running with and without rendering may differ.
                 yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, dt);
-                LogInfo("ExecuteTest.10");
+                LogInfo("ExecuteTest: Test results assessed");
 
-
-
-
-                //var elapsedTime = 0.0;
-                //var startTime = 0.0;
-                //yield return Arbiter.Choice(_timer.Get(), s => startTime = elapsedTime = s.ElapsedTime, LogError);
-
-                //while (!testSucceed && (elapsedTime - startTime) <= test.EstimatedTime * 1.25)
-                //{
-                //    LogInfo("ExecuteTest.7");
-                //    //LogInfo(string.Format());
-                //    Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
-                //    yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
-
-                //    LogInfo("ExecuteTest.8");
-                //    //IEnumerable<MrsePxy.VisualEntity> simStateEntities = null;
-                //    //yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> ens) => simStateEntities = ens, simState);
-                //    //yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, simStateEntities, elapsedTime);
-                //    IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;
-                //    yield return To.Exec(DeserializaTopLevelEntityProxies,
-                //                (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens, simState,
-                //                (Func<XmlElement, bool>)
-                //                (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
-                //    LogInfo("ExecuteTest.9");
-                //    yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, elapsedTime);
-                //    LogInfo("ExecuteTest.10");
-                //    yield return Arbiter.Choice(_timer.Get(), s => elapsedTime = s.ElapsedTime, LogError);
-
-                //    LogInfo("ExecuteTest.11");
-                //    if (!testSucceed)
-                //        yield return TimeoutPort(20).Receive();
-                //}
-                LogInfo("ExecuteTest.12");
             	OnTestTryEnded(test, testSucceed);
 
                 if (testSucceed) ++successful;
 
 	            //Drop services that need to be restarted
 				yield return To.Exec(DropServices);
-                LogInfo("ExecuteTest.13");
+                LogInfo("ExecuteTest: Test's services dropped");
             }
 
             @return((float)successful / i);

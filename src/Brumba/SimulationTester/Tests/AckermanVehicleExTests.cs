@@ -70,9 +70,6 @@ namespace Brumba.SimulationTester.Tests
         [SimTest]
         public class VehicleAnglesTest : SingleVehicleTest
         {
-            float _prevDriveAngularDistance = -1;
-            double _prevElapsedTime;
-
             public override IEnumerator<ITask> Start()
             {
                 EstimatedTime = 4;
@@ -82,30 +79,15 @@ namespace Brumba.SimulationTester.Tests
 
             public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
-                if (elapsedTime < EstimatedTime / 2)
-                {
-                    @return(false);
-                    yield break;
-                }
-
-                if (_prevDriveAngularDistance == -1)
-                {
-                    _prevElapsedTime = elapsedTime;
-                    yield return Arbiter.Receive<AckermanVehicle.Proxy.AckermanVehicleState>(false, (Fixture as AckermanVehicleExTests).VehiclePort.Get(), vs => _prevDriveAngularDistance = vs.DriveAngularDistance);
-                    @return(false);
-                    yield break;
-                }
-
                 AckermanVehicle.Proxy.AckermanVehicleState vehState = null;
                 yield return Arbiter.Receive<AckermanVehicle.Proxy.AckermanVehicleState>(false, (Fixture as AckermanVehicleExTests).VehiclePort.Get(), vs => vehState = vs);
 
-                var deltaT = elapsedTime - _prevElapsedTime;
-                var deltaAnglularDistance = vehState.DriveAngularDistance - _prevDriveAngularDistance;
                 var vehProps = (simStateEntities.Single() as Simulation.SimulatedAckermanVehicle.Proxy.AckermanVehicleExEntity).Props;
-                var expectedDeltaAngularDistance = vehProps.MaxVelocity * 0.2f / vehProps.WheelsProperties.First().Radius * deltaT;
+                //Plus correction for linear acceleration
+                var expectedAngularDistance = vehProps.MaxVelocity * 0.2f / vehProps.WheelsProperties.First().Radius * elapsedTime - 9;
 
                 @return(vehState.SteeringAngle > 0.9 * 0.5 * vehProps.MaxSteeringAngle && vehState.SteeringAngle < 1.1 * 0.5 * vehProps.MaxSteeringAngle &&
-                        deltaAnglularDistance > 0.9 * expectedDeltaAngularDistance && deltaAnglularDistance < 1.1 * expectedDeltaAngularDistance);
+                        vehState.DriveAngularDistance > 0.9 * expectedAngularDistance && vehState.DriveAngularDistance < 1.1 * expectedAngularDistance);
             }
         }
     }

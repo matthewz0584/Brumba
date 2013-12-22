@@ -32,7 +32,10 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_ackermanVehiclePort")]
         public void OnUpdateDrivePower(UpdateDrivePower powerRequest)
-        {
+		{
+		    if (FaultIfNotConnected(powerRequest))
+		        return;
+
             Vehicle.SetDrivePower(powerRequest.Body.Value);
 
             powerRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
@@ -41,6 +44,9 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_ackermanVehiclePort")]
 		public void OnUpdateSteeringAngle(UpdateSteeringAngle steeringRequest)
         {
+            if (FaultIfNotConnected(steeringRequest))
+                return;
+
             Vehicle.SetSteeringAngle(steeringRequest.Body.Value);
 
             steeringRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
@@ -49,6 +55,9 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_ackermanVehiclePort")]
         public void OnBreak(Break breakRequest)
         {
+            if (FaultIfNotConnected(breakRequest))
+                return;
+
             Vehicle.Break();
 
             breakRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
