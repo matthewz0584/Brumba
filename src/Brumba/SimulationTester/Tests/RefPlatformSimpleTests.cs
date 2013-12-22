@@ -12,7 +12,7 @@ using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("ref_platform_simple_tests", Wip = true)]
+    [SimTestFixture("ref_platform_simple_tests")]
     public class RefPlatformSimpleTests
     {
 		public SimulationTesterService TesterService { get; private set; }
@@ -32,8 +32,8 @@ namespace Brumba.SimulationTester.Tests
         {
 	        public override IEnumerator<ITask> Start()
             {
-				//Max speed = 1,6 m/s, distance 2 meters
-				EstimatedTime = 2f / 1.6 * 1.05;
+				//Max speed = 1,6 m/s, distance 2 meters, plus correction for accelerating from 0 to set speed 
+				EstimatedTime = 1.5f;
 
                 //Execs for synchronization, otherwise set power message can arrive before enable message
                 yield return To.Exec((Fixture as RefPlatformSimpleTests).RefPlDrivePort.EnableDrive(true));

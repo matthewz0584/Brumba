@@ -203,7 +203,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <summary>
         /// The time we began out drive distance command
         /// </summary>
-        private DateTime _startTime;
+        private double _startTime;
 
         /// <summary>
         /// Our target rotation
@@ -388,6 +388,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// Right sonar orientation. 
         /// </summary>
         private Quaternion _rightSonarOrientation = Quaternion.FromAxisAngle(0f, 1f, 0f, (float)RightSonarAngleOutRadians);
+
+        private double _currentTime;
 
         /// <summary>
         /// Default constructor, used for creating the entity from an XML description
@@ -812,6 +814,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <param name="update">The frame update message</param>
         public override void Update(FrameUpdate update)
         {
+            _currentTime = update.ApplicationTime;
+
             // update state for us and all the shapes that make up the rigid body
             PhysicsEntity.UpdateState(true);
 
@@ -835,7 +839,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                         tmp.Post(OperationResult.Completed);
                     }
                 }
-                else if ((TimeoutSeconds != 0) && (DateTime.Now - _startTime).TotalSeconds > TimeoutSeconds)
+                else if ((TimeoutSeconds != 0) && (int)(_currentTime - _startTime) > TimeoutSeconds)
                 {
                     if (_driveDistancePort != null)
                     {
@@ -913,7 +917,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                         tmp.Post(OperationResult.Completed);
                     }
                 }
-                else if ((TimeoutSeconds != 0) && (DateTime.Now - _startTime).TotalSeconds > TimeoutSeconds)
+                else if ((TimeoutSeconds != 0) && (int)(_currentTime - _startTime) > TimeoutSeconds)
                 {
                     if (_rotateDegreesPort != null)
                     {
@@ -1055,7 +1059,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             _startPoseForDriveDistance = State.Pose;
             _distanceToTravel = distance;
             SetAxleVelocity(power * MotorTorqueScaling, power * MotorTorqueScaling);
-            _startTime = DateTime.Now;
+            _startTime = _currentTime;
         }
 
         /// <summary>
@@ -1098,7 +1102,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 SetAxleVelocity(-power * MotorTorqueScaling, power * MotorTorqueScaling);
             }
 
-            _startTime = DateTime.Now;
+            _startTime = _currentTime;
         }
 
         /// <summary>

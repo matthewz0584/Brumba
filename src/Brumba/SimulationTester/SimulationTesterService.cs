@@ -218,6 +218,7 @@ namespace Brumba.SimulationTester
 
                 LogInfo("ExecuteTest.5");
                 yield return To.Exec(test.Start);
+                //Test has started, but timer has not. There will be some simulation time period (dtX) when test would work but timer would not.
 
                 var testSucceed = false;
 
@@ -225,8 +226,8 @@ namespace Brumba.SimulationTester
 
                 var subscribeRq = _timer.Subscribe((float) test.EstimatedTime);
                 yield return To.Exec(subscribeRq.ResponsePort);
-                var t = 0.0;
-                yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => t = u.Body.Time);
+                var dt = 0.0;
+                yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => dt = u.Body.Delta);
                 subscribeRq.NotificationShutdownPort.Post(new Shutdown());
 
                 LogInfo("ExecuteTest.7");
@@ -241,6 +242,9 @@ namespace Brumba.SimulationTester
                             (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
                 
                 LogInfo("ExecuteTest.9");
+                //Actually, test has been working for (dt + dtX).
+                //Without rendering sim engine will go farther in time by the moment of timer start, so dtX would be longer, than with rendering.
+                //That's why results from running with and without rendering may differ.
                 yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, dt);
                 LogInfo("ExecuteTest.10");
 
