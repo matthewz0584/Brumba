@@ -10,25 +10,29 @@ namespace Brumba.SimulationTester.Tests
     {
         public Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingOperations IfRfRingPort { get; set; }
 
-        [SimSetUp]
+        [SetUp]
 		public void SetUp(SimulationTesterService testerService)
         {
             IfRfRingPort = testerService.ForwardTo<Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingOperations>("testee_rf_ring");
         }
 
-        [SimTest]
-        public class DistancesTest : DeterministicTest
+        [SimTest(1, IsProbabilistic = false)]
+        public class DistancesTest
         {
-            public override IEnumerator<ITask> Start()
+            [Fixture]
+            public InfraredRfRingTests Fixture { get; set; }
+
+            [Start]
+            public IEnumerator<ITask> Start()
             {
-                EstimatedTime = 1;
                 yield break;
             }
 
-            public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+            [Test]
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
             {
                 Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingState ringState = null;
-                yield return Arbiter.Receive<Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingState>(false, (Fixture as InfraredRfRingTests).IfRfRingPort.Get(), rs => ringState = rs);
+                yield return Arbiter.Receive<Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingState>(false, Fixture.IfRfRingPort.Get(), rs => ringState = rs);
 
                 @return(ringState.Distances[0] > 0.3 * 0.95 && ringState.Distances[0] < 0.3 * 1.05 &&
                         ringState.Distances[1] == 1 &&

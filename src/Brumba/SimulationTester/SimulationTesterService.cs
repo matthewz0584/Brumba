@@ -51,14 +51,19 @@ namespace Brumba.SimulationTester
 		ManifestLoaderClientPort _manifestLoader = new ManifestLoaderClientPort();
 
         readonly List<SimulationTestFixtureInfo> _testFixtureInfos = new List<SimulationTestFixtureInfo>();
-		readonly Dictionary<ISimulationTest, float> _testResults = new Dictionary<ISimulationTest, float>();
+		readonly Dictionary<SimulationTestInfo, float> _testResults = new Dictionary<SimulationTestInfo, float>();
 
 		public event Action OnStarted = delegate { };
-		public event Action<Dictionary<ISimulationTest, float>> OnEnded = delegate { };
+        public event Action<Dictionary<SimulationTestInfo, float>> OnEnded = delegate { };
 		public event Action<SimulationTestFixtureInfo> OnFixtureStarted = delegate { };
-		public event Action<ISimulationTest> OnTestStarted = delegate { };
-		public event Action<ISimulationTest, float> OnTestEnded = delegate { };
-		public event Action<ISimulationTest, bool> OnTestTryEnded = delegate { };
+		public event Action<SimulationTestInfo> OnTestStarted = delegate { };
+        public event Action<SimulationTestInfo, float> OnTestEnded = delegate { };
+        public event Action<SimulationTestInfo, bool> OnTestTryEnded = delegate { };
+
+        public SimulationTesterService()
+            : base((ServiceEnvironment)null)
+        {
+        }
 		
 		public SimulationTesterService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
@@ -92,32 +97,7 @@ namespace Brumba.SimulationTester
             var allFixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestFixtureAttribute && !(a as SimTestFixtureAttribute).Ignore));
             var fixturesToCreate = wipFixtureTypes.Any() ? wipFixtureTypes : allFixtureTypes;
 
-            return fixturesToCreate.Select(CreateFixtureInfo);
-        }
-
-        SimulationTestFixtureInfo CreateFixtureInfo(Type fixtureType)
-        {
-            var fixtureInfo = new SimulationTestFixtureInfo();
-
-            fixtureInfo.Fixture = Activator.CreateInstance(fixtureType);
-            
-            fixtureInfo.EnvironmentXmlFile =
-                fixtureType.GetCustomAttributes(false).OfType<SimTestFixtureAttribute>().Single().EnvironmentFile;
-
-            fixtureInfo.SetUp =
-                sf =>
-                fixtureType.GetMethods().Single(mi => mi.GetCustomAttributes(false).Any(a => a is SimSetUpAttribute))
-                           .Invoke(fixtureInfo.Fixture, new object[] {sf});
-
-            var testsToCreate = fixtureType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
-                           .Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestAttribute));
-            foreach (var testType in testsToCreate)
-            {
-                var test = Activator.CreateInstance(testType) as ISimulationTest;
-                test.Fixture = fixtureInfo.Fixture;
-                fixtureInfo.Tests.Add(test);
-            }
-            return fixtureInfo;
+            return fixturesToCreate.Select(new FixtureInfoCreator().CreateFixtureInfo);
         }
 
         IEnumerator<ITask> ExecuteTests()
@@ -130,17 +110,17 @@ namespace Brumba.SimulationTester
 				OnFixtureStarted(fixtureInfo);
 
                 //Full restore: static and dynamic objects
-                yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<MrsePxy.VisualEntity, bool>)(ve => !ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)null);
+                yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<MrsePxy.VisualEntity, bool>)(ve => !ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)null);
 
-				foreach (var test in fixtureInfo.Tests)
+				foreach (var testInfo in fixtureInfo.TestInfos)
 				{
-					OnTestStarted(test);
+					OnTestStarted(testInfo);
 
 					float result = 0;
-                    yield return To.Exec(ExecuteTest, (float r) => result = r, fixtureInfo, test);
-					_testResults.Add(test, result);
+                    yield return To.Exec(ExecuteTest, (float r) => result = r, fixtureInfo, testInfo);
+					_testResults.Add(testInfo, result);
 
-					OnTestEnded(test, result);
+					OnTestEnded(testInfo, result);
 				}
 			}
         	OnEnded(_testResults);
@@ -196,34 +176,40 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_simEngine.Replace(simState));
         }
 
-        IEnumerator<ITask> ExecuteTest(Action<float> @return, SimulationTestFixtureInfo fixtureInfo, ISimulationTest test)
+        IEnumerator<ITask> ExecuteTest(Action<float> @return, SimulationTestFixtureInfo fixtureInfo, SimulationTestInfo testInfo)
         {
             LogInfo("ExecuteTest: Test execution started");
         	int successful = 0, i;
-			for (i = 0; i < (test.IsProbabilistic ? TRIES_NUMBER : 1); ++i)
+			for (i = 0; i < (testInfo.IsProbabilistic ? TRIES_NUMBER : 1); ++i)
             {
 				if (HasEarlyResults(i, successful))
 					break;
 
                 //Restore only those entities that need it
-                yield return To.Exec(RestoreEnvironment, fixtureInfo.EnvironmentXmlFile, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)test.PrepareForReset);
+                yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.PrepareEntities);
                 LogInfo("ExecuteTest: Environment restored");
 
                 //Restart services from fixture manifest
-                yield return To.Exec(StartManifest, fixtureInfo.EnvironmentXmlFile);
+                yield return To.Exec(StartManifest, fixtureInfo.Name);
                 LogInfo("ExecuteTest: Manifest restarted");
 
                 //Reconnect to necessary services
-                fixtureInfo.SetUp(this);
-                LogInfo("ExecuteTest: Fixture set up");
+                if (fixtureInfo.SetUp != null)
+                {
+                    fixtureInfo.SetUp(this);
+                    LogInfo("ExecuteTest: Fixture set up");
+                }
 
-                yield return To.Exec(test.Start);
-                LogInfo("ExecuteTest: Test try started");
+                if (testInfo.Start != null)
+                {
+                    yield return To.Exec(testInfo.Start);
+                    LogInfo("ExecuteTest: Test try started");
+                }
                 //Test has started, but timer has not. There will be some simulation time period (dtX) when test would work but timer would not.
 
                 var testSucceed = false;
 
-                var subscribeRq = _timer.Subscribe((float) test.EstimatedTime);
+                var subscribeRq = _timer.Subscribe(testInfo.EstimatedTime);
                 yield return To.Exec(subscribeRq.ResponsePort);
                 var dt = 0.0;
                 yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => dt = u.Body.Delta);
@@ -244,10 +230,13 @@ namespace Brumba.SimulationTester
                 //Actually, test has been working for (dt + dtX).
                 //Without rendering sim engine will go farther in time by the moment of timer start, so dtX would be longer, than with rendering.
                 //That's why results from running with and without rendering may differ.
-                yield return To.Exec(test.AssessProgress, (bool b) => testSucceed = b, testeeEntitiesPxies, dt);
-                LogInfo("ExecuteTest: Test results assessed");
+                if (testInfo.Test != null)
+                {
+                    yield return To.Exec(testInfo.Test, b => testSucceed = b, testeeEntitiesPxies, dt);
+                    LogInfo("ExecuteTest: Test results assessed");
+                }
 
-            	OnTestTryEnded(test, testSucceed);
+                OnTestTryEnded(testInfo, testSucceed);
 
                 if (testSucceed) ++successful;
 
@@ -352,21 +341,6 @@ namespace Brumba.SimulationTester
 			return i == TRIES_NUMBER / 10 && ((float)successful / i > SUCCESS_THRESHOLD || (float)successful / i < 1 - SUCCESS_THRESHOLD);
 		}
 	}
-
-    public static class SimulatedTimerUtils
-    {
-        public static BrSimTimerPxy.Subscribe Subscribe(this BrSimTimerPxy.SimulatedTimerOperations me, float interval)
-        {
-            var subscribeRq = new BrSimTimerPxy.Subscribe
-                {
-                    Body = new BrSimTimerPxy.SubscribeRequest(interval),
-                    NotificationPort = new BrSimTimerPxy.SimulatedTimerOperations(),
-                    NotificationShutdownPort = new Port<Shutdown>()
-                };
-            me.Post(subscribeRq);
-            return subscribeRq;
-        }
-    }
 }
 
 

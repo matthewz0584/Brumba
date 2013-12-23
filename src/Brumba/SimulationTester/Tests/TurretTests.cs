@@ -14,26 +14,30 @@ namespace Brumba.SimulationTester.Tests
     {
         public Simulation.SimulatedTurret.Proxy.SimulatedTurretOperations TurretPort { get; set; }
 
-        [SimSetUp]
+        [SetUp]
 		public void SetUp(SimulationTesterService hostService)
         {
             TurretPort = hostService.ForwardTo<Simulation.SimulatedTurret.Proxy.SimulatedTurretOperations>("testee_turret");
         }
 
-        [SimTest]
-        public class SetBaseAngleTest : DeterministicTest
+        [SimTest(3, IsProbabilistic = false)]
+        public class SetBaseAngleTest
         {
-            public override IEnumerator<ITask> Start()
+            [Fixture]
+            public TurretTests Fixture { get; set; }
+
+            [Start]
+            public IEnumerator<ITask> Start()
             {
-                EstimatedTime = 3;
-                (Fixture as TurretTests).TurretPort.SetBaseAngle((float)Math.PI / 4);
+                Fixture.TurretPort.SetBaseAngle((float)Math.PI / 4);
                 yield break;
             }
 
-            public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+            [Test]
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
             {
                 var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose.Orientation));
-                @return(orientation.Y > 45 * 0.95 && orientation.Y < 45 * 1.05 && elapsedTime > EstimatedTime);
+                @return(orientation.Y > 45 * 0.95 && orientation.Y < 45 * 1.05 && elapsedTime > 3);
                 yield break;
             }
         }

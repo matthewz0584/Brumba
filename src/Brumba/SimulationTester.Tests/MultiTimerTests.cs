@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using Brumba.Simulation.SimulatedTimer;
 using NUnit.Framework;
 
-namespace Brumba.WaiterStupid.Tests
+namespace Brumba.SimulationTester.Tests
 {
     [TestFixture]
     public class MultiTimerTests
     {
-        [Test]
+        [NUnit.Framework.Test]
         public void Tick()
         {
             var timer = new MultiTimer();
@@ -48,7 +48,7 @@ namespace Brumba.WaiterStupid.Tests
 			Assert.That(delta, Is.EqualTo(0.101f).Within(1e-5));
         }
 
-        [Test]
+        [NUnit.Framework.Test]
         public void NamedSubscribe()
         {
             var timer = new MultiTimer();
@@ -80,7 +80,7 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(subscriber, Is.EqualTo("2"));
         }
 
-        [Test]
+        [NUnit.Framework.Test]
         public void NamedUnsubscribe()
         {
             var timer = new MultiTimer();
@@ -103,7 +103,7 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(subscribers, Is.EquivalentTo(new[] { "2" }));
         }
 
-        [Test]
+        [NUnit.Framework.Test]
         [ExpectedException(typeof(Exception), ExpectedMessage = "Subscriber with name 1 is already registered")]
         public void SubscribeNonUniqueName()
         {
@@ -112,7 +112,7 @@ namespace Brumba.WaiterStupid.Tests
             timer.Subscribe("1", 0.2f);
         }
 
-        [Test]
+        [NUnit.Framework.Test]
         public void Reset()
         {
             var timer = new MultiTimer();
@@ -146,7 +146,7 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(subscriber, Is.EqualTo("3"));
         }
 
-        [Test]
+        [NUnit.Framework.Test]
         public void Subscribers()
         {
             var timer = new MultiTimer();

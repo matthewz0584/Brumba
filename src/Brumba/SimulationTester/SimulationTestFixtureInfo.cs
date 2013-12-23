@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Brumba.Utils;
 
 namespace Brumba.SimulationTester
 {
@@ -8,14 +7,13 @@ namespace Brumba.SimulationTester
     {
         public SimulationTestFixtureInfo()
         {
-            Tests = new List<ISimulationTest>();
-            EnvironmentXmlFile = "";
-            SetUp = _ => { };
+            TestInfos = new List<SimulationTestInfo>();
+            Name = "";
         }
 
-        public string EnvironmentXmlFile { get; set; }
-        public ICollection<ISimulationTest> Tests { get; private set; }
-        public Action<DsspServiceExposing> SetUp { get; set; }
-        public object Fixture { get; set; }
+        public string Name { get; set; }
+        public ICollection<SimulationTestInfo> TestInfos { get; private set; }
+        public Action<SimulationTesterService> SetUp { get; set; }
+        public object Object { get; set; }
     }
 }

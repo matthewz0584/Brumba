@@ -19,7 +19,7 @@ namespace Brumba.SimulationTester.Tests
         public DrivePxy.DriveOperations RefPlDrivePort { get; private set; }
         public SickLrfPxy.SickLRFOperations SickLrfPort { get; private set; }
 
-        [SimSetUp]
+        [SetUp]
 		public void SetUp(SimulationTesterService testerService)
         {
             TesterService = testerService;
@@ -27,20 +27,23 @@ namespace Brumba.SimulationTester.Tests
             SickLrfPort = testerService.ForwardTo<SickLrfPxy.SickLRFOperations>("stupid_waiter_lidar/sicklrf");
         }
 
-	    [SimTest]
-        public class DriveForwardTest : DeterministicTest
+        //Max speed = 1,6 m/s, distance 2 meters, plus correction for accelerating from 0 to set speed 
+        [SimTest(1.5f, IsProbabilistic = false)]
+        public class DriveForwardTest
         {
-	        public override IEnumerator<ITask> Start()
-            {
-				//Max speed = 1,6 m/s, distance 2 meters, plus correction for accelerating from 0 to set speed 
-				EstimatedTime = 1.5f;
+            [Fixture]
+            public RefPlatformSimpleTests Fixture { get; set; }
 
+	        [Start]
+            public IEnumerator<ITask> Start()
+            {
                 //Execs for synchronization, otherwise set power message can arrive before enable message
-                yield return To.Exec((Fixture as RefPlatformSimpleTests).RefPlDrivePort.EnableDrive(true));
-                yield return To.Exec((Fixture as RefPlatformSimpleTests).RefPlDrivePort.SetDrivePower(1.0, 1.0));
+                yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
+                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1.0, 1.0));
             }
 
-			public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+			[Test]
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
 				var pos = TypeConversion.ToXNA((Vector3)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose.Position));
 				@return(pos.Length() > 2);
@@ -48,21 +51,25 @@ namespace Brumba.SimulationTester.Tests
 			}
         }
 
-		[SimTest]
-		public class LrfTest : StochasticTest
+		[SimTest(1)]
+		public class LrfTest
 		{
             Port<SickLrfPxy.Replace> _lrfNotify = new Port<SickLrfPxy.Replace>();
             bool _correctNotificationReceived;
 
-		    public override void PrepareForReset(Microsoft.Robotics.Simulation.Engine.VisualEntity entity)
+            [Fixture]
+            public RefPlatformSimpleTests Fixture { get; set; }
+
+		    [PrepareEntities]
+            public void PrepareEntities(Microsoft.Robotics.Simulation.Engine.VisualEntity entity)
 		    {
 		    }
 
-		    public override IEnumerator<ITask> Start()
+		    [Start]
+            public IEnumerator<ITask> Start()
 			{
-				EstimatedTime = 1;
-		        (Fixture as RefPlatformSimpleTests).SickLrfPort.Subscribe(_lrfNotify);
-		        (Fixture as RefPlatformSimpleTests).TesterService.Activate(Arbiter.Receive(true, _lrfNotify, OnLrfNotification));
+		        Fixture.SickLrfPort.Subscribe(_lrfNotify);
+		        Fixture.TesterService.Activate(Arbiter.Receive(true, _lrfNotify, OnLrfNotification));
 				yield break;
 			}
 
@@ -71,7 +78,8 @@ namespace Brumba.SimulationTester.Tests
 		        _correctNotificationReceived = CheckStateAndMeasurements(replace.Body);
 		    }
 
-		    public override IEnumerator<ITask> AssessProgress(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+		    [Test]
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
 				Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.State lrfState = null;
                 yield return Arbiter.Receive<SickLrfPxy.State>(false, (Fixture as RefPlatformSimpleTests).SickLrfPort.Get(), ss => lrfState = ss);
