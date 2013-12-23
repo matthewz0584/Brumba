@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.Simulation.Proxy;
 using NUnit.Framework;
@@ -18,6 +19,7 @@ namespace Brumba.SimulationTester.Tests
             var fi = new FixtureInfoCreator().CreateFixtureInfo(typeof (TestSimTestFixture1));
 
             Assert.That(fi.Name, Is.EqualTo("fixture_name"));
+            Assert.That(fi.Wip, Is.False);
             Assert.That(fi.Object, Is.Not.Null);
             
             Assert.That(fi.SetUp, Is.Not.Null);
@@ -33,6 +35,8 @@ namespace Brumba.SimulationTester.Tests
             var testerSvc = new SimulationTesterService();
             fi.SetUp(testerSvc);
             Assert.That((fi.Object as TestSimTestFixture1).TesterService, Is.SameAs(testerSvc));
+
+            Assert.That(new FixtureInfoCreator().CreateFixtureInfo(typeof(TestSimTestFixture2)).Wip);
         }
 
         [NUnit.Framework.Test]
@@ -127,6 +131,16 @@ namespace Brumba.SimulationTester.Tests
             Assert.That((ti.Object as TestSimTestFixture1.TestSimTestIfaces)._log, Is.EqualTo("started"));
             ti.Test(b => { }, new[] { new MrsePxy.VisualEntity() }, 1.5f).MoveNext();
             Assert.That((ti.Object as TestSimTestFixture1.TestSimTestIfaces)._log, Is.EqualTo("tested"));
+        }
+
+        [NUnit.Framework.Test]
+        public void CollectFixtures()
+        {
+            var fixtures = new FixtureInfoCreator().CollectFixtures(Assembly.GetAssembly(typeof(FixtureInfoCreaterTests)));
+
+            Assert.That(fixtures.Count(), Is.EqualTo(2));
+            Assert.That(fixtures.Single(f => f.Wip).Name, Is.EqualTo("wip_fixture_name"));
+            Assert.That(fixtures.Single(f => !f.Wip).Name, Is.EqualTo("fixture_name"));
         }
     }
 
@@ -238,7 +252,7 @@ namespace Brumba.SimulationTester.Tests
         }
     }
 
-    [SimTestFixture("fixture_name")]
+    [SimTestFixture("wip_fixture_name", Wip = true)]
     public class TestSimTestFixture2
     {
     }

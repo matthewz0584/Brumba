@@ -8,13 +8,22 @@ namespace Brumba.SimulationTester
 {
     public class FixtureInfoCreator
     {
+        public IEnumerable<SimulationTestFixtureInfo> CollectFixtures(Assembly assembly)
+        {
+            return assembly.GetTypes().
+                Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestFixtureAttribute && !(a as SimTestFixtureAttribute).Ignore)).
+                Select(new FixtureInfoCreator().CreateFixtureInfo);
+        }
+
         public SimulationTestFixtureInfo CreateFixtureInfo(Type fixtureType)
         {
             var fixtureInfo = new SimulationTestFixtureInfo();
 
             fixtureInfo.Object = Activator.CreateInstance(fixtureType);
 
-            fixtureInfo.Name = fixtureType.GetCustomAttributes(false).OfType<SimTestFixtureAttribute>().Single().Name;
+            var simTestFixtureAttribute = fixtureType.GetCustomAttributes(false).OfType<SimTestFixtureAttribute>().Single();
+            fixtureInfo.Name = simTestFixtureAttribute.Name;
+            fixtureInfo.Wip = simTestFixtureAttribute.Wip;
 
             var setupMethod = fixtureType.GetMethods().SingleOrDefault(mi => mi.GetCustomAttributes(false).Any(a => a is SetUpAttribute));
             if (setupMethod != null)

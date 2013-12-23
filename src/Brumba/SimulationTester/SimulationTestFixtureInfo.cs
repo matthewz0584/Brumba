@@ -12,6 +12,7 @@ namespace Brumba.SimulationTester
         }
 
         public string Name { get; set; }
+        public bool Wip { get; set; }
         public ICollection<SimulationTestInfo> TestInfos { get; private set; }
         public Action<SimulationTesterService> SetUp { get; set; }
         public object Object { get; set; }

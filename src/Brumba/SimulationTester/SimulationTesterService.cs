@@ -86,19 +86,13 @@ namespace Brumba.SimulationTester
 			if (_state == null)
 				_state = new SimulationTesterState();
 
-            _testFixtureInfos.AddRange(GatherTestFixtures());
+		    var simTestFixturesInfoes = new FixtureInfoCreator().CollectFixtures(Assembly.GetExecutingAssembly());
+		    _testFixtureInfos.AddRange(simTestFixturesInfoes.Any(fi => fi.Wip)
+		                                   ? simTestFixturesInfoes.Where(fi => fi.Wip)
+		                                   : simTestFixturesInfoes);
 
             SpawnIterator(ExecuteTests);
 		}
-
-        IEnumerable<SimulationTestFixtureInfo> GatherTestFixtures()
-        {
-            var wipFixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestFixtureAttribute && !(a as SimTestFixtureAttribute).Ignore && (a as SimTestFixtureAttribute).Wip));
-            var allFixtureTypes = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestFixtureAttribute && !(a as SimTestFixtureAttribute).Ignore));
-            var fixturesToCreate = wipFixtureTypes.Any() ? wipFixtureTypes : allFixtureTypes;
-
-            return fixturesToCreate.Select(new FixtureInfoCreator().CreateFixtureInfo);
-        }
 
         IEnumerator<ITask> ExecuteTests()
         {
