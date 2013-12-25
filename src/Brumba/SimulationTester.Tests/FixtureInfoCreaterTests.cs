@@ -16,7 +16,7 @@ namespace Brumba.SimulationTester.Tests
         [NUnit.Framework.Test]
         public void CreateFixtureInfo()
         {
-            var fi = new FixtureInfoCreator().CreateFixtureInfo(typeof (TestSimTestFixture1));
+            var fi = new FixtureInfoCreator().CreateFixtureInfo(typeof (TestFixture));
 
             Assert.That(fi.Name, Is.EqualTo("fixture_name"));
             Assert.That(fi.Wip, Is.False);
@@ -25,127 +25,155 @@ namespace Brumba.SimulationTester.Tests
             Assert.That(fi.SetUp, Is.Not.Null);
 
             Assert.That(fi.TestInfos.Count, Is.EqualTo(6));
-            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestSimTestFixture1.TestSimTest1).Name));
-            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestSimTestFixture1.TestSimTest2).Name));
-            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestSimTestFixture1.TestSimTest3).Name));
-            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestSimTestFixture1.TestSimTest4).Name));
-            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestSimTestFixture1.TestSimTest5).Name));
-            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestSimTestFixture1.TestSimTestIfaces).Name));
+            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestFixture.TestWithAttributes).Name));
+            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestFixture.TestEmpty).Name));
+            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestFixture.TestWithFixtureAtt).Name));
+            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestFixture.TestWithFixtureAndPrepareAtt).Name));
+            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestFixture.TestWithFixtureAndPrepareAndStartAtt).Name));
+            Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestFixture.TestWithIfaces).Name));
             
             var testerSvc = new SimulationTesterService();
             fi.SetUp(testerSvc);
-            Assert.That((fi.Object as TestSimTestFixture1).TesterService, Is.SameAs(testerSvc));
+            Assert.That((fi.Object as TestFixture).TesterService, Is.SameAs(testerSvc));
 
-            Assert.That(new FixtureInfoCreator().CreateFixtureInfo(typeof(TestSimTestFixture2)).Wip);
+            Assert.That(new FixtureInfoCreator().CreateFixtureInfo(typeof(WipFixture)).Wip);
         }
 
         [NUnit.Framework.Test]
         public void CreateFixtureInfoWithoutSetUp()
         {
-            var fi = new FixtureInfoCreator().CreateFixtureInfo(typeof(TestSimTestFixture2));
+            var fi = new FixtureInfoCreator().CreateFixtureInfo(typeof(WipFixture));
 
             Assert.That(fi.SetUp, Is.Null);
         }
 
         [NUnit.Framework.Test]
-        public void CreateTestInfo()
+        public void CreateTestInfoFromAttributes()
         {
-            var sf = new TestSimTestFixture1();
-            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestSimTestFixture1.TestSimTest1), sf);
+            var sf = new TestFixture();
+            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithAttributes), sf);
 
-            Assert.That(ti.Name, Is.EqualTo("TestSimTest1"));
+            Assert.That(ti.Name, Is.EqualTo("TestWithAttributes"));
             Assert.That(ti.Object, Is.Not.Null);
-            Assert.That((ti.Object as TestSimTestFixture1.TestSimTest1).Fixture, Is.SameAs(sf));
+            Assert.That((ti.Object as TestFixture.TestWithAttributes).Fixture, Is.SameAs(sf));
             Assert.That(ti.EstimatedTime, Is.EqualTo(2.5f));
             Assert.That(ti.IsProbabilistic);
             
-            Assert.That(ti.PrepareEntities, Is.Not.Null);
+            Assert.That(ti.Prepare, Is.Not.Null);
             Assert.That(ti.Start, Is.Not.Null);
             Assert.That(ti.Test, Is.Not.Null);
 
-            ti.PrepareEntities(new Mrse.VisualEntity {State = {Name = "entity_name"}});
-            Assert.That((ti.Object as TestSimTestFixture1.TestSimTest1)._log, Is.EqualTo("prepared entity_name"));
+            ti.Prepare(new Mrse.VisualEntity {State = {Name = "entity_name"}});
+            Assert.That((ti.Object as TestFixture.TestWithAttributes)._log, Is.EqualTo("prepared entity_name"));
             ti.Start().MoveNext();
-            Assert.That((ti.Object as TestSimTestFixture1.TestSimTest1)._log, Is.EqualTo("started"));
+            Assert.That((ti.Object as TestFixture.TestWithAttributes)._log, Is.EqualTo("started"));
             var result = false;
             ti.Test(b => result = b, new[] { new MrsePxy.VisualEntity { State = new EntityState{ Name = "entity_pxy_name" } } }, 1.5f).MoveNext();
-            Assert.That((ti.Object as TestSimTestFixture1.TestSimTest1)._log, Is.EqualTo("tested entity_pxy_name" + 1.5f));
+            Assert.That((ti.Object as TestFixture.TestWithAttributes)._log, Is.EqualTo("tested entity_pxy_name" + 1.5f));
             Assert.That(result);
 
-            var ti2 = new FixtureInfoCreator().CreateTestInfo(typeof(TestSimTestFixture1.TestSimTest3), null);
-            Assert.That(ti2.PrepareEntities, Is.Null);
+            var ti2 = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithFixtureAtt), null);
+            Assert.That(ti2.Prepare, Is.Null);
         }
 
         [NUnit.Framework.Test]
         public void CreateDeterministicTestInfo()
         {
-            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestSimTestFixture1.TestSimTest2), null);
+            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestEmpty), null);
 
             Assert.That(ti.IsProbabilistic, Is.False);
-            Assert.That(ti.PrepareEntities, Is.Null);
+            Assert.That(ti.Prepare, Is.Null);
         }
 
         [NUnit.Framework.Test]
-        public void CreateTestInfoAnyMembersAllowed()
+        public void CreateTestInfoFromAttributesAnyAllowed()
         {
-            var ti2 = new FixtureInfoCreator().CreateTestInfo(typeof(TestSimTestFixture1.TestSimTest2), null);
+            var ti2 = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestEmpty), null);
 
-            Assert.That(ti2.PrepareEntities, Is.Null);
+            Assert.That(ti2.Prepare, Is.Null);
             Assert.That(ti2.Start, Is.Null);
             Assert.That(ti2.Test, Is.Null);
 
-            var ti3 = new FixtureInfoCreator().CreateTestInfo(typeof(TestSimTestFixture1.TestSimTest3), new TestSimTestFixture1());
+            var ti3 = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithFixtureAtt), new TestFixture());
 
-            Assert.That((ti3.Object as TestSimTestFixture1.TestSimTest3).Fixture, Is.Not.Null);
-            Assert.That(ti3.PrepareEntities, Is.Null);
+            Assert.That((ti3.Object as TestFixture.TestWithFixtureAtt).Fixture, Is.Not.Null);
+            Assert.That(ti3.Prepare, Is.Null);
             Assert.That(ti3.Start, Is.Null);
             Assert.That(ti3.Test, Is.Null);
 
-            var ti4 = new FixtureInfoCreator().CreateTestInfo(typeof(TestSimTestFixture1.TestSimTest4), new TestSimTestFixture1());
+            var ti4 = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithFixtureAndPrepareAtt), new TestFixture());
 
-            Assert.That((ti4.Object as TestSimTestFixture1.TestSimTest4).Fixture, Is.Not.Null);
-            Assert.That(ti4.PrepareEntities, Is.Not.Null);
+            Assert.That((ti4.Object as TestFixture.TestWithFixtureAndPrepareAtt).Fixture, Is.Not.Null);
+            Assert.That(ti4.Prepare, Is.Not.Null);
             Assert.That(ti4.Start, Is.Null);
             Assert.That(ti4.Test, Is.Null);
 
-            var ti5 = new FixtureInfoCreator().CreateTestInfo(typeof(TestSimTestFixture1.TestSimTest5), new TestSimTestFixture1());
+            var ti5 = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithFixtureAndPrepareAndStartAtt), new TestFixture());
 
-            Assert.That((ti5.Object as TestSimTestFixture1.TestSimTest5).Fixture, Is.Not.Null);
-            Assert.That(ti5.PrepareEntities, Is.Not.Null);
+            Assert.That((ti5.Object as TestFixture.TestWithFixtureAndPrepareAndStartAtt).Fixture, Is.Not.Null);
+            Assert.That(ti5.Prepare, Is.Not.Null);
             Assert.That(ti5.Start, Is.Not.Null);
             Assert.That(ti5.Test, Is.Null);
         }
 
         [NUnit.Framework.Test]
-        public void CreateTestInfoInterfaces()
+        public void CreateTestInfoFromInterfaces()
         {
-            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestSimTestFixture1.TestSimTestIfaces), null);
+            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithIfaces), null);
 
-            Assert.That(ti.PrepareEntities, Is.Not.Null);
+            Assert.That(ti.Prepare, Is.Not.Null);
             Assert.That(ti.Start, Is.Not.Null);
             Assert.That(ti.Test, Is.Not.Null);
 
-            ti.PrepareEntities(new Mrse.VisualEntity());
-            Assert.That((ti.Object as TestSimTestFixture1.TestSimTestIfaces)._log, Is.EqualTo("prepared"));
+            ti.Prepare(new Mrse.VisualEntity());
+            Assert.That((ti.Object as TestFixture.TestWithIfaces)._log, Is.EqualTo("prepared"));
             ti.Start().MoveNext();
-            Assert.That((ti.Object as TestSimTestFixture1.TestSimTestIfaces)._log, Is.EqualTo("started"));
+            Assert.That((ti.Object as TestFixture.TestWithIfaces)._log, Is.EqualTo("started"));
             ti.Test(b => { }, new[] { new MrsePxy.VisualEntity() }, 1.5f).MoveNext();
-            Assert.That((ti.Object as TestSimTestFixture1.TestSimTestIfaces)._log, Is.EqualTo("tested"));
+            Assert.That((ti.Object as TestFixture.TestWithIfaces)._log, Is.EqualTo("tested"));
         }
 
         [NUnit.Framework.Test]
         public void CollectFixtures()
         {
-            var fixtures = new FixtureInfoCreator().CollectFixtures(Assembly.GetAssembly(typeof(FixtureInfoCreaterTests)));
+            var fixtures = new FixtureInfoCreator().CollectFixtures(Assembly.GetAssembly(typeof(FixtureInfoCreaterTests)), true);
 
             Assert.That(fixtures.Count(), Is.EqualTo(2));
-            Assert.That(fixtures.Single(f => f.Wip).Name, Is.EqualTo("wip_fixture_name"));
+            Assert.That(fixtures.Single(f => f.Wip).Name, Is.EqualTo("wip_fixture"));
             Assert.That(fixtures.Single(f => !f.Wip).Name, Is.EqualTo("fixture_name"));
         }
+
+		[NUnit.Framework.Test]
+		[ExpectedException(typeof(FixtureInfoCreaterException), ExpectedMessage = "TestWithWrongPreparePrototype.Prepare method has wrong return type for PrepareAttribute")]
+		public void CreateTestInfoFromAttributesWrongPrepare()
+		{
+			new FixtureInfoCreator().CreateTestInfo(typeof(WrongFixture.TestWithWrongPreparePrototype), null);
+		}
+
+		[NUnit.Framework.Test]
+		[ExpectedException(typeof(FixtureInfoCreaterException), ExpectedMessage = "TestWithWrongStartPrototype.Start method has wrong parameters for StartAttribute")]
+		public void CreateTestInfoFromAttributesWrongStart()
+		{
+			new FixtureInfoCreator().CreateTestInfo(typeof(WrongFixture.TestWithWrongStartPrototype), null);
+		}
+
+		[NUnit.Framework.Test]
+		[ExpectedException(typeof(FixtureInfoCreaterException), ExpectedMessage = "TestWithWrongTestPrototype.Test method has wrong parameters for TestAttribute")]
+		public void CreateTestInfoFromAttributesWrongTest()
+		{
+			new FixtureInfoCreator().CreateTestInfo(typeof(WrongFixture.TestWithWrongTestPrototype), null);
+		}
+
+		[NUnit.Framework.Test]
+		[ExpectedException(typeof(FixtureInfoCreaterException), ExpectedMessage = "wrong_fixture test fixture has some malformed tests")]
+		public void CollectFixturesIgnoreFails()
+		{
+			new FixtureInfoCreator().CollectFixtures(Assembly.GetAssembly(typeof(FixtureInfoCreaterTests)), false);
+		}
     }
 
-    [SimTestFixture("fixture_name")]
-    public class TestSimTestFixture1
+	[SimTestFixture("fixture_name")]
+    public class TestFixture
     {
         public SimulationTesterService TesterService { get; private set; }
 
@@ -156,14 +184,14 @@ namespace Brumba.SimulationTester.Tests
         }
 
         [SimTest(2.5f)]
-        public class TestSimTest1 : IStart
+        public class TestWithAttributes
         {
             public string _log = "";
 
             [Fixture]
-            public TestSimTestFixture1 Fixture { get; set; }
+            public TestFixture Fixture { get; set; }
 
-            [PrepareEntities]
+            [Prepare]
             public void PrepareEntities(Mrse.VisualEntity entity)
             {
                 _log = "prepared " + entity.State.Name;
@@ -186,36 +214,36 @@ namespace Brumba.SimulationTester.Tests
         }
 
         [SimTest(3, IsProbabilistic = false)]
-        public class TestSimTest2
+        public class TestEmpty
         {
         }
 
         [SimTest(2.5f)]
-        public class TestSimTest3
+        public class TestWithFixtureAtt
         {
             [Fixture]
-            public TestSimTestFixture1 Fixture { get; set; }
+            public TestFixture Fixture { get; set; }
         }
 
         [SimTest(2.5f)]
-        public class TestSimTest4
+        public class TestWithFixtureAndPrepareAtt
         {
             [Fixture]
-            public TestSimTestFixture1 Fixture { get; set; }
+            public TestFixture Fixture { get; set; }
 
-            [PrepareEntities]
+            [Prepare]
             public void PrepareEntities(Mrse.VisualEntity entity)
             {
             }
         }
 
         [SimTest(2.5f)]
-        public class TestSimTest5
+        public class TestWithFixtureAndPrepareAndStartAtt
         {
             [Fixture]
-            public TestSimTestFixture1 Fixture { get; set; }
+            public TestFixture Fixture { get; set; }
 
-            [PrepareEntities]
+            [Prepare]
             public void PrepareEntities(Mrse.VisualEntity entity)
             {
             }
@@ -228,11 +256,11 @@ namespace Brumba.SimulationTester.Tests
         }
 
         [SimTest(2.5f)]
-        public class TestSimTestIfaces : IPrepareEntities, IStart, ITest
+        public class TestWithIfaces : IPrepare, IStart, ITest
         {
             public string _log = "";
             
-            public void PrepareEntities(Mrse.VisualEntity entity)
+            public void Prepare(Mrse.VisualEntity entity)
             {
                 _log = "prepared";
             }
@@ -243,8 +271,7 @@ namespace Brumba.SimulationTester.Tests
                 yield break;
             }
 
-            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<MrsePxy.VisualEntity> simStateEntities,
-                                           double elapsedTime)
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<MrsePxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 _log = "tested";
                 yield break;
@@ -252,8 +279,42 @@ namespace Brumba.SimulationTester.Tests
         }
     }
 
-    [SimTestFixture("wip_fixture_name", Wip = true)]
-    public class TestSimTestFixture2
+    [SimTestFixture("wip_fixture", Wip = true)]
+    public class WipFixture
     {
     }
+
+	[SimTestFixture("wrong_fixture", Wip = true)]
+	public class WrongFixture
+	{
+		[SimTest(2.5f)]
+		public class TestWithWrongPreparePrototype
+		{
+			[Prepare]
+			public string Prepare(Mrse.VisualEntity entity)
+			{
+				return "";
+			}
+		}
+
+		[SimTest(2.5f)]
+		public class TestWithWrongStartPrototype
+		{
+			[Start]
+			public IEnumerator<ITask> Start(int wrongParameter)
+			{
+				yield break;
+			}
+		}
+
+		[SimTest(2.5f)]
+		public class TestWithWrongTestPrototype
+		{
+			[Test]
+			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<MrsePxy.VisualEntity> simStateEntities, string elapsedTime)
+			{
+				yield break;
+			}
+		}		
+	}
 }

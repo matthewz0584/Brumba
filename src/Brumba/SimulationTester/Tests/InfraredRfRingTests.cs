@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("infrared_rf_ring")]
+    [SimTestFixture("infrared_rf_ring", Wip = true)]
     public class InfraredRfRingTests
     {
         public Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingOperations IfRfRingPort { get; set; }
@@ -34,9 +35,9 @@ namespace Brumba.SimulationTester.Tests
                 Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingState ringState = null;
                 yield return Arbiter.Receive<Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingState>(false, Fixture.IfRfRingPort.Get(), rs => ringState = rs);
 
-                @return(ringState.Distances[0] > 0.3 * 0.95 && ringState.Distances[0] < 0.3 * 1.05 &&
+                @return(MathHelper2.EqualsWithin(0.3, ringState.Distances[0], 0.05) &&
                         ringState.Distances[1] == 1 &&
-                        ringState.Distances[2] > 0.1 * 0.95 && ringState.Distances[2] < 0.1 * 1.05 &&
+						MathHelper2.EqualsWithin(0.1, ringState.Distances[2], 0.05) &&
                         ringState.Distances[3] == 1);
             }
         }

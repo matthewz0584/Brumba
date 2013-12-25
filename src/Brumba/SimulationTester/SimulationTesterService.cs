@@ -86,7 +86,7 @@ namespace Brumba.SimulationTester
 			if (_state == null)
 				_state = new SimulationTesterState();
 
-		    var simTestFixturesInfoes = new FixtureInfoCreator().CollectFixtures(Assembly.GetExecutingAssembly());
+		    var simTestFixturesInfoes = new FixtureInfoCreator().CollectFixtures(Assembly.GetExecutingAssembly(), false);
 		    _testFixtureInfos.AddRange(simTestFixturesInfoes.Any(fi => fi.Wip)
 		                                   ? simTestFixturesInfoes.Where(fi => fi.Wip)
 		                                   : simTestFixturesInfoes);
@@ -119,7 +119,7 @@ namespace Brumba.SimulationTester
 			}
         	OnEnded(_testResults);
 
-			LogInfo(_testResults.Aggregate("All tests are run: ", (message, test) => string.Format("{0} {1}-{2:P0}\n", message, test.Key.GetType().Name, test.Value)));
+			LogInfo(_testResults.Aggregate("All tests are run: ", (message, test) => string.Format("{0} {1}-{2:P0}\n", message, test.Key.Name, test.Value)));
 
 			if (_state.ToDropHostOnFinish)
 				ControlPanelPort.Post(new Microsoft.Dss.Services.ControlPanel.DropProcess());
@@ -180,7 +180,7 @@ namespace Brumba.SimulationTester
 					break;
 
                 //Restore only those entities that need it
-                yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.PrepareEntities);
+                yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.Prepare);
                 LogInfo("ExecuteTest: Environment restored");
 
                 //Restart services from fixture manifest

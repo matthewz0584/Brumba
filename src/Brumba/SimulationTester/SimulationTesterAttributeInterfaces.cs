@@ -6,9 +6,9 @@ using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 
 namespace Brumba.SimulationTester
 {
-    public interface IPrepareEntities
+    public interface IPrepare
     {
-        void PrepareEntities(Mrse.VisualEntity entity);
+        void Prepare(Mrse.VisualEntity entity);
     }
 
     public interface IStart

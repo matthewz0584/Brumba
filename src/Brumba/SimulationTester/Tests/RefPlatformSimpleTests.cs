@@ -60,7 +60,7 @@ namespace Brumba.SimulationTester.Tests
             [Fixture]
             public RefPlatformSimpleTests Fixture { get; set; }
 
-		    [PrepareEntities]
+		    [Prepare]
             public void PrepareEntities(Microsoft.Robotics.Simulation.Engine.VisualEntity entity)
 		    {
 		    }

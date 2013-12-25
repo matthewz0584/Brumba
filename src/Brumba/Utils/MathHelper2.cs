@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Brumba.Utils
 {
@@ -20,5 +17,10 @@ namespace Brumba.Utils
         }
 
         public static float TwoPi { get { return 2 * (float)Math.PI; } }
+
+	    public static bool EqualsWithin(double value, double testee, double margin)
+	    {
+		    return Math.Abs(testee - value) <= Math.Abs(value * margin);
+	    }
     }
 }

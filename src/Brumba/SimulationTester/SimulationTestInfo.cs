@@ -16,7 +16,7 @@ namespace Brumba.SimulationTester
 
         public bool IsProbabilistic { get; set; }
 
-        public Action<Mrse.VisualEntity> PrepareEntities { get; set; }
+        public Action<Mrse.VisualEntity> Prepare { get; set; }
 
         public Func<IEnumerator<ITask>> Start { get; set; }
 

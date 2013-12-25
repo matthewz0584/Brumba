@@ -29,6 +29,7 @@ namespace Brumba.SimulationTester
 	    void OnEnded(Dictionary<SimulationTestInfo, float> testResults)
 		{
 			Console.WriteLine();
+			Console.WriteLine("Total tests {0}:", testResults.Count);
 			foreach (var tr in testResults)
                 WriteTestResult(tr.Key, tr.Value);
 		}

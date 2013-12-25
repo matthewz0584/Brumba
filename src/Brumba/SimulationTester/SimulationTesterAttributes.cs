@@ -37,7 +37,7 @@ namespace Brumba.SimulationTester
     }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class PrepareEntitiesAttribute : Attribute
+    public class PrepareAttribute : Attribute
     {
     }
 

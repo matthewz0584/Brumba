@@ -27,5 +27,20 @@ namespace Brumba.Utils.Tests
             Assert.That(MathHelper2.AngleDifference((float)Math.PI * 7 / 4, (float)Math.PI / 4), Is.EqualTo((float)Math.PI / 2).Within(1e-5));
             Assert.That(MathHelper2.AngleDifference((float)Math.PI / 4, (float)Math.PI * 7 / 4), Is.EqualTo((float)Math.PI / 2).Within(1e-5));
         }
+
+		[Test]
+		public void Within()
+		{
+			Assert.That(MathHelper2.EqualsWithin(10, 10, 0.1));
+			Assert.That(MathHelper2.EqualsWithin(10, 11, 0.1));
+			Assert.That(MathHelper2.EqualsWithin(10, 9, 0.1));
+
+			Assert.That(MathHelper2.EqualsWithin(-10, -10, 0.1));
+			Assert.That(MathHelper2.EqualsWithin(-10, -11, 0.1));
+			Assert.That(MathHelper2.EqualsWithin(-10, -9, 0.1));
+			
+			Assert.That(MathHelper2.EqualsWithin(10, 12, 0.1), Is.False);
+			Assert.That(MathHelper2.EqualsWithin(10, 8, 0.1), Is.False);
+		}
     }
 }
