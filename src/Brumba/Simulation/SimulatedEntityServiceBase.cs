@@ -90,7 +90,11 @@ namespace Brumba.Simulation
 				return false;
 
 			LogError(string.Format("Call of simulation service handler for {0} operation while entity is not connected.", messageType));
-			responsePort.Post(new Fault { Reason = new[] { new ReasonText { Lang = "en-EN", Value = "Simulation entity is not connected." } } });
+		    responsePort.Post(new Fault
+		        {
+                    Code = new FaultCode(),
+		            Reason = new[] {new ReasonText {Lang = "en-EN", Value = "Simulation entity is not connected."}}
+		        });
 			return true;			
 		}
 	}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.Utils;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
@@ -37,7 +38,7 @@ namespace Brumba.SimulationTester.Tests
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
             {
                 var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose.Orientation));
-                @return(orientation.Y > 45 * 0.95 && orientation.Y < 45 * 1.05 && elapsedTime > 3);
+                @return(MathHelper2.EqualsWithin(45, orientation.Y, 0.05));
                 yield break;
             }
         }

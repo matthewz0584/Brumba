@@ -14,7 +14,7 @@ using xVector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("waiter_stupid_odometry_tests")]
+    [SimTestFixture("waiter_stupid_odometry_tests", Wip = true)]
 	public class WaiterStupidOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }
@@ -29,7 +29,7 @@ namespace Brumba.SimulationTester.Tests
 			OdometryPort = testerService.ForwardTo<WaiterStupid.Odometry.Proxy.OdometryOperations>("odometry@");
 		}
 
-		[SimTest(8)]
+		//[SimTest(8)]
 		public class DriveStraight
 		{
             [Fixture]
@@ -60,7 +60,7 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}
 
-		[SimTest(4 * 2)]
+		//[SimTest(4 * 2)]
 		public class RotateOnPlace
 		{
             [Fixture]
@@ -97,9 +97,42 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}
 
+        [SimTest(6)]
+        public class CircleTrajectory
+        {
+            [Fixture]
+            public WaiterStupidOdometryTests Fixture { get; set; }
+
+            [Start]
+            public IEnumerator<ITask> Start()
+            {
+                //Execs for synchronization, otherwise set power message can arrive before enable message
+                yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
+                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.3));
+
+                //(Object as WaiterStupidOdometryTests).TesterService.LogInfo("*************");
+            }
+
+            [Test]
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
+            {
+                var odometryPose = new xVector3();
+                yield return Fixture.OdometryPort.Get().Receive(os => odometryPose = os.State.Pose);
+
+                var simPose = SimPoseToEgocentricPose(ExtractStupidWaiterPose(simStateEntities));
+                var simPosition = new xVector2(simPose.X, simPose.Y);
+
+                var thetaDifference = MathHelper2.AngleDifference(odometryPose.Z, simPose.Z);
+                @return(thetaDifference / Math.Abs(odometryPose.Z) <= 0.05 &&
+                        (new xVector2(odometryPose.X, odometryPose.Y) - simPosition).Length() / simPosition.Length() <= 0.05);
+
+                Fixture.TesterService.LogInfo("Ratio {0}", (new xVector2(odometryPose.X, odometryPose.Y) - simPosition).Length() / simPosition.Length());
+            }
+        }
+
 		static xVector3 SimPoseToEgocentricPose(Pose pose)
 		{
-			return new xVector3(-pose.Position.Z, pose.Position.X, MathHelper.ToRadians(UIMath.QuaternionToEuler(pose.Orientation).Y));
+			return new xVector3(-pose.Position.Z, -pose.Position.X, MathHelper.ToRadians(UIMath.QuaternionToEuler(pose.Orientation).Y));
 		}
 
 		static Pose ExtractStupidWaiterPose(IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities)
