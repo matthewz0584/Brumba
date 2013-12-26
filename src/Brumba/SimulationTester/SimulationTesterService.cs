@@ -97,13 +97,15 @@ namespace Brumba.SimulationTester
         IEnumerator<ITask> ExecuteTests()
         {
             yield return To.Exec(SetUpSimulator);
+            IEnumerable<Uri> servicesBeforeStart = null;
+            yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => servicesBeforeStart = ss);
 
 			OnStarted();
 			foreach (var fixtureInfo in _testFixtureInfos)
 			{
 				OnFixtureStarted(fixtureInfo);
 
-                //Full restore: static and dynamic objects
+                //Restore of static objects
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<MrsePxy.VisualEntity, bool>)(ve => !ve.State.Name.Contains(RESET_SYMBOL)), (Action<Mrse.VisualEntity>)null);
 
 				foreach (var testInfo in fixtureInfo.TestInfos)
@@ -116,6 +118,8 @@ namespace Brumba.SimulationTester
 
 					OnTestEnded(testInfo, result);
 				}
+
+                yield return To.Exec(DropServices, servicesBeforeStart);
 			}
         	OnEnded(_testResults);
 
@@ -123,51 +127,6 @@ namespace Brumba.SimulationTester
 
 			if (_state.ToDropHostOnFinish)
 				ControlPanelPort.Post(new Microsoft.Dss.Services.ControlPanel.DropProcess());
-        }
-
-        IEnumerator<ITask> StartManifest(string manifest)
-        {
-            yield return To.Exec(
-                _manifestLoader.Insert(new InsertRequest
-                    {
-                        Manifest = String.Format(@"{0}://{1}{2}/{3}/{4}.{5}",
-                                                 ServiceInfo.HttpServiceAlias.Scheme,
-                                                 ServiceInfo.HttpServiceAlias.Authority,
-                                                 ServicePaths.MountPoint,
-                                                 TESTS_PATH,
-                                                 manifest,
-                                                 MANIFEST_EXTENSION)
-                    }));
-        }
-
-		IEnumerator<ITask> DropServices()
-		{
-			var directoryGetRq = new Microsoft.Dss.Services.Directory.Get();
-			DirectoryPort.Post(directoryGetRq);
-			Microsoft.Dss.Services.Directory.GetResponseType dirState = null;
-			yield return directoryGetRq.ResponsePort.Receive(dSt => dirState = dSt);
-
-			foreach (var si in dirState.RecordList.Where(si => si.HttpServiceAlias.LocalPath.Contains(RESET_SYMBOL)))
-			{
-				var serviceDropPort = ServiceForwarder<PortSet<DsspDefaultLookup, DsspDefaultDrop>>(si.HttpServiceAlias);
-				var dsspDefaultDropRq = new DsspDefaultDrop();
-				serviceDropPort.Post(dsspDefaultDropRq);
-				yield return dsspDefaultDropRq.ResponsePort.Choice(
-					dropped => { },
-					failed => LogError(String.Format("Service {0} can not be dropped", si.HttpServiceAlias)));
-			}
-		}
-
-        IEnumerator<ITask> SetUpSimulator()
-        {
-            yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(PHYSICS_TIME_STEP));
-            //yield return To.Exec(_simEngine.UpdateSimulatorConfiguration(new EngPxy.SimulatorConfiguration { Headless = true }));
-
-            MrsPxy.SimulationState simState = null;
-            yield return Arbiter.Choice(_simEngine.Get(), s => simState = s, LogError);
-
-			simState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
-            yield return To.Exec(_simEngine.Replace(simState));
         }
 
         IEnumerator<ITask> ExecuteTest(Action<float> @return, SimulationTestFixtureInfo fixtureInfo, SimulationTestInfo testInfo)
@@ -179,7 +138,7 @@ namespace Brumba.SimulationTester
 				if (HasEarlyResults(i, successful))
 					break;
 
-                //Restore only those entities that need it
+                //Restore only those entities that need it (@ in name)
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.Prepare);
                 LogInfo("ExecuteTest: Environment restored");
 
@@ -235,11 +194,70 @@ namespace Brumba.SimulationTester
                 if (testSucceed) ++successful;
 
 	            //Drop services that need to be restarted
-				yield return To.Exec(DropServices);
+				yield return To.Exec(DropResettableServices);
                 LogInfo("ExecuteTest: Test's services dropped");
             }
 
             @return((float)successful / i);
+        }
+
+        IEnumerator<ITask> SetUpSimulator()
+        {
+            yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(PHYSICS_TIME_STEP));
+            //yield return To.Exec(_simEngine.UpdateSimulatorConfiguration(new EngPxy.SimulatorConfiguration { Headless = true }));
+
+            MrsPxy.SimulationState simState = null;
+            yield return Arbiter.Choice(_simEngine.Get(), s => simState = s, LogError);
+
+            simState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
+            yield return To.Exec(_simEngine.Replace(simState));
+        }
+
+        IEnumerator<ITask> DropServices(IEnumerable<Uri> except)
+        {
+            IEnumerable<Uri> runningServices = null;
+            yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => runningServices = ss);
+
+            foreach (var uri in runningServices.Where(uri => !except.Contains(uri)).Distinct(new ServiceUriComparer()))
+                yield return To.Exec(DropService, uri);
+        }
+
+        IEnumerator<ITask> StartManifest(string manifest)
+        {
+            yield return To.Exec(_manifestLoader.Insert(new InsertRequest
+                {
+                    Manifest = new UriBuilder(ServiceInfo.HttpServiceAlias.Scheme, ServiceInfo.HttpServiceAlias.Host, ServiceInfo.HttpServiceAlias.Port,
+                                              String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, manifest, MANIFEST_EXTENSION)).ToString()
+                }));
+        }
+
+        IEnumerator<ITask> DropResettableServices()
+        {
+            IEnumerable<Uri> runningServices = null;
+            yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => runningServices = ss);
+
+            foreach (var uri in runningServices.Where(uri => uri.LocalPath.Contains(RESET_SYMBOL)))
+                yield return To.Exec(DropService, uri);
+        }
+
+        IEnumerator<ITask> GetRunningServices(Action<IEnumerable<Uri>> @return)
+        {
+            var directoryGetRq = new Microsoft.Dss.Services.Directory.Get();
+            DirectoryPort.Post(directoryGetRq);
+            Microsoft.Dss.Services.Directory.GetResponseType dirState = null;
+            yield return directoryGetRq.ResponsePort.Receive(dSt => dirState = dSt);
+
+            @return(dirState.RecordList.Select(si => si.HttpServiceAlias).ToList());
+        }
+
+        IEnumerator<ITask> DropService(Uri uri)
+        {
+            var serviceDropPort = ServiceForwarder<PortSet<DsspDefaultLookup, DsspDefaultDrop>>(uri);
+            var dsspDefaultDropRq = new DsspDefaultDrop();
+            serviceDropPort.Post(dsspDefaultDropRq);
+            yield return dsspDefaultDropRq.ResponsePort.Choice(
+                dropped => { },
+                failed => LogError(String.Format("Service {0} can not be dropped", uri)));
         }
 
         IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<MrsePxy.VisualEntity, bool> resetFilter, Action<Mrse.VisualEntity> prepareEntityForReset)

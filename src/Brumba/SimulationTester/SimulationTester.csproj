@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FixtureInfoCreator.cs" />
+    <Compile Include="ServiceUriComparer.cs" />
     <Compile Include="SimulatedTimerUtils.cs" />
     <Compile Include="SimulationTestInfo.cs" />
     <Compile Include="Tests\AckermanVehicleExTests.cs" />
