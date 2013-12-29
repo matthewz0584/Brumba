@@ -74,10 +74,10 @@ namespace Brumba.WaiterStupid.Odometry
 		{
 			yield return _diffDrive.Get().Receive(ds =>
 			{
-				_state.State = _odometryCalc.UpdateOdometry(_state.State, dt.Milliseconds / 1000f,
+				_state.State = _odometryCalc.UpdateOdometry(_state.State, (float)dt.TotalSeconds,
 															ds.LeftWheel.EncoderState.CurrentReading,
 															ds.RightWheel.EncoderState.CurrentReading);
-				//LogInfo("Delta t {0}", dt.Milliseconds);
+                //LogInfo("Delta t {0}", dt.TotalSeconds);
 				//LogInfo("Velocity Z {0}", _state.State.Velocity.Z);
 				//LogInfo("Left wheel {0}", ds.LeftWheel.EncoderState.CurrentReading);
 			});
