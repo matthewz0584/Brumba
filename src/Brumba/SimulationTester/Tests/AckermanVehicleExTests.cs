@@ -110,8 +110,8 @@ namespace Brumba.SimulationTester.Tests
                 //Plus correction for linear acceleration
                 var expectedAngularDistance = vehProps.MaxVelocity * 0.2f / vehProps.WheelsProperties.First().Radius * elapsedTime - 9;
 
-                @return(vehState.SteeringAngle > 0.9 * 0.5 * vehProps.MaxSteeringAngle && vehState.SteeringAngle < 1.1 * 0.5 * vehProps.MaxSteeringAngle &&
-                        vehState.DriveAngularDistance > 0.9 * expectedAngularDistance && vehState.DriveAngularDistance < 1.1 * expectedAngularDistance);
+                @return(MathHelper2.EqualsWithin(0.5 * vehProps.MaxSteeringAngle, vehState.SteeringAngle, 0.1) &&
+                        MathHelper2.EqualsWithin(expectedAngularDistance, vehState.DriveAngularDistance, 0.1));
             }
         }
     }

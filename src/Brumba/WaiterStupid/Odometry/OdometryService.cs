@@ -21,7 +21,7 @@ namespace Brumba.WaiterStupid.Odometry
 				Constants = new OdometryConstants
 				{
                     WheelBase = 0.3033f,
-                    //WheelRadius = 0.0799846f, //The value from sim, it differs from physical characteristics, but sim service uses constant "MetersPerEncoderTick", that is probably acquired from manufacturer
+                    //WheelRadius = 0.0799846f, //The value from sim (now is replaced by 0.0762 in sim entity), it differs from physical characteristics, but sim service uses constant "MetersPerEncoderTick", that is probably acquired from manufacturer
                     TicksPerRotation = 36,
 					//WheelBase = 0.406f,
 					WheelRadius = 0.0762f,

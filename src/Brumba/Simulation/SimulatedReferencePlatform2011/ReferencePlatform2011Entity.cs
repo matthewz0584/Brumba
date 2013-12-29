@@ -463,7 +463,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 0.315f); // meters long
 
             _frontWheelMass = 0.01f;
-            _frontWheelRadius = 0.0799846f;
+            //_frontWheelRadius = 0.0799846f;
+            _frontWheelRadius = 0.0762f;
             _chassisClearance = ChassisDepthOffset;
             _chassisWheelRadius = 0.0377952f;
             _frontWheelWidth = 0.03175f;

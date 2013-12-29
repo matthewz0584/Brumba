@@ -53,6 +53,8 @@ namespace Brumba.SimulationTester
         readonly List<SimulationTestFixtureInfo> _testFixtureInfos = new List<SimulationTestFixtureInfo>();
 		readonly Dictionary<SimulationTestInfo, float> _testResults = new Dictionary<SimulationTestInfo, float>();
 
+        MrsPxy.SimulationState _initialSimState;
+
 		public event Action OnStarted = delegate { };
         public event Action<Dictionary<SimulationTestInfo, float>> OnEnded = delegate { };
 		public event Action<SimulationTestFixtureInfo> OnFixtureStarted = delegate { };
@@ -142,6 +144,14 @@ namespace Brumba.SimulationTester
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.Prepare);
                 LogInfo("ExecuteTest: Environment restored");
 
+                //Pause, now we can set up for starting fixture and timer
+                //PauseExecution pauses physics engine (simulation does not advance), pauses simulation timer (no tick events, so all services dependent from it pause),
+                //but can not pause code in Entity.Update, this code can not know that simulator was paused. So there could be some problems. For example,
+                //ReferencePlatform2011Entity accelerates from actual to target speed linearly, increasing wheel velocity by 0.5 every Update.
+                //It is still happening after test was started, even if simulation was paused. Workaround is to use SimulationTimerService.GetElapsedTime helper method
+                // to aquire elapsed time inside Update method, see AckermanVehicleExEntity.Update as example.
+                yield return To.Exec(PauseExecution, true);
+
                 //Restart services from fixture manifest
                 yield return To.Exec(StartManifest, fixtureInfo.Name);
                 LogInfo("ExecuteTest: Manifest restarted");
@@ -153,26 +163,35 @@ namespace Brumba.SimulationTester
                     LogInfo("ExecuteTest: Fixture set up");
                 }
 
+                //Start test (it is not really started: physics simulation is paused)
                 if (testInfo.Start != null)
                 {
                     yield return To.Exec(testInfo.Start);
                     LogInfo("ExecuteTest: Test try started");
                 }
-                //Test has started, but timer has not. There will be some simulation time period (dtX) when test would work but timer would not.
 
-                var testSucceed = false;
-
+                //Start sim timer (it is not really started: simulation timer is paused)
                 var subscribeRq = _timer.Subscribe(testInfo.EstimatedTime);
                 yield return To.Exec(subscribeRq.ResponsePort);
+
+                //Unpause all, timer and test will start soon after
+                yield return To.Exec(PauseExecution, false);
+
+                //Wait for estimated time
                 var dt = 0.0;
                 yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => dt = u.Body.Delta);
                 subscribeRq.NotificationShutdownPort.Post(new Shutdown());
                 LogInfo("ExecuteTest: Test estimated time elapsed");
 
-                Microsoft.Robotics.Simulation.Proxy.SimulationState simState = null;
+                //Pause all, so that sim state will not differ from state from services due to delays between queries
+                yield return To.Exec(PauseExecution, true);
+
+                //Get testee state from simulator
+                MrsPxy.SimulationState simState = null;
                 yield return _simEngine.Get().Choice(st => simState = st, LogError);
                 LogInfo("ExecuteTest: Simulation engine state acquired");
 
+                //Deserialize it
                 IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;
                 yield return To.Exec(DeserializaTopLevelEntityProxies,
                             (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens, simState,
@@ -180,9 +199,8 @@ namespace Brumba.SimulationTester
                             (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
                 LogInfo("ExecuteTest: Testee entities deserialized");
 
-                //Actually, test has been working for (dt + dtX).
-                //Without rendering sim engine will go farther in time by the moment of timer start, so dtX would be longer, than with rendering.
-                //That's why results from running with and without rendering may differ.
+                //Check test's result
+                var testSucceed = false;
                 if (testInfo.Test != null)
                 {
                     yield return To.Exec(testInfo.Test, b => testSucceed = b, testeeEntitiesPxies, dt);
@@ -206,11 +224,10 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(PHYSICS_TIME_STEP));
             //yield return To.Exec(_simEngine.UpdateSimulatorConfiguration(new EngPxy.SimulatorConfiguration { Headless = true }));
 
-            MrsPxy.SimulationState simState = null;
-            yield return Arbiter.Choice(_simEngine.Get(), s => simState = s, LogError);
+            yield return Arbiter.Choice(_simEngine.Get(), s => _initialSimState = s, LogError);
 
-            simState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
-            yield return To.Exec(_simEngine.Replace(simState));
+            _initialSimState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
+            yield return To.Exec(_simEngine.Replace(_initialSimState));
         }
 
         IEnumerator<ITask> DropServices(IEnumerable<Uri> except)
@@ -258,6 +275,13 @@ namespace Brumba.SimulationTester
             yield return dsspDefaultDropRq.ResponsePort.Choice(
                 dropped => { },
                 failed => LogError(String.Format("Service {0} can not be dropped", uri)));
+        }
+
+        IEnumerator<ITask> PauseExecution(bool pause)
+        {
+            _initialSimState.Pause = pause;
+            yield return To.Exec(_simEngine.Replace(_initialSimState));
+            yield return To.Exec(_timer.Pause(pause));
         }
 
         IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<MrsePxy.VisualEntity, bool> resetFilter, Action<Mrse.VisualEntity> prepareEntityForReset)

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Brumba.Simulation.SimulatedTimer;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
@@ -56,9 +57,9 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 
         public override void Update(FrameUpdate update)
         {
-            UpdateState((float)update.ElapsedTime);
-            UpdateDriveAxleSpeed((float)update.ElapsedTime);
-            UpdateSteerAngle((float)update.ElapsedTime);
+            UpdateState(SimulatedTimerService.GetElapsedTime(update));
+            UpdateDriveAxleSpeed(SimulatedTimerService.GetElapsedTime(update));
+            UpdateSteerAngle(SimulatedTimerService.GetElapsedTime(update));
 
 			base.Update(update);
         }

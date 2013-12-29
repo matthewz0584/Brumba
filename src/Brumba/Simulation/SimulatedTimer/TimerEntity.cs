@@ -9,7 +9,10 @@ namespace Brumba.Simulation.SimulatedTimer
     {
         //delta, time
         public event Action<double, double> Tick = delegate {};
-		public double Time { get; set; }
+		
+        public double Time { get; set; }
+
+        public bool Paused { get; set; }
 
         public TimerEntity()
         {
@@ -24,7 +27,8 @@ namespace Brumba.Simulation.SimulatedTimer
         {
             base.Update(update);
 	        Time = update.ApplicationTime;
-			Tick(update.ElapsedTime, update.ApplicationTime);
+            if (!Paused)
+			    Tick(update.ElapsedTime, update.ApplicationTime);
         }
     }
 }

@@ -62,10 +62,10 @@ namespace Brumba.Simulation
         {
 			GetState().IsConnected = false;
 			LogInfo(string.Format("{0} entity deleted", entity.Body));
-
-            Entity = null;
             
             OnDeleteEntity();
+
+            Entity = null;
 
 			MainPortInterleave.CombineWith(new Interleave(
 				new ExclusiveReceiverGroup(Arbiter.Receive<InsertSimulationEntity>(false, _simEngineNotifyPort, OnInsertEntity)),

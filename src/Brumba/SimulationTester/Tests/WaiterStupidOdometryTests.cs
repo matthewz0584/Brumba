@@ -14,7 +14,7 @@ using xVector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("waiter_stupid_odometry_tests", Wip = true)]
+    [SimTestFixture("waiter_stupid_odometry_tests")]
 	public class WaiterStupidOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }
@@ -29,7 +29,7 @@ namespace Brumba.SimulationTester.Tests
 			OdometryPort = testerService.ForwardTo<WaiterStupid.Odometry.Proxy.OdometryOperations>("odometry@");
 		}
 
-		//[SimTest(8)]
+		[SimTest(8)]
 		public class DriveStraight
 		{
             [Fixture]
@@ -54,13 +54,13 @@ namespace Brumba.SimulationTester.Tests
 
                 @return((odometryPosition - simPosition).Length() / simPosition.Length() <= 0.05);
 
-                Fixture.TesterService.LogInfo("From Odometry {0}", odometryPosition);
-                Fixture.TesterService.LogInfo("From Simulation {0}", simPosition);
+                //Fixture.TesterService.LogInfo("From Odometry {0}", odometryPosition);
+                //Fixture.TesterService.LogInfo("From Simulation {0}", simPosition);
                 Fixture.TesterService.LogInfo("Ratio {0}", (odometryPosition - simPosition).Length() / simPosition.Length());
 			}
 		}
 
-		//[SimTest(4 * 2)]
+		[SimTest(4 * 2)]
 		public class RotateOnPlace
 		{
             [Fixture]
@@ -72,8 +72,6 @@ namespace Brumba.SimulationTester.Tests
 				//Execs for synchronization, otherwise set power message can arrive before enable message
 				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(-0.2, 0.2));
-
-				//(Object as WaiterStupidOdometryTests).TesterService.LogInfo("*************");
 			}
 
 			[Test]
@@ -90,14 +88,14 @@ namespace Brumba.SimulationTester.Tests
 				var thetaDifference = MathHelper2.AngleDifference(angleFromOdometry, angleFromSim);
 				@return(thetaDifference / Math.Abs(angleFromOdometry) <= 0.05);
 
-				Fixture.TesterService.LogInfo("From Odometry {0}", angleFromOdometry);
-				Fixture.TesterService.LogInfo("From Odometry {0} truncated", MathHelper2.ToPositiveAngle(angleFromOdometry));
-				Fixture.TesterService.LogInfo("From Simulation {0}", MathHelper2.ToPositiveAngle(angleFromSim));
+				//Fixture.TesterService.LogInfo("From Odometry {0}", angleFromOdometry);
+				//Fixture.TesterService.LogInfo("From Odometry {0} truncated", MathHelper2.ToPositiveAngle(angleFromOdometry));
+				//Fixture.TesterService.LogInfo("From Simulation {0}", MathHelper2.ToPositiveAngle(angleFromSim));
 				Fixture.TesterService.LogInfo("Ratio {0}", thetaDifference / Math.Abs(angleFromOdometry));
 			}
 		}
 
-        [SimTest(6)]
+        [SimTest(12 + 1)]//Full circle time + correction for acceleration
         public class CircleTrajectory
         {
             [Fixture]
@@ -109,8 +107,6 @@ namespace Brumba.SimulationTester.Tests
                 //Execs for synchronization, otherwise set power message can arrive before enable message
                 yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
                 yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.3));
-
-                //(Object as WaiterStupidOdometryTests).TesterService.LogInfo("*************");
             }
 
             [Test]
@@ -124,9 +120,10 @@ namespace Brumba.SimulationTester.Tests
 
                 var thetaDifference = MathHelper2.AngleDifference(odometryPose.Z, simPose.Z);
                 @return(thetaDifference / Math.Abs(odometryPose.Z) <= 0.05 &&
-                        (new xVector2(odometryPose.X, odometryPose.Y) - simPosition).Length() / simPosition.Length() <= 0.05);
+                        //1.1 - radius of circle (1.1 - from sim, 1.06 - from calculation)
+                        (new xVector2(odometryPose.X, odometryPose.Y) - simPosition).Length() / (MathHelper.TwoPi * 1.1)  <= 0.05);
 
-                Fixture.TesterService.LogInfo("Ratio {0}", (new xVector2(odometryPose.X, odometryPose.Y) - simPosition).Length() / simPosition.Length());
+                Fixture.TesterService.LogInfo("Ratio angular {0} ** linear {1}", thetaDifference / Math.Abs(odometryPose.Z), (new xVector2(odometryPose.X, odometryPose.Y) - simPosition).Length() / (MathHelper.TwoPi * 1.1));
             }
         }
 
