@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
+using Microsoft.Dss.Diagnostics;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Dss.Services.ManifestLoaderClient.Proxy;
@@ -98,7 +100,15 @@ namespace Brumba.SimulationTester
 
         IEnumerator<ITask> ExecuteTests()
         {
+            //Turn of "Service started ..." message visible in console, LogAsServiceActivation - is internal enum(
+            DssLogHandler.SetConsoleVisibleLevel(typeof(LogGroups).GetNestedType("LogAsServiceActivation", BindingFlags.NonPublic), TraceLevel.Off);
+            //DssLogHandler.AddTraceSwitchMapping(typeof(LogAsServiceActivation), );
+            //var servicesTsLevel = TS.Services.Level;
+            //TS.Services.Level = TraceLevel.Info;
+            //TS.Services.Level = servicesTsLevel;
+
             yield return To.Exec(SetUpSimulator);
+            
             IEnumerable<Uri> servicesBeforeStart = null;
             yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => servicesBeforeStart = ss);
 
