@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<MazeSimulatorState xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:d="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns="http://www.promrds.com/contracts/2008/01/mazesimulator.html">
+  <Maze>LineFollowing.bmp</Maze>
+  <GroundTexture>plaster.jpg</GroundTexture>
+  <WallTextures>
+    <string>Maze_Textures/SolidBlack.bmp</string>
+    <string>Maze_Textures/SolidRed.bmp</string>
+    <string>Maze_Textures/SolidLime.bmp</string>
+    <string>Maze_Textures/SolidYellow.bmp</string>
+    <string>Maze_Textures/SolidBlue.bmp</string>
+    <string>Maze_Textures/SolidMagenta.bmp</string>
+    <string>Maze_Textures/SolidCyan.bmp</string>
+    <string>Maze_Textures/SolidBlack.bmp</string>
+    <string>Maze_Textures/SolidDarkGrey.bmp</string>
+    <string>Maze_Textures/SolidMaroon.bmp</string>
+    <string>Maze_Textures/SolidGreen.bmp</string>
+    <string>Maze_Textures/SolidOlive.bmp</string>
+    <string>Maze_Textures/SolidNavy.bmp</string>
+    <string>Maze_Textures/SolidPurple.bmp</string>
+    <string>Maze_Textures/SolidCobalt.bmp</string>
+    <string>Maze_Textures/SolidGrey.bmp</string>
+  </WallTextures>
+  <WallColors>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">255</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">128</Z>
+    </Vector3>
+    <Vector3>
+      <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">192</X>
+      <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">192</Y>
+      <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">192</Z>
+    </Vector3>
+  </WallColors>
+  <HeightMap>
+    <float>0.005</float>
+    <float>5</float>
+    <float>10</float>
+    <float>8</float>
+    <float>10</float>
+    <float>15</float>
+    <float>15</float>
+    <float>0.01</float>
+    <float>0</float>
+    <float>5</float>
+    <float>5</float>
+    <float>5</float>
+    <float>5</float>
+    <float>5</float>
+    <float>5</float>
+    <float>5</float>
+  </HeightMap>
+  <MassMap>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+    <float>0</float>
+  </MassMap>
+  <UseSphere>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+    <boolean>false</boolean>
+  </UseSphere>
+  <CameraPosition>
+    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+    <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0.5</Y>
+    <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-0.5</Z>
+  </CameraPosition>
+  <CameraTiltAngle>-85</CameraTiltAngle>
+  <WallBoxSize>0.99</WallBoxSize>
+  <GridSpacing>0.01</GridSpacing>
+  <HeightScale>0.1</HeightScale>
+  <DefaultHeight>10</DefaultHeight>
+  <SphereScale>0.1</SphereScale>
+  <BounceThreshold>-2</BounceThreshold>
+  <RobotStartCellRow>280</RobotStartCellRow>
+  <RobotStartCellCol>-180</RobotStartCellCol>
+  <RobotType>Pioneer3DX</RobotType>
+</MazeSimulatorState>
