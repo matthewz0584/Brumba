@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulationTester.Tests", "S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7CF0887C-9775-4D43-9F8D-BB25137798E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DsspUtils", "DsspUtils\DsspUtils.csproj", "{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,13 +168,24 @@ Global
 		{53675094-FF97-481F-87BC-31C085D6809C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{53675094-FF97-481F-87BC-31C085D6809C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{53675094-FF97-481F-87BC-31C085D6809C}.Release|x86.ActiveCfg = Release|Any CPU
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Debug|x86.ActiveCfg = Debug|x86
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Debug|x86.Build.0 = Debug|x86
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{53675094-FF97-481F-87BC-31C085D6809C} = {7CF0887C-9775-4D43-9F8D-BB25137798E6}
 		{20C1D422-F7F7-495F-9A40-BC4A184555DC} = {7CF0887C-9775-4D43-9F8D-BB25137798E6}
+		{53675094-FF97-481F-87BC-31C085D6809C} = {7CF0887C-9775-4D43-9F8D-BB25137798E6}
 		{C5474478-2624-4481-9771-C5C85389B69A} = {7CF0887C-9775-4D43-9F8D-BB25137798E6}
 	EndGlobalSection
 EndGlobal

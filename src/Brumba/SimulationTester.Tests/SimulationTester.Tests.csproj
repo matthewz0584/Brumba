@@ -55,9 +55,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\utils\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="RoboticsCommon">
-      <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
-    </Reference>
     <Reference Include="SimulationCommon">
       <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
     </Reference>
@@ -84,6 +81,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
+      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
+      <Name>DsspUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimulationTester\SimulationTester.csproj">
       <Project>{105800af-f412-413d-8d51-a417e39b6960}</Project>
       <Name>SimulationTester</Name>
@@ -91,10 +92,6 @@
     <ProjectReference Include="..\Simulation\Simulation.csproj">
       <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>
       <Name>Simulation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
-      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -180,6 +180,10 @@
     <Compile Include="Tests\InfraredRfRingTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
+      <Project>{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}</Project>
+      <Name>DsspUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>
