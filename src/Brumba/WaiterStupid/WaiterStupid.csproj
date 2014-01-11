@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileLogHandler.cs" />
-    <Compile Include="McLocalization\McFilter.cs" />
+    <Compile Include="McLocalization\ParticleFilter.cs" />
     <Compile Include="McLocalization\ResamplingWheel.cs" />
     <Compile Include="Odometry\OdometryTypes.cs" />
     <Compile Include="Odometry\OdometryCalculator.cs" />

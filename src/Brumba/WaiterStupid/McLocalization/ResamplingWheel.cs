@@ -4,14 +4,19 @@ using System.Linq;
 
 namespace Brumba.WaiterStupid.McLocalization
 {
-    public interface IResampler
+    public interface IWeighted
     {
-        IEnumerable<double> Resample(IEnumerable<WeightedSample> weightedSamples);
+        float Weight { get; set; }
     }
 
-    public class ResamplingWheel : IResampler
+    public interface IByWeightResampler
     {
-        public IEnumerable<double> Resample(IEnumerable<WeightedSample> weightedSamples)
+        IEnumerable<IWeighted> Resample(IEnumerable<IWeighted> weightedSamples);
+    }
+
+    public class ResamplingWheel : IByWeightResampler
+    {
+        public IEnumerable<IWeighted> Resample(IEnumerable<IWeighted> weightedSamples)
         {
             var wsList = weightedSamples.ToList();
             var rg = new Random();
@@ -27,7 +32,7 @@ namespace Brumba.WaiterStupid.McLocalization
                     beta -= wsList[index].Weight;
                     index = (index + 1) % wsList.Count;
                 }
-                yield return wsList[index].Sample;
+                yield return wsList[index];
             }
         }
     }

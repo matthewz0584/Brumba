@@ -67,7 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="McFilterTests.cs" />
+    <Compile Include="ParticleFilterTests.cs" />
     <Compile Include="OdometryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
