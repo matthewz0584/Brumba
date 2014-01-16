@@ -2,6 +2,7 @@
 using System.Linq;
 using Brumba.WaiterStupid.McLocalization;
 using MathNet.Numerics.Distributions;
+using MathNet.Numerics.LinearAlgebra.Single;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
@@ -108,4 +109,97 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(mcf.Particles.Count(s => (new Vector2(1, 1) - s).Length() < 0.5), Is.EqualTo(2500));
         }
     }
+
+    [TestFixture]
+    public class MapTests
+    {
+        [Test]
+        public void Acceptance()
+        {
+
+        }
+    }
+
+    //[TestFixture]
+    //public class LrfInverseMeasurementModelTests
+    //{
+    //    [Test]
+    //    public void Acceptance()
+    //    {
+    //        var lrfimm = new LrfInverseMeasurementModel
+    //            {
+    //                Map = new Map(10, 10, 0.1),
+    //                LrfProperties = new LrfProperties
+    //                    {
+    //                        ZeroBeamAngle = Math.PI / 2,
+    //                        AngularResolution = Math.PI / 2,
+    //                        MaxRange = 10
+    //                    },
+    //            }
+    //    }
+    //}
+
+
+    //[TestFixture]
+    //public class McLrfLocalizatorTests
+    //{
+    //    [Test]
+    //    public void Acceptance()
+    //    {
+    //        var mcl = new McLrfLocalizator
+    //            {
+    //                Map = new Map(),
+    //                LrfProperties = new LrfProperties
+    //                    {
+    //                        ZeroBeamAngle = Math.PI / 2,
+    //                        AngularResolution = Math.PI / 2,
+    //                        MaxRange = 10
+    //                    },
+    //                InitialPose = new Pose()
+    //            };
+
+    //        mcl.Update(poseDelta: new Pose(1, 0, 0), measurements: new LrfMeasurement { 1})
+    //    }
+    //}
+
+    //[DataContract]
+    //public class Velocity : DenseVector
+    //{
+    //    public Velocity()
+    //        : base(3)
+    //    {}
+
+    //    public Velocity(DenseVector dv)
+    //        : base(dv.Values)
+    //    { }
+
+    //    public Velocity(float vx, float vy, float omega)
+    //        : base(3)
+    //    {
+    //        Vx = vx;
+    //        Vy = vy;
+    //        Omega = omega;
+    //    }
+
+    //    [DataMember]
+    //    public float Vx
+    //    {
+    //        get { return this[0]; }
+    //        set { this[0] = value; }
+    //    }
+
+    //    [DataMember]
+    //    public float Vy
+    //    {
+    //        get { return this[1]; }
+    //        set { this[1] = value; }
+    //    }
+
+    //    [DataMember]
+    //    public float Omega
+    //    {
+    //        get { return this[2]; }
+    //        set { this[2] = value; }
+    //    }
+    //}
 }

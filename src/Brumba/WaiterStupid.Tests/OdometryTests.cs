@@ -77,25 +77,26 @@ namespace Brumba.WaiterStupid.Tests
 		{
 			m_odometry.Constants.TicksPerRotation = 2;
 			m_odometry.Constants.WheelRadius = 1 / MathHelper.Pi;
-			var previousOdometry = new OdometryState {LeftTicks = 2, RightTicks = 2};
-			var deltaT = 0.1f;
-			var leftTicks = 2;
-			var rightTicks = 2;
 
-			var newOdometry = m_odometry.UpdateOdometry(previousOdometry, deltaT, leftTicks, rightTicks);
+		    var newOdometry = m_odometry.UpdateOdometry(
+                previousOdometry: new OdometryState { LeftTicks = 2, RightTicks = 2 },
+                deltaT: 0.1f, leftTicks: 2, rightTicks: 2);
 
 			Assert.That(newOdometry.LeftTicks, Is.EqualTo(2));
 			Assert.That(newOdometry.RightTicks, Is.EqualTo(2));
 			Assert.That(newOdometry.Velocity, Is.EqualTo(new Vector3()));
 			Assert.That(newOdometry.Pose, Is.EqualTo(new Vector3()));
+            Assert.That(newOdometry.PoseDelta, Is.EqualTo(new Vector3()));
 
-			previousOdometry = new OdometryState { LeftTicks = 0, RightTicks = 0 };
-			newOdometry = m_odometry.UpdateOdometry(previousOdometry, deltaT, leftTicks, rightTicks);
+			newOdometry = m_odometry.UpdateOdometry(
+                previousOdometry: new OdometryState { Pose = new Vector3(1, 0, 0), LeftTicks = 0, RightTicks = 0 },
+                deltaT: 0.1f, leftTicks: 2, rightTicks: 2);
 
 			Assert.That(newOdometry.LeftTicks, Is.EqualTo(2));
 			Assert.That(newOdometry.RightTicks, Is.EqualTo(2));
 			Assert.That(newOdometry.Velocity, Is.EqualTo(new Vector3(20, 0, 0)));
-			Assert.That(newOdometry.Pose, Is.EqualTo(0.5f * new Vector3(20, 0, 0) * deltaT));
+			Assert.That(newOdometry.Pose, Is.EqualTo(new Vector3(1, 0, 0) + 0.5f * new Vector3(20, 0, 0) * 0.1f));
+            Assert.That(newOdometry.PoseDelta, Is.EqualTo(0.5f * new Vector3(20, 0, 0) * 0.1f));
 		}
     }
 }

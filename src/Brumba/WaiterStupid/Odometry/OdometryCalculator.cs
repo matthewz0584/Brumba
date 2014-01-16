@@ -38,6 +38,7 @@ namespace Brumba.WaiterStupid.Odometry
 				TicksToAngularVelocity(newOdometry.LeftTicks - previousOdometry.LeftTicks, deltaT),
 				previousOdometry.Pose.Z);
 			newOdometry.Pose = CalculatePose(previousOdometry.Pose, 0.5f*(newOdometry.Velocity + previousOdometry.Velocity), deltaT);
+		    newOdometry.PoseDelta = newOdometry.Pose - previousOdometry.Pose;
 			return newOdometry;
 		}
 	}
@@ -49,6 +50,8 @@ namespace Brumba.WaiterStupid.Odometry
 		public Vector3 Pose { get; set; }
 		[DataMember]
 		public Vector3 Velocity { get; set; }
+        [DataMember]
+        public Vector3 PoseDelta { get; set; }
 		[DataMember]
 		public int LeftTicks { get; set; }
 		[DataMember]
