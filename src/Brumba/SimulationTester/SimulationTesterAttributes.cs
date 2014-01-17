@@ -24,10 +24,13 @@ namespace Brumba.SimulationTester
 
         public bool IsProbabilistic { get; set; }
 
+		public bool TestAllEntities { get; set; }
+
         public SimTestAttribute(float estimatedTime)
         {
             EstimatedTime = estimatedTime;
             IsProbabilistic = true;
+	        TestAllEntities = false;
         }
     }
 

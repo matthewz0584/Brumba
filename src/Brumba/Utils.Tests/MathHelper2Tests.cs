@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
 namespace Brumba.Utils.Tests
@@ -29,7 +30,7 @@ namespace Brumba.Utils.Tests
         }
 
 		[Test]
-		public void Within()
+		public void DoubleEqualsWithin()
 		{
 			Assert.That(MathHelper2.EqualsWithin(10, 10, 0.1));
 			Assert.That(MathHelper2.EqualsWithin(10, 11, 0.1));
@@ -42,5 +43,15 @@ namespace Brumba.Utils.Tests
 			Assert.That(MathHelper2.EqualsWithin(10, 12, 0.1), Is.False);
 			Assert.That(MathHelper2.EqualsWithin(10, 8, 0.1), Is.False);
 		}
+
+	    [Test]
+	    public void VectorEqualWithin()
+	    {
+		    Assert.That(new Vector2(10, 0).EqualsWithin(new Vector2(9, 0), 0.1));
+			Assert.That(new Vector2(10, 0).EqualsWithin(new Vector2(8, 0), 0.1), Is.False);
+
+			Assert.That(new Vector2(3, 4).EqualsWithin(new Vector2(3.0f, 4.0f * 1.125f), 0.1));
+			Assert.That(new Vector2(3, 4).EqualsWithin(new Vector2(3.0f, 4.0f * 1.126f), 0.1), Is.False);
+	    }
     }
 }

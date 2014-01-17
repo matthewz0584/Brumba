@@ -1,8 +1,9 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 
 namespace Brumba.Utils
 {
-    public class MathHelper2
+    public static class MathHelper2
     {
         public static float ToPositiveAngle(float angle)
         {
@@ -22,5 +23,20 @@ namespace Brumba.Utils
 	    {
 		    return Math.Abs(testee - value) <= Math.Abs(value * margin);
 	    }
+
+		public static bool EqualsWithin(this Vector2 me, Vector2 notMe, double margin)
+		{
+			return (notMe - me).Length() / me.Length() <= margin;
+		}
+
+		public static bool EqualsWithin(this Vector3 me, Vector3 notMe, double margin)
+	    {
+		    return (notMe - me).Length() / me.Length() <= margin;
+	    }
+
+		public static bool EqualsWithin(this Vector4 me, Vector4 notMe, double margin)
+		{
+			return (notMe - me).Length() / me.Length() <= margin;
+		}
     }
 }

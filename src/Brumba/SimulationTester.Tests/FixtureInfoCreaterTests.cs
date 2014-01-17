@@ -77,11 +77,12 @@ namespace Brumba.SimulationTester.Tests
         }
 
         [NUnit.Framework.Test]
-        public void CreateDeterministicTestInfo()
+        public void CreateDeterministicAndTestAllTestInfo()
         {
             var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestEmpty), null);
 
             Assert.That(ti.IsProbabilistic, Is.False);
+			Assert.That(ti.TestAllEntities);
             Assert.That(ti.Prepare, Is.Null);
         }
 
@@ -213,7 +214,7 @@ namespace Brumba.SimulationTester.Tests
             }
         }
 
-        [SimTest(3, IsProbabilistic = false)]
+        [SimTest(3, IsProbabilistic = false, TestAllEntities = true)]
         public class TestEmpty
         {
         }

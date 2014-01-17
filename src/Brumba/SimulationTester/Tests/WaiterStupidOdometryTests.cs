@@ -52,7 +52,7 @@ namespace Brumba.SimulationTester.Tests
                 var simPose = SimPoseToEgocentricPose(ExtractStupidWaiterPose(simStateEntities));
 			    var simPosition = new xVector2(simPose.X, simPose.Y);
 
-                @return((odometryPosition - simPosition).Length() / simPosition.Length() <= 0.05);
+				@return(simPosition.EqualsWithin(odometryPosition, 0.05));
 
                 //Fixture.TesterService.LogInfo("From Odometry {0}", odometryPosition);
                 //Fixture.TesterService.LogInfo("From Simulation {0}", simPosition);

@@ -57,12 +57,16 @@ namespace Brumba.SimulationTester
 
         public SimulationTestInfo CreateTestInfo(Type testType, object fixtureObject)
         {
-            var sti = new SimulationTestInfo {Name = testType.Name};
-            sti.Object = Activator.CreateInstance(testType);
-            sti.EstimatedTime = testType.GetCustomAttributes(false).OfType<SimTestAttribute>().Single().EstimatedTime;
-            sti.IsProbabilistic = testType.GetCustomAttributes(false).OfType<SimTestAttribute>().Single().IsProbabilistic;
+            var sti = new SimulationTestInfo
+            {
+	            Name = testType.Name,
+	            Object = Activator.CreateInstance(testType),
+	            EstimatedTime = testType.GetCustomAttributes(false).OfType<SimTestAttribute>().Single().EstimatedTime,
+	            IsProbabilistic = testType.GetCustomAttributes(false).OfType<SimTestAttribute>().Single().IsProbabilistic,
+	            TestAllEntities = testType.GetCustomAttributes(false).OfType<SimTestAttribute>().Single().TestAllEntities
+            };
 
-            var fixtureProperty = testType.GetProperties().SingleOrDefault(mi => mi.GetCustomAttributes(false).Any(a => a is FixtureAttribute));
+	        var fixtureProperty = testType.GetProperties().SingleOrDefault(mi => mi.GetCustomAttributes(false).Any(a => a is FixtureAttribute));
             if (fixtureProperty != null)
                 fixtureProperty.SetValue(sti.Object, fixtureObject, null);
 

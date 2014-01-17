@@ -98,52 +98,35 @@
     <Reference Include="PhysicsEngine, Version=1.0.2470.14848, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
-      <HintPath>..\..\..\bin\PhysicsEngine.dll</HintPath>
+      <HintPath>..\..\..\..\bin\PhysicsEngine.dll</HintPath>
     </Reference>
     <Reference Include="RoboticsCommon, Version=1.0.250.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
-      <HintPath>..\..\..\bin\RoboticsCommon.dll</HintPath>
+      <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
     </Reference>
     <Reference Include="RoboticsCommon.proxy, Version=1.0.313.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
-      <HintPath>..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
-    </Reference>
-    <Reference Include="SimulatedBumper.Y2006.M05.proxy, Version=1.0.250.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulatedDifferentialDriveTT.2008.M01, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0a48c9f6e020610, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulatedDifferentialDriveTT.2008.M01.Proxy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=f0a48c9f6e020610, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulatedLRF.Y2006.M05.proxy, Version=1.0.250.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulatedWebcam.Y2006.M09.proxy, Version=0.0.0.0, Culture=neutral, PublicKeyToken=552b0afb2c6d229b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
     </Reference>
     <Reference Include="SimulationCommon, Version=1.0.250.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
-      <HintPath>..\..\..\bin\SimulationCommon.dll</HintPath>
+      <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="SimulationCommon.proxy">
+      <HintPath>..\..\..\..\bin\SimulationCommon.proxy.dll</HintPath>
     </Reference>
     <Reference Include="SimulationEngine, Version=1.0.250.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
-      <HintPath>..\..\..\bin\SimulationEngine.dll</HintPath>
+      <HintPath>..\..\..\..\bin\SimulationEngine.dll</HintPath>
     </Reference>
     <Reference Include="SimulationEngine.proxy, Version=1.0.250.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
-      <HintPath>..\..\..\bin\SimulationEngine.proxy.dll</HintPath>
+      <HintPath>..\..\..\..\bin\SimulationEngine.proxy.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -167,13 +150,11 @@
     <AppDesigner Include="Properties" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\config\mazesimulator.manifest.xml">
-      <Link>mazesimulator.manifest.xml</Link>
-    </Content>
     <Content Include="MazeSimulator.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MazeSimulator.Config.xml" />
+    <Content Include="mazesimulator.manifest.xml" />
     <EmbeddedResource Include="MazeSimulatorService.Thumbnail.PNG" />
     <EmbeddedResource Include="MazeSimulatorService.Image.PNG" />
   </ItemGroup>

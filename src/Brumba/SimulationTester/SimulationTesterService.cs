@@ -203,10 +203,10 @@ namespace Brumba.SimulationTester
 
                 //Deserialize it
                 IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;
-                yield return To.Exec(DeserializaTopLevelEntityProxies,
+                yield return To.Exec(DeserializeTopLevelEntityProxies,
                             (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens, simState,
                             (Func<XmlElement, bool>)
-                            (xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
+                            (xe => testInfo.TestAllEntities ? true : xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
                 LogInfo("ExecuteTest: Testee entities deserialized");
 
                 //Check test's result
@@ -304,7 +304,7 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_simEngine.Replace(simState));
 
             IEnumerable<MrsePxy.VisualEntity> entityPxies = null;
-            yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> ePxies) => entityPxies = ePxies, simState, (Func<XmlElement, bool>)null);
+            yield return To.Exec(DeserializeTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> ePxies) => entityPxies = ePxies, simState, (Func<XmlElement, bool>)null);
             foreach (var entityPxy in entityPxies.Where(resetFilter ?? (pxy => true)).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
                 yield return Arbiter.Choice(_simEngine.DeleteSimulationEntity(entityPxy), deleted => {}, failed => {});
 
@@ -332,7 +332,7 @@ namespace Brumba.SimulationTester
             yield return To.Exec(timerInsRequest.ResponsePort);
         }
 
-        IEnumerator<ITask> DeserializaTopLevelEntityProxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, MrsPxy.SimulationState simState, Func<XmlElement, bool> filter)
+        IEnumerator<ITask> DeserializeTopLevelEntityProxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, MrsPxy.SimulationState simState, Func<XmlElement, bool> filter)
 		{
 			var entities = new List<MrsePxy.VisualEntity>();
 			foreach (var entityNode in simState.SerializedEntities.XmlNodes.Cast<XmlElement>().Where(filter ?? (xe => true)))
@@ -349,7 +349,7 @@ namespace Brumba.SimulationTester
         IEnumerator<ITask> DeserializeTopLevelEntities(Action<IEnumerable<Mrse.VisualEntity>> @return, MrsPxy.SimulationState simState)
         {
             IEnumerable<MrsePxy.VisualEntity> entitiesFlatPxies = null;
-            yield return To.Exec(DeserializaTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> es) => entitiesFlatPxies = es, simState, (Func<XmlElement, bool>)null);
+            yield return To.Exec(DeserializeTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> es) => entitiesFlatPxies = es, simState, (Func<XmlElement, bool>)null);
 
             var entitiesFlat = entitiesFlatPxies.Select(ePxy => (Mrse.VisualEntity)DssTypeHelper.TransformFromProxy(ePxy));
 
