@@ -60,32 +60,11 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Security.Permissions;
-using xml = System.Xml;
-
-// Added for Color definition
 using System.Drawing;
-
-#region Simulation namespaces
-using Microsoft.Robotics.Simulation;
 using Microsoft.Robotics.Simulation.Engine;
 using engineproxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using Microsoft.Robotics.Simulation.Physics;
-//using drive = ProMRDS.Robotics.Simulation.DifferentialDrive.Proxy;
-//using lrf = Microsoft.Robotics.Services.Simulation.Sensors.LaserRangeFinder.Proxy;
-//using bumper = Microsoft.Robotics.Services.Simulation.Sensors.Bumper.Proxy;
-// TT - Added in October CTP
-//using simwebcam = Microsoft.Robotics.Services.Simulation.Sensors.SimulatedWebcam.Proxy;
 using Microsoft.Robotics.PhysicalModel;
-using System.ComponentModel;
-#endregion
-
-using Microsoft.Robotics.Simulation.Physics;
-using Microsoft.Robotics.PhysicalModel;
-
-// TT - Mar-2008
-//using ProMRDS.Robotics.Simulation.DifferentialDrive;
-
 
 namespace ProMRDS.Robotics.MazeSimulator
 {
@@ -119,8 +98,6 @@ namespace ProMRDS.Robotics.MazeSimulator
         private float[] _WallMasses = new float[16];
         private bool[] _UseSphere = new bool[16];
 
-        // Physics engine instance
-        PhysicsEngine _physicsEngine;
         // Port used to communicate with simulation engine service directly, no cloning
         SimulationEnginePort _simEnginePort;
 
@@ -206,7 +183,6 @@ namespace ProMRDS.Robotics.MazeSimulator
 			LogInfo(LogGroups.Console, "Service uri: ");
 
             // Cache references to simulation/rendering and physics
-            _physicsEngine = PhysicsEngine.GlobalInstance;
             _simEnginePort = SimulationEngine.GlobalInstancePort;
 
             // TT Dec-2006 - Set up the initial camera view
@@ -363,7 +339,6 @@ namespace ProMRDS.Robotics.MazeSimulator
             AddSky();
             AddGround();
             AddMaze();
-            //AddRobot();
         }
 
         void AddSky()
@@ -909,316 +884,8 @@ namespace ProMRDS.Robotics.MazeSimulator
 
         #endregion
 
-        #region Robot Entities
-
-        //// TT Dec-2006 - Select the type of robot based on the setting
-        //// in the config file. Currently only two types are supported.
-        //void AddRobot()
-        //{
-        //    // Note that the new robot is created just slightly off the
-        //    // ground so that it "drops in". This is not necessary ...
-        //    Vector3 position = new Vector3(_state.RobotStartCellCol * -_state.GridSpacing,
-        //                        0.05f,
-        //                        -(_state.RobotStartCellRow * _state.GridSpacing));
-        //    if (_state.RobotType.ToLower() == "pioneer3dx")
-        //        AddPioneer3DXRobot(position);
-        //    else if (_state.RobotType.ToLower() == "legonxt")
-        //        AddLegoNxtRobot(position);
-        //    else
-        //        AddPioneer3DXRobot(position);
-        //}
-
-        //#region Pioneer
-
-        //void AddPioneer3DXRobot(Vector3 position)
-        //{
-        //    // TT Dec-2006 - Make the position a parameter
-        //    // TT Jun-2007 - Changes to the Simulated Differential Drive
-        //    // required a new version of the Pioneer3DX. This is annoying
-        //    // because it was only a change of class name but it had some
-        //    // flow-on effects. The problem arises because you can't just
-        //    // replace an entity that is in built into the Simulator.
-        //    TTPioneer3DX robotBaseEntity = CreateMotorBase(ref position);
-
-        //    // Create Laser entity and start simulated laser service
-        //    LaserRangeFinderEntity laser = CreateLaserRangeFinder();
-
-        //    // Add laser as child to motor base
-        //    robotBaseEntity.InsertEntity(laser);
-
-        //    // Create bumper array entity and start simulated bumper service
-        //    BumperArrayEntity bumperArray = CreateBumperArray();
-
-        //    // Insert as child of motor base
-        //    robotBaseEntity.InsertEntity(bumperArray);
-
-        //    // TT - Copied from Oct CTP Simulation Tutorial 2
-        //    // Create Camera Entity and start SimulatedWebcam service
-        //    CameraEntity camera = CreateCamera();
-        //    // insert as child of motor base
-        //    robotBaseEntity.InsertEntity(camera);
-
-        //    // Reverse the orientation of the robot so that it will
-        //    // drive "forwards" from the user's perspective (it is
-        //    // actually driving in the Z direction)
-        //    robotBaseEntity.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(Math.PI));
-
-        //    // Finaly insert the motor base and its two children 
-        //    // to the simulation
-        //    //_simEnginePort.Insert(robotBaseEntity);
-        //    SimulationEngine.GlobalInstancePort.Insert(robotBaseEntity);
-
-        //}
-
-        //// TT Jun-2007 - Changed the return type because it uses a modified
-        //// version of the Pioneer3DX entity to support RotateDegrees
-        //private TTPioneer3DX CreateMotorBase(ref Vector3 position)
-        //{
-        //    // use supplied entity that creates a motor base 
-        //    // with 2 active wheels and one caster
-        //    // TT Jun-2007 - See comment above
-        //    TTPioneer3DX robotBaseEntity = new TTPioneer3DX(position);
-
-        //    // TT Oct-2007 - Don't do this here because it is not the appropriate place
-        //    // Besides, it actually causes errors with the revised Simulated Diff Drive.
-        //    //
-        //    // Specify mesh. 
-        //    // TT - October CTP no longer uses .x files
-        //    // TT - From Oct CTP
-        //    // Specify color if no mesh is specified. 
-
-        //    // TT Dec-2006 - Remove the leading slash.
-        //    // In all the CTPs it worked with the slash, but not in V1.0.
-        //    robotBaseEntity.State.Name = "P3DXMotorBase";
-
-        //    // TT Jul-2008 - In V2.0 CTP2 the wheels were removed from
-        //    // the Pioneer mesh and must now be added separately.
-        //    robotBaseEntity.WheelMesh = "PioneerWheel.bos";
-        //    // Also, specify color if no mesh is specified.
-        //    robotBaseEntity.ChassisShape.State.DiffuseColor = new Vector4(0.8f, 0.25f, 0.25f, 1.0f);
-
-        //    // Start simulated arcos motor service
-        //    // Note: The name of the service is taken from the Namespace,
-        //    // which is why we have used ...Drive.Simulated.Proxy
-        //    // The Entity Partner service that is created must have the
-        //    // same name as the entity itself. This has nothing to do with
-        //    // the name of the underlying "hardware" service.
-        //    // This simulation entity is called "/MotorBase" and a new
-        //    // service will be created with this name. It will be of
-        //    // type Drive.Simulated.Proxy.Contract.Identifier which in
-        //    // turn has a service port name of /SimulatedDifferentialDrive.
-        //    //
-        //    // TT Dec-2006 - This code has changed subtly in V1.0 Sim Tutorial 2.
-        //    // Notice also that the slash is now in the literal.
-        //    //CreateService(
-        //    //    drive.Contract.Identifier,
-        //    //    Microsoft.Robotics.Simulation.Partners.CreateEntityPartner(
-        //    //        "http://localhost" + robotBaseEntity.State.Name)
-        //    //);
-        //    drive.Contract.CreateService(ConstructorPort,
-        //        Microsoft.Robotics.Simulation.Partners.CreateEntityPartner(
-        //            "http://localhost/" + robotBaseEntity.State.Name)
-        //    );
-        //    return robotBaseEntity;
-        //}
-
-        //private LaserRangeFinderEntity CreateLaserRangeFinder()
-        //{
-        //    // Create a Laser Range Finder Entity.
-        //    // Place it 30cm above base CenterofMass. 
-        //    LaserRangeFinderEntity laser = new LaserRangeFinderEntity(
-        //        new Pose(new Vector3(0, 0.30f, 0)));
-        //    // TT Dec-2006 - Remove leading slash for V1.0
-        //    laser.State.Name = "P3DXLaserRangeFinder";
-        //    // TT - From Oct CTP
-        //    laser.LaserBox.State.DiffuseColor = new Vector4(0.25f, 0.25f, 0.8f, 1.0f);
-
-        //    // Create LaserRangeFinder simulation service and specify
-        //    // which entity it talks to
-        //    CreateService(
-        //        lrf.Contract.Identifier,
-        //        Microsoft.Robotics.Simulation.Partners.CreateEntityPartner(
-        //        "http://localhost/" + laser.State.Name));
-        //    return laser;
-        //}
-
-        //private BumperArrayEntity CreateBumperArray()
-        //{
-        //    // Create a bumper array entity with two bumpers
-        //    // TT -- Changed the thickness of the bumpers to try to
-        //    // reduce the problem where both front and back seem
-        //    // to trigger when it "climbs" a wall. Moving the
-        //    // bumper up higher on the robot did not work because
-        //    // it simply got stuck on the wall!
-        //    // TT Jul-2007 - There is some problem with the bumpers
-        //    // not being recognised during collisions. Put them back
-        //    // the way they were before.
-        //    BoxShape frontBumper = new BoxShape(
-        //        new BoxShapeProperties("front",
-        //            0.001f,
-        //            new Pose(new Vector3(0, 0.05f, -0.25f)),
-        //            new Vector3(0.40f, 0.03f, 0.03f)
-        //            //new Vector3(0.40f, 0.01f, 0.03f)
-        //        )
-        //    );
-        //    // TT - From Oct CTP
-        //    frontBumper.State.DiffuseColor = new Vector4(0.1f, 0.1f, 0.1f, 1.0f);
-
-        //    BoxShape rearBumper = new BoxShape(
-        //        new BoxShapeProperties("rear",
-        //            0.001f,
-        //            new Pose(new Vector3(0, 0.05f, 0.25f)),
-        //            new Vector3(0.40f, 0.03f, 0.03f)
-        //            //new Vector3(0.40f, 0.01f, 0.03f)
-        //        )
-        //    );
-        //    // TT - From Oct CTP
-        //    rearBumper.State.DiffuseColor = new Vector4(0.1f, 0.1f, 0.1f, 1.0f);
-
-        //    // The physics engine will issue contact notifications only
-        //    // if we enable them per shape
-        //    frontBumper.State.EnableContactNotifications = true;
-        //    rearBumper.State.EnableContactNotifications = true;
-
-        //    BumperArrayEntity
-        //        bumperArray = new BumperArrayEntity(frontBumper, rearBumper);
-
-        //    // entity name, must match manifest partner name
-        //    // TT Dec-2006 - Remove slash for V1.0
-        //    bumperArray.State.Name = "P3DXBumpers";
-
-        //    // start simulated bumper service
-        //    bumper.Contract.CreateService(
-        //        ConstructorPort,
-        //        Microsoft.Robotics.Simulation.Partners.CreateEntityPartner(
-        //        "http://localhost/" + bumperArray.State.Name));
-        //    return bumperArray;
-        //}
-
-        //// TT - Copied from Oct CTP
-        //private CameraEntity CreateCamera()
-        //{
-        //    // low resolution, wide Field of View
-        //    CameraEntity cam = new CameraEntity(320, 240, ((float)Math.PI * 0.4f));
-        //    cam.CameraModel = CameraEntity.CameraModelType.AttachedChild;
-
-        //    //CameraEntity cam = new CameraEntity(320, 240);
-        //    // TT Dec-2006 - Remove slash for V1.0
-        //    cam.State.Name = "robocam";
-        //    // just on top of the bot
-        //    //cam.State.Pose.Position = new Vector3(0.0f, 0.5f, 0.0f);
-        //    //cam.State.Pose.Position = new Vector3(0.0f, 0.5f, -0.5f);
-        //    cam.State.Pose.Position = _state.CameraPosition;
-        //    // Set the camera tilt angle
-        //    // Rotate about the X axis
-        //    // Use -85 to face down
-        //    AxisAngle aa = new AxisAngle(new Vector3(1, 0, 0), (float)(_state.CameraTiltAngle * Math.PI / 180));
-        //    cam.State.Pose.Orientation = Quaternion.FromAxisAngle(aa);
-
-        //    // camera renders in an offline buffer at each frame
-        //    // required for service
-        //    cam.IsRealTimeCamera = true;
-
-        //    // Start simulated webcam service
-        //    simwebcam.Contract.CreateService(
-        //        ConstructorPort,
-        //        Microsoft.Robotics.Simulation.Partners.CreateEntityPartner(
-        //            "http://localhost/" + cam.State.Name)
-        //    );
-
-        //    return cam;
-        //}
-
-        //#endregion
-
-        //#region Lego NXT
-
-        //// TT Dec-2006 - Copied from Sim Tutorial 2
-        //// However, it has some strange problems because the robot
-        //// starts out facing the wrong direction and drives off in
-        //// the wrong direction initially.
-        ////
-        //// TT Jun-2007
-        //// Updated to use the new Differential Drive entity
-        //// However, it is still strange because the robot does not
-        //// respond to motion commands immediately, but eventually it
-        //// does.
-        //void AddLegoNxtRobot(Vector3 position)
-        //{
-        //    TTLegoNXTTribot robotBaseEntity = CreateLegoNxtMotorBase(ref position);
-
-        //    // Create bumper array entity and start simulated bumper service
-        //    BumperArrayEntity bumperArray = CreateLegoNxtBumper();
-
-        //    // insert as child of motor base
-        //    robotBaseEntity.InsertEntity(bumperArray);
-
-        //    // Finaly insert the motor base and its two children 
-        //    // to the simulation
-        //    SimulationEngine.GlobalInstancePort.Insert(robotBaseEntity);
-        //}
-
-
-        //private TTLegoNXTTribot CreateLegoNxtMotorBase(ref Vector3 position)
-        //{
-        //    // use supplied entity that creates a motor base 
-        //    // with 2 active wheels and one caster
-        //    TTLegoNXTTribot robotBaseEntity = new TTLegoNXTTribot(position);
-
-        //    // TT Oct-2007 - Moved to the entity code.
-        //    //
-        //    // Specify mesh. 
-        //    //robotBaseEntity.State.Assets.Mesh = "LegoNXTTribot.bos";
-
-        //    // the name below must match manifest
-        //    robotBaseEntity.State.Name = "LegoNXTMotorBase";
-
-        //    // Start simulated arcos motor service
-        //    CreateService(
-        //        drive.Contract.Identifier,
-        //        Microsoft.Robotics.Simulation.Partners.CreateEntityPartner(
-        //            "http://localhost/" + robotBaseEntity.State.Name)
-        //    );
-        //    return robotBaseEntity;
-        //}
-
-        //private BumperArrayEntity CreateLegoNxtBumper()
-        //{
-        //    // create a little bumper shape that models the NXT bumper
-        //    BoxShape frontBumper = new BoxShape(
-        //        new BoxShapeProperties(
-        //            "front", 0.001f, //mass
-        //            new Pose(new Vector3(0, 0.063f, -0.09f)), //position
-        //            new Vector3(0.023f, 0.023f, 0.045f)));
-
-        //    // The physics engine will issue contact notifications only
-        //    // if we enable them per shape
-        //    frontBumper.State.EnableContactNotifications = true;
-
-        //    BumperArrayEntity
-        //        bumperArray = new BumperArrayEntity(frontBumper);
-        //    // entity name, must match manifest partner name
-        //    bumperArray.State.Name = "LegoNXTBumpers";
-
-        //    // start simulated bumper service
-        //    CreateService(
-        //        bumper.Contract.Identifier,
-        //        Microsoft.Robotics.Simulation.Partners.CreateEntityPartner(
-        //        "http://localhost/" + bumperArray.State.Name));
-        //    return bumperArray;
-        //}
-
-        //#endregion
-
-        #endregion
-
         #region Handlers
 
-        /// <summary>
-        /// Get Handler
-        /// </summary>
-        /// <param name="get"></param>
-        /// <returns></returns>
         [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
         public virtual IEnumerator<ITask> GetHandler(Get get)
         {
@@ -1226,11 +893,6 @@ namespace ProMRDS.Robotics.MazeSimulator
             yield break;
         }
 
-        /// <summary>
-        /// Replace Handler
-        /// </summary>
-        /// <param name="replace"></param>
-        /// <returns></returns>
         [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
         public virtual IEnumerator<ITask> ReplaceHandler(Replace replace)
         {
@@ -1240,7 +902,5 @@ namespace ProMRDS.Robotics.MazeSimulator
         }
 
         #endregion
-
     }
-
 }

@@ -12,7 +12,7 @@ using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("environment_builder", Wip = false)]
+	//[SimTestFixture("environment_builder")]
 	public class EnvironmentBuilderTests
 	{
 		[SimTest(1f, IsProbabilistic = false, TestAllEntities = true)]

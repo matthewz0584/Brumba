@@ -10,7 +10,7 @@ namespace Brumba.SimulationTester
 {
     public class FixtureInfoCreator
     {
-        public IEnumerable<SimulationTestFixtureInfo> CollectFixtures(Assembly assembly, bool ignoreFails)
+        public List<SimulationTestFixtureInfo> CollectFixtures(Assembly assembly, bool ignoreFails)
         {
             return assembly.GetTypes().
                 Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestFixtureAttribute && !(a as SimTestFixtureAttribute).Ignore)).
