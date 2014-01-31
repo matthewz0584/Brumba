@@ -77,7 +77,6 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnvironmentBuilderTests.cs" />
     <Compile Include="ParticleFilterTests.cs" />
     <Compile Include="OdometryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,9 +86,6 @@
       <Project>{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}</Project>
       <Name>WaiterStupid</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="MapImages\red_and_blue_boxes.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -21,7 +21,7 @@ namespace Brumba.Utils
 
 	    public static bool EqualsWithin(double value, double testee, double margin)
 	    {
-		    return Math.Abs(testee - value) <= Math.Abs(value * margin);
+			return Math.Abs(testee - value) / value <= Math.Abs(margin);
 	    }
 
 		public static bool EqualsWithin(this Vector2 me, Vector2 notMe, double margin)

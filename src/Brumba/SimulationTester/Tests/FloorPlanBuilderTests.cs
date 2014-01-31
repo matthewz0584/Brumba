@@ -12,8 +12,8 @@ using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
 namespace Brumba.SimulationTester.Tests
 {
-	//[SimTestFixture("environment_builder")]
-	public class EnvironmentBuilderTests
+	[SimTestFixture("floor_plan_builder", Wip = true)]
+	public class FloorPlanBuilderTests
 	{
 		[SimTest(1f, IsProbabilistic = false, TestAllEntities = true)]
 		public class SimpleObjectsTest

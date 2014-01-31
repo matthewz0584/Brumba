@@ -174,7 +174,7 @@
     <Compile Include="SimulationTesterTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimulationTesterAttributes.cs" />
-    <Compile Include="Tests\EnvironmentBuilderTests.cs" />
+    <Compile Include="Tests\FloorPlanBuilderTests.cs" />
     <Compile Include="Tests\RefPlatformSimpleTests.cs" />
     <Compile Include="Tests\WaiterStupidOdometryTests.cs" />
     <Compile Include="Tests\TurretTests.cs" />
