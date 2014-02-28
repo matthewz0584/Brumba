@@ -77,6 +77,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OccupancyGridTests.cs" />
     <Compile Include="ParticleFilterTests.cs" />
     <Compile Include="OdometryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

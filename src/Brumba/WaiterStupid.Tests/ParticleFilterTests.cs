@@ -110,59 +110,6 @@ namespace Brumba.WaiterStupid.Tests
         }
     }
 
-    [TestFixture]
-	public class OccupancyGridTests
-    {
-        [Test]
-        public void DistanceToObstacle()
-        {
-	        var m = new OccupancyGrid(occupancy: new [,]
-										{
-											{false, false},
-											{false, true}
-										}, cellSize: 0.2f);
-
-			Assert.That(m.DistanceToObstacle(new Vector2(0.3f, 0.1f)), Is.EqualTo(0));
-			Assert.That(m.DistanceToObstacle(new Vector2(0.1f, 0.1f)), Is.EqualTo(0.2));
-			Assert.That(m.DistanceToObstacle(new Vector2(0.3f, 0.3f)), Is.EqualTo(0.2));
-			Assert.That(m.DistanceToObstacle(new Vector2(0.1f, 0.3f)), Is.EqualTo(Math.Sqrt(2 * 0.2 * 0.2)));
-        }
-    }
-
-	public class OccupancyGrid
-	{
-		readonly bool[,] _occupancy;
-		readonly float _cellSize;
-
-		public OccupancyGrid(bool[,] occupancy, float cellSize)
-		{
-			_occupancy = occupancy;
-			_cellSize = cellSize;
-		}
-
-		public float DistanceToObstacle(Vector2 position)
-		{
-			return (PointToPos(SearchNearestOccupied(PosToPoint(position))) - position).Length();
-		}
-
-		Point SearchNearestOccupied(Point point)
-		{
-			throw new NotImplementedException();
-		}
-
-		Vector2 PointToPos(Point point)
-		{
-			return new Vector2(point.X + 0.5f, point.Y + 0.5f) * _cellSize;
-		}
-
-		Point PosToPoint(Vector2 position)
-		{
-			return new Point((int)(position.X / _cellSize), (int)(position.Y / _cellSize));
-		}
-
-
-	}
-
 	//[TestFixture]
     //public class LrfInverseMeasurementModelTests
     //{
