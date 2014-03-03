@@ -4,48 +4,48 @@ using System.Linq;
 
 namespace Brumba.WaiterStupid.McLocalization
 {
-    public class ParticleFilter<ParticleT, MeasurementT>
+    public class ParticleFilter<TParticle, TMeasurement>
     {
         private readonly IByWeightResampler _resampler;
 
         //particle, control, predicted particle
-        public Func<ParticleT, ParticleT, ParticleT> PredictionModel { get; set; }
+        public Func<TParticle, TParticle, TParticle> PredictionModel { get; set; }
         //particle, measurement, probability
-        public Func<ParticleT, MeasurementT, float> MeasurementInverseModel { get; set; }
+        public Func<TParticle, TMeasurement, float> MeasurementModel { get; set; }
 
-        public IEnumerable<ParticleT> Particles { get; private set; }
+        public IEnumerable<TParticle> Particles { get; private set; }
 
         public ParticleFilter(IByWeightResampler resampler)
         {
             _resampler = resampler;
         }
 
-        public void Init(IEnumerable<ParticleT> particles)
+        public void Init(IEnumerable<TParticle> particles)
         {
             Particles = particles.ToList();
         }
 
-        public void Update(ParticleT control, MeasurementT measurement)
+        public void Update(TParticle control, TMeasurement measurement)
         {
             var weightedParticles = Particles.
                 Select(p => WeighParticle(measurement, PredictionModel(p, control)));
             Particles = _resampler.Resample(weightedParticles).
-                Cast<WeightedParticle<ParticleT>>().Select(ws => ws.Particle).Take(Particles.Count()).ToList();
+                Cast<WeightedParticle<TParticle>>().Select(ws => ws.Particle).Take(Particles.Count()).ToList();
         }
 
-        private WeightedParticle<ParticleT> WeighParticle(MeasurementT measurement, ParticleT particle)
+        private WeightedParticle<TParticle> WeighParticle(TMeasurement measurement, TParticle particle)
         {
-            return new WeightedParticle<ParticleT>
+            return new WeightedParticle<TParticle>
                 {
                     Particle = particle,
-                    Weight = MeasurementInverseModel(particle, measurement)
+                    Weight = MeasurementModel(particle, measurement)
                 };
         }
     }
 
-    public class WeightedParticle<ParticleT> : IWeighted
+    public class WeightedParticle<TParticle> : IWeighted
     {
-        public ParticleT Particle { get; set; }
+        public TParticle Particle { get; set; }
         public float Weight { get; set; }
     }
 }

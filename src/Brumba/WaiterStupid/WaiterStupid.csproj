@@ -78,10 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileLogHandler.cs" />
+    <Compile Include="McLocalization\LikelihoodFieldMeasurementModel.cs" />
     <Compile Include="McLocalization\OccupancyGrid.cs" />
     <Compile Include="McLocalization\ParticleFilter.cs" />
+    <Compile Include="McLocalization\RangefinderProperties.cs" />
     <Compile Include="McLocalization\ResamplingWheel.cs" />
-    <Compile Include="McLocalization\SquareFringeGenerator.cs" />
+    <Compile Include="McLocalization\GridSquareFringeGenerator.cs" />
     <Compile Include="Odometry\OdometryTypes.cs" />
     <Compile Include="Odometry\OdometryCalculator.cs" />
     <Compile Include="Odometry\OdometryService.cs" />

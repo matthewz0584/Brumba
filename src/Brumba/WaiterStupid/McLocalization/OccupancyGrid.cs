@@ -1,4 +1,3 @@
-using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace Brumba.WaiterStupid.McLocalization
@@ -7,7 +6,7 @@ namespace Brumba.WaiterStupid.McLocalization
 	{
 		readonly bool[,] _occupancy;
 		readonly float _cellSize;
-		readonly Point _size;
+        readonly Point _size;
 
 		public OccupancyGrid(bool[,] occupancy, float cellSize)
 		{
@@ -16,22 +15,22 @@ namespace Brumba.WaiterStupid.McLocalization
 			_size = new Point(occupancy.GetLength(1), occupancy.GetLength(0));
 		}
 
-		public float DistanceToObstacle(Vector2 position)
-		{
-			return (PointToPos(FindNearestOccupied(PosToPoint(position))) - position).Length();
-		}
+        public bool this[Point p]
+        {
+            get { return _occupancy[p.Y, p.X]; }
+        }
 
-		Point FindNearestOccupied(Point point)
-		{
-			return new SquareFringeGenerator(_size).Generate(point).First(p => _occupancy[p.Y, p.X]);
-		}
+	    public Point Size
+	    {
+	        get { return _size; }
+	    }
 
-		Vector2 PointToPos(Point point)
+	    public Vector2 CellToPos(Point point)
 		{
 			return new Vector2(point.X + 0.5f, point.Y + 0.5f) * _cellSize;
 		}
 
-		Point PosToPoint(Vector2 position)
+		public Point PosToCell(Vector2 position)
 		{
 			return new Point((int)(position.X / _cellSize), (int)(position.Y / _cellSize));
 		}

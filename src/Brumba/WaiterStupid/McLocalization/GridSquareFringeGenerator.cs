@@ -4,11 +4,11 @@ using Microsoft.Xna.Framework;
 
 namespace Brumba.WaiterStupid.McLocalization
 {
-	public class SquareFringeGenerator
+	public class GridSquareFringeGenerator
 	{
 		private Point _gridSize;
 
-		public SquareFringeGenerator(Point gridSize)
+		public GridSquareFringeGenerator(Point gridSize)
 		{
 			_gridSize = gridSize;
 		}

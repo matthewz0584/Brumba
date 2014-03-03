@@ -77,12 +77,18 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GridSquareFringeGeneratorTests.cs" />
+    <Compile Include="LikelyhoodFieldMeasurementModelTests.cs" />
     <Compile Include="OccupancyGridTests.cs" />
     <Compile Include="ParticleFilterTests.cs" />
     <Compile Include="OdometryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WaiterStupid\WaiterStupid.csproj">
       <Project>{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}</Project>
       <Name>WaiterStupid</Name>

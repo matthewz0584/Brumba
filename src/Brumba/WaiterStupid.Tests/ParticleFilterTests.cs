@@ -2,7 +2,7 @@
 using System.Linq;
 using Brumba.WaiterStupid.McLocalization;
 using MathNet.Numerics.Distributions;
-using MathNet.Numerics.LinearAlgebra.Single;
+//using MathNet.Numerics.LinearAlgebra.Single;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
@@ -20,7 +20,7 @@ namespace Brumba.WaiterStupid.Tests
             var mcf = new ParticleFilter<double, bool>(new ResamplingWheel())
                 {
                     PredictionModel = (sample, control) => sample + control,
-                    MeasurementInverseModel =
+                    MeasurementModel =
                         (sample, measurement) =>
                         ((Math.Abs(2 - sample) < 0.1 || Math.Abs(4 - sample) < 0.1 || Math.Abs(7 - sample) < 0.1) && measurement) ||
                         (!(Math.Abs(2 - sample) < 0.1 || Math.Abs(4 - sample) < 0.1 || Math.Abs(7 - sample) < 0.1) && !measurement)
@@ -92,7 +92,7 @@ namespace Brumba.WaiterStupid.Tests
             var mcf = new ParticleFilter<Vector2, int>(new ResamplingWheel())
             {
                 PredictionModel = (sample, control) => sample + control,
-                MeasurementInverseModel =
+                MeasurementModel =
                     (sample, measurement) =>
                     ((new Vector2(1, 1) - sample).Length() < 0.5 && measurement == 5) ||
                     ((new Vector2(1, 1) - sample).Length() >= 0.5 && measurement != 5)
@@ -109,26 +109,6 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(mcf.Particles.Count(s => (new Vector2(1, 1) - s).Length() < 0.5), Is.EqualTo(2500));
         }
     }
-
-	//[TestFixture]
-    //public class LrfInverseMeasurementModelTests
-    //{
-    //    [Test]
-    //    public void Acceptance()
-    //    {
-    //        var lrfimm = new LrfInverseMeasurementModel
-    //            {
-    //                Map = new Map(10, 10, 0.1),
-    //                LrfProperties = new LrfProperties
-    //                    {
-    //                        ZeroBeamAngle = Math.PI / 2,
-    //                        AngularResolution = Math.PI / 2,
-    //                        MaxRange = 10
-    //                    },
-    //            }
-    //    }
-    //}
-
 
     //[TestFixture]
     //public class McLrfLocalizatorTests
