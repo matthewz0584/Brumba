@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Brumba.WaiterStupid.McLocalization
@@ -17,24 +18,40 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public ParticleFilter(IByWeightResampler resampler)
         {
+            Contract.Requires(resampler != null);
+
             _resampler = resampler;
         }
 
         public void Init(IEnumerable<TParticle> particles)
         {
+            Contract.Requires(particles != null);
+            Contract.Requires(particles.Count() > 1);
+            Contract.Ensures(Particles != null);
+            Contract.Ensures(Particles.Count() > 1);
+
             Particles = particles.ToList();
         }
 
         public void Update(TParticle control, TMeasurement measurement)
         {
+            Contract.Requires(Particles != null);
+            Contract.Requires(Particles.Count() > 1);
+            Contract.Requires(PredictionModel != null);
+            Contract.Requires(MeasurementModel != null);
+            Contract.Ensures(Contract.OldValue(Particles.Count()) == Particles.Count());
+
             var weightedParticles = Particles.
                 Select(p => WeighParticle(measurement, PredictionModel(p, control)));
             Particles = _resampler.Resample(weightedParticles).
                 Cast<WeightedParticle<TParticle>>().Select(ws => ws.Particle).Take(Particles.Count()).ToList();
         }
 
-        private WeightedParticle<TParticle> WeighParticle(TMeasurement measurement, TParticle particle)
+        WeightedParticle<TParticle> WeighParticle(TMeasurement measurement, TParticle particle)
         {
+            Contract.Ensures(Contract.Result<WeightedParticle<TParticle>>().Particle.Equals(particle));
+            Contract.Ensures(Contract.Result<WeightedParticle<TParticle>>().Weight >= 0);
+
             return new WeightedParticle<TParticle>
                 {
                     Particle = particle,

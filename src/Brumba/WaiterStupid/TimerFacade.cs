@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Brumba.Utils;
+using Brumba.DsspUtils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 using simTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.WaiterStupid
 {
@@ -15,12 +16,15 @@ namespace Brumba.WaiterStupid
 
 		public TimerFacade(DsspServiceExposing srv, float interval)
 		{
+            DC.Contract.Requires(srv != null);
+            DC.Contract.Requires(interval > 0);
+
 			_srv = srv;
 			_interval = interval;
 			TickPort = new Port<TimeSpan>();
 		}
 
-		public Port<TimeSpan> TickPort { get; set; }
+		public Port<TimeSpan> TickPort { get; private set; }
 
 		public IEnumerator<ITask> Set()
 		{

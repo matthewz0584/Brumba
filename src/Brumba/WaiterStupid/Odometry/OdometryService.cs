@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Brumba.Utils;
+using Brumba.DsspUtils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Robotics.Services.Drive.Proxy;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.WaiterStupid.Odometry
 {
@@ -42,6 +43,8 @@ namespace Brumba.WaiterStupid.Odometry
 		public OdometryService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
+            DC.Contract.Requires(creationPort != null);
+
 			_odometryCalc = new OdometryCalculator { Constants = _state.Constants };
 			_timerFacade = new TimerFacade(this, _state.Constants.DeltaT);
 		}
@@ -57,6 +60,11 @@ namespace Brumba.WaiterStupid.Odometry
 		{
 			yield return _diffDrive.Get().Receive(ds =>
 				{
+                    DC.Contract.Requires(ds.LeftWheel != null);
+                    DC.Contract.Requires(ds.LeftWheel.EncoderState != null);
+                    DC.Contract.Requires(ds.RightWheel != null);
+                    DC.Contract.Requires(ds.RightWheel.EncoderState != null);
+
 					_state.State.LeftTicks = ds.LeftWheel.EncoderState.CurrentReading;
 					_state.State.RightTicks = ds.RightWheel.EncoderState.CurrentReading;
 				});
@@ -74,6 +82,11 @@ namespace Brumba.WaiterStupid.Odometry
 		{
 			yield return _diffDrive.Get().Receive(ds =>
 			{
+                DC.Contract.Requires(ds.LeftWheel != null);
+                DC.Contract.Requires(ds.LeftWheel.EncoderState != null);
+                DC.Contract.Requires(ds.RightWheel != null);
+                DC.Contract.Requires(ds.RightWheel.EncoderState != null);
+
 				_state.State = _odometryCalc.UpdateOdometry(_state.State, (float)dt.TotalSeconds,
 															ds.LeftWheel.EncoderState.CurrentReading,
 															ds.RightWheel.EncoderState.CurrentReading);
@@ -86,6 +99,9 @@ namespace Brumba.WaiterStupid.Odometry
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
 		public void OnUpdateConstants(UpdateConstants updateConstantsRq) 
 		{
+            DC.Contract.Requires(updateConstantsRq != null);
+            DC.Contract.Requires(updateConstantsRq.Body != null);
+
 			_odometryCalc.Constants = _state.Constants = updateConstantsRq.Body;
 			updateConstantsRq.ResponsePort.Post(DefaultUpdateResponseType.Instance);
 		}
@@ -93,6 +109,9 @@ namespace Brumba.WaiterStupid.Odometry
         [ServiceHandler(ServiceHandlerBehavior.Teardown)]
         public void OnDropDown(DsspDefaultDrop dropDownRq)
         {
+            DC.Contract.Requires(dropDownRq != null);
+            DC.Contract.Requires(dropDownRq.Body != null);
+
             _timerFacade.Dispose();
             DefaultDropHandler(dropDownRq);
         }

@@ -4,7 +4,7 @@ using Microsoft.Dss.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 
-namespace Brumba.Utils
+namespace Brumba.DsspUtils
 {
 	public class DsspServiceExposing : DsspServiceBase
 	{

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Ccr.Core;
 using W3C.Soap;
 
-namespace Brumba.Utils
+namespace Brumba.DsspUtils
 {
     public static class To
     {

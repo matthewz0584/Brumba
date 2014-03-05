@@ -27,7 +27,7 @@ namespace Brumba.WaiterStupid.Tests
                     AngularRange = MathHelper.Pi,
                     MaxRange = 2f
                 },
-                zeroBeamAngle: -MathHelper.PiOver2,
+                zeroBeamAngle: 3 * MathHelper.PiOver2,
                 sigmaHit: 0.1f,
                 weightHit: 0.7f,
                 weightRandom: 0.3f
@@ -54,9 +54,6 @@ namespace Brumba.WaiterStupid.Tests
 
             Assert.That(_lfmm.BeamProbability(1f, 1, new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2)),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
-
-            Assert.That(_lfmm.BeamProbability(2f, 0, new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2)),
-                Is.EqualTo(1).Within(1e-5));
 
             Assert.That(_lfmm.BeamProbability(1f, 0, new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2)),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Math.Sqrt(2)) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
@@ -90,9 +87,9 @@ namespace Brumba.WaiterStupid.Tests
                 AngularRange = MathHelper.Pi,
                 MaxRange = 2f
             };
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0, -MathHelper.PiOver2).EqualsWithin(new Vector2(0, -1), 0.001));
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1, -MathHelper.PiOver2).EqualsWithin(new Vector2(1, 0), 0.001));
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2, -MathHelper.PiOver2).EqualsWithin(new Vector2(0, 1), 0.001));
+            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0, 3 * MathHelper.PiOver2).EqualsWithin(new Vector2(0, -1), 0.001));
+            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1, 3 * MathHelper.PiOver2).EqualsWithin(new Vector2(1, 0), 0.001));
+            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2, 3 * MathHelper.PiOver2).EqualsWithin(new Vector2(0, 1), 0.001));
         }
 
         [Test]
