@@ -20,7 +20,8 @@ namespace Brumba.WaiterStupid.Tests
 		public void TicksToAngularVelocity()
 		{
 			float deltaT = 2;
-			Assert.That(m_odometry.TicksToAngularVelocity(10, deltaT), Is.EqualTo(5 * m_odometry.Constants.RadiansPerTick).Within(1e-6));
+		    m_odometry.Constants.TicksPerRotation = 5;
+			Assert.That(m_odometry.TicksToAngularVelocity(10, deltaT), Is.EqualTo(5 * MathHelper.TwoPi / 5).Within(1e-6));
 		}
 
 		[Test]
