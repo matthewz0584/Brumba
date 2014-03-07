@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Brumba.Utils;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using Microsoft.Xna.Framework;
@@ -17,12 +18,25 @@ namespace Brumba.WaiterStupid.McLocalization
         public float WeightHit { get; private set; }
         public float WeightRandom { get; private set; }
 
+        [ContractInvariantMethod]
+        void ObjectInvariant()
+        {
+            Contract.Invariant(Map != null);
+            Contract.Invariant(RangefinderProperties != null);
+            Contract.Invariant(RangefinderProperties.MaxRange > 0);
+            Contract.Invariant(ZeroBeamAngle >= 0);
+            Contract.Invariant(ZeroBeamAngle < MathHelper.TwoPi);
+            Contract.Invariant(SigmaHit > 0);
+            Contract.Invariant(WeightHit >= 0);
+            Contract.Invariant(WeightRandom >= 0);
+            Contract.Invariant((WeightHit + WeightRandom).AlmostEqualInDecimalPlaces(1, 5));            
+        }
+
         public LikelihoodFieldMeasurementModel(OccupancyGrid map, RangefinderProperties rangefinderProperties, float zeroBeamAngle, float sigmaHit, float weightHit, float weightRandom)
         {
             Contract.Requires(map != null);
             Contract.Requires(rangefinderProperties != null);
             Contract.Requires(rangefinderProperties.MaxRange > 0);
-            Contract.Requires(map != null);
             Contract.Requires(zeroBeamAngle >= 0);
             Contract.Requires(zeroBeamAngle < MathHelper.TwoPi);
             Contract.Requires(sigmaHit > 0);
@@ -38,18 +52,22 @@ namespace Brumba.WaiterStupid.McLocalization
             WeightRandom = weightRandom;
         }
 
-        public float ScanProbability(IEnumerable<float> scan, Vector3 robotPose)
+        public float ScanLikelihood(IEnumerable<float> scan, Vector3 robotPose)
         {
             Contract.Requires(scan != null);
+            Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
+            Contract.Ensures(Contract.Result<float>() >= 0);
 
-            return scan.Select((zi, i) => zi == RangefinderProperties.MaxRange ? 1.0f : BeamProbability(zi, i, robotPose)).Aggregate(1f, (pi, p) => p * pi);
+            return scan.Select((zi, i) => zi == RangefinderProperties.MaxRange ? 1.0f : BeamLikelihood(zi, i, robotPose)).Aggregate(1f, (pi, p) => p * pi);
         }
 
-        public float BeamProbability(float zi, int i, Vector3 robotPose)
+        public float BeamLikelihood(float zi, int i, Vector3 robotPose)
         {
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= RangefinderProperties.MaxRange);
             Contract.Requires(i >= 0);
+            Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
+            Contract.Ensures(Contract.Result<float>() >= 0);
 
             return Vector2.Dot(
                 new Vector2(DensityHit(zi, i, robotPose), DensityRandom()),
@@ -61,6 +79,8 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= RangefinderProperties.MaxRange);
             Contract.Requires(i >= 0);
+            Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
+            Contract.Ensures(Contract.Result<float>() >= 0);
 
             return (float)new Normal(0, SigmaHit).Density(DistanceToNearestObstacle(BeamEndPointPosition(zi, i, robotPose)));
         }
@@ -68,6 +88,7 @@ namespace Brumba.WaiterStupid.McLocalization
         float DensityRandom()
         {
             Contract.Requires(RangefinderProperties.MaxRange > 0);
+            Contract.Ensures(Contract.Result<float>() >= 0);
 
             return 1f / RangefinderProperties.MaxRange;
         }
@@ -77,6 +98,7 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= RangefinderProperties.MaxRange);
             Contract.Requires(i >= 0);
+            Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
 
             return RobotToMapTransformation(RangefinderProperties.BeamToVectorInRobotTransformation(zi, i, ZeroBeamAngle), robotPose);
         }
@@ -88,28 +110,19 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public float DistanceToNearestObstacle(Vector2 position)
         {
-            Contract.Requires(position.X >= 0);
-            Contract.Requires(position.Y >= 0);
-            Contract.Requires(position.X < Map.Size.X * Map.CellSize);
-            Contract.Requires(position.Y < Map.Size.Y * Map.CellSize);
+            Contract.Requires(position.Between(new Vector2(), Map.SizeInMeters));
             Contract.Ensures(Contract.Result<float>() >= 0);
-            Contract.Ensures(Contract.Result<float>() <= Math.Sqrt(Map.Size.X * Map.Size.X + Map.Size.Y * Map.Size.Y) * Map.CellSize);
+            Contract.Ensures(Contract.Result<float>() <= Math.Sqrt(Map.SizeInCells.X * Map.SizeInCells.X + Map.SizeInCells.Y * Map.SizeInCells.Y) * Map.CellSize);
 
             return (Map.CellToPos(FindNearestOccupiedCell(Map.PosToCell(position))) - position).Length();
         }
 
         Point FindNearestOccupiedCell(Point cell)
         {
-            Contract.Requires(cell.X >= 0);
-            Contract.Requires(cell.Y >= 0);
-            Contract.Requires(cell.X < Map.Size.X);
-            Contract.Requires(cell.Y < Map.Size.Y);
-            Contract.Ensures(Contract.Result<Point>().X >= 0);
-            Contract.Ensures(Contract.Result<Point>().X < Map.Size.X);
-            Contract.Ensures(Contract.Result<Point>().Y >= 0);
-            Contract.Ensures(Contract.Result<Point>().Y < Map.Size.Y);
+            Contract.Requires(cell.Between(new Point(), Map.SizeInCells));
+            Contract.Ensures(Contract.Result<Point>().Between(new Point(), Map.SizeInCells));
 
-            return new GridSquareFringeGenerator(Map.Size).Generate(cell).First(p => Map[p]);
+            return new GridSquareFringeGenerator(Map.SizeInCells).Generate(cell).First(p => Map[p]);
         }
     }
 }

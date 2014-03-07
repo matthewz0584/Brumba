@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Assembly>
+  <Outcome Message="Detected call to method 'MathNet.Numerics.Precision.AlmostEqualInDecimalPlaces(System.Single,System.Single,System.Int32)' without [Pure] in contracts of method 'Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel.ObjectInvariant'." />
+  <Outcome Message="Detected call to method 'Microsoft.Xna.Framework.Vector2.Length' without [Pure] in contracts of method 'Brumba.WaiterStupid.McLocalization.RangefinderProperties.BeamToVectorInRobotTransformation(System.Single,System.Int32,System.Single)'." />
+  <Method Name="Brumba.WaiterStupid.McLocalization.OccupancyGrid.PosToCell(Microsoft.Xna.Framework.Vector2)" Hash="liXtI08p/bZJ86PIjd7AO5e2Cy4=">
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;Point&gt;().Between(new Point(), SizeInCells)" PrimaryILOffset="33" MethodILOffset="5b" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.OccupancyGrid.CellToPos(Microsoft.Xna.Framework.Point)" Hash="Lp5XYUW+x407j0IDGkmen/U9Eak=">
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;Vector2&gt;().Between(new Vector2(), SizeInMeters)" PrimaryILOffset="33" MethodILOffset="64" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.OccupancyGrid..ctor(System.Boolean[],System.Single)" Hash="YBGU2wrNRPwMs386DWd5Ph8AJn0=">
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: SizeInCells.X == occupancy.GetLength(1)" PrimaryILOffset="51" MethodILOffset="a4" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: SizeInCells.Y == occupancy.GetLength(0)" PrimaryILOffset="6a" MethodILOffset="a4" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.RangefinderProperties.BeamToVectorInRobotTransformation(System.Single,System.Int32,System.Single)" Hash="Ssrj7ZXeGbGMk2awvjtd+xDLJic=">
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;Vector2&gt;().Length().AlmostEqualInDecimalPlaces(zi, 5)" PrimaryILOffset="5e" MethodILOffset="83" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.GridSquareFringeGenerator.EnumerateCoords(System.Int32,System.Int32,System.Int32)" Hash="ivq36tOO1ezg2ai5tQIa/j4rQAA=">
+    <Outcome Kind="Informational" Outcome="Bottom" Message="Contract.Requires(((long)(around - radius) + (long)(radius * 2 + 1) - (long)(1)) &lt;= (long)(Int32.MaxValue));" PrimaryILOffset="0" MethodILOffset="0" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel.FindNearestOccupiedCell(Microsoft.Xna.Framework.Point)" Hash="f7zw78pJj00MSda8kNTtAkWvNCE=">
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: center.X &lt; GridSize.X" PrimaryILOffset="b6" MethodILOffset="53" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: center.Y &lt; GridSize.Y" PrimaryILOffset="f8" MethodILOffset="53" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: Any(source)" PrimaryILOffset="1e" MethodILOffset="64" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;Point&gt;().Between(new Point(), Map.SizeInCells)" PrimaryILOffset="3d" MethodILOffset="69" />
+    <Outcome Kind="Informational" Outcome="Bottom" Message="Contract.Requires(((Brumba.WaiterStupid.McLocalization.OccupancyGrid)((Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel)this).Map).SizeInCells.X &gt; 0);" PrimaryILOffset="43" MethodILOffset="0" />
+    <Outcome Kind="Informational" Outcome="Bottom" Message="Contract.Requires(((Brumba.WaiterStupid.McLocalization.OccupancyGrid)((Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel)this).Map).SizeInCells.Y &gt;= 0);" PrimaryILOffset="43" MethodILOffset="0" />
+    <Outcome Kind="Informational" Outcome="Bottom" Message="Contract.Requires(cell.X &gt;= 0);" PrimaryILOffset="43" MethodILOffset="0" />
+    <Outcome Kind="Informational" Outcome="Bottom" Message="Contract.Requires(cell.Y &gt;= 0);" PrimaryILOffset="43" MethodILOffset="0" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel.DistanceToNearestObstacle(Microsoft.Xna.Framework.Vector2)" Hash="jASAW+xdYXlrBefs+G9IRaSclRc=">
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: position.Between(new Vector2(), SizeInMeters)" PrimaryILOffset="15" MethodILOffset="a7" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: cell.Between(new Point(), Map.SizeInCells)" PrimaryILOffset="1a" MethodILOffset="ac" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: ((Brumba.WaiterStupid.McLocalization.OccupancyGrid)((Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel)this).Map).SizeInCells.X &gt; 0" PrimaryILOffset="0" MethodILOffset="ac" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: ((Brumba.WaiterStupid.McLocalization.OccupancyGrid)((Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel)this).Map).SizeInCells.Y &gt;= 0" PrimaryILOffset="0" MethodILOffset="ac" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: cell.X &gt;= 0" PrimaryILOffset="0" MethodILOffset="ac" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: cell.Y &gt;= 0" PrimaryILOffset="0" MethodILOffset="ac" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: cell.Between(new Point(), SizeInCells)" PrimaryILOffset="15" MethodILOffset="b1" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;float&gt;() &gt;= 0" PrimaryILOffset="2e" MethodILOffset="c4" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;float&gt;() &lt;= Math.Sqrt(Map.SizeInCells.X * Map.SizeInCells.X + Map.SizeInCells.Y * Map.SizeInCells.Y) * Map.CellSize" PrimaryILOffset="94" MethodILOffset="c4" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel.DensityHit(System.Single,System.Int32,Microsoft.Xna.Framework.Vector3)" Hash="tIfhadZZ3uRzZCEX/l6xs6Q5poc=">
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: robotPose.Between(new Vector3(), new Vector3(Map.SizeInMeters, 0))" PrimaryILOffset="56" MethodILOffset="89" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: position.Between(new Vector2(), Map.SizeInMeters)" PrimaryILOffset="1a" MethodILOffset="8e" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;float&gt;() &gt;= 0" PrimaryILOffset="6a" MethodILOffset="9a" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel.BeamLikelihood(System.Single,System.Int32,Microsoft.Xna.Framework.Vector3)" Hash="KwMXH4iOCwSTTSC6x4HYioQ2LQM=">
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: robotPose.Between(new Vector3(), new Vector3(Map.SizeInMeters, 0))" PrimaryILOffset="56" MethodILOffset="73" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;float&gt;() &gt;= 0" PrimaryILOffset="6a" MethodILOffset="99" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.LikelihoodFieldMeasurementModel.ScanLikelihood(System.Collections.Generic.IEnumerable&lt;System.Single,Microsoft.Xna.Framework.Vector3)" Hash="ASCOMvkpcwmHjBXDDkjGB135VnQ=">
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;float&gt;() &gt;= 0" PrimaryILOffset="5d" MethodILOffset="9b" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.ParticleFilter.Update(TParticle,TMeasurement)" Hash="vJM2EwxtqJZVRTAjIE3xCIvl9GE=">
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: weightedSamples.ToList().Count() &gt; 1" PrimaryILOffset="1a" MethodILOffset="a3" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: source != null" PrimaryILOffset="d" MethodILOffset="d5" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.OldValue(Particles.Count()) == Particles.Count()" PrimaryILOffset="7e" MethodILOffset="e9" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.McLocalization.ParticleFilter.WeighParticle(TMeasurement,TParticle)" Hash="mUYfVR74gFHRff3xfGn2asQ8pqc=">
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: value &gt;= 0" PrimaryILOffset="b" MethodILOffset="57" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;WeightedParticle&lt;TParticle&gt;&gt;().Particle.Equals(particle)" PrimaryILOffset="1e" MethodILOffset="5d" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.Odometry.OdometryCalculator.UpdateOdometry(Brumba.WaiterStupid.Odometry.OdometryState,System.Single,System.Int32,System.Int32)" Hash="QCWR8mq54flBhRqcGoK3UnXCCLI=">
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: Constants.TicksPerRotation &gt; 0" PrimaryILOffset="1b" MethodILOffset="9d" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: Constants.WheelRadius &gt; 0" PrimaryILOffset="12" MethodILOffset="ad" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: Constants.WheelBase &gt; 0" PrimaryILOffset="29" MethodILOffset="ad" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.TimerFacade.InternalTimerHandler(System.DateTime)" Hash="mmeqboFo9mGEphM9U0ATGU3EIac=">
+    <Outcome Kind="Nonnull" Outcome="Top" Message="Possibly calling a method on a null reference '((Brumba.WaiterStupid.TimerFacade)this).TickPort'" PrimaryILOffset="31" MethodILOffset="0" />
+    <Outcome Kind="Requires" Outcome="Top" Message="requires unproven: milliseconds &gt;= 0" PrimaryILOffset="d" MethodILOffset="66" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.Odometry.OdometryService.OnUpdateConstants(Brumba.WaiterStupid.Odometry.UpdateConstants)" Hash="SfH7HFW6utq4pdHV9oXhfVeLxY4=">
+    <Outcome Kind="Nonnull" Outcome="Top" Message="Possibly calling a method on a null reference 'this._state'" PrimaryILOffset="42" MethodILOffset="0" />
+  </Method>
+  <Method Name="Brumba.WaiterStupid.Odometry.OdometryService..ctor(Microsoft.Dss.ServiceModel.Dssp.DsspServiceCreationPort)" Hash="SoWFfiZGNLOZOsYb3VHLblQkLqE=">
+    <Outcome Kind="MissingPrecondition" Outcome="Top" Message="Missing precondition in an externally visible method. Consider adding Contract.Requires(0,1 &gt; 0); for parameter validation" PrimaryILOffset="1" MethodILOffset="0" />
+  </Method>
+</Assembly>

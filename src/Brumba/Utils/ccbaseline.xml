@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Assembly>
+  <Method Name="Brumba.Utils.CrossCountryGenerator.CalculateOffset(System.Single)" Hash="ZXp48l8akQ2o/KT231ZIcOiEdLc=">
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;float&gt;() &gt;= -unevenness / 2" PrimaryILOffset="1f" MethodILOffset="4d" />
+  </Method>
+  <Method Name="Brumba.Utils.CrossCountryGenerator.GenerateHeightData(System.Int32,System.Single)" Hash="jB61lprNfBhJLA57cAwbQfn4L7I=">
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;float[,]&gt;().GetLength(0) == size" PrimaryILOffset="34" MethodILOffset="bc" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;float[,]&gt;().GetLength(1) == size" PrimaryILOffset="47" MethodILOffset="bc" />
+  </Method>
+  <Method Name="Brumba.Utils.CrossCountryGenerator.GenerateBitmap(System.Single[])" Hash="1Ri9WG3akbaAOPZhgao6Knazzic=">
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;Bitmap&gt;().Size.Width == heightData.GetLength(0)" PrimaryILOffset="38" MethodILOffset="dc" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: Contract.Result&lt;Bitmap&gt;().Size.Height == heightData.GetLength(1)" PrimaryILOffset="59" MethodILOffset="dc" />
+  </Method>
+  <Method Name="Brumba.Utils.MathHelper2.AngleDifference(System.Single,System.Single)" Hash="mI9HBbLar9pK4pMOdmyQsh1+JzE=">
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: float.IsNaN(angle1) || float.IsNaN(angle2) || Contract.Result&lt;float&gt;() &gt;= 0" PrimaryILOffset="3e" MethodILOffset="8a" />
+    <Outcome Kind="Ensures" Outcome="Top" Message="ensures unproven: float.IsNaN(angle1) || float.IsNaN(angle2) || Contract.Result&lt;float&gt;() &lt;= TwoPi" PrimaryILOffset="65" MethodILOffset="8a" />
+  </Method>
+</Assembly>

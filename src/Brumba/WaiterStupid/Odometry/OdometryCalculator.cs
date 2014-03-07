@@ -52,6 +52,7 @@ namespace Brumba.WaiterStupid.Odometry
 		{
             DC.Contract.Requires(previousOdometry != null);
             DC.Contract.Requires(deltaT > 0);
+            DC.Contract.Requires(Constants.TicksPerRotation > 0);
             DC.Contract.Ensures(DC.Contract.Result<OdometryState>() != null);
             DC.Contract.Ensures(DC.Contract.Result<OdometryState>().LeftTicks == leftTicks);
             DC.Contract.Ensures(DC.Contract.Result<OdometryState>().RightTicks == rightTicks);

@@ -11,13 +11,16 @@ namespace Brumba.WaiterStupid
 {
 	public class TimerFacade : IDisposable
 	{
-		private readonly DsspServiceExposing _srv;
-		private readonly float _interval;
+		readonly DsspServiceExposing _srv;
+		readonly float _interval;
 
 		public TimerFacade(DsspServiceExposing srv, float interval)
 		{
             DC.Contract.Requires(srv != null);
             DC.Contract.Requires(interval > 0);
+            DC.Contract.Ensures(_srv != null);
+            DC.Contract.Ensures(_interval > 0);
+            DC.Contract.Ensures(TickPort != null);
 
 			_srv = srv;
 			_interval = interval;
@@ -48,6 +51,8 @@ namespace Brumba.WaiterStupid
         Port<Shutdown> _simTimerUnsubscribePort;
 		void StartSimulatedTimer(ServiceInfoType f)
 		{
+            DC.Contract.Requires(f != null);
+
 			var simTimer = _srv.ServiceForwarder<simTimerPxy.SimulatedTimerOperations>(new Uri(f.Service));
 		    _simTimerUnsubscribePort = new Port<Shutdown>();
 		    simTimer.Post(
@@ -63,6 +68,9 @@ namespace Brumba.WaiterStupid
 
 	    void SimulationTimerHandler(simTimerPxy.Update simTimerUpdate)
 	    {
+            DC.Contract.Requires(simTimerUpdate != null);
+            DC.Contract.Requires(simTimerUpdate.Body != null);
+
             if (_disposed)
                 return;
 	        TickPort.Post(IntervalToSpan(simTimerUpdate.Body.Delta));
@@ -82,6 +90,8 @@ namespace Brumba.WaiterStupid
 
 	    static TimeSpan IntervalToSpan(double interval)
 		{
+            DC.Contract.Requires(interval >= 0);
+
 			return new TimeSpan(0, 0, 0, 0, (int)(interval * 1000));
 		}
 	}

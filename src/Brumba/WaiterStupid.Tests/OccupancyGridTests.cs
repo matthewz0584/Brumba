@@ -16,10 +16,16 @@ namespace Brumba.WaiterStupid.Tests
 	    }
 
 	    [Test]
-	    public void Size()
+	    public void SizeInCells()
 	    {
-	        Assert.That(_grid.Size, Is.EqualTo(new Point(3, 2)));
+	        Assert.That(_grid.SizeInCells, Is.EqualTo(new Point(3, 2)));
 	    }
+
+        [Test]
+        public void SizeInMeters()
+        {
+            Assert.That(_grid.SizeInMeters, Is.EqualTo(new Vector2(3 * 0.2f, 2 * 0.2f)));
+        }
 
 	    [Test]
 	    public void PointIndexer()

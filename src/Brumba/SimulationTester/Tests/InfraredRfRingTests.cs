@@ -35,9 +35,9 @@ namespace Brumba.SimulationTester.Tests
                 Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingState ringState = null;
                 yield return Arbiter.Receive<Simulation.SimulatedInfraredRfRing.Proxy.SimulatedInfraredRfRingState>(false, Fixture.IfRfRingPort.Get(), rs => ringState = rs);
 
-                @return(MathHelper2.EqualsWithin(0.3, ringState.Distances[0], 0.05) &&
+                @return(ringState.Distances[0].EqualsRelatively(0.3f, 0.05f) &&
                         ringState.Distances[1] == 1 &&
-						MathHelper2.EqualsWithin(0.1, ringState.Distances[2], 0.05) &&
+                        ringState.Distances[2].EqualsRelatively(0.1f, 0.05f) &&
                         ringState.Distances[3] == 1);
             }
         }

@@ -7,26 +7,37 @@ namespace Brumba.WaiterStupid.McLocalization
 {
     public class ParticleFilter<TParticle, TMeasurement>
     {
-        private readonly IByWeightResampler _resampler;
+        readonly IByWeightResampler _resampler;
+
+        [ContractInvariantMethod]
+        void ObjectInvariant()
+        {
+            Contract.Invariant(PredictionModel != null);
+            Contract.Invariant(MeasurementModel != null);
+        }
 
         //particle, control, predicted particle
-        public Func<TParticle, TParticle, TParticle> PredictionModel { get; set; }
+        public Func<TParticle, TParticle, TParticle> PredictionModel { get; private set; }
         //particle, measurement, probability
-        public Func<TParticle, TMeasurement, float> MeasurementModel { get; set; }
+        public Func<TParticle, TMeasurement, float> MeasurementModel { get; private set; }
 
         public IEnumerable<TParticle> Particles { get; private set; }
 
-        public ParticleFilter(IByWeightResampler resampler)
+        public ParticleFilter(IByWeightResampler resampler, Func<TParticle, TParticle, TParticle> predictionModel, Func<TParticle, TMeasurement, float> measurementModel)
         {
             Contract.Requires(resampler != null);
+            Contract.Requires(predictionModel != null);
+            Contract.Requires(measurementModel != null);
 
             _resampler = resampler;
+            PredictionModel = predictionModel;
+            MeasurementModel = measurementModel;
         }
 
         public void Init(IEnumerable<TParticle> particles)
         {
             Contract.Requires(particles != null);
-            Contract.Requires(particles.Count() > 1);
+            Contract.Requires(particles.ToList().Count() > 1);
             Contract.Ensures(Particles != null);
             Contract.Ensures(Particles.Count() > 1);
 

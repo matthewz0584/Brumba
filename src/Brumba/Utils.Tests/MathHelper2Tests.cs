@@ -14,6 +14,7 @@ namespace Brumba.Utils.Tests
             Assert.That(MathHelper2.ToPositiveAngle(-(float)Math.PI / 4), Is.EqualTo((float)Math.PI * 7 / 4));
             Assert.That(MathHelper2.ToPositiveAngle(-(float)Math.PI), Is.EqualTo((float)Math.PI));
             Assert.That(MathHelper2.ToPositiveAngle(-6 * (float)Math.PI), Is.EqualTo(0).Within(1e-6));
+            Assert.That(MathHelper2.ToPositiveAngle(float.NaN), Is.EqualTo(float.NaN));
         }
 
         [Test]
@@ -27,31 +28,39 @@ namespace Brumba.Utils.Tests
 
             Assert.That(MathHelper2.AngleDifference((float)Math.PI * 7 / 4, (float)Math.PI / 4), Is.EqualTo((float)Math.PI / 2).Within(1e-5));
             Assert.That(MathHelper2.AngleDifference((float)Math.PI / 4, (float)Math.PI * 7 / 4), Is.EqualTo((float)Math.PI / 2).Within(1e-5));
+
+            Assert.That(MathHelper2.AngleDifference(float.NaN, float.NaN), Is.EqualTo(float.NaN));
         }
 
 		[Test]
-		public void DoubleEqualsWithin()
+		public void DoubleEqualsRelatively()
 		{
-			Assert.That(MathHelper2.EqualsWithin(10, 10, 0.1));
-			Assert.That(MathHelper2.EqualsWithin(10, 11, 0.1));
-			Assert.That(MathHelper2.EqualsWithin(10, 9, 0.1));
+			Assert.That(10f.EqualsRelatively(10, 0.1f));
+            Assert.That(11f.EqualsRelatively(10, 0.1f));
+			Assert.That(12f.EqualsRelatively(10, 0.1f), Is.False);
+			Assert.That(9f.EqualsRelatively(10, 0.1f));
+            Assert.That(8f.EqualsRelatively(10, 0.1f), Is.False);
 
-			Assert.That(MathHelper2.EqualsWithin(-10, -10, 0.1));
-			Assert.That(MathHelper2.EqualsWithin(-10, -11, 0.1));
-			Assert.That(MathHelper2.EqualsWithin(-10, -9, 0.1));
-			
-			Assert.That(MathHelper2.EqualsWithin(10, 12, 0.1), Is.False);
-			Assert.That(MathHelper2.EqualsWithin(10, 8, 0.1), Is.False);
+			Assert.That((-10f).EqualsRelatively(-10, 0.1f));            
+			Assert.That((-11f).EqualsRelatively(-10, 0.1f));
+            Assert.That((-12f).EqualsRelatively(-10, 0.1f), Is.False);
+			Assert.That((-9f).EqualsRelatively(-10, 0.1f));
+            Assert.That((-8f).EqualsRelatively(-10, 0.1f), Is.False);
+
+            Assert.That(10f.EqualsRelatively(10, 0));
+            Assert.That(10.000001f.EqualsRelatively(10, 0), Is.False);
 		}
 
 	    [Test]
-	    public void VectorEqualWithin()
+	    public void VectorEqualsRelatively()
 	    {
-		    Assert.That(new Vector2(10, 0).EqualsWithin(new Vector2(9, 0), 0.1));
-			Assert.That(new Vector2(10, 0).EqualsWithin(new Vector2(8, 0), 0.1), Is.False);
+            Assert.That(new Vector2(10, 0).EqualsRelatively(new Vector2(11, 0), 0.1));
+            Assert.That(new Vector2(10, 0).EqualsRelatively(new Vector2(12, 0), 0.1), Is.False);
+		    Assert.That(new Vector2(10, 0).EqualsRelatively(new Vector2(9, 0), 0.1));
+			Assert.That(new Vector2(10, 0).EqualsRelatively(new Vector2(8, 0), 0.1), Is.False);
 
-			Assert.That(new Vector2(3, 4).EqualsWithin(new Vector2(3.0f, 4.0f * 1.125f), 0.1));
-			Assert.That(new Vector2(3, 4).EqualsWithin(new Vector2(3.0f, 4.0f * 1.126f), 0.1), Is.False);
+			Assert.That(new Vector2(3, 4).EqualsRelatively(new Vector2(3.0f, 4.0f * 1.125f), 0.1));
+			Assert.That(new Vector2(3, 4).EqualsRelatively(new Vector2(3.0f, 4.0f * 1.126f), 0.1), Is.False);
 	    }
     }
 }

@@ -17,15 +17,16 @@ namespace Brumba.WaiterStupid.Tests
         {
             //0-1-2-3-4-5-6-7-8-9-10
             //    I   I     I    
-            var mcf = new ParticleFilter<double, bool>(new ResamplingWheel())
-                {
-                    PredictionModel = (sample, control) => sample + control,
-                    MeasurementModel =
-                        (sample, measurement) =>
-                        ((Math.Abs(2 - sample) < 0.1 || Math.Abs(4 - sample) < 0.1 || Math.Abs(7 - sample) < 0.1) && measurement) ||
-                        (!(Math.Abs(2 - sample) < 0.1 || Math.Abs(4 - sample) < 0.1 || Math.Abs(7 - sample) < 0.1) && !measurement)
-                            ? 1.0f : 0.0f,
-                };
+            var mcf = new ParticleFilter<double, bool>(
+                new ResamplingWheel(),
+                (sample, control) => sample + control,
+                (sample, measurement) =>
+                    ((Math.Abs(2 - sample) < 0.1 || Math.Abs(4 - sample) < 0.1 || Math.Abs(7 - sample) < 0.1) &&
+                     measurement) ||
+                    (!(Math.Abs(2 - sample) < 0.1 || Math.Abs(4 - sample) < 0.1 || Math.Abs(7 - sample) < 0.1) &&
+                     !measurement)
+                        ? 1.0f : 0.0f
+                );
 
             mcf.Init(new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(1000));
 
@@ -89,15 +90,13 @@ namespace Brumba.WaiterStupid.Tests
             //0-0-0
             //0-I-0
             //0-0-0
-            var mcf = new ParticleFilter<Vector2, int>(new ResamplingWheel())
-            {
-                PredictionModel = (sample, control) => sample + control,
-                MeasurementModel =
-                    (sample, measurement) =>
+            var mcf = new ParticleFilter<Vector2, int>(new ResamplingWheel()
+                , (sample, control) => sample + control,
+                (sample, measurement) =>
                     ((new Vector2(1, 1) - sample).Length() < 0.5 && measurement == 5) ||
                     ((new Vector2(1, 1) - sample).Length() >= 0.5 && measurement != 5)
-                        ? 1.0f : 0.0f,
-            };
+                        ? 1.0f : 0.0f
+                );
 
             var u1 = new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(50);
             var u2 = new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(50);

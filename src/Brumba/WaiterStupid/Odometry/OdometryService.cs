@@ -101,6 +101,7 @@ namespace Brumba.WaiterStupid.Odometry
 		{
             DC.Contract.Requires(updateConstantsRq != null);
             DC.Contract.Requires(updateConstantsRq.Body != null);
+            DC.Contract.Requires(updateConstantsRq.ResponsePort != null);
 
 			_odometryCalc.Constants = _state.Constants = updateConstantsRq.Body;
 			updateConstantsRq.ResponsePort.Post(DefaultUpdateResponseType.Instance);

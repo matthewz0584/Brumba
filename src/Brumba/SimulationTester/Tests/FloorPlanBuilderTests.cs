@@ -37,12 +37,12 @@ namespace Brumba.SimulationTester.Tests
 
 		public static bool EqualsWithin(Mrpm.Vector4 vec, MrpmProxy.Vector4 proxyVec, float tolerance)
 		{
-			return TypeConversion.ToXNA(vec).EqualsWithin(TypeConversion.ToXNA((Mrpm.Vector4)DssTypeHelper.TransformFromProxy(proxyVec)), tolerance);
+			return TypeConversion.ToXNA(vec).EqualsRelatively(TypeConversion.ToXNA((Mrpm.Vector4)DssTypeHelper.TransformFromProxy(proxyVec)), tolerance);
 		}
 
 		public static bool EqualsWithin(Mrpm.Vector3 vec, MrpmProxy.Vector3 proxyVec, float tolerance)
 		{
-			return TypeConversion.ToXNA(vec).EqualsWithin(TypeConversion.ToXNA((Mrpm.Vector3)DssTypeHelper.TransformFromProxy(proxyVec)), tolerance);
+			return TypeConversion.ToXNA(vec).EqualsRelatively(TypeConversion.ToXNA((Mrpm.Vector3)DssTypeHelper.TransformFromProxy(proxyVec)), tolerance);
 		}
 	}
 }

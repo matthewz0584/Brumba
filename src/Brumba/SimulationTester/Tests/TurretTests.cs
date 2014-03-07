@@ -38,7 +38,7 @@ namespace Brumba.SimulationTester.Tests
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
             {
                 var orientation = UIMath.QuaternionToEuler((Quaternion)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose.Orientation));
-                @return(MathHelper2.EqualsWithin(45, orientation.Y, 0.05));
+                @return(orientation.Y.EqualsRelatively(45, 0.05f));
                 yield break;
             }
         }

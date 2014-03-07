@@ -1,8 +1,10 @@
 using System;
+//using System.Diagnostics.CodeAnalysis;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DsspUtils
 {
@@ -20,23 +22,36 @@ namespace Brumba.DsspUtils
 		{
 		}
 
+        //[SuppressMessage("Microsoft.Contracts", "Ensures", Justification = "base.ServiceForwarder has no contract")]
 		public new T ServiceForwarder<T>(Uri uri) where T : IPort, IPortSet, new()
 		{
+            DC.Contract.Requires(uri != null);
+            DC.Contract.Ensures(DC.Contract.Result<T>() != null);
+
 			return base.ServiceForwarder<T>(uri);
 		}
 
-		public new T ServiceForwarder<T>(string uri) where T : IPort, IPortSet, new()
+        public new T ServiceForwarder<T>(string uri) where T : IPort, IPortSet, new()
 		{
+            DC.Contract.Requires(!string.IsNullOrEmpty(uri));
+            DC.Contract.Ensures(DC.Contract.Result<T>() != null);
+
 			return base.ServiceForwarder<T>(uri);
 		}
 
 		public new DsspResponsePort<ServiceInfoType> DirectoryQuery(string contract, TimeSpan expiration)
 		{
+            DC.Contract.Requires(!string.IsNullOrEmpty(contract));
+            DC.Contract.Ensures(DC.Contract.Result<DsspResponsePort<ServiceInfoType>>() != null);
+
 			return base.DirectoryQuery(contract, expiration);
 		}
 
 		public new Port<DateTime> TimeoutPort(int milliseconds)
 		{
+            DC.Contract.Requires(milliseconds >= 0);
+            DC.Contract.Ensures(DC.Contract.Result<Port<DateTime>>() != null);
+
 			return base.TimeoutPort(milliseconds);
 		}
 
@@ -47,11 +62,16 @@ namespace Brumba.DsspUtils
 
 		public void LogInfo(string text, params object[] args)
 		{
+            DC.Contract.Requires(text != null);
+            DC.Contract.Requires(args != null);
+
 			base.LogInfo(string.Format(text, args));
 		}
 
         public new void LogInfo(Enum category, params object[] args)
         {
+            DC.Contract.Requires(args != null);
+
             base.LogInfo(category, args);
         }
 	}
