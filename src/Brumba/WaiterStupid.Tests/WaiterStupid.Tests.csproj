@@ -81,7 +81,7 @@
     <Compile Include="LikelyhoodFieldMeasurementModelTests.cs" />
     <Compile Include="OccupancyGridTests.cs" />
     <Compile Include="ParticleFilterTests.cs" />
-    <Compile Include="OdometryTests.cs" />
+    <Compile Include="OdometryCalculatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

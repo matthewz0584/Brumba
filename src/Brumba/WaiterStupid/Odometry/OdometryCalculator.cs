@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
@@ -41,7 +40,7 @@ namespace Brumba.WaiterStupid.Odometry
 							   Constants.WheelRadius / Constants.WheelBase * (omegaR - omegaL));
 		}
 
-		public Vector3 CalculatePose(Vector3 oldPose, Vector3 velocity, float deltaT)
+		public Vector3 UpdatePose(Vector3 oldPose, Vector3 velocity, float deltaT)
 		{
             DC.Contract.Requires(deltaT >= 0);
 
@@ -62,51 +61,17 @@ namespace Brumba.WaiterStupid.Odometry
 				TicksToAngularVelocity(newOdometry.RightTicks - previousOdometry.RightTicks, deltaT),
 				TicksToAngularVelocity(newOdometry.LeftTicks - previousOdometry.LeftTicks, deltaT),
 				previousOdometry.Pose.Z);
-			newOdometry.Pose = CalculatePose(previousOdometry.Pose, 0.5f*(newOdometry.Velocity + previousOdometry.Velocity), deltaT);
+			newOdometry.Pose = UpdatePose(previousOdometry.Pose, 0.5f*(newOdometry.Velocity + previousOdometry.Velocity), deltaT);
 		    newOdometry.PoseDelta = newOdometry.Pose - previousOdometry.Pose;
 			return newOdometry;
 		}
-	}
 
-	[DataContract]
-	public class OdometryState
-	{
-		[DataMember]
-		public Vector3 Pose { get; set; }
-		[DataMember]
-		public Vector3 Velocity { get; set; }
-        [DataMember]
-        public Vector3 PoseDelta { get; set; }
-		[DataMember]
-		public int LeftTicks { get; set; }
-		[DataMember]
-		public int RightTicks { get; set; }
-	}
-
-	[DataContract]
-	public class OdometryConstants
-	{
-		[DataMember, DataMemberConstructor]
-		public int TicksPerRotation { get; set; }
-
-		[DataMember, DataMemberConstructor]
-		public float WheelRadius { get; set; }
-
-		[DataMember, DataMemberConstructor]
-		public float WheelBase { get; set; }
-
-		[DataMember, DataMemberConstructor]
-		public float DeltaT { get; set; }
-
-		public float RadiansPerTick
-		{
-		    get
-		    {
-                DC.Contract.Requires(TicksPerRotation > 0);
-                DC.Contract.Ensures(DC.Contract.Result<float>() > 0);
-
-		        return MathHelper.TwoPi / TicksPerRotation;
-		    }
-		}
+	    public Vector3 CalculatePoseDelta(float oldTheta, int leftTicks, int rightTicks)
+	    {
+            return new Vector3((rightTicks + leftTicks) / 2f * (float)Math.Cos(oldTheta),
+                               (rightTicks + leftTicks) / 2f * (float)Math.Sin(oldTheta),
+                               (rightTicks - leftTicks) / Constants.WheelBase) * 
+                   Constants.WheelRadius * Constants.RadiansPerTick;
+	    }
 	}
 }

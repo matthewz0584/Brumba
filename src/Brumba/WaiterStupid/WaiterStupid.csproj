@@ -119,6 +119,7 @@
     <Compile Include="McLocalization\RangefinderProperties.cs" />
     <Compile Include="McLocalization\ResamplingWheel.cs" />
     <Compile Include="McLocalization\GridSquareFringeGenerator.cs" />
+    <Compile Include="Odometry\OdometryState.cs" />
     <Compile Include="Odometry\OdometryTypes.cs" />
     <Compile Include="Odometry\OdometryCalculator.cs" />
     <Compile Include="Odometry\OdometryService.cs" />
