@@ -60,12 +60,10 @@ namespace Brumba.WaiterStupid.Tests
         }
 
         [Test]
-        [Ignore]
         public void BeamOutOfMap()
         {
-            //Если луч вылез за карту, игнорировать его
             //Если робот вылез за карту - проблема высшего уровня, фильтр не должен быть вызван с такой одометрией
-            Assert.Fail();
+            Assert.That(_lfmm.BeamLikelihood(1f, 2, new Vector3(1.5f, 1.5f, 0)), Is.EqualTo(1));
         }
 
         [Test]

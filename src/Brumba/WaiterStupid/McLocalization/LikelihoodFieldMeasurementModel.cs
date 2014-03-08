@@ -58,7 +58,8 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
             Contract.Ensures(Contract.Result<float>() >= 0);
 
-            return scan.Select((zi, i) => zi == RangefinderProperties.MaxRange ? 1.0f : BeamLikelihood(zi, i, robotPose)).Aggregate(1f, (pi, p) => p * pi);
+            return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
+                    Select(p => BeamLikelihood(p.zi, p.i, robotPose)).Aggregate(1f, (pi, p) => p * pi);
         }
 
         public float BeamLikelihood(float zi, int i, Vector3 robotPose)
@@ -69,20 +70,21 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
             Contract.Ensures(Contract.Result<float>() >= 0);
 
+            var beamEndPointPosition = BeamEndPointPosition(zi, i, robotPose);
+            if (!beamEndPointPosition.Between(new Vector2(), Map.SizeInMeters))
+                return 1;
+
             return Vector2.Dot(
-                new Vector2(DensityHit(zi, i, robotPose), DensityRandom()),
+                new Vector2(DensityHit(DistanceToNearestObstacle(beamEndPointPosition)), DensityRandom()),
                 new Vector2(WeightHit, WeightRandom));
         }
 
-        float DensityHit(float zi, int i, Vector3 robotPose)
+        float DensityHit(float distanceToObstacle)
         {
-            Contract.Requires(zi >= 0);
-            Contract.Requires(zi <= RangefinderProperties.MaxRange);
-            Contract.Requires(i >= 0);
-            Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
+            Contract.Requires(distanceToObstacle >= 0);
             Contract.Ensures(Contract.Result<float>() >= 0);
 
-            return (float)new Normal(0, SigmaHit).Density(DistanceToNearestObstacle(BeamEndPointPosition(zi, i, robotPose)));
+            return (float)new Normal(0, SigmaHit).Density(distanceToObstacle);
         }
 
         float DensityRandom()
