@@ -10,17 +10,13 @@ namespace Brumba.WaiterStupid.Odometry
         [DataMember]
         public Vector3 Pose { get; set; }
         [DataMember]
-        public Vector3 Velocity { get; set; }
-        [DataMember]
-        public Vector3 PoseDelta { get; set; }
-        [DataMember]
         public int LeftTicks { get; set; }
         [DataMember]
         public int RightTicks { get; set; }
     }
 
     [DataContract]
-    public class OdometryConstants
+    public struct OdometryConstants
     {
         [DataMember, DataMemberConstructor]
         public int TicksPerRotation { get; set; }
@@ -30,9 +26,6 @@ namespace Brumba.WaiterStupid.Odometry
 
         [DataMember, DataMemberConstructor]
         public float WheelBase { get; set; }
-
-        [DataMember, DataMemberConstructor]
-        public float DeltaT { get; set; }
 
         public float RadiansPerTick
         {

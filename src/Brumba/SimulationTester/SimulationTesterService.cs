@@ -234,7 +234,7 @@ namespace Brumba.SimulationTester
                 LogInfo(SimulationTesterLogCategory.TestServicesDropped, fixtureInfo.Name, testInfo.Name, i);
             }
 
-            LogInfo(SimulationTesterLogCategory.TestFinished, fixtureInfo.Name, testInfo.Name, i, (float)successful / i);
+            LogInfo(SimulationTesterLogCategory.TestFinished, fixtureInfo.Name, testInfo.Name, (float)successful / i);
             @return((float)successful / i);
         }
 

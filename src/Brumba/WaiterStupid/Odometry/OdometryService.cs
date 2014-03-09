@@ -27,8 +27,8 @@ namespace Brumba.WaiterStupid.Odometry
                     WheelRadius = 0.0762f,
                     TicksPerRotation = 36,
 					//TicksPerRotation = 144,
-					DeltaT = 0.1f
-				}
+				},
+                DeltaT = 0.1f
 			};
 
 		[ServicePort("/Odometry", AllowMultipleInstances = true)]
@@ -45,8 +45,8 @@ namespace Brumba.WaiterStupid.Odometry
 		{
             DC.Contract.Requires(creationPort != null);
 
-			_odometryCalc = new OdometryCalculator { Constants = _state.Constants };
-			_timerFacade = new TimerFacade(this, _state.Constants.DeltaT);
+			_odometryCalc = new OdometryCalculator(_state.Constants);
+			_timerFacade = new TimerFacade(this, _state.DeltaT);
 		}
 
 		protected override void Start()
@@ -69,7 +69,7 @@ namespace Brumba.WaiterStupid.Odometry
 					_state.State.RightTicks = ds.RightWheel.EncoderState.CurrentReading;
 				});
 
-			//To synchronize UpdateOdometry with UpdateConstants
+			//To synchronize UpdateOdometry with Replace
 			MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
 					Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateOdometry))));
 
@@ -87,24 +87,27 @@ namespace Brumba.WaiterStupid.Odometry
                 DC.Contract.Requires(ds.RightWheel != null);
                 DC.Contract.Requires(ds.RightWheel.EncoderState != null);
 
-				_state.State = _odometryCalc.UpdateOdometry(_state.State, (float)dt.TotalSeconds,
-															ds.LeftWheel.EncoderState.CurrentReading,
-															ds.RightWheel.EncoderState.CurrentReading);
                 //LogInfo("Delta t {0}", dt.TotalSeconds);
-				//LogInfo("Velocity Z {0}", _state.State.Velocity.Z);
 				//LogInfo("Left wheel {0}", ds.LeftWheel.EncoderState.CurrentReading);
+			    _state.State = _odometryCalc.UpdateOdometry(_state.State,
+                    ds.LeftWheel.EncoderState.CurrentReading, ds.RightWheel.EncoderState.CurrentReading);
 			});
 		}
 
-		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
-		public void OnUpdateConstants(UpdateConstants updateConstantsRq) 
+        //ToDo:!!!Not tested at all!!! Test or remove
+        [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+        public IEnumerator<ITask> OnReplace(Replace replaceRq) 
 		{
-            DC.Contract.Requires(updateConstantsRq != null);
-            DC.Contract.Requires(updateConstantsRq.Body != null);
-            DC.Contract.Requires(updateConstantsRq.ResponsePort != null);
+            DC.Contract.Requires(replaceRq != null);
+            DC.Contract.Requires(replaceRq.Body != null);
+            DC.Contract.Requires(replaceRq.ResponsePort != null);
+            DC.Contract.Requires(replaceRq.Body.DeltaT >= 0);
 
-			_odometryCalc.Constants = _state.Constants = updateConstantsRq.Body;
-			updateConstantsRq.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+            yield return To.Exec(() => _timerFacade.Reset(replaceRq.Body.DeltaT));
+		    _odometryCalc.Constants = replaceRq.Body.Constants;
+            _state = replaceRq.Body;
+
+			replaceRq.ResponsePort.Post(DefaultUpdateResponseType.Instance);
 		}
 
         [ServiceHandler(ServiceHandlerBehavior.Teardown)]

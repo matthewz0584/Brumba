@@ -12,7 +12,13 @@ namespace Brumba.WaiterStupid
 	public class TimerFacade : IDisposable
 	{
 		readonly DsspServiceExposing _srv;
-		readonly float _interval;
+		float _interval;
+
+	    [DC.ContractInvariantMethodAttribute]
+	    void ObjectInvariant()
+	    {
+	        DC.Contract.Invariant(_interval > 0);
+	    }
 
 		public TimerFacade(DsspServiceExposing srv, float interval)
 		{
@@ -39,9 +45,23 @@ namespace Brumba.WaiterStupid
 				directoryResponcePort.Receive(serviceInfo => StartSimulatedTimer(serviceInfo)));
 		}
 
+        //ToDo:!!!Not tested at all!!! Test or remove
+        public IEnumerator<ITask> Reset(float interval)
+        {
+            DC.Contract.Requires(interval > 0);
+            DC.Contract.Ensures(_interval > 0);
+
+            Dispose();
+            _disposed = false;
+            _interval = interval;
+            yield return To.Exec(Set);
+        }
+
 	    bool _disposed;
         public void Dispose()
         {
+            DC.Contract.Ensures(_disposed);
+
             _disposed = true;
             if (_simTimerUnsubscribePort != null)
                 _simTimerUnsubscribePort.Post(new Shutdown());
@@ -52,6 +72,7 @@ namespace Brumba.WaiterStupid
 		void StartSimulatedTimer(ServiceInfoType f)
 		{
             DC.Contract.Requires(f != null);
+            DC.Contract.Ensures(_simTimerUnsubscribePort != null);
 
 			var simTimer = _srv.ServiceForwarder<simTimerPxy.SimulatedTimerOperations>(new Uri(f.Service));
 		    _simTimerUnsubscribePort = new Port<Shutdown>();

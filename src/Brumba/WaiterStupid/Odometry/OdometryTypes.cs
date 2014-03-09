@@ -19,10 +19,13 @@ namespace Brumba.WaiterStupid.Odometry
 
 		[DataMember]
 		public OdometryConstants Constants { get; set; }
+
+        [DataMember]
+        public float DeltaT { get; set; }
 	}
 
 	[ServicePort]
-	public class OdometryOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, UpdateConstants>
+	public class OdometryOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Replace>
 	{
 	}
 
@@ -43,7 +46,7 @@ namespace Brumba.WaiterStupid.Odometry
 		}
 	}
 
-	public class UpdateConstants : Update<OdometryConstants, PortSet<DefaultUpdateResponseType, Fault>>
+    public class Replace : Replace<OdometryServiceState, PortSet<DefaultUpdateResponseType, Fault>>
 	{
 	}
 }
