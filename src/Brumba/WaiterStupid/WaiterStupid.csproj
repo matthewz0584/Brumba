@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileLogHandler.cs" />
+    <Compile Include="McLocalization\ParticleFilterInterfaces.cs" />
     <Compile Include="McLocalization\LikelihoodFieldMeasurementModel.cs" />
     <Compile Include="McLocalization\OccupancyGrid.cs" />
     <Compile Include="McLocalization\ParticleFilter.cs" />

@@ -17,16 +17,16 @@ namespace Brumba.WaiterStupid.Tests
         {
             //0-1-2-3-4-5-6-7-8-9-10
             //    I   I     I    
-            var mcf = new ParticleFilter<double, bool>(
+            var mcf = new ParticleFilter<double, bool, double>(
                 new ResamplingWheel(),
-                (sample, control) => sample + control,
-                (sample, measurement) =>
+                PredictionModel<double, double>.FromFunctor((sample, control) => sample + control),
+                MeasurementModel<double, bool>.FromFunctor((sample, measurement) =>
                     ((Math.Abs(2 - sample) < 0.1 || Math.Abs(4 - sample) < 0.1 || Math.Abs(7 - sample) < 0.1) &&
                      measurement) ||
                     (!(Math.Abs(2 - sample) < 0.1 || Math.Abs(4 - sample) < 0.1 || Math.Abs(7 - sample) < 0.1) &&
                      !measurement)
                         ? 1.0f : 0.0f
-                );
+                ));
 
             mcf.Init(new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(1000));
 
@@ -90,13 +90,13 @@ namespace Brumba.WaiterStupid.Tests
             //0-0-0
             //0-I-0
             //0-0-0
-            var mcf = new ParticleFilter<Vector2, int>(new ResamplingWheel()
-                , (sample, control) => sample + control,
-                (sample, measurement) =>
+            var mcf = new ParticleFilter<Vector2, int, Vector2>(new ResamplingWheel(),
+                PredictionModel<Vector2, Vector2>.FromFunctor((sample, control) => sample + control),
+                MeasurementModel<Vector2, int>.FromFunctor((sample, measurement) =>
                     ((new Vector2(1, 1) - sample).Length() < 0.5 && measurement == 5) ||
                     ((new Vector2(1, 1) - sample).Length() >= 0.5 && measurement != 5)
                         ? 1.0f : 0.0f
-                );
+                ));
 
             var u1 = new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(50);
             var u2 = new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(50);
@@ -107,29 +107,61 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(mcf.Particles.Count(), Is.EqualTo(2500));
             Assert.That(mcf.Particles.Count(s => (new Vector2(1, 1) - s).Length() < 0.5), Is.EqualTo(2500));
         }
+
+        class PredictionModel<TParticle, TControl> : IPredictionModel<TParticle, TControl>
+        {
+            Func<TParticle, TControl, TParticle> _f;
+
+            public TParticle PredictParticleState(TParticle particle, TControl control)
+            {
+                return _f(particle, control);
+            }
+
+            public static PredictionModel<TParticle, TControl> FromFunctor(
+                Func<TParticle, TControl, TParticle> f)
+            {
+                return new PredictionModel<TParticle, TControl> { _f = f };
+            }
+        }
+
+        class MeasurementModel<TParticle, TMeasurement> : IMeasurementModel<TParticle, TMeasurement>
+        {
+            Func<TParticle, TMeasurement, float> _f;
+
+            public float ComputeMeasurementLikelihood(TParticle particle, TMeasurement measurement)
+            {
+                return _f(particle, measurement);
+            }
+
+            public static MeasurementModel<TParticle, TMeasurement> FromFunctor(
+                Func<TParticle, TMeasurement, float> f)
+            {
+                return new MeasurementModel<TParticle, TMeasurement> { _f = f };
+            }
+        }
     }
 
-    //[TestFixture]
-    //public class McLrfLocalizatorTests
-    //{
-    //    [Test]
-    //    public void Acceptance()
-    //    {
-    //        var mcl = new McLrfLocalizator
-    //            {
-    //                Map = new Map(),
-    //                LrfProperties = new LrfProperties
-    //                    {
-    //                        ZeroBeamAngle = Math.PI / 2,
-    //                        AngularResolution = Math.PI / 2,
-    //                        MaxRange = 10
-    //                    },
-    //                InitialPose = new Pose()
-    //            };
+    [TestFixture]
+    public class McLrfLocalizatorTests
+    {
+        //[Test]
+        //public void Acceptance()
+        //{
+        //    var mcl = new McLrfLocalizator
+        //        {
+        //            Map = new Map(),
+        //            LrfProperties = new LrfProperties
+        //                {
+        //                    ZeroBeamAngle = Math.PI / 2,
+        //                    AngularResolution = Math.PI / 2,
+        //                    MaxRange = 10
+        //                },
+        //            InitialPose = new Pose()
+        //        };
 
-    //        mcl.Update(poseDelta: new Pose(1, 0, 0), measurements: new LrfMeasurement { 1})
-    //    }
-    //}
+        //    mcl.Update(poseDelta: new Pose(1, 0, 0), measurements: new LrfMeasurement { 1})
+        //}
+    }
 
     //[DataContract]
     //public class Velocity : DenseVector

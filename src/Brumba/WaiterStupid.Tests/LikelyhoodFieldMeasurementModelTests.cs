@@ -38,7 +38,7 @@ namespace Brumba.WaiterStupid.Tests
         public void ScanLikelihood()
         {
             Assert.That(
-                _lfmm.ScanLikelihood(new[] {2f, 1, 1}, new Vector3(1.5f, 1.5f, MathHelper.Pi*3/2)),
+                _lfmm.ComputeMeasurementLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi*3/2), new[] {2f, 1, 1}),
                 Is.EqualTo(
                     Math.Pow(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom / _lfmm.RangefinderProperties.MaxRange, 2)).Within(1e-5));
         }
@@ -46,16 +46,16 @@ namespace Brumba.WaiterStupid.Tests
         [Test]
         public void BeamLikelihood()
         {
-            Assert.That(_lfmm.BeamLikelihood(1f, 2, new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2)),
+            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 1f, 2),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(0.5f, 2, new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2)),
+            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 0.5f, 2),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0.5) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(1f, 1, new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2)),
+            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 1f, 1),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(1f, 0, new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2)),
+            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 1f, 0),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Math.Sqrt(2)) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
         }
 
@@ -63,7 +63,7 @@ namespace Brumba.WaiterStupid.Tests
         public void BeamOutOfMap()
         {
             //Если робот вылез за карту - проблема высшего уровня, фильтр не должен быть вызван с такой одометрией
-            Assert.That(_lfmm.BeamLikelihood(1f, 2, new Vector3(1.5f, 1.5f, 0)), Is.EqualTo(1));
+            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, 0), 1f, 2), Is.EqualTo(1));
         }
 
         [Test]

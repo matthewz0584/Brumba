@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace Brumba.WaiterStupid.McLocalization
 {
-    public class LikelihoodFieldMeasurementModel
+    public class LikelihoodFieldMeasurementModel : IMeasurementModel<Vector3, IEnumerable<float>>
     {
         public OccupancyGrid Map { get; private set; }
         public RangefinderProperties RangefinderProperties { get; private set; }
@@ -52,17 +52,16 @@ namespace Brumba.WaiterStupid.McLocalization
             WeightRandom = weightRandom;
         }
 
-        public float ScanLikelihood(IEnumerable<float> scan, Vector3 robotPose)
+        public float ComputeMeasurementLikelihood(Vector3 robotPose, IEnumerable<float> scan)
         {
-            Contract.Requires(scan != null);
-            Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
-            Contract.Ensures(Contract.Result<float>() >= 0);
+            Contract.Assume(scan != null);
+            Contract.Assume(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
 
             return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
-                    Select(p => BeamLikelihood(p.zi, p.i, robotPose)).Aggregate(1f, (pi, p) => p * pi);
+                    Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
         }
 
-        public float BeamLikelihood(float zi, int i, Vector3 robotPose)
+        public float BeamLikelihood(Vector3 robotPose, float zi, int i)
         {
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= RangefinderProperties.MaxRange);

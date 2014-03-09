@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Brumba.WaiterStupid.McLocalization
 {
-    public class ParticleFilter<TParticle, TMeasurement>
+    public class ParticleFilter<TParticle, TMeasurement, TControl>
     {
         readonly IByWeightResampler _resampler;
 
@@ -16,14 +16,13 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Invariant(MeasurementModel != null);
         }
 
-        //particle, control, predicted particle
-        public Func<TParticle, TParticle, TParticle> PredictionModel { get; private set; }
-        //particle, measurement, probability
-        public Func<TParticle, TMeasurement, float> MeasurementModel { get; private set; }
+        public IPredictionModel<TParticle, TControl> PredictionModel { get; private set; }
+
+        public IMeasurementModel<TParticle, TMeasurement> MeasurementModel { get; private set; }
 
         public IEnumerable<TParticle> Particles { get; private set; }
 
-        public ParticleFilter(IByWeightResampler resampler, Func<TParticle, TParticle, TParticle> predictionModel, Func<TParticle, TMeasurement, float> measurementModel)
+        public ParticleFilter(IByWeightResampler resampler, IPredictionModel<TParticle, TControl> predictionModel, IMeasurementModel<TParticle, TMeasurement> measurementModel)
         {
             Contract.Requires(resampler != null);
             Contract.Requires(predictionModel != null);
@@ -44,7 +43,7 @@ namespace Brumba.WaiterStupid.McLocalization
             Particles = particles.ToList();
         }
 
-        public void Update(TParticle control, TMeasurement measurement)
+        public void Update(TControl control, TMeasurement measurement)
         {
             Contract.Requires(Particles != null);
             Contract.Requires(Particles.Count() > 1);
@@ -53,7 +52,7 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Ensures(Contract.OldValue(Particles.Count()) == Particles.Count());
 
             var weightedParticles = Particles.
-                Select(p => WeighParticle(measurement, PredictionModel(p, control)));
+                Select(p => WeighParticle(measurement, PredictionModel.PredictParticleState(p, control)));
             Particles = _resampler.Resample(weightedParticles).
                 Cast<WeightedParticle<TParticle>>().Select(ws => ws.Particle).Take(Particles.Count()).ToList();
         }
@@ -66,7 +65,7 @@ namespace Brumba.WaiterStupid.McLocalization
             return new WeightedParticle<TParticle>
                 {
                     Particle = particle,
-                    Weight = MeasurementModel(particle, measurement)
+                    Weight = MeasurementModel.ComputeMeasurementLikelihood(particle, measurement)
                 };
         }
     }
