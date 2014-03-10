@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:odometryservice="http://brumba.ru/contracts/2013/11/odometryservice.html" xmlns:simulatedtimer="http://brumba.ru/contracts/2012/10/simulatedtimer.html" xmlns:this="urn:uuid:dec0b401-b750-45db-8990-7ec7a8df5c91" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedlrf="http://brumba.ru/contracts/2013/11/simulatedlrf.html" xmlns:simpledashboard="http://schemas.microsoft.com/robotics/2006/01/simpledashboard.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:odometryservice="http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html" xmlns:simulatedtimer="http://brumba.ru/contracts/2012/10/simulatedtimer.html" xmlns:this="urn:uuid:dec0b401-b750-45db-8990-7ec7a8df5c91" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:environmentbuilder="http://brumba.ru/contracts/2012/10/environmentbuilder.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedlrf="http://brumba.ru/contracts/2013/11/simulatedlrf.html" xmlns:simpledashboard="http://schemas.microsoft.com/robotics/2006/01/simpledashboard.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
@@ -32,7 +32,7 @@
       <Name>this:SimulatedLaserRangeFinder</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2013/11/odometryservice.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
           <dssp:Contract>http://schemas.microsoft.com/robotics/2006/05/drive.html</dssp:Contract>

@@ -55,7 +55,6 @@ namespace Brumba.WaiterStupid.McLocalization
         public float ComputeMeasurementLikelihood(Vector3 robotPose, IEnumerable<float> scan)
         {
             Contract.Assume(scan != null);
-            Contract.Assume(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
 
             return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
                     Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
@@ -66,11 +65,10 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= RangefinderProperties.MaxRange);
             Contract.Requires(i >= 0);
-            Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
             Contract.Ensures(Contract.Result<float>() >= 0);
 
             var beamEndPointPosition = BeamEndPointPosition(zi, i, robotPose);
-            if (!beamEndPointPosition.Between(new Vector2(), Map.SizeInMeters))
+            if (!Map.Covers(beamEndPointPosition))
                 return 1;
 
             return Vector2.Dot(
@@ -99,7 +97,6 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= RangefinderProperties.MaxRange);
             Contract.Requires(i >= 0);
-            Contract.Requires(new Vector2(robotPose.X, robotPose.Y).Between(new Vector2(), Map.SizeInMeters));
 
             return RobotToMapTransformation(RangefinderProperties.BeamToVectorInRobotTransformation(zi, i, ZeroBeamAngle), robotPose);
         }
@@ -111,7 +108,7 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public float DistanceToNearestObstacle(Vector2 position)
         {
-            Contract.Requires(position.Between(new Vector2(), Map.SizeInMeters));
+            Contract.Requires(Map.Covers(position));
             Contract.Ensures(Contract.Result<float>() >= 0);
             Contract.Ensures(Contract.Result<float>() <= Math.Sqrt(Map.SizeInCells.X * Map.SizeInCells.X + Map.SizeInCells.Y * Map.SizeInCells.Y) * Map.CellSize);
 
@@ -120,8 +117,8 @@ namespace Brumba.WaiterStupid.McLocalization
 
         Point FindNearestOccupiedCell(Point cell)
         {
-            Contract.Requires(cell.Between(new Point(), Map.SizeInCells));
-            Contract.Ensures(Contract.Result<Point>().Between(new Point(), Map.SizeInCells));
+            Contract.Requires(Map.Covers(cell));
+            Contract.Ensures(Map.Covers(Contract.Result<Point>()));
 
             return new GridSquareFringeGenerator(Map.SizeInCells).Generate(cell).First(p => Map[p]);
         }

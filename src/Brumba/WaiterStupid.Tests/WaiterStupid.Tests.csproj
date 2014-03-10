@@ -80,6 +80,7 @@
     <Compile Include="GridSquareFringeGeneratorTests.cs" />
     <Compile Include="LikelyhoodFieldMeasurementModelTests.cs" />
     <Compile Include="OccupancyGridTests.cs" />
+    <Compile Include="OdometryMotionModelTests.cs" />
     <Compile Include="ParticleFilterTests.cs" />
     <Compile Include="OdometryCalculatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

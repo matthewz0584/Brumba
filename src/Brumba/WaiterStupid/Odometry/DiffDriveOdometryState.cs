@@ -5,7 +5,7 @@ using DC = System.Diagnostics.Contracts;
 namespace Brumba.WaiterStupid.Odometry
 {
     [DataContract]
-    public class OdometryState
+    public class DiffDriveOdometryState
     {
         [DataMember]
         public Vector3 Pose { get; set; }
@@ -16,7 +16,7 @@ namespace Brumba.WaiterStupid.Odometry
     }
 
     [DataContract]
-    public struct OdometryConstants
+    public struct DiffDriveOdometryConstants
     {
         [DataMember, DataMemberConstructor]
         public int TicksPerRotation { get; set; }

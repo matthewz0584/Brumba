@@ -97,5 +97,10 @@ namespace Brumba.Utils
             return me.X >= lower.X && me.Y >= lower.Y &&
                 upper.X > me.X && upper.Y > me.Y;
         }
+
+        public static Vector2 ExtractVector2(this Vector3 v)
+        {
+            return new Vector2(v.X, v.Y);
+        }
     }
 }

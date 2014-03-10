@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:odometryservice="http://brumba.ru/contracts/2013/11/odometryservice.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:5cc643bc-c014-497a-8920-d441ec807a56" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:odometryservice="http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:5cc643bc-c014-497a-8920-d441ec807a56" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html</dssp:Contract>
@@ -15,7 +15,7 @@
       <Name>this:SimulatedReferencePlatformRobot</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2013/11/odometryservice.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html</dssp:Contract>
       <dssp:Service>http://localhost:80/odometry@</dssp:Service>
       <dssp:PartnerList>
         <dssp:Partner>

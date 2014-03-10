@@ -29,9 +29,19 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             get
             {
-                Contract.Requires(cell.Between(new Point(), SizeInCells));
+                Contract.Requires(Covers(cell));
 
                 return _occupancy[cell.Y, cell.X];
+            }
+        }
+
+        public bool this[Vector2 position]
+        {
+            get
+            {
+                Contract.Requires(Covers(position));
+
+                return this[PosToCell(position)];
             }
         }
 
@@ -52,18 +62,30 @@ namespace Brumba.WaiterStupid.McLocalization
 
 	    public Vector2 CellToPos(Point cell)
 		{
-            Contract.Requires(cell.Between(new Point(), SizeInCells));
-            Contract.Ensures(Contract.Result<Vector2>().Between(new Vector2(), SizeInMeters));
+            Contract.Requires(Covers(cell));
+            Contract.Ensures(Covers(Contract.Result<Vector2>()));
 
 			return new Vector2(cell.X + 0.5f, cell.Y + 0.5f) * CellSize;
 		}
 
 		public Point PosToCell(Vector2 position)
 		{
-            Contract.Requires(position.Between(new Vector2(), SizeInMeters));
-            Contract.Ensures(Contract.Result<Point>().Between(new Point(), SizeInCells));
+            Contract.Requires(Covers(position));
+            Contract.Ensures(Covers(Contract.Result<Point>()));
 
 			return new Point((int)(position.X / CellSize), (int)(position.Y / CellSize));
 		}
+
+	    [Pure]
+        public bool Covers(Vector2 position)
+	    {
+	        return position.Between(new Vector2(), SizeInMeters);
+	    }
+
+        [Pure]
+        public bool Covers(Point cell)
+        {
+            return cell.Between(new Point(), SizeInCells);
+        }
 	}
 }

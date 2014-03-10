@@ -20,14 +20,14 @@ namespace Brumba.SimulationTester.Tests
 	{
 		public SimulationTesterService TesterService { get; private set; }
 		public Microsoft.Robotics.Services.Drive.Proxy.DriveOperations RefPlDrivePort { get; private set; }
-		public WaiterStupid.Odometry.Proxy.OdometryOperations OdometryPort { get; set; }
+		public WaiterStupid.Odometry.Proxy.DiffDriveOdometryOperations OdometryPort { get; set; }
 
 		[SetUp]
 		public void SetUp(SimulationTesterService testerService)
 		{
 			TesterService = testerService;
 			RefPlDrivePort = testerService.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
-			OdometryPort = testerService.ForwardTo<WaiterStupid.Odometry.Proxy.OdometryOperations>("odometry@");
+			OdometryPort = testerService.ForwardTo<WaiterStupid.Odometry.Proxy.DiffDriveOdometryOperations>("odometry@");
 		}
 
 		[SimTest(8)]

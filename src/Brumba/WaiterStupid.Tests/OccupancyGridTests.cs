@@ -28,7 +28,7 @@ namespace Brumba.WaiterStupid.Tests
         }
 
 	    [Test]
-	    public void PointIndexer()
+	    public void CellIndexer()
 	    {
             Assert.That(_grid[new Point(0, 0)], Is.False);
             Assert.That(_grid[new Point(1, 0)], Is.True);
@@ -38,6 +38,13 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(_grid[new Point(1, 1)], Is.False);
             Assert.That(_grid[new Point(2, 1)], Is.True);
 	    }
+
+        [Test]
+        public void PositionIndexer()
+        {
+            Assert.That(_grid[new Vector2(0.1f, 0.1f)], Is.False);
+            Assert.That(_grid[new Vector2(0.3f, 0.1f)], Is.True);
+        }
 
 	    [Test]
 	    public void PosToCell()
@@ -60,5 +67,25 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(_grid.CellToPos(new Point(0, 1)), Is.EqualTo(new Vector2(0.1f, 0.3f)));
             Assert.That(_grid.CellToPos(new Point(1, 1)), Is.EqualTo(new Vector2(0.3f, 0.3f)));
         }
+
+	    [Test]
+	    public void Covers()
+	    {
+	        Assert.That(_grid.Covers(new Vector2()));
+            Assert.That(_grid.Covers(new Vector2() - new Vector2(float.Epsilon, float.Epsilon)), Is.False);
+
+            Assert.That(_grid.Covers(new Vector2(0.6f, 0.4f) - new Vector2(1e-5f, 1e-5f)));
+            Assert.That(_grid.Covers(new Vector2(0.6f, 0.4f)), Is.False);
+
+            Assert.That(_grid.Covers(new Vector2(0.3f, 0.3f)));
+
+            Assert.That(_grid.Covers(new Point()));
+            Assert.That(_grid.Covers(new Point(-1, -1)), Is.False);
+
+            Assert.That(_grid.Covers(new Point(_grid.SizeInCells.X - 1, _grid.SizeInCells.Y - 1)));
+            Assert.That(_grid.Covers(_grid.SizeInCells), Is.False);
+
+            Assert.That(_grid.Covers(new Point(1, 1)));
+	    }
 	}
 }

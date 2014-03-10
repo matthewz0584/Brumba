@@ -13,13 +13,13 @@ namespace Brumba.WaiterStupid.Odometry
 	[Contract(Contract.Identifier)]
 	[DisplayName("Brumba Differential Drive Odometry")]
 	[Description("no description provided")]
-	public class OdometryService : DsspServiceExposing
+	public class DiffDriveOdometryService : DsspServiceExposing
 	{
 		[ServiceState]
-		OdometryServiceState _state = new OdometryServiceState
+		DiffDriveOdometryServiceState _state = new DiffDriveOdometryServiceState
 			{
-				State = new OdometryState(),
-				Constants = new OdometryConstants
+				State = new DiffDriveOdometryState(),
+				Constants = new DiffDriveOdometryConstants
 				{
                     //WheelBase = 0.406f,
                     WheelBase = 0.3033f,
@@ -32,20 +32,20 @@ namespace Brumba.WaiterStupid.Odometry
 			};
 
 		[ServicePort("/Odometry", AllowMultipleInstances = true)]
-		OdometryOperations _mainPort = new OdometryOperations();
+		DiffDriveOdometryOperations _mainPort = new DiffDriveOdometryOperations();
 
 		[Partner("DifferentialDrive", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		DriveOperations _diffDrive = new DriveOperations();
 
-	    readonly OdometryCalculator _odometryCalc;
+	    readonly DiffDriveOdometryCalculator _diffDriveOdometryCalc;
 		readonly TimerFacade _timerFacade;
 
-		public OdometryService(DsspServiceCreationPort creationPort)
+		public DiffDriveOdometryService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
             DC.Contract.Requires(creationPort != null);
 
-			_odometryCalc = new OdometryCalculator(_state.Constants);
+			_diffDriveOdometryCalc = new DiffDriveOdometryCalculator(_state.Constants);
 			_timerFacade = new TimerFacade(this, _state.DeltaT);
 		}
 
@@ -89,7 +89,7 @@ namespace Brumba.WaiterStupid.Odometry
 
                 //LogInfo("Delta t {0}", dt.TotalSeconds);
 				//LogInfo("Left wheel {0}", ds.LeftWheel.EncoderState.CurrentReading);
-			    _state.State = _odometryCalc.UpdateOdometry(_state.State,
+			    _state.State = _diffDriveOdometryCalc.UpdateOdometry(_state.State,
                     ds.LeftWheel.EncoderState.CurrentReading, ds.RightWheel.EncoderState.CurrentReading);
 			});
 		}
@@ -104,7 +104,7 @@ namespace Brumba.WaiterStupid.Odometry
             DC.Contract.Requires(replaceRq.Body.DeltaT >= 0);
 
             yield return To.Exec(() => _timerFacade.Reset(replaceRq.Body.DeltaT));
-		    _odometryCalc.Constants = replaceRq.Body.Constants;
+		    _diffDriveOdometryCalc.Constants = replaceRq.Body.Constants;
             _state = replaceRq.Body;
 
 			replaceRq.ResponsePort.Post(DefaultUpdateResponseType.Instance);
