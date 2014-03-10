@@ -141,28 +141,6 @@ namespace Brumba.WaiterStupid.Tests
         }
     }
 
-    [TestFixture]
-    public class McLrfLocalizatorTests
-    {
-        //[Test]
-        //public void Acceptance()
-        //{
-        //    var mcl = new McLrfLocalizator
-        //        {
-        //            Map = new Map(),
-        //            LrfProperties = new LrfProperties
-        //                {
-        //                    ZeroBeamAngle = Math.PI / 2,
-        //                    AngularResolution = Math.PI / 2,
-        //                    MaxRange = 10
-        //                },
-        //            InitialPose = new Pose()
-        //        };
-
-        //    mcl.Update(poseDelta: new Pose(1, 0, 0), measurements: new LrfMeasurement { 1})
-        //}
-    }
-
     //[DataContract]
     //public class Velocity : DenseVector
     //{

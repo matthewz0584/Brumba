@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using Brumba.Utils;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using Microsoft.Xna.Framework;
@@ -13,7 +12,6 @@ namespace Brumba.WaiterStupid.McLocalization
     {
         public OccupancyGrid Map { get; private set; }
         public RangefinderProperties RangefinderProperties { get; private set; }
-        public float ZeroBeamAngle { get; private set; }
         public float SigmaHit { get; private set; }
         public float WeightHit { get; private set; }
         public float WeightRandom { get; private set; }
@@ -22,23 +20,17 @@ namespace Brumba.WaiterStupid.McLocalization
         void ObjectInvariant()
         {
             Contract.Invariant(Map != null);
-            Contract.Invariant(RangefinderProperties != null);
             Contract.Invariant(RangefinderProperties.MaxRange > 0);
-            Contract.Invariant(ZeroBeamAngle >= 0);
-            Contract.Invariant(ZeroBeamAngle < MathHelper.TwoPi);
             Contract.Invariant(SigmaHit > 0);
             Contract.Invariant(WeightHit >= 0);
             Contract.Invariant(WeightRandom >= 0);
             Contract.Invariant((WeightHit + WeightRandom).AlmostEqualInDecimalPlaces(1, 5));            
         }
 
-        public LikelihoodFieldMeasurementModel(OccupancyGrid map, RangefinderProperties rangefinderProperties, float zeroBeamAngle, float sigmaHit, float weightHit, float weightRandom)
+        public LikelihoodFieldMeasurementModel(OccupancyGrid map, RangefinderProperties rangefinderProperties, float sigmaHit, float weightHit, float weightRandom)
         {
             Contract.Requires(map != null);
-            Contract.Requires(rangefinderProperties != null);
             Contract.Requires(rangefinderProperties.MaxRange > 0);
-            Contract.Requires(zeroBeamAngle >= 0);
-            Contract.Requires(zeroBeamAngle < MathHelper.TwoPi);
             Contract.Requires(sigmaHit > 0);
             Contract.Requires(weightHit >= 0);
             Contract.Requires(weightRandom >= 0);
@@ -46,7 +38,6 @@ namespace Brumba.WaiterStupid.McLocalization
 
             Map = map;
             RangefinderProperties = rangefinderProperties;
-            ZeroBeamAngle = zeroBeamAngle;
             SigmaHit = sigmaHit;
             WeightHit = weightHit;
             WeightRandom = weightRandom;
@@ -98,7 +89,7 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(zi <= RangefinderProperties.MaxRange);
             Contract.Requires(i >= 0);
 
-            return RobotToMapTransformation(RangefinderProperties.BeamToVectorInRobotTransformation(zi, i, ZeroBeamAngle), robotPose);
+            return RobotToMapTransformation(RangefinderProperties.BeamToVectorInRobotTransformation(zi, i), robotPose);
         }
 
         public static Vector2 RobotToMapTransformation(Vector2 beam, Vector3 robotPose)

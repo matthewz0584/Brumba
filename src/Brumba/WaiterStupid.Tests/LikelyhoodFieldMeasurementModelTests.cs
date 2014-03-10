@@ -25,9 +25,9 @@ namespace Brumba.WaiterStupid.Tests
                 {
                     AngularResolution = MathHelper.PiOver2,
                     AngularRange = MathHelper.Pi,
-                    MaxRange = 2f
+                    MaxRange = 2f,
+                    ZeroBeamAngleInRobot = 3 * MathHelper.PiOver2
                 },
-                zeroBeamAngle: 3 * MathHelper.PiOver2,
                 sigmaHit: 0.1f,
                 weightHit: 0.7f,
                 weightRandom: 0.3f
@@ -92,11 +92,12 @@ namespace Brumba.WaiterStupid.Tests
             {
                 AngularResolution = MathHelper.PiOver2,
                 AngularRange = MathHelper.Pi,
-                MaxRange = 2f
+                MaxRange = 2f,
+                ZeroBeamAngleInRobot = 3 * MathHelper.PiOver2
             };
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0, 3 * MathHelper.PiOver2).EqualsRelatively(new Vector2(0, -1), 0.001));
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1, 3 * MathHelper.PiOver2).EqualsRelatively(new Vector2(1, 0), 0.001));
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2, 3 * MathHelper.PiOver2).EqualsRelatively(new Vector2(0, 1), 0.001));
+            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0).EqualsRelatively(new Vector2(0, -1), 0.001));
+            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1).EqualsRelatively(new Vector2(1, 0), 0.001));
+            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2).EqualsRelatively(new Vector2(0, 1), 0.001));
         }
 
         [Test]
