@@ -47,8 +47,20 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             Contract.Assume(scan != null);
 
-            return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
-                    Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
+			var lis = scan.Select((zi, i) => new { zi, i }).Where(p => p.zi != RangefinderProperties.MaxRange).
+				Select(p => BeamLikelihood(robotPose, p.zi, p.i)).ToList();
+	        if (lis.Aggregate(1f, (pi, p) => p*pi) > 0.05)
+	        {
+		        lis.ForEach(pi => Console.Write(" {0} ", pi));
+		        Console.WriteLine("likelihood {0}", lis.Aggregate(1f, (pi, p) => p*pi));
+				Console.WriteLine("robotPose {0}", robotPose);
+				Console.WriteLine("*****");
+	        }
+	        //Console.WriteLine("<1 {0} ** > 1 {1} ** = 1 {2}", qq.Count(l => l < 1), qq.Count(l => l > 1), qq.Count(l => l == 1));
+
+            //return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
+//				Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
+	        return lis.Aggregate(1f, (pi, p) => p*pi);
         }
 
         public float BeamLikelihood(Vector3 robotPose, float zi, int i)
@@ -59,8 +71,8 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Ensures(Contract.Result<float>() >= 0);
 
             var beamEndPointPosition = BeamEndPointPosition(zi, i, robotPose);
-            if (!Map.Covers(beamEndPointPosition))
-                return 1;
+	        if (!Map.Covers(beamEndPointPosition))
+		        return (float)new Normal(0, SigmaHit).Density(0) / 2;
 
             return Vector2.Dot(
                 new Vector2(DensityHit(DistanceToNearestObstacle(beamEndPointPosition)), DensityRandom()),

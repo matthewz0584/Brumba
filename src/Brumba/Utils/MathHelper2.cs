@@ -6,15 +6,25 @@ namespace Brumba.Utils
 {
     public static class MathHelper2
     {
-        public static float ToPositiveAngle(float angle)
+        public static float ToPositiveAngle(this float angle)
         {
             Contract.Requires(!float.IsInfinity(angle));
             Contract.Ensures(float.IsNaN(angle) || Contract.Result<float>() >= 0);
-            Contract.Ensures(float.IsNaN(angle) || Contract.Result<float>() <= TwoPi);
+            Contract.Ensures(float.IsNaN(angle) || Contract.Result<float>() < TwoPi);
 
             var angleRem = angle % TwoPi;
             return angleRem + (angleRem < 0 ? TwoPi : 0);
         }
+
+	    public static float ToMinAbsValueAngle(this float angle)
+	    {
+			Contract.Requires(!float.IsInfinity(angle));
+			Contract.Ensures(float.IsNaN(angle) || Contract.Result<float>() > -MathHelper.Pi);
+			Contract.Ensures(float.IsNaN(angle) || Contract.Result<float>() <= MathHelper.Pi);
+
+		    var posAngle = angle.ToPositiveAngle();
+		    return (TwoPi - posAngle) < posAngle ? posAngle - TwoPi : posAngle;
+	    }
 
         public static float AngleDifference(float angle1, float angle2)
         {
@@ -23,7 +33,7 @@ namespace Brumba.Utils
             Contract.Ensures(float.IsNaN(angle1) || float.IsNaN(angle2) || Contract.Result<float>() >= 0);
             Contract.Ensures(float.IsNaN(angle1) || float.IsNaN(angle2) || Contract.Result<float>() <= TwoPi);
 
-            var diff = Math.Abs(ToPositiveAngle(angle1) - ToPositiveAngle(angle2));
+            var diff = Math.Abs(angle1.ToPositiveAngle() - angle2.ToPositiveAngle());
             return Math.Min(diff, TwoPi - diff);
         }
 

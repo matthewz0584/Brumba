@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics.Contracts;
 using Brumba.Utils;
+using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using Microsoft.Xna.Framework;
 
@@ -26,7 +27,8 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public Vector3 PredictParticleState(Vector3 particle, Vector3 control)
         {
-            Contract.Ensures(!Map.Covers(Contract.Result<Vector3>().ExtractVector2()) || !Map[Contract.Result<Vector3>().ExtractVector2()]);
+			Contract.Ensures(!Map.Covers(Contract.Result<Vector3>().ExtractVector2()) || !Map[Contract.Result<Vector3>().ExtractVector2()]);
+			Contract.Assume(!Map.Covers(particle.ExtractVector2()) || !Map[particle.ExtractVector2()]);
 
             var rotTransRot = OdometryToRotTransRotSequence(particle, control);
 
@@ -39,23 +41,31 @@ namespace Brumba.WaiterStupid.McLocalization
             }
             while (Map.Covers(prediction.ExtractVector2()) && Map[prediction.ExtractVector2()] && tries-- > 0);
 
-            return tries < 0 ? particle : prediction;
+	        return tries < 0 ? particle : prediction;
         }
 
         public static Vector3 OdometryToRotTransRotSequence(Vector3 particle, Vector3 control)
         {
+			Contract.Ensures(Contract.Result<Vector3>().X > -Constants.Pi);
+			Contract.Ensures(Contract.Result<Vector3>().X <= Constants.Pi);
+			Contract.Ensures(Contract.Result<Vector3>().Z > -Constants.Pi);
+			Contract.Ensures(Contract.Result<Vector3>().Z <= Constants.Pi);
+
             var rot1Delta = (float)Math.Atan2(control.Y, control.X) - particle.Z;
             var transDelta = new Vector2(control.X, control.Y).Length();
             var rot2Delta = control.Z - rot1Delta; //(particle.Z + control.Z) - (particle.Z + rot1Delta)            
 
-            return new Vector3(rot1Delta, transDelta, rot2Delta);
+			return new Vector3(rot1Delta.ToMinAbsValueAngle(), transDelta, rot2Delta.ToMinAbsValueAngle());
         }
 
         public static Vector3 RotTransRotSequenceToOdometry(Vector3 particle, Vector3 rotTransRot)
         {
+			Contract.Ensures(Contract.Result<Vector3>().Z > -Constants.Pi);
+			Contract.Ensures(Contract.Result<Vector3>().Z <= Constants.Pi);
+
             return new Vector3(rotTransRot.Y * (float)Math.Cos(particle.Z + rotTransRot.X),
                                rotTransRot.Y * (float)Math.Sin(particle.Z + rotTransRot.X),
-                               particle.Z + rotTransRot.X + rotTransRot.Z);
+                               (rotTransRot.X + rotTransRot.Z).ToMinAbsValueAngle());
         }
 
         public Vector3 ComputeRotTransRotNoise(Vector3 rotTransRot)

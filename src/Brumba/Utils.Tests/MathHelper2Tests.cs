@@ -62,5 +62,18 @@ namespace Brumba.Utils.Tests
 			Assert.That(new Vector2(3, 4).EqualsRelatively(new Vector2(3.0f, 4.0f * 1.125f), 0.1));
 			Assert.That(new Vector2(3, 4).EqualsRelatively(new Vector2(3.0f, 4.0f * 1.126f), 0.1), Is.False);
 	    }
+
+	    [Test]
+	    public void ToMinAbsValueAngle()
+	    {
+			Assert.That(0f.ToMinAbsValueAngle(), Is.EqualTo(0));
+			Assert.That(MathHelper.Pi.ToMinAbsValueAngle(), Is.EqualTo(MathHelper.Pi));
+			Assert.That(MathHelper.PiOver4.ToMinAbsValueAngle(), Is.EqualTo(MathHelper.PiOver4));
+			Assert.That((3 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * MathHelper.PiOver4));
+			Assert.That((5 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
+			Assert.That((-3 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
+			Assert.That((-5 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * MathHelper.PiOver4));
+			Assert.That((5 * MathHelper.PiOver4 + MathHelper.TwoPi).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
+	    }
     }
 }

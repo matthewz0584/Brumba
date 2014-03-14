@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
 using Brumba.WaiterStupid.McLocalization;
+using MathNet.Numerics;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
@@ -29,6 +30,8 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(prediction2.EqualsRelatively(cleanPrediction, 0.05));
 
             Assert.That(prediction1, Is.Not.EqualTo(prediction2));
+
+			Assert.Fail("Check that all particles' theta is betwenn 0 and 2Pi");
         }
 
         [Test]
@@ -40,11 +43,11 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Vector3(1, 2, 0), new Vector3(1, 0, MathHelper.PiOver4)),
                 Is.EqualTo(new Vector3(0, 1, MathHelper.PiOver4)));
 
-            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Vector3(1, 2, MathHelper.PiOver4), new Vector3(1, 0, -MathHelper.PiOver4)),
-                Is.EqualTo(new Vector3(-MathHelper.PiOver4, 1, 0)));
+            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Vector3(1, 2, MathHelper.PiOver4), new Vector3(1, 0, -MathHelper.PiOver4)).
+				EqualsRelatively(new Vector3(-MathHelper.PiOver4, 1, 0), 1e-5));
 
-            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Vector3(1, 2, MathHelper.PiOver4), new Vector3(1, 0, MathHelper.PiOver4)),
-                Is.EqualTo(new Vector3(-MathHelper.PiOver4, 1, MathHelper.PiOver2)));
+            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Vector3(1, 2, MathHelper.PiOver4), new Vector3(1, 0, MathHelper.PiOver4)).
+                EqualsRelatively(new Vector3(-MathHelper.PiOver4, 1, MathHelper.PiOver2), 1e-5));
         }
 
         [Test]
@@ -58,6 +61,12 @@ namespace Brumba.WaiterStupid.Tests
 
             Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Vector3(1, 2, 0), new Vector3(MathHelper.PiOver4, 1, -MathHelper.PiOver4)),
                 Is.EqualTo(new Vector3(1 / (float)Math.Sqrt(2), 1 / (float)Math.Sqrt(2), 0)));
+
+			Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Vector3(0, 0, MathHelper.Pi), new Vector3(MathHelper.Pi, 1, MathHelper.Pi)).
+				EqualsRelatively(new Vector3(1, 0, 0), 1e-5));
+
+			Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Vector3(0, 0, MathHelper.Pi), new Vector3(MathHelper.PiOver2, 1, MathHelper.Pi)).
+				EqualsRelatively(new Vector3(0, -1, -MathHelper.PiOver2), 1e-5));
         }
 
         [Test]
@@ -112,8 +121,8 @@ namespace Brumba.WaiterStupid.Tests
                 rotNoiseCoeffs: new Vector2(0.01f, 0.01f),
                 transNoiseCoeffs: new Vector2(0.01f, 0.01f));
 
-            Assert.That(omm.PredictParticleState(new Vector3(2.9f, 1.9f, 0), new Vector3(0.2f, 0.2f, 0)).
-                EqualsRelatively(new Vector3(3.1f, 2.1f, 0), 0.05));//move outside of the map
+            Assert.That(omm.PredictParticleState(new Vector3(2.9f, 0.5f, 0), new Vector3(0.2f, 0, 0)).
+                EqualsRelatively(new Vector3(3.1f, 0.5f, 0), 0.05));//move outside of the map
         }
 
         static double StdDev(IEnumerable<Vector3> vecs, Func<Vector3, float> selector)

@@ -90,7 +90,7 @@ namespace Brumba.WaiterStupid.Tests
             //0-0-0
             //0-I-0
             //0-0-0
-            var mcf = new ParticleFilter<Vector2, int, Vector2>(new ResamplingWheel(),
+            var pf = new ParticleFilter<Vector2, int, Vector2>(new ResamplingWheel(),
                 PredictionModel<Vector2, Vector2>.FromFunctor((sample, control) => sample + control),
                 MeasurementModel<Vector2, int>.FromFunctor((sample, measurement) =>
                     ((new Vector2(1, 1) - sample).Length() < 0.5 && measurement == 5) ||
@@ -100,12 +100,12 @@ namespace Brumba.WaiterStupid.Tests
 
             var u1 = new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(50);
             var u2 = new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(50);
-            mcf.Init(from x in u1 from y in u2 select new Vector2((float)x, (float)y));
+            pf.Init(from x in u1 from y in u2 select new Vector2((float)x, (float)y));
 
-            mcf.Update(control: new Vector2(1, 1), measurement: 5);
+            pf.Update(control: new Vector2(1, 1), measurement: 5);
 
-            Assert.That(mcf.Particles.Count(), Is.EqualTo(2500));
-            Assert.That(mcf.Particles.Count(s => (new Vector2(1, 1) - s).Length() < 0.5), Is.EqualTo(2500));
+            Assert.That(pf.Particles.Count(), Is.EqualTo(2500));
+            Assert.That(pf.Particles.Count(s => (new Vector2(1, 1) - s).Length() < 0.5), Is.EqualTo(2500));
         }
 
         class PredictionModel<TParticle, TControl> : IPredictionModel<TParticle, TControl>
