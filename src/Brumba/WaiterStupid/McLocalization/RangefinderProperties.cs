@@ -16,8 +16,10 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= MaxRange);
             Contract.Requires(i >= 0);
+            Contract.Requires(i < AngularRange / AngularResolution + 1);
             Contract.Requires(ZeroBeamAngleInRobot >= 0);
             Contract.Requires(ZeroBeamAngleInRobot < MathHelper.TwoPi);
+            Contract.Requires(AngularResolution > 0);
             Contract.Ensures(Contract.Result<Vector2>().Length().AlmostEqualInDecimalPlaces(zi, 5));
 
             return Vector2.Transform(new Vector2(zi, 0), Matrix.CreateRotationZ(ZeroBeamAngleInRobot + i * AngularResolution));

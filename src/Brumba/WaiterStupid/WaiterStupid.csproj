@@ -144,9 +144,10 @@
     <Compile Include="McLocalization\LikelihoodFieldMeasurementModel.cs" />
     <Compile Include="McLocalization\OccupancyGrid.cs" />
     <Compile Include="McLocalization\ParticleFilter.cs" />
+    <Compile Include="McLocalization\PoseHistogram.cs" />
     <Compile Include="McLocalization\RangefinderProperties.cs" />
     <Compile Include="McLocalization\ResamplingWheel.cs" />
-    <Compile Include="McLocalization\GridSquareFringeGenerator.cs" />
+    <Compile Include="McLocalization\GridCircleFringeGenerator.cs" />
     <Compile Include="Odometry\DiffDriveOdometryState.cs" />
     <Compile Include="Odometry\DiffDriveOdometryTypes.cs" />
     <Compile Include="Odometry\DiffDriveOdometryCalculator.cs" />

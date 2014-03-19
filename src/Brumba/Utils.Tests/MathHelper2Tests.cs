@@ -66,14 +66,24 @@ namespace Brumba.Utils.Tests
 	    [Test]
 	    public void ToMinAbsValueAngle()
 	    {
-			Assert.That(0f.ToMinAbsValueAngle(), Is.EqualTo(0));
-			Assert.That(MathHelper.Pi.ToMinAbsValueAngle(), Is.EqualTo(MathHelper.Pi));
-			Assert.That(MathHelper.PiOver4.ToMinAbsValueAngle(), Is.EqualTo(MathHelper.PiOver4));
-			Assert.That((3 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * MathHelper.PiOver4));
-			Assert.That((5 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
-			Assert.That((-3 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
-			Assert.That((-5 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * MathHelper.PiOver4));
-			Assert.That((5 * MathHelper.PiOver4 + MathHelper.TwoPi).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
+            Assert.That(0f.ToMinAbsValueAngle(), Is.EqualTo(0));
+            Assert.That((-MathHelper.Pi).ToMinAbsValueAngle(), Is.EqualTo(-MathHelper.Pi));
+            Assert.That(MathHelper.Pi.ToMinAbsValueAngle(), Is.EqualTo(-MathHelper.Pi));
+            Assert.That(MathHelper.PiOver4.ToMinAbsValueAngle(), Is.EqualTo(MathHelper.PiOver4));
+            Assert.That((3 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * MathHelper.PiOver4));
+            Assert.That((5 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
+            Assert.That((-3 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
+            Assert.That((-5 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * MathHelper.PiOver4));
+            Assert.That((5 * MathHelper.PiOver4 + MathHelper.TwoPi).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
 	    }
+
+        [Test]
+        public void AngleMean()
+        {
+            Assert.That(MathHelper2.AngleMean(new[] { MathHelper.PiOver2, MathHelper.PiOver4 }), Is.EqualTo(MathHelper.Pi * 3 / 8));
+            Assert.That(MathHelper2.AngleMean(new[] { 3 * MathHelper.PiOver4, 5 * MathHelper.PiOver4 }), Is.EqualTo(MathHelper.Pi).Within(1e-5));
+            Assert.That(MathHelper2.AngleMean(new[] { MathHelper.PiOver4, 7 * MathHelper.PiOver4 }), Is.EqualTo(0).Within(1e-5));
+            Assert.That(MathHelper2.AngleMean(new[] { MathHelper.PiOver4, 5 * MathHelper.PiOver4 }), Is.NaN);
+        }
     }
 }

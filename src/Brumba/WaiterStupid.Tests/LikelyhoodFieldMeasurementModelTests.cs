@@ -40,7 +40,7 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(
                 _lfmm.ComputeMeasurementLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi*3/2), new[] {2f, 1, 1}),
                 Is.EqualTo(
-                    Math.Pow(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom / _lfmm.RangefinderProperties.MaxRange, 2)).Within(1e-5));
+                    2 *(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom / _lfmm.RangefinderProperties.MaxRange) + 0.1).Within(1e-5));
         }
 
         [Test]
@@ -49,21 +49,24 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 1f, 2),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 0.5f, 2),
-                Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0.5) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
+            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 0.4f, 2),
+                Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
+
+            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 0.2f, 2),
+                Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0.2) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
             Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 1f, 1),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
             Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 1f, 0),
-                Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Math.Sqrt(2)) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
+                Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Math.Sqrt(2) - 0.6) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
         }
 
         [Test]
         public void BeamOutOfMap()
         {
             //Если робот вылез за карту - проблема высшего уровня, фильтр не должен быть вызван с такой одометрией
-            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, 0), 1f, 2), Is.EqualTo(1));
+            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, 0), 1f, 2), Is.EqualTo(0));
         }
 
         [Test]
@@ -103,12 +106,28 @@ namespace Brumba.WaiterStupid.Tests
         [Test]
         public void DistanceToNearestObstacle()
         {
-            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(1.5f, 0.5f)), Is.EqualTo(0));
-            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(0.5f, 0.5f)), Is.EqualTo(1).Within(1e-5));
-            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(1.5f, 1.5f)), Is.EqualTo(1).Within(1e-5));
-            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(0.5f, 1.5f)), Is.EqualTo(Math.Sqrt(2 * 1 * 1)).Within(1e-5));
+            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(1.5f, 0.5f)), Is.EqualTo(0)); //center of occupied cell
+            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(1.9f, 0.9f)), Is.EqualTo(0)); //inside occupied cell
+            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(0.5f, 0.5f)), Is.EqualTo(0.4).Within(1e-5));
+            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(1.5f, 1.5f)), Is.EqualTo(0.4).Within(1e-5));
+            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(0.5f, 1.5f)), Is.EqualTo(Math.Sqrt(2 * 1 * 1) - 0.6).Within(1e-5));
+            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(1.7f, 1.5f)), Is.EqualTo(0.2).Within(1e-5)); //between two equidistant occupied cells
 
-            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(0.6f, 0.5f)), Is.EqualTo(0.9).Within(1e-5));
+            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(0.6f, 0.5f)), Is.EqualTo(0.3).Within(1e-5));
+            Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(0.95f, 0.5f)), Is.EqualTo(0).Within(1e-5));
+        }
+
+        [Test]
+        public void DistanceToNearestObstacleNoObstacle()
+        {
+            var lfmm = new LikelihoodFieldMeasurementModel
+            (
+                new OccupancyGrid(new[,] { { false, false, false }, { false, false, false} }, 1),
+                new RangefinderProperties { AngularResolution = MathHelper.PiOver2, AngularRange = MathHelper.Pi, MaxRange = 2f, ZeroBeamAngleInRobot = 3 * MathHelper.PiOver2 },
+                0.1f, 0.7f, 0.3f
+            );
+
+            Assert.That(float.IsPositiveInfinity(lfmm.DistanceToNearestObstacle(new Vector2(1, 1))));
         }
     }
 }

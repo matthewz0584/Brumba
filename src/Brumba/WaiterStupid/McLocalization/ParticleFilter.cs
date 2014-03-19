@@ -52,7 +52,10 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Ensures(Contract.OldValue(Particles.Count()) == Particles.Count());
 
             var weightedParticles = Particles.
-                Select(p => WeighParticle(measurement, PredictionModel.PredictParticleState(p, control)));
+                Select(p => WeighParticle(measurement, PredictionModel.PredictParticleState(p, control))).ToList();
+
+            Contract.Assume(Contract.Exists(weightedParticles, wp => wp.Weight > 0));
+
             Particles = _resampler.Resample(weightedParticles).
                 Cast<WeightedParticle<TParticle>>().Select(ws => ws.Particle).Take(Particles.Count()).ToList();
         }

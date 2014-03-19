@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
 using Brumba.WaiterStupid.McLocalization;
-using MathNet.Numerics;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
@@ -24,14 +23,29 @@ namespace Brumba.WaiterStupid.Tests
             var cleanPrediction = new Vector3(1.9f, 1.1f, 0) + new Vector3(-0.5f, 0.5f, MathHelper.PiOver4);
 
             var prediction1 = omm.PredictParticleState(new Vector3(1.9f, 1.1f, 0), new Vector3(-0.5f, 0.5f, MathHelper.PiOver4));
+            Console.WriteLine(prediction1);
             Assert.That(prediction1.EqualsRelatively(cleanPrediction, 0.05));
 
             var prediction2 = omm.PredictParticleState(new Vector3(1.9f, 1.1f, 0), new Vector3(-0.5f, 0.5f, MathHelper.PiOver4));
+            Console.WriteLine(prediction2);
             Assert.That(prediction2.EqualsRelatively(cleanPrediction, 0.05));
 
             Assert.That(prediction1, Is.Not.EqualTo(prediction2));
+        }
 
-			Assert.Fail("Check that all particles' theta is betwenn 0 and 2Pi");
+        [Test]
+        public void PredictParticleStateThetaBetweenZeroAndTwoPi()
+        {
+            var omm = new OdometryMotionModel(
+                map: new OccupancyGrid(new[,] { { false, true, false }, { false, false, true } }, 1),
+                rotNoiseCoeffs: new Vector2(0.01f, 0.01f),
+                transNoiseCoeffs: new Vector2(0.01f, 0.01f));
+
+            Assert.That(omm.PredictParticleState(new Vector3(0, 0, MathHelper.TwoPi - MathHelper.PiOver4), new Vector3(0, 0, MathHelper.PiOver2)).Z,
+                Is.EqualTo(MathHelper.PiOver4).Within(1e-1));
+
+            Assert.That(omm.PredictParticleState(new Vector3(0, 0, MathHelper.Pi - MathHelper.PiOver4), new Vector3(0, 0, MathHelper.PiOver2)).Z,
+                Is.EqualTo(5 * MathHelper.PiOver4).Within(1e-1));
         }
 
         [Test]
@@ -66,7 +80,7 @@ namespace Brumba.WaiterStupid.Tests
 				EqualsRelatively(new Vector3(1, 0, 0), 1e-5));
 
 			Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Vector3(0, 0, MathHelper.Pi), new Vector3(MathHelper.PiOver2, 1, MathHelper.Pi)).
-				EqualsRelatively(new Vector3(0, -1, -MathHelper.PiOver2), 1e-5));
+				EqualsRelatively(new Vector3(0, -1, 3 * MathHelper.PiOver2), 1e-5));
         }
 
         [Test]
@@ -77,22 +91,22 @@ namespace Brumba.WaiterStupid.Tests
                 rotNoiseCoeffs: new Vector2(1, 1),
                 transNoiseCoeffs: new Vector2(1, 1));
 
-            var noiseBase = Enumerable.Range(0, 100).Select(i => omm.ComputeRotTransRotNoise(new Vector3(1, 1, 1)));
+            var noiseBase = Enumerable.Range(0, 100).Select(i => omm.ComputeRotTransRotNoise(new Vector3(0.1f, 0.1f, 0.1f)));
             var noiseBaseRot1StdDev = StdDev(noiseBase, v => v.X);
             var noiseBaseTransStdDev = StdDev(noiseBase, v => v.Y);
             var noiseBaseRot2StdDev = StdDev(noiseBase, v => v.Z);
 
-            var noiseRot1 = Enumerable.Range(0, 100).Select(i => omm.ComputeRotTransRotNoise(new Vector3(10, 1, 1)));
+            var noiseRot1 = Enumerable.Range(0, 100).Select(i => omm.ComputeRotTransRotNoise(new Vector3(1, 0.1f, 0.1f)));
             Assert.That(StdDev(noiseRot1, v => v.X), Is.GreaterThan(noiseBaseRot1StdDev * 2));
             Assert.That(StdDev(noiseRot1, v => v.Y), Is.GreaterThan(noiseBaseTransStdDev * 2));
             Assert.That(StdDev(noiseRot1, v => v.Z), Is.Not.GreaterThan(noiseBaseRot2StdDev * 2));
 
-            var noiseTrans = Enumerable.Range(0, 100).Select(i => omm.ComputeRotTransRotNoise(new Vector3(1, 10, 1)));
+            var noiseTrans = Enumerable.Range(0, 100).Select(i => omm.ComputeRotTransRotNoise(new Vector3(0.1f, 1, 0.1f)));
             Assert.That(StdDev(noiseTrans, v => v.X), Is.GreaterThan(noiseBaseRot1StdDev * 2));
             Assert.That(StdDev(noiseTrans, v => v.Y), Is.GreaterThan(noiseBaseTransStdDev * 2));
             Assert.That(StdDev(noiseTrans, v => v.Z), Is.GreaterThan(noiseBaseRot2StdDev * 2));
 
-            var noiseRot2 = Enumerable.Range(0, 100).Select(i => omm.ComputeRotTransRotNoise(new Vector3(1, 1, 10)));
+            var noiseRot2 = Enumerable.Range(0, 100).Select(i => omm.ComputeRotTransRotNoise(new Vector3(0.1f, 0.1f, 1)));
             Assert.That(StdDev(noiseRot2, v => v.X), Is.Not.GreaterThan(noiseBaseRot1StdDev * 2));
             Assert.That(StdDev(noiseRot2, v => v.Y), Is.GreaterThan(noiseBaseTransStdDev * 2));
             Assert.That(StdDev(noiseRot2, v => v.Z), Is.GreaterThan(noiseBaseRot2StdDev * 2));
@@ -121,8 +135,9 @@ namespace Brumba.WaiterStupid.Tests
                 rotNoiseCoeffs: new Vector2(0.01f, 0.01f),
                 transNoiseCoeffs: new Vector2(0.01f, 0.01f));
 
-            Assert.That(omm.PredictParticleState(new Vector3(2.9f, 0.5f, 0), new Vector3(0.2f, 0, 0)).
-                EqualsRelatively(new Vector3(3.1f, 0.5f, 0), 0.05));//move outside of the map
+            var prediction = omm.PredictParticleState(new Vector3(2.9f, 0.5f, 0), new Vector3(0.2f, 0, 0));
+            var wrappedPred = new Vector3(prediction.X, prediction.Y, prediction.Z.ToMinAbsValueAngle());
+            Assert.That(wrappedPred.EqualsRelatively(new Vector3(3.1f, 0.5f, 0), 0.05));//move outside of the map
         }
 
         static double StdDev(IEnumerable<Vector3> vecs, Func<Vector3, float> selector)

@@ -52,7 +52,7 @@ namespace Brumba.WaiterStupid.Tests
 
             Assert.That(nextOdometry.LeftTicks, Is.EqualTo(15));
             Assert.That(nextOdometry.RightTicks, Is.EqualTo(20));
-            Assert.That(nextOdometry.Pose, Is.EqualTo(new Vector3(10 + 2 * MathHelper2.TwoPi, 0, 0)));
+            Assert.That(nextOdometry.Pose, Is.EqualTo(new Vector3(10 + 2 * MathHelper.TwoPi, 0, 0)));
 	    }
     }
 }

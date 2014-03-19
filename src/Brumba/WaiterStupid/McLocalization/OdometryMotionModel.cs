@@ -28,6 +28,7 @@ namespace Brumba.WaiterStupid.McLocalization
         public Vector3 PredictParticleState(Vector3 particle, Vector3 control)
         {
 			Contract.Ensures(!Map.Covers(Contract.Result<Vector3>().ExtractVector2()) || !Map[Contract.Result<Vector3>().ExtractVector2()]);
+            Contract.Ensures(Contract.Result<Vector3>().Z.Between(0, MathHelper.TwoPi));
 			Contract.Assume(!Map.Covers(particle.ExtractVector2()) || !Map[particle.ExtractVector2()]);
 
             var rotTransRot = OdometryToRotTransRotSequence(particle, control);
@@ -36,20 +37,17 @@ namespace Brumba.WaiterStupid.McLocalization
             Vector3 prediction;
             do
             {
-                prediction = particle + 
-                    RotTransRotSequenceToOdometry(particle, rotTransRot + ComputeRotTransRotNoise(rotTransRot));
-            }
-            while (Map.Covers(prediction.ExtractVector2()) && Map[prediction.ExtractVector2()] && tries-- > 0);
+                var noisyDelta = RotTransRotSequenceToOdometry(particle, rotTransRot + ComputeRotTransRotNoise(rotTransRot));
+                prediction = new Vector3(particle.X + noisyDelta.X, particle.Y + noisyDelta.Y, (particle.Z + noisyDelta.Z).ToPositiveAngle());
+            } while (Map.Covers(prediction.ExtractVector2()) && Map[prediction.ExtractVector2()] && tries-- > 0);
 
 	        return tries < 0 ? particle : prediction;
         }
 
         public static Vector3 OdometryToRotTransRotSequence(Vector3 particle, Vector3 control)
         {
-			Contract.Ensures(Contract.Result<Vector3>().X > -Constants.Pi);
-			Contract.Ensures(Contract.Result<Vector3>().X <= Constants.Pi);
-			Contract.Ensures(Contract.Result<Vector3>().Z > -Constants.Pi);
-			Contract.Ensures(Contract.Result<Vector3>().Z <= Constants.Pi);
+			Contract.Ensures(Contract.Result<Vector3>().X.Between(-MathHelper.Pi, MathHelper.Pi));
+            Contract.Ensures(Contract.Result<Vector3>().Z.Between(-MathHelper.Pi, MathHelper.Pi));
 
             var rot1Delta = (float)Math.Atan2(control.Y, control.X) - particle.Z;
             var transDelta = new Vector2(control.X, control.Y).Length();
@@ -60,16 +58,18 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public static Vector3 RotTransRotSequenceToOdometry(Vector3 particle, Vector3 rotTransRot)
         {
-			Contract.Ensures(Contract.Result<Vector3>().Z > -Constants.Pi);
-			Contract.Ensures(Contract.Result<Vector3>().Z <= Constants.Pi);
+			Contract.Ensures(Contract.Result<Vector3>().Z.Between(0, MathHelper.TwoPi));
 
             return new Vector3(rotTransRot.Y * (float)Math.Cos(particle.Z + rotTransRot.X),
                                rotTransRot.Y * (float)Math.Sin(particle.Z + rotTransRot.X),
-                               (rotTransRot.X + rotTransRot.Z).ToMinAbsValueAngle());
+                               (rotTransRot.X + rotTransRot.Z).ToPositiveAngle());
         }
 
         public Vector3 ComputeRotTransRotNoise(Vector3 rotTransRot)
         {
+            Contract.Requires(rotTransRot.X.Between(-MathHelper.Pi, MathHelper.Pi));
+            Contract.Requires(rotTransRot.Z.Between(-MathHelper.Pi, MathHelper.Pi));
+
             return new Vector3(
                 (float)Normal.Sample(_random, 0,
                         Vector2.Dot(_rotNoiseCoeffs, new Vector2(Math.Abs(rotTransRot.X), rotTransRot.Y))),

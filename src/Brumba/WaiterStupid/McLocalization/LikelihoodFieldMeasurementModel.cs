@@ -21,6 +21,7 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             Contract.Invariant(Map != null);
             Contract.Invariant(RangefinderProperties.MaxRange > 0);
+            Contract.Invariant(RangefinderProperties.AngularResolution > 0);
             Contract.Invariant(SigmaHit > 0);
             Contract.Invariant(WeightHit >= 0);
             Contract.Invariant(WeightRandom >= 0);
@@ -31,6 +32,7 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             Contract.Requires(map != null);
             Contract.Requires(rangefinderProperties.MaxRange > 0);
+            Contract.Requires(rangefinderProperties.AngularResolution > 0);
             Contract.Requires(sigmaHit > 0);
             Contract.Requires(weightHit >= 0);
             Contract.Requires(weightRandom >= 0);
@@ -46,21 +48,24 @@ namespace Brumba.WaiterStupid.McLocalization
         public float ComputeMeasurementLikelihood(Vector3 robotPose, IEnumerable<float> scan)
         {
             Contract.Assume(scan != null);
+            Contract.Assume(scan.Count() == RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution + 1);
 
-			var lis = scan.Select((zi, i) => new { zi, i }).Where(p => p.zi != RangefinderProperties.MaxRange).
+			var beamLikelihoods = scan.Select((zi, i) => new { zi, i }).Where(p => p.zi != RangefinderProperties.MaxRange).
 				Select(p => BeamLikelihood(robotPose, p.zi, p.i)).ToList();
-	        if (lis.Aggregate(1f, (pi, p) => p*pi) > 0.05)
-	        {
-		        lis.ForEach(pi => Console.Write(" {0} ", pi));
-		        Console.WriteLine("likelihood {0}", lis.Aggregate(1f, (pi, p) => p*pi));
-				Console.WriteLine("robotPose {0}", robotPose);
-				Console.WriteLine("*****");
-	        }
-	        //Console.WriteLine("<1 {0} ** > 1 {1} ** = 1 {2}", qq.Count(l => l < 1), qq.Count(l => l > 1), qq.Count(l => l == 1));
+            var measurementLikelihood = beamLikelihoods.Aggregate(0.1f, (pi, p) => p + pi);
+            
+            //if (measurementLikelihood > 0.06)
+            //{
+            //    beamLikelihoods.ForEach(pi => Console.Write(" {0} ", pi));
+            //    Console.WriteLine();
+            //    Console.WriteLine("likelihood {0}", measurementLikelihood);
+            //    Console.WriteLine("robotPose {0}", robotPose);
+            //    Console.WriteLine("*****");
+            //}
 
             //return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
-//				Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
-	        return lis.Aggregate(1f, (pi, p) => p*pi);
+            //    Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
+	        return measurementLikelihood;
         }
 
         public float BeamLikelihood(Vector3 robotPose, float zi, int i)
@@ -72,7 +77,7 @@ namespace Brumba.WaiterStupid.McLocalization
 
             var beamEndPointPosition = BeamEndPointPosition(zi, i, robotPose);
 	        if (!Map.Covers(beamEndPointPosition))
-		        return (float)new Normal(0, SigmaHit).Density(0) / 2;
+		        return 0;
 
             return Vector2.Dot(
                 new Vector2(DensityHit(DistanceToNearestObstacle(beamEndPointPosition)), DensityRandom()),
@@ -100,6 +105,7 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= RangefinderProperties.MaxRange);
             Contract.Requires(i >= 0);
+            Contract.Requires(i < RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution + 1);
 
             return RobotToMapTransformation(RangefinderProperties.BeamToVectorInRobotTransformation(zi, i), robotPose);
         }
@@ -113,17 +119,35 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             Contract.Requires(Map.Covers(position));
             Contract.Ensures(Contract.Result<float>() >= 0);
-            Contract.Ensures(Contract.Result<float>() <= Math.Sqrt(Map.SizeInCells.X * Map.SizeInCells.X + Map.SizeInCells.Y * Map.SizeInCells.Y) * Map.CellSize);
+            Contract.Ensures(float.IsPositiveInfinity(Contract.Result<float>()) || Contract.Result<float>() <= Math.Sqrt(Map.SizeInCells.X * Map.SizeInCells.X + Map.SizeInCells.Y * Map.SizeInCells.Y) * Map.CellSize);
 
-            return (Map.CellToPos(FindNearestOccupiedCell(Map.PosToCell(position))) - position).Length();
+            if (Map[position])
+                return 0;
+            var nearestOccupiedCell = FindNearestOccupiedCell(position);
+            if (nearestOccupiedCell == new Point(-1, -1))
+                return float.PositiveInfinity;
+            var distToCellCenter = (Map.CellToPos(nearestOccupiedCell) - position).Length();
+            //Approximation of occupied cell by occupied circle with radius equal to average between inscribed and circumscribed about the cell circles: a*(1/2 + 1/sq(2))/2=0.6a
+            return (distToCellCenter - 0.6f * Map.CellSize) > 0 ? distToCellCenter - 0.6f * Map.CellSize : 0;
         }
 
-        Point FindNearestOccupiedCell(Point cell)
+        Point FindNearestOccupiedCell(Vector2 position)
         {
-            Contract.Requires(Map.Covers(cell));
-            Contract.Ensures(Map.Covers(Contract.Result<Point>()));
+            Contract.Requires(Map.Covers(position));
+            Contract.Ensures(Contract.Result<Point>() == new Point(-1, -1) || Map.Covers(Contract.Result<Point>()));
+            Contract.Ensures(Contract.Result<Point>() == new Point(-1, -1) || Map[Contract.Result<Point>()]);
 
-            return new GridSquareFringeGenerator(Map.SizeInCells).Generate(cell).First(p => Map[p]);
+            var circleFringe = new GridCircleFringeGenerator(Map.SizeInCells);
+            var radius = 0;
+            IEnumerable<Point> fringe;
+            do
+            {
+                fringe = circleFringe.Generate(Map.PosToCell(position), radius++).ToList();
+                if (fringe.Any(p => Map[p]))
+                    return fringe.Where(p => Map[p]).OrderBy(p => (Map.CellToPos(p) - position).Length()).First();
+            } while (fringe.Any());
+
+            return new Point(-1, -1);
         }
     }
 }
