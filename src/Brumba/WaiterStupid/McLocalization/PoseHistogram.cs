@@ -28,7 +28,7 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public double ThetaBinSize { get; private set; }
 
-        public IEnumerable<PoseBin> Bins { get { return _histogram.Cast<PoseBin>(); } }
+		public IEnumerable<PoseBin> Bins { get { return _histogram == null ? null : _histogram.Cast<PoseBin>(); } }
 
         [Pure]
         public Vector3 Size
@@ -40,6 +40,7 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             Contract.Requires(poseSamples != null);
             Contract.Requires(poseSamples.Any());
+			Contract.Ensures(_histogram.Rank == 3);
             Contract.Ensures(_histogram.GetLength(0) == (int)Size.X);
             Contract.Ensures(_histogram.GetLength(1) == (int)Size.Y);
             Contract.Ensures(_histogram.GetLength(2) == (int)Size.Z);
@@ -59,6 +60,7 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             get
             {
+				Contract.Requires(Bins != null);
                 Contract.Requires(Map.Covers(poseSample.Position));
                 Contract.Ensures(Contract.Result<PoseBin>() != null);
 
@@ -71,6 +73,7 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             get
             {
+				Contract.Requires(Bins != null);
                 Contract.Requires(new Vector3(xBin, yBin, thetaBin).Between(new Vector3(), Size));
                 Contract.Ensures(Contract.Result<PoseBin>() != null);
 
@@ -78,19 +81,33 @@ namespace Brumba.WaiterStupid.McLocalization
             }
         }
 
+		public int[,] ToXyMarginal()
+		{
+			Contract.Requires(Bins != null);
+			Contract.Ensures(Contract.Result<int[,]>().Rank == 2);
+			Contract.Ensures(Contract.Result<int[,]>().GetLength(0) == (int)Size.X);
+			Contract.Ensures(Contract.Result<int[,]>().GetLength(1) == (int)Size.Y);
+
+			var xyM = new int[(int)Size.X, (int)Size.Y];
+			for (var x = 0; x < (int)Size.X; ++x)
+				for (var y = 0; y < (int)Size.Y; ++y)
+					for (var thetaBin = 0; thetaBin < (int)Size.Z; ++thetaBin)
+						xyM[x, y] += this[x, y, thetaBin].Samples.Count();
+			return xyM;
+		}
+
         public override string ToString()
         {
+	        if (Bins == null)
+		        return "None";
+
             var sb = new StringBuilder();
+	        var xyM = ToXyMarginal();
             for (var row = (int)Size.Y - 1; row >= 0; --row)
             {
                 sb.AppendFormat("{0, -5}", row);
                 for (var col = 0; col < (int)Size.X; ++col)
-                {
-                    var colRowBinMarginal = 0;
-                    for (var thetaBin = 0; thetaBin < (int)Size.Z; ++thetaBin)
-                        colRowBinMarginal += this[col, row, thetaBin].Samples.Count();
-                    sb.AppendFormat("{0, 5}", colRowBinMarginal);
-                }
+                    sb.AppendFormat("{0, 5}", xyM[col, row]);
                 sb.AppendLine();
             }
             sb.AppendLine();

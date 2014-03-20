@@ -111,7 +111,7 @@ namespace Brumba.SimulationTester.Tests
             [Test]
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
-				var odometryPose = new WaiterStupid.McLocalization.Proxy.Pose();
+				var odometryPose = new WaiterStupid.Proxy.Pose();
                 yield return Fixture.OdometryPort.Get().Receive(os => odometryPose = os.State.Pose);
 
                 var simPose = SimPoseToEgocentricPose(ExtractStupidWaiterPose(simStateEntities));

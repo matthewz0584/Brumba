@@ -1,8 +1,7 @@
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
-using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.WaiterStupid
 {
 	[DataContract]
     public struct Pose
@@ -25,7 +24,7 @@ namespace Brumba.WaiterStupid.McLocalization
             get { return _position; }
 			set
 			{
-				DC.Contract.Assume(!_freezed);
+				System.Diagnostics.Contracts.Contract.Assume(!_freezed);
 				_position = value;
 			}
         }
@@ -36,7 +35,7 @@ namespace Brumba.WaiterStupid.McLocalization
             get { return _bearing; }
 	        set
 	        {
-				DC.Contract.Assume(!_freezed);
+				System.Diagnostics.Contracts.Contract.Assume(!_freezed);
 		        _bearing = value;
 	        }
         }

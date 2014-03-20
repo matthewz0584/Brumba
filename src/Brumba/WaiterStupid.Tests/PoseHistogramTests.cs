@@ -85,6 +85,34 @@ namespace Brumba.WaiterStupid.Tests
             Assert.That(ph.Size, Is.EqualTo(new Vector3(1, 2, 3)));
         }
 
+	    [Test]
+		public void ToXyMarginal()
+	    {
+			var ph = new PoseHistogram(
+				map: new OccupancyGrid(new[,]
+                {
+                    {false, false, false},
+                    {false, false, false}
+                }, 1),
+				thetaBinSize: Math.PI);
+
+			ph.Build(poseSamples: new[]
+            {
+                new Pose(new Vector2(0.5f, 0.5f), Constants.PiOver2), new Pose(new Vector2(0.5f, 0.5f), 5 * Constants.PiOver4),
+                new Pose(new Vector2(1.1f, 1.3f), Constants.PiOver2), new Pose(new Vector2(1.9f, 1.7f), 3 * Constants.PiOver4),
+                new Pose(new Vector2(0.5f, 1.7f), Constants.PiOver2), new Pose(new Vector2(2.5f, 1.5f), Constants.PiOver2)
+            });
+
+		    var xyM = ph.ToXyMarginal();
+
+			Assert.That(xyM[0, 0], Is.EqualTo(2));
+			Assert.That(xyM[1, 0], Is.EqualTo(0));
+			Assert.That(xyM[2, 0], Is.EqualTo(0));
+			Assert.That(xyM[0, 1], Is.EqualTo(1));
+			Assert.That(xyM[1, 1], Is.EqualTo(2));
+			Assert.That(xyM[2, 1], Is.EqualTo(1));
+	    }
+
         [Test]
         public void PoseBinAddSample()
         {
