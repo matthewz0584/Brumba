@@ -135,7 +135,6 @@
     <Compile Include="FileLogHandler.cs" />
     <Compile Include="Gui\HeatMapViewModel.cs" />
     <Compile Include="Gui\MainWindow.xaml.cs" />
-    <Compile Include="Gui\MatrixViewModel.cs" />
     <Compile Include="Gui\MatrixVizualizerService.cs" />
     <Compile Include="Gui\MatrixVizualizerServiceHelper.cs" />
     <Compile Include="McLocalization\McLrfLocalizator.cs" />
@@ -157,12 +156,8 @@
     <Compile Include="TimerFacade.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Gui\GUI.Manifest.mvpl.user" />
     <Content Include="Gui\GUI.Manifest.xml" />
     <Content Include="Odometry\DiffDriveOdometry.Manifest.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Gui\GUI.Manifest.editor-settings" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">

@@ -1,4 +1,5 @@
 using System;
+using Brumba.WaiterStupid.McLocalization;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
@@ -22,33 +23,33 @@ namespace Brumba.WaiterStupid.Odometry
 
 		public DiffDriveOdometryConstants Constants { get; set; }
 
-	    public Vector3 CalculatePoseDelta(float oldTheta, int leftTicks, int rightTicks)
+	    public Pose CalculatePoseDelta(double oldTheta, int leftTicks, int rightTicks)
 	    {
-            DC.Contract.Requires(!float.IsNaN(oldTheta));
-            DC.Contract.Requires(!float.IsInfinity(oldTheta));
+			DC.Contract.Requires(!double.IsNaN(oldTheta));
+			DC.Contract.Requires(!double.IsInfinity(oldTheta));
 
-            return new Vector3((rightTicks + leftTicks) / 2f * (float)Math.Cos(oldTheta),
-                               (rightTicks + leftTicks) / 2f * (float)Math.Sin(oldTheta),
-                               (rightTicks - leftTicks) / Constants.WheelBase) * 
-                   Constants.WheelRadius * Constants.RadiansPerTick;
+            return new Pose(new Vector2((rightTicks + leftTicks) / 2f * (float)Math.Cos(oldTheta), (rightTicks + leftTicks) / 2f * (float)Math.Sin(oldTheta))
+									* Constants.WheelRadius * Constants.RadiansPerTick,
+							   (rightTicks - leftTicks) / Constants.WheelBase * Constants.WheelRadius * Constants.RadiansPerTick);
 	    }
 
         public DiffDriveOdometryState UpdateOdometry(DiffDriveOdometryState previousDiffDriveOdometry, int leftTicks, int rightTicks)
         {
             DC.Contract.Requires(previousDiffDriveOdometry != null);
-            DC.Contract.Requires(!float.IsNaN(previousDiffDriveOdometry.Pose.Z));
-            DC.Contract.Requires(!float.IsInfinity(previousDiffDriveOdometry.Pose.Z));
+            DC.Contract.Requires(!double.IsNaN(previousDiffDriveOdometry.Pose.Bearing));
+            DC.Contract.Requires(!double.IsInfinity(previousDiffDriveOdometry.Pose.Bearing));
             DC.Contract.Ensures(DC.Contract.Result<DiffDriveOdometryState>() != null);
             DC.Contract.Ensures(DC.Contract.Result<DiffDriveOdometryState>().LeftTicks == leftTicks);
             DC.Contract.Ensures(DC.Contract.Result<DiffDriveOdometryState>().RightTicks == rightTicks);
 
-            return new DiffDriveOdometryState
+	        var poseDelta = CalculatePoseDelta(previousDiffDriveOdometry.Pose.Bearing,
+		        leftTicks - previousDiffDriveOdometry.LeftTicks,
+		        rightTicks - previousDiffDriveOdometry.RightTicks);
+	        return new DiffDriveOdometryState
             {
                 LeftTicks = leftTicks,
                 RightTicks = rightTicks,
-                Pose = previousDiffDriveOdometry.Pose + CalculatePoseDelta(previousDiffDriveOdometry.Pose.Z,
-                                                                    leftTicks - previousDiffDriveOdometry.LeftTicks,
-                                                                    rightTicks - previousDiffDriveOdometry.RightTicks),
+                Pose = new Pose(previousDiffDriveOdometry.Pose.Position + poseDelta.Position, previousDiffDriveOdometry.Pose.Bearing + poseDelta.Bearing)
             };
         }
 	}

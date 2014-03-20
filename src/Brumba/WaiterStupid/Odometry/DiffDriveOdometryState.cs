@@ -1,3 +1,4 @@
+using Brumba.WaiterStupid.McLocalization;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
@@ -8,7 +9,7 @@ namespace Brumba.WaiterStupid.Odometry
     public class DiffDriveOdometryState
     {
         [DataMember]
-        public Vector3 Pose { get; set; }
+        public Pose Pose { get; set; }
         [DataMember]
         public int LeftTicks { get; set; }
         [DataMember]

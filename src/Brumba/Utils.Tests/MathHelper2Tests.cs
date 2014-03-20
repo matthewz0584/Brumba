@@ -17,7 +17,8 @@ namespace Brumba.Utils.Tests
             Assert.That((-6 * Constants.Pi).ToPositiveAngle(), Is.EqualTo(0).Within(1e-6));
             Assert.That(double.NaN.ToPositiveAngle(), Is.NaN);
             Assert.That((-double.Epsilon).ToPositiveAngle(), Is.EqualTo(0));
-            Assert.That((-100 * double.Epsilon).ToPositiveAngle(), Is.Not.EqualTo(0));
+            Assert.That((-100 * double.Epsilon).ToPositiveAngle(), Is.EqualTo(0));
+			Assert.That(double.Epsilon.ToPositiveAngle(), Is.EqualTo(double.Epsilon));
         }
 
         [Test]

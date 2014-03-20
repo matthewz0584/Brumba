@@ -1,31 +1,44 @@
-using System.Diagnostics.Contracts;
-using Brumba.Utils;
-using MathNet.Numerics;
+using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.WaiterStupid.McLocalization
 {
+	[DataContract]
     public struct Pose
     {
-        readonly Vector2 _position;
-        readonly double _bearing;
+        Vector2 _position;
+        double _bearing;
+		readonly bool _freezed;
 
+		//You can not see empty ctor, but it exists
         public Pose(Vector2 position, double bearing)
         {
-            Contract.Requires(bearing.Between(0, Constants.Pi2));
-
             _position = position;
             _bearing = bearing;
+	        _freezed = true;
         }
 
-        public Vector2 Position
+		[DataMember]
+		public Vector2 Position
         {
             get { return _position; }
+			set
+			{
+				DC.Contract.Assume(!_freezed);
+				_position = value;
+			}
         }
 
-        public double Bearing
+        [DataMember]
+		public double Bearing
         {
             get { return _bearing; }
+	        set
+	        {
+				DC.Contract.Assume(!_freezed);
+		        _bearing = value;
+	        }
         }
 
         public override string ToString()

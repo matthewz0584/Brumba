@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.Utils;
+//using Brumba.WaiterStupid.Odometry.Proxy;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Diagnostics;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -48,7 +49,7 @@ namespace Brumba.SimulationTester.Tests
 			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
 			{
                 var odometryPosition = new xVector2();
-                yield return Fixture.OdometryPort.Get().Receive(os => odometryPosition = new xVector2(os.State.Pose.X, os.State.Pose.Y));
+                yield return Fixture.OdometryPort.Get().Receive(os => odometryPosition = os.State.Pose.Position);
                 
                 var simPose = SimPoseToEgocentricPose(ExtractStupidWaiterPose(simStateEntities));
 			    var simPosition = new xVector2(simPose.X, simPose.Y);
@@ -78,12 +79,12 @@ namespace Brumba.SimulationTester.Tests
 			[Test]
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
 			{
-				var angleFromOdometry = 0f;
-				yield return Fixture.OdometryPort.Get().Receive(os => angleFromOdometry = os.State.Pose.Z);
+				var angleFromOdometry = 0d;
+				yield return Fixture.OdometryPort.Get().Receive(os => angleFromOdometry = os.State.Pose.Bearing);
 
 				var angleFromSim = SimPoseToEgocentricPose(ExtractStupidWaiterPose(simStateEntities)).Z;
 
-				var thetaDifference = MathHelper2.AngleDifference(angleFromOdometry, angleFromSim);
+				var thetaDifference = MathHelper2.AngleDifference((float)angleFromOdometry, angleFromSim);
 				@return(thetaDifference / Math.Abs(angleFromOdometry) <= 0.05);
 
 				//Fixture.TesterService.LogInfo("From Odometry {0}", angleFromOdometry);
@@ -110,18 +111,18 @@ namespace Brumba.SimulationTester.Tests
             [Test]
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
-                var odometryPose = new xVector3();
+				var odometryPose = new WaiterStupid.McLocalization.Proxy.Pose();
                 yield return Fixture.OdometryPort.Get().Receive(os => odometryPose = os.State.Pose);
 
                 var simPose = SimPoseToEgocentricPose(ExtractStupidWaiterPose(simStateEntities));
                 var simPosition = new xVector2(simPose.X, simPose.Y);
 
-                var thetaDifference = MathHelper2.AngleDifference(odometryPose.Z, simPose.Z);
-                @return(thetaDifference / Math.Abs(odometryPose.Z) <= 0.05 &&
+                var thetaDifference = MathHelper2.AngleDifference((float)odometryPose.Bearing, simPose.Z);
+                @return(thetaDifference / Math.Abs(odometryPose.Bearing) <= 0.05 &&
                         //1.1 - radius of circle (1.1 - from sim, 1.06 - from calculation)
-                        (new xVector2(odometryPose.X, odometryPose.Y) - simPosition).Length() / (MathHelper.TwoPi * 1.1)  <= 0.05);
+                        (odometryPose.Position - simPosition).Length() / (MathHelper.TwoPi * 1.1)  <= 0.05);
 
-                Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, thetaDifference / Math.Abs(odometryPose.Z), (new xVector2(odometryPose.X, odometryPose.Y) - simPosition).Length() / (MathHelper.TwoPi * 1.1));
+                Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, thetaDifference / Math.Abs(odometryPose.Bearing), (odometryPose.Position - simPosition).Length() / (MathHelper.TwoPi * 1.1));
             }
         }
 

@@ -16,8 +16,8 @@ namespace Brumba.Utils
             Contract.Ensures(double.IsNaN(angle) || Contract.Result<double>() >= 0);
             Contract.Ensures(double.IsNaN(angle) || Contract.Result<double>() < Constants.Pi2);
 
-            var angleRem = angle % Constants.Pi2;
-            return angleRem + (angleRem < 0 ? Constants.Pi2 : 0);
+	        //That form fixes problems with precision: -epsilon converts to 0
+			return angle > 0 ? angle % Constants.Pi2 : (Constants.Pi2 + angle) % Constants.Pi2;
         }
 
         public static double ToMinAbsValueAngle(this double angle)
