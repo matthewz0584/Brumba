@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Brumba.WaiterStupid.McLocalization
 {
-    public class OdometryMotionModel : IPredictionModel<Vector3, Vector3>
+    public class OdometryMotionModel : IPredictionModel<Pose, Pose>
     {
         readonly Vector2 _rotNoiseCoeffs;
         readonly Vector2 _transNoiseCoeffs;
@@ -25,43 +25,43 @@ namespace Brumba.WaiterStupid.McLocalization
             _random = new Random();
         }
 
-        public Vector3 PredictParticleState(Vector3 particle, Vector3 control)
+        public Pose PredictParticleState(Pose particle, Pose control)
         {
-			Contract.Ensures(!Map.Covers(Contract.Result<Vector3>().ExtractVector2()) || !Map[Contract.Result<Vector3>().ExtractVector2()]);
-            Contract.Ensures(Contract.Result<Vector3>().Z.Between(0, MathHelper.TwoPi));
-			Contract.Assume(!Map.Covers(particle.ExtractVector2()) || !Map[particle.ExtractVector2()]);
+			Contract.Ensures(!Map.Covers(Contract.Result<Pose>().Position) || !Map[Contract.Result<Pose>().Position]);
+            Contract.Ensures(Contract.Result<Pose>().Bearing.Between(0, Constants.Pi2));
+			Contract.Assume(!Map.Covers(particle.Position) || !Map[particle.Position]);
 
             var rotTransRot = OdometryToRotTransRotSequence(particle, control);
 
             var tries = 10;
-            Vector3 prediction;
+            Pose prediction;
             do
             {
                 var noisyDelta = RotTransRotSequenceToOdometry(particle, rotTransRot + ComputeRotTransRotNoise(rotTransRot));
-                prediction = new Vector3(particle.X + noisyDelta.X, particle.Y + noisyDelta.Y, (particle.Z + noisyDelta.Z).ToPositiveAngle());
-            } while (Map.Covers(prediction.ExtractVector2()) && Map[prediction.ExtractVector2()] && tries-- > 0);
+                prediction = new Pose(particle.Position + noisyDelta.Position, (particle.Bearing + noisyDelta.Bearing).ToPositiveAngle());
+            } while (Map.Covers(prediction.Position) && Map[prediction.Position] && tries-- > 0);
 
 	        return tries < 0 ? particle : prediction;
         }
 
-        public static Vector3 OdometryToRotTransRotSequence(Vector3 particle, Vector3 control)
+        public static Vector3 OdometryToRotTransRotSequence(Pose particle, Pose control)
         {
 			Contract.Ensures(Contract.Result<Vector3>().X.Between(-MathHelper.Pi, MathHelper.Pi));
             Contract.Ensures(Contract.Result<Vector3>().Z.Between(-MathHelper.Pi, MathHelper.Pi));
 
-            var rot1Delta = (float)Math.Atan2(control.Y, control.X) - particle.Z;
-            var transDelta = new Vector2(control.X, control.Y).Length();
-            var rot2Delta = control.Z - rot1Delta; //(particle.Z + control.Z) - (particle.Z + rot1Delta)            
+            var rot1Delta = Math.Atan2(control.Position.Y, control.Position.X) - particle.Bearing;
+            var transDelta = control.Position.Length();
+            var rot2Delta = control.Bearing - rot1Delta; //(particle.Z + control.Z) - (particle.Z + rot1Delta)            
 
-			return new Vector3(rot1Delta.ToMinAbsValueAngle(), transDelta, rot2Delta.ToMinAbsValueAngle());
+            return new Vector3((float)rot1Delta.ToMinAbsValueAngle(), transDelta, (float)rot2Delta.ToMinAbsValueAngle());
         }
 
-        public static Vector3 RotTransRotSequenceToOdometry(Vector3 particle, Vector3 rotTransRot)
+        public static Pose RotTransRotSequenceToOdometry(Pose particle, Vector3 rotTransRot)
         {
-			Contract.Ensures(Contract.Result<Vector3>().Z.Between(0, MathHelper.TwoPi));
+            Contract.Ensures(Contract.Result<Pose>().Bearing.Between(0, Constants.Pi2));
 
-            return new Vector3(rotTransRot.Y * (float)Math.Cos(particle.Z + rotTransRot.X),
-                               rotTransRot.Y * (float)Math.Sin(particle.Z + rotTransRot.X),
+            return new Pose(new Vector2(rotTransRot.Y * (float)Math.Cos(particle.Bearing + rotTransRot.X),
+                                        rotTransRot.Y * (float)Math.Sin(particle.Bearing + rotTransRot.X)),
                                (rotTransRot.X + rotTransRot.Z).ToPositiveAngle());
         }
 

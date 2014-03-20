@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
 using Brumba.WaiterStupid.McLocalization;
+using MathNet.Numerics;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
@@ -20,15 +21,17 @@ namespace Brumba.WaiterStupid.Tests
                 rotNoiseCoeffs: new Vector2(0.01f, 0.01f),
                 transNoiseCoeffs: new Vector2(0.01f, 0.01f));
 
-            var cleanPrediction = new Vector3(1.9f, 1.1f, 0) + new Vector3(-0.5f, 0.5f, MathHelper.PiOver4);
+            var cleanPrediction = new Pose(new Vector2(1.9f, 1.1f) + new Vector2(-0.5f, 0.5f), 0 + MathHelper.PiOver4);
 
-            var prediction1 = omm.PredictParticleState(new Vector3(1.9f, 1.1f, 0), new Vector3(-0.5f, 0.5f, MathHelper.PiOver4));
+            var prediction1 = omm.PredictParticleState(new Pose(new Vector2(1.9f, 1.1f), 0), new Pose(new Vector2(-0.5f, 0.5f), Constants.PiOver4));
             Console.WriteLine(prediction1);
-            Assert.That(prediction1.EqualsRelatively(cleanPrediction, 0.05));
+            Assert.That(prediction1.Position.EqualsRelatively(cleanPrediction.Position, 0.05));
+            Assert.That(prediction1.Bearing, Is.EqualTo(cleanPrediction.Bearing).Within(0.1));
 
-            var prediction2 = omm.PredictParticleState(new Vector3(1.9f, 1.1f, 0), new Vector3(-0.5f, 0.5f, MathHelper.PiOver4));
+            var prediction2 = omm.PredictParticleState(new Pose(new Vector2(1.9f, 1.1f), 0), new Pose(new Vector2(-0.5f, 0.5f), Constants.PiOver4));
             Console.WriteLine(prediction2);
-            Assert.That(prediction2.EqualsRelatively(cleanPrediction, 0.05));
+            Assert.That(prediction2.Position.EqualsRelatively(cleanPrediction.Position, 0.05));
+            Assert.That(prediction2.Bearing, Is.EqualTo(cleanPrediction.Bearing).Within(0.1));
 
             Assert.That(prediction1, Is.Not.EqualTo(prediction2));
         }
@@ -41,46 +44,48 @@ namespace Brumba.WaiterStupid.Tests
                 rotNoiseCoeffs: new Vector2(0.01f, 0.01f),
                 transNoiseCoeffs: new Vector2(0.01f, 0.01f));
 
-            Assert.That(omm.PredictParticleState(new Vector3(0, 0, MathHelper.TwoPi - MathHelper.PiOver4), new Vector3(0, 0, MathHelper.PiOver2)).Z,
-                Is.EqualTo(MathHelper.PiOver4).Within(1e-1));
+            Assert.That(omm.PredictParticleState(new Pose(new Vector2(0, 0), Constants.Pi2 - Constants.PiOver4), new Pose(new Vector2(0, 0), Constants.PiOver2)).Bearing,
+                Is.EqualTo(Constants.PiOver4).Within(1e-1));
 
-            Assert.That(omm.PredictParticleState(new Vector3(0, 0, MathHelper.Pi - MathHelper.PiOver4), new Vector3(0, 0, MathHelper.PiOver2)).Z,
-                Is.EqualTo(5 * MathHelper.PiOver4).Within(1e-1));
+            Assert.That(omm.PredictParticleState(new Pose(new Vector2(0, 0), Constants.Pi - Constants.PiOver4), new Pose(new Vector2(0, 0), Constants.PiOver2)).Bearing,
+                Is.EqualTo(5 * Constants.PiOver4).Within(1e-1));
         }
 
         [Test]
         public void OdometryToRotTransRotSequence()
         {
-            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Vector3(1, 2, 0), new Vector3(1, 0, 0)),
+            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Pose(new Vector2(1, 2), 0), new Pose(new Vector2(1, 0), 0)),
                 Is.EqualTo(new Vector3(0, 1, 0)));
 
-            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Vector3(1, 2, 0), new Vector3(1, 0, MathHelper.PiOver4)),
+            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Pose(new Vector2(1, 2), 0), new Pose(new Vector2(1, 0), MathHelper.PiOver4)),
                 Is.EqualTo(new Vector3(0, 1, MathHelper.PiOver4)));
 
-            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Vector3(1, 2, MathHelper.PiOver4), new Vector3(1, 0, -MathHelper.PiOver4)).
+            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Pose(new Vector2(1, 2), Constants.PiOver4), new Pose(new Vector2(1, 0), 7 * Constants.PiOver4)).
 				EqualsRelatively(new Vector3(-MathHelper.PiOver4, 1, 0), 1e-5));
 
-            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Vector3(1, 2, MathHelper.PiOver4), new Vector3(1, 0, MathHelper.PiOver4)).
+            Assert.That(OdometryMotionModel.OdometryToRotTransRotSequence(new Pose(new Vector2(1, 2), Constants.PiOver4), new Pose(new Vector2(1, 0), Constants.PiOver4)).
                 EqualsRelatively(new Vector3(-MathHelper.PiOver4, 1, MathHelper.PiOver2), 1e-5));
         }
 
         [Test]
         public void RotTransRotSequenceToOdometry()
         {
-            Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Vector3(1, 2, 0), new Vector3(MathHelper.PiOver4, 0, 0)),
-                Is.EqualTo(new Vector3(0, 0, MathHelper.PiOver4)));
+            Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Pose(new Vector2(1, 2), 0), new Vector3(MathHelper.PiOver4, 0, 0)),
+                Is.EqualTo(new Pose(new Vector2(0, 0), MathHelper.PiOver4)));
 
-            Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Vector3(1, 2, 0), new Vector3(MathHelper.PiOver4, 1, 0)),
-                Is.EqualTo(new Vector3(1 / (float)Math.Sqrt(2), 1 / (float)Math.Sqrt(2), MathHelper.PiOver4)));
+            Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Pose(new Vector2(1, 2), 0), new Vector3(MathHelper.PiOver4, 1, 0)),
+                Is.EqualTo(new Pose(new Vector2(1 / (float)Constants.Sqrt2, 1 / (float)Constants.Sqrt2), MathHelper.PiOver4)));
 
-            Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Vector3(1, 2, 0), new Vector3(MathHelper.PiOver4, 1, -MathHelper.PiOver4)),
-                Is.EqualTo(new Vector3(1 / (float)Math.Sqrt(2), 1 / (float)Math.Sqrt(2), 0)));
+            Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Pose(new Vector2(1, 2), 0), new Vector3(MathHelper.PiOver4, 1, -MathHelper.PiOver4)),
+                Is.EqualTo(new Pose(new Vector2(1 / (float)Constants.Sqrt2, 1 / (float)Constants.Sqrt2), 0)));
 
-			Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Vector3(0, 0, MathHelper.Pi), new Vector3(MathHelper.Pi, 1, MathHelper.Pi)).
-				EqualsRelatively(new Vector3(1, 0, 0), 1e-5));
+            var o1 = OdometryMotionModel.RotTransRotSequenceToOdometry(new Pose(new Vector2(0, 0), Constants.Pi), new Vector3(MathHelper.Pi, 1, MathHelper.Pi));
+            Assert.That(o1.Position.EqualsRelatively(new Vector2(1, 0), 1e-5));
+            Assert.That(o1.Bearing, Is.EqualTo(0));
 
-			Assert.That(OdometryMotionModel.RotTransRotSequenceToOdometry(new Vector3(0, 0, MathHelper.Pi), new Vector3(MathHelper.PiOver2, 1, MathHelper.Pi)).
-				EqualsRelatively(new Vector3(0, -1, 3 * MathHelper.PiOver2), 1e-5));
+            var o2 = OdometryMotionModel.RotTransRotSequenceToOdometry(new Pose(new Vector2(0, 0), Constants.Pi), new Vector3(MathHelper.PiOver2, 1, MathHelper.Pi));
+            Assert.That(o2.Position.EqualsRelatively(new Vector2(0, -1), 1e-5));
+            Assert.That(o2.Bearing, Is.EqualTo(3 * MathHelper.PiOver2));
         }
 
         [Test]
@@ -120,11 +125,11 @@ namespace Brumba.WaiterStupid.Tests
                 rotNoiseCoeffs: new Vector2(0.1f, 0.1f),
                 transNoiseCoeffs: new Vector2(0.1f, 0.1f));
 
-            Assert.That(omm.PredictParticleState(new Vector3(1.9f, 1.1f, 0), new Vector3(0.6f, 0.4f, 0)),
-                Is.EqualTo(new Vector3(1.9f, 1.1f, 0)));//move to center of occupied cell, no chance to deviate
+            Assert.That(omm.PredictParticleState(new Pose(new Vector2(1.9f, 1.5f), 0), new Pose(new Vector2(0.6f, 0), 0)),
+                Is.EqualTo(new Pose(new Vector2(1.9f, 1.5f), 0)));//move to center of occupied cell, no chance to deviate
 
-            Assert.That(omm.PredictParticleState(new Vector3(0, 0, 0), new Vector3(2.1f, 1.1f, 0)),
-                Is.Not.EqualTo(new Vector3(0, 0, 0)));//move to occupied cell, near its border
+            Assert.That(omm.PredictParticleState(new Pose(new Vector2(0, 0), 0), new Pose(new Vector2(2.1f, 1.1f), 0)),
+                Is.Not.EqualTo(new Pose(new Vector2(0, 0), 0)));//move to occupied cell, near its border
         }
 
         [Test]
@@ -135,9 +140,9 @@ namespace Brumba.WaiterStupid.Tests
                 rotNoiseCoeffs: new Vector2(0.01f, 0.01f),
                 transNoiseCoeffs: new Vector2(0.01f, 0.01f));
 
-            var prediction = omm.PredictParticleState(new Vector3(2.9f, 0.5f, 0), new Vector3(0.2f, 0, 0));
-            var wrappedPred = new Vector3(prediction.X, prediction.Y, prediction.Z.ToMinAbsValueAngle());
-            Assert.That(wrappedPred.EqualsRelatively(new Vector3(3.1f, 0.5f, 0), 0.05));//move outside of the map
+            var prediction = omm.PredictParticleState(new Pose(new Vector2(2.9f, 0.5f), 0), new Pose(new Vector2(0.2f, 0), 0));
+            Assert.That(prediction.Position.EqualsRelatively(new Vector2(3.1f, 0.5f), 0.05));//move outside of the map
+            Assert.That(prediction.Bearing.ToMinAbsValueAngle(), Is.EqualTo(0).Within(0.01));//move outside of the map
         }
 
         static double StdDev(IEnumerable<Vector3> vecs, Func<Vector3, float> selector)

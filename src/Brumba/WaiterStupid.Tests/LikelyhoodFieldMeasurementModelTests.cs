@@ -1,6 +1,7 @@
 using System;
 using Brumba.Utils;
 using Brumba.WaiterStupid.McLocalization;
+using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
@@ -23,10 +24,10 @@ namespace Brumba.WaiterStupid.Tests
                 //|   | O |   |
                 rangefinderProperties: new RangefinderProperties
                 {
-                    AngularResolution = MathHelper.PiOver2,
-                    AngularRange = MathHelper.Pi,
+                    AngularResolution = Constants.PiOver2,
+                    AngularRange = Constants.Pi,
                     MaxRange = 2f,
-                    ZeroBeamAngleInRobot = 3 * MathHelper.PiOver2
+                    ZeroBeamAngleInRobot = 3 * Constants.PiOver2
                 },
                 sigmaHit: 0.1f,
                 weightHit: 0.7f,
@@ -38,7 +39,7 @@ namespace Brumba.WaiterStupid.Tests
         public void ScanLikelihood()
         {
             Assert.That(
-                _lfmm.ComputeMeasurementLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi*3/2), new[] {2f, 1, 1}),
+                _lfmm.ComputeMeasurementLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), new[] { 2f, 1, 1 }),
                 Is.EqualTo(
                     2 *(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom / _lfmm.RangefinderProperties.MaxRange) + 0.1).Within(1e-5));
         }
@@ -46,46 +47,46 @@ namespace Brumba.WaiterStupid.Tests
         [Test]
         public void BeamLikelihood()
         {
-            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 1f, 2),
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 1f, 2),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 0.4f, 2),
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 0.4f, 2),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 0.2f, 2),
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 0.2f, 2),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0.2) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 1f, 1),
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 1f, 1),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, MathHelper.Pi * 3 / 2), 1f, 0),
-                Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Math.Sqrt(2) - 0.6) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 1f, 0),
+                Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Constants.Sqrt2 - 0.6) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
         }
 
         [Test]
         public void BeamOutOfMap()
         {
             //Если робот вылез за карту - проблема высшего уровня, фильтр не должен быть вызван с такой одометрией
-            Assert.That(_lfmm.BeamLikelihood(new Vector3(1.5f, 1.5f, 0), 1f, 2), Is.EqualTo(0));
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 0), 1f, 2), Is.EqualTo(0));
         }
 
         [Test]
         public void BeamEndPointPosition()
         {
-            Assert.That(_lfmm.BeamEndPointPosition(1.5f, 0, new Vector3(1, 1, MathHelper.PiOver2)).EqualsRelatively(new Vector2(2.5f, 1), 0.001));
-            Assert.That(_lfmm.BeamEndPointPosition(1f, 0, new Vector3(1, 1, MathHelper.PiOver2)).EqualsRelatively(new Vector2(2, 1), 0.001));
-            Assert.That(_lfmm.BeamEndPointPosition(1.5f, 1, new Vector3(1, 1, MathHelper.PiOver2)).EqualsRelatively(new Vector2(1, 2.5f), 0.001));
-            Assert.That(_lfmm.BeamEndPointPosition(1.5f, 2, new Vector3(1, 1, MathHelper.PiOver2)).EqualsRelatively(new Vector2(-0.5f, 1), 0.001));
+            Assert.That(_lfmm.BeamEndPointPosition(new Pose(new Vector2(1, 1), Constants.PiOver2), 1.5f, 0).EqualsRelatively(new Vector2(2.5f, 1), 0.001));
+            Assert.That(_lfmm.BeamEndPointPosition(new Pose(new Vector2(1, 1), Constants.PiOver2), 1f, 0).EqualsRelatively(new Vector2(2, 1), 0.001));
+            Assert.That(_lfmm.BeamEndPointPosition(new Pose(new Vector2(1, 1), Constants.PiOver2), 1.5f, 1).EqualsRelatively(new Vector2(1, 2.5f), 0.001));
+            Assert.That(_lfmm.BeamEndPointPosition(new Pose(new Vector2(1, 1), Constants.PiOver2), 1.5f, 2).EqualsRelatively(new Vector2(-0.5f, 1), 0.001));
         }
 
         [Test]
         public void RobotToMapTransformation()
         {
-            Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(1, 0), new Vector3(1, 2, 0)).EqualsRelatively(new Vector2(2, 2), 0.001));
-            Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(0, 1), new Vector3(1, 2, 0)).EqualsRelatively(new Vector2(1, 3), 0.001));
+            Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(1, 0), new Pose(new Vector2(1, 2), 0)).EqualsRelatively(new Vector2(2, 2), 0.001));
+            Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(0, 1), new Pose(new Vector2(1, 2), 0)).EqualsRelatively(new Vector2(1, 3), 0.001));
 
-            Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(1, 0), new Vector3(1, 2, MathHelper.PiOver2)).EqualsRelatively(new Vector2(1, 3), 0.001));
-            Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(0, 1), new Vector3(1, 2, MathHelper.PiOver2)).EqualsRelatively(new Vector2(0, 2), 0.001));
+            Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(1, 0), new Pose(new Vector2(1, 2), Constants.PiOver2)).EqualsRelatively(new Vector2(1, 3), 0.001));
+            Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(0, 1), new Pose(new Vector2(1, 2), Constants.PiOver2)).EqualsRelatively(new Vector2(0, 2), 0.001));
         }
 
         [Test]
@@ -93,10 +94,10 @@ namespace Brumba.WaiterStupid.Tests
         {
             var rfp = new RangefinderProperties
             {
-                AngularResolution = MathHelper.PiOver2,
-                AngularRange = MathHelper.Pi,
+                AngularResolution = Constants.PiOver2,
+                AngularRange = Constants.Pi,
                 MaxRange = 2f,
-                ZeroBeamAngleInRobot = 3 * MathHelper.PiOver2
+                ZeroBeamAngleInRobot = 3 * Constants.PiOver2
             };
             Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0).EqualsRelatively(new Vector2(0, -1), 0.001));
             Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1).EqualsRelatively(new Vector2(1, 0), 0.001));
@@ -123,7 +124,7 @@ namespace Brumba.WaiterStupid.Tests
             var lfmm = new LikelihoodFieldMeasurementModel
             (
                 new OccupancyGrid(new[,] { { false, false, false }, { false, false, false} }, 1),
-                new RangefinderProperties { AngularResolution = MathHelper.PiOver2, AngularRange = MathHelper.Pi, MaxRange = 2f, ZeroBeamAngleInRobot = 3 * MathHelper.PiOver2 },
+                new RangefinderProperties { AngularResolution = Constants.PiOver2, AngularRange = Constants.Pi, MaxRange = 2f, ZeroBeamAngleInRobot = 3 * Constants.PiOver2 },
                 0.1f, 0.7f, 0.3f
             );
 

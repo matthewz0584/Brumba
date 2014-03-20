@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Brumba.Utils;
 using Brumba.WaiterStupid.McLocalization;
+using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
@@ -23,21 +24,21 @@ namespace Brumba.WaiterStupid.Tests
 
             ph.Build(poseSamples: new[]
             {
-                new Vector3(0.5f, 0.5f, MathHelper.PiOver2), new Vector3(0.5f, 0.5f, -MathHelper.PiOver2),
-                new Vector3(1.1f, 1.3f, MathHelper.PiOver2), new Vector3(1.9f, 1.7f, 3 * MathHelper.PiOver4),
-                new Vector3(0.5f, 1.7f, MathHelper.PiOver2), new Vector3(5f, 5f, MathHelper.PiOver2)
+                new Pose(new Vector2(0.5f, 0.5f), Constants.PiOver2), new Pose(new Vector2(0.5f, 0.5f), 5 * Constants.PiOver4),
+                new Pose(new Vector2(1.1f, 1.3f), Constants.PiOver2), new Pose(new Vector2(1.9f, 1.7f), 3 * Constants.PiOver4),
+                new Pose(new Vector2(0.5f, 1.7f), Constants.PiOver2), new Pose(new Vector2(5f, 5f), Constants.PiOver2)
             });
 
             Assert.That(ph.Bins.Count(), Is.EqualTo(8));
             Assert.That(ph.Bins.Select(b => b.Samples.Count()).Sum(), Is.EqualTo(5));
-            
-            Assert.That(ph[new Vector3(0.5f, 0.5f, MathHelper.PiOver2)].Samples, Is.EquivalentTo(new[] { new Vector3(0.5f, 0.5f, MathHelper.PiOver2) }));
 
-            Assert.That(ph[new Vector3(0.5f, 0.5f, -MathHelper.PiOver2)].Samples, Is.EquivalentTo(new[] { new Vector3(0.5f, 0.5f, -MathHelper.PiOver2) }));
+            Assert.That(ph[new Pose(new Vector2(0.5f, 0.5f), Constants.PiOver2)].Samples, Is.EquivalentTo(new[] { new Pose(new Vector2(0.5f, 0.5f), Constants.PiOver2) }));
 
-            Assert.That(ph[new Vector3(1.1f, 1.3f, MathHelper.PiOver2)].Samples, Is.EquivalentTo(new[] { new Vector3(1.1f, 1.3f, MathHelper.PiOver2), new Vector3(1.9f, 1.7f, 3 * MathHelper.PiOver4) }));
+            Assert.That(ph[new Pose(new Vector2(0.5f, 0.5f), 3 * Constants.PiOver2)].Samples, Is.EquivalentTo(new[] { new Pose(new Vector2(0.5f, 0.5f), 5 * Constants.PiOver4) }));
 
-            Assert.That(ph[new Vector3(0.5f, 1.7f, MathHelper.PiOver2)].Samples, Is.EquivalentTo(new[] { new Vector3(0.5f, 1.7f, MathHelper.PiOver2) }));
+            Assert.That(ph[new Pose(new Vector2(1.1f, 1.3f), Constants.PiOver2)].Samples, Is.EquivalentTo(new[] { new Pose(new Vector2(1.1f, 1.3f), Constants.PiOver2), new Pose(new Vector2(1.9f, 1.7f), 3 * Constants.PiOver4) }));
+
+            Assert.That(ph[new Pose(new Vector2(0.5f, 1.7f), Constants.PiOver2)].Samples, Is.EquivalentTo(new[] { new Pose(new Vector2(0.5f, 1.7f), Constants.PiOver2) }));
         }
 
         [Test]
@@ -53,18 +54,18 @@ namespace Brumba.WaiterStupid.Tests
 
             ph.Build(poseSamples: new[]
             {
-                new Vector3(0.5f, 0.5f, MathHelper.PiOver2), new Vector3(0.5f, 0.5f, -MathHelper.PiOver2),
-                new Vector3(1.1f, 1.3f, MathHelper.PiOver2), new Vector3(1.9f, 1.7f, 3 * MathHelper.PiOver4),
-                new Vector3(0.5f, 1.7f, MathHelper.PiOver2), new Vector3(5f, 5f, MathHelper.PiOver2)
+                new Pose(new Vector2(0.5f, 0.5f), Constants.PiOver2), new Pose(new Vector2(0.5f, 0.5f), 5 * Constants.PiOver4),
+                new Pose(new Vector2(1.1f, 1.3f), Constants.PiOver2), new Pose(new Vector2(1.9f, 1.7f), 3 * Constants.PiOver4),
+                new Pose(new Vector2(0.5f, 1.7f), Constants.PiOver2), new Pose(new Vector2(5f, 5f), Constants.PiOver2)
             });
 
-            Assert.That(ph[0, 0, 0].Samples, Is.EquivalentTo(new[] { new Vector3(0.5f, 0.5f, MathHelper.PiOver2) }));
-            Assert.That(ph[0, 0, 1].Samples, Is.EquivalentTo(new[] { new Vector3(0.5f, 0.5f, -MathHelper.PiOver2) }));
-            Assert.That(ph[0, 1, 0].Samples, Is.EquivalentTo(new[] { new Vector3(0.5f, 1.7f, MathHelper.PiOver2) }));
+            Assert.That(ph[0, 0, 0].Samples, Is.EquivalentTo(new[] { new Pose(new Vector2(0.5f, 0.5f), Constants.PiOver2) }));
+            Assert.That(ph[0, 0, 1].Samples, Is.EquivalentTo(new[] { new Pose(new Vector2(0.5f, 0.5f), 5 * Constants.PiOver4) }));
+            Assert.That(ph[0, 1, 0].Samples, Is.EquivalentTo(new[] { new Pose(new Vector2(0.5f, 1.7f), Constants.PiOver2) }));
             Assert.That(ph[0, 1, 1].Samples, Is.Empty);
             Assert.That(ph[1, 0, 0].Samples, Is.Empty);
             Assert.That(ph[1, 0, 1].Samples, Is.Empty);
-            Assert.That(ph[1, 1, 0].Samples, Is.EquivalentTo(new[] { new Vector3(1.1f, 1.3f, MathHelper.PiOver2), new Vector3(1.9f, 1.7f, 3 * MathHelper.PiOver4) }));
+            Assert.That(ph[1, 1, 0].Samples, Is.EquivalentTo(new[] { new Pose(new Vector2(1.1f, 1.3f), Constants.PiOver2), new Pose(new Vector2(1.9f, 1.7f), 3 * Constants.PiOver4) }));
             Assert.That(ph[1, 1, 1].Samples, Is.Empty);
         }
 
@@ -88,20 +89,21 @@ namespace Brumba.WaiterStupid.Tests
         public void PoseBinAddSample()
         {
             var pb = new PoseHistogram.PoseBin();
-            pb.AddSample(new Vector3(1, 2, MathHelper.PiOver2));
-            pb.AddSample(new Vector3(3, 6, -MathHelper.PiOver4));
+            pb.AddSample(new Pose(new Vector2(1, 2), Constants.PiOver2));
+            pb.AddSample(new Pose(new Vector2(3, 6), Constants.PiOver4));
 
-            Assert.That(pb.Samples, Is.EquivalentTo(new [] {new Vector3(1, 2, MathHelper.PiOver2), new Vector3(3, 6, -MathHelper.PiOver4) } ));
+            Assert.That(pb.Samples, Is.EquivalentTo(new[] { new Pose(new Vector2(1, 2), Constants.PiOver2), new Pose(new Vector2(3, 6), Constants.PiOver4) }));
         }
 
         [Test]
-        public void PoseBinPoseMean()
+        public void PoseBinCalculatePoseMean()
         {
             var pb = new PoseHistogram.PoseBin();
-            pb.AddSample(new Vector3(1, 2, MathHelper.PiOver2));
-            pb.AddSample(new Vector3(3, 6, MathHelper.PiOver4));
+            pb.AddSample(new Pose(new Vector2(1, 2), Constants.PiOver2));
+            pb.AddSample(new Pose(new Vector2(3, 6), Constants.PiOver4));
 
-            Assert.That(pb.PoseMean(), Is.EqualTo(new Vector3(2, 4, MathHelper.Pi * 3 / 8)));
+            Assert.That(pb.CalculatePoseMean().Position, Is.EqualTo(new Vector2(2, 4)));
+            Assert.That(pb.CalculatePoseMean().Bearing, Is.EqualTo(Constants.Pi * 3 / 8));
         }
     }
 }

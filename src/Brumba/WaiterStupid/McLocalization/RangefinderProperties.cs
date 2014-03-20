@@ -6,10 +6,10 @@ namespace Brumba.WaiterStupid.McLocalization
 {
     public struct RangefinderProperties
     {
-        public float AngularResolution { get; set; }
-        public float AngularRange { get; set; }
-        public float MaxRange { get; set; }
-        public float ZeroBeamAngleInRobot { get; set; }
+        public double AngularResolution { get; set; }
+        public double AngularRange { get; set; }
+        public double MaxRange { get; set; }
+        public double ZeroBeamAngleInRobot { get; set; }
 
         public Vector2 BeamToVectorInRobotTransformation(float zi, int i)
         {
@@ -22,7 +22,7 @@ namespace Brumba.WaiterStupid.McLocalization
             Contract.Requires(AngularResolution > 0);
             Contract.Ensures(Contract.Result<Vector2>().Length().AlmostEqualInDecimalPlaces(zi, 5));
 
-            return Vector2.Transform(new Vector2(zi, 0), Matrix.CreateRotationZ(ZeroBeamAngleInRobot + i * AngularResolution));
+            return Vector2.Transform(new Vector2(zi, 0), Matrix.CreateRotationZ((float)ZeroBeamAngleInRobot + i * (float)AngularResolution));
         }
     }
 }

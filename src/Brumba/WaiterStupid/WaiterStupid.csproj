@@ -144,6 +144,7 @@
     <Compile Include="McLocalization\LikelihoodFieldMeasurementModel.cs" />
     <Compile Include="McLocalization\OccupancyGrid.cs" />
     <Compile Include="McLocalization\ParticleFilter.cs" />
+    <Compile Include="McLocalization\Pose.cs" />
     <Compile Include="McLocalization\PoseHistogram.cs" />
     <Compile Include="McLocalization\RangefinderProperties.cs" />
     <Compile Include="McLocalization\ResamplingWheel.cs" />

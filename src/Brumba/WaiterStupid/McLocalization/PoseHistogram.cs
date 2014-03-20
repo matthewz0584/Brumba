@@ -36,7 +36,7 @@ namespace Brumba.WaiterStupid.McLocalization
             get { return new Vector3(Map.SizeInCells.X, Map.SizeInCells.Y, (int) Math.Ceiling(2 * Math.PI / ThetaBinSize)); }
         }
 
-        public void Build(IEnumerable<Vector3> poseSamples)
+        public void Build(IEnumerable<Pose> poseSamples)
         {
             Contract.Requires(poseSamples != null);
             Contract.Requires(poseSamples.Any());
@@ -51,19 +51,19 @@ namespace Brumba.WaiterStupid.McLocalization
                 for (var y = 0; y < _histogram.GetLength(1); ++y)
                     for (var theta = 0; theta < _histogram.GetLength(2); ++theta)
                         _histogram[x, y, theta] = new PoseBin();
-            foreach (var p in poseSamples.Where(ps => Map.Covers(ps.ExtractVector2())))
+            foreach (var p in poseSamples.Where(ps => Map.Covers(ps.Position)))
                 this[p].AddSample(p);
         }
 
-        public PoseBin this[Vector3 poseSample]
+        public PoseBin this[Pose poseSample]
         {
             get
             {
-                Contract.Requires(Map.Covers(poseSample.ExtractVector2()));
+                Contract.Requires(Map.Covers(poseSample.Position));
                 Contract.Ensures(Contract.Result<PoseBin>() != null);
 
-                var poseCell = Map.PosToCell(poseSample.ExtractVector2());
-                return this[poseCell.X, poseCell.Y, (int)(poseSample.Z.ToPositiveAngle() / ThetaBinSize)];
+                var poseCell = Map.PosToCell(poseSample.Position);
+                return this[poseCell.X, poseCell.Y, (int)(poseSample.Bearing.ToPositiveAngle() / ThetaBinSize)];
             }
         }
 
@@ -102,27 +102,27 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public class PoseBin
         {
-            readonly List<Vector3> _samples = new List<Vector3>();
+            readonly List<Pose> _samples = new List<Pose>();
 
-            public IEnumerable<Vector3> Samples
+            public IEnumerable<Pose> Samples
             {
                 get { return _samples; }
             }
 
-            public void AddSample(Vector3 poseSample)
+            public void AddSample(Pose poseSample)
             {
                 Contract.Ensures(Samples.Count() == Contract.OldValue(Samples.Count()) + 1);
 
                 _samples.Add(poseSample);
             }
 
-            public Vector3 PoseMean()
+            public Pose CalculatePoseMean()
             {
                 Contract.Requires(Samples.Any());
 
-                var position = _samples.Aggregate(new Vector2(), (sum, next) => next.ExtractVector2() + sum) / _samples.Count;
-                var theta = MathHelper2.AngleMean(_samples.Select(s => s.Z));
-                return new Vector3(position, theta);
+                var position = _samples.Aggregate(new Vector2(), (sum, next) => next.Position + sum) / _samples.Count;
+                var bearing = MathHelper2.AngleMean(_samples.Select(s => s.Bearing));
+                return new Pose(position, bearing);
             }
         }
     }

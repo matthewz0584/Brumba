@@ -2,12 +2,34 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Xna.Framework;
 
 namespace Brumba.Utils
 {
     public static class MathHelper2
     {
+        public static double ToPositiveAngle(this double angle)
+        {
+            Contract.Requires(!double.IsInfinity(angle));
+            Contract.Ensures(double.IsNaN(angle) || Contract.Result<double>() >= 0);
+            Contract.Ensures(double.IsNaN(angle) || Contract.Result<double>() < Constants.Pi2);
+
+            var angleRem = angle % Constants.Pi2;
+            return angleRem + (angleRem < 0 ? Constants.Pi2 : 0);
+        }
+
+        public static double ToMinAbsValueAngle(this double angle)
+	    {
+            Contract.Requires(!double.IsInfinity(angle));
+            Contract.Ensures(double.IsNaN(angle) || Contract.Result<double>() >= -Constants.Pi);
+            Contract.Ensures(double.IsNaN(angle) || Contract.Result<double>() < Constants.Pi);
+
+            var posAngle = angle.ToPositiveAngle();
+            return (Constants.Pi2 - posAngle) <= posAngle ? posAngle - Constants.Pi2 : posAngle;
+	    }
+
         public static float ToPositiveAngle(this float angle)
         {
             Contract.Requires(!float.IsInfinity(angle));
@@ -20,8 +42,8 @@ namespace Brumba.Utils
             //return angleMinAbs + (angleMinAbs < 0 ? MathHelper.TwoPi : 0);
         }
 
-	    public static float ToMinAbsValueAngle(this float angle)
-	    {
+        public static float ToMinAbsValueAngle(this float angle)
+        {
             Contract.Requires(!float.IsInfinity(angle));
             Contract.Ensures(float.IsNaN(angle) || Contract.Result<float>() >= -MathHelper.Pi);
             Contract.Ensures(float.IsNaN(angle) || Contract.Result<float>() < MathHelper.Pi);
@@ -29,8 +51,8 @@ namespace Brumba.Utils
             var posAngle = angle.ToPositiveAngle();
             return (MathHelper.TwoPi - posAngle) <= posAngle ? posAngle - MathHelper.TwoPi : posAngle;
             //I do not use WrapAngle because it returns angles -pi < a <= pi, and I need -pi included, and pi excluded
-	        //return MathHelper.WrapAngle(angle);
-	    }
+            //return MathHelper.WrapAngle(angle);
+        }
 
         public static float AngleDifference(float angle1, float angle2)
         {
@@ -87,6 +109,14 @@ namespace Brumba.Utils
         }
 
         [Pure]
+        public static bool Between(this double me, double lower, double upper)
+        {
+            Contract.Requires(upper > lower);
+
+            return me >= lower && upper > me;
+        }
+
+        [Pure]
         public static bool Between(this int me, int lower, int upper)
         {
             Contract.Requires(upper > lower);
@@ -128,21 +158,27 @@ namespace Brumba.Utils
             return me.X >= notMe.X && me.Y >= notMe.Y && me.Z >= notMe.Z;
         }
 
+        [Pure]
+        public static bool GreaterOrEqual(this Vector2 me, Vector2 notMe)
+        {
+            return me.X >= notMe.X && me.Y >= notMe.Y;
+        }
+
         public static Vector2 ExtractVector2(this Vector3 v)
         {
             return new Vector2(v.X, v.Y);
         }
 
-        public static float AngleMean(IEnumerable<float> angles)
+        public static double AngleMean(IEnumerable<double> angles)
         {
             Contract.Requires(angles != null);
             Contract.Requires(angles.Any());
-            Contract.Ensures(Single.IsNaN(Contract.Result<float>()) || Contract.Result<float>().Between(0, MathHelper.TwoPi));
+            Contract.Ensures(double.IsNaN(Contract.Result<double>()) || Contract.Result<double>().Between(0, Constants.Pi2));
 
-            var avgVector = angles.Aggregate(new Vector2(), (sum, next) => new Vector2((float)Math.Cos(next), (float)Math.Sin(next)) + sum);
-            return avgVector.LengthSquared() < 0.01 ?
-                Single.NaN :
-                ((float)Math.Atan2(avgVector.Y, avgVector.X)).ToPositiveAngle();
+            var avgVector = angles.Aggregate(new DenseVector(2), (sum, next) => new DenseVector(new []{Math.Cos(next), Math.Sin(next)}) + sum);
+            return avgVector.DotProduct(avgVector) < 0.01 ?
+                double.NaN :
+                Math.Atan2(avgVector[1], avgVector[0]).ToPositiveAngle();
         }
     }
 }

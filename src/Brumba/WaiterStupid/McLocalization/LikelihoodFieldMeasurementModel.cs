@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Brumba.WaiterStupid.McLocalization
 {
-    public class LikelihoodFieldMeasurementModel : IMeasurementModel<Vector3, IEnumerable<float>>
+    public class LikelihoodFieldMeasurementModel : IMeasurementModel<Pose, IEnumerable<float>>
     {
         public OccupancyGrid Map { get; private set; }
         public RangefinderProperties RangefinderProperties { get; private set; }
@@ -45,7 +45,7 @@ namespace Brumba.WaiterStupid.McLocalization
             WeightRandom = weightRandom;
         }
 
-        public float ComputeMeasurementLikelihood(Vector3 robotPose, IEnumerable<float> scan)
+        public float ComputeMeasurementLikelihood(Pose robotPose, IEnumerable<float> scan)
         {
             Contract.Assume(scan != null);
             Contract.Assume(scan.Count() == RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution + 1);
@@ -68,39 +68,39 @@ namespace Brumba.WaiterStupid.McLocalization
 	        return measurementLikelihood;
         }
 
-        public float BeamLikelihood(Vector3 robotPose, float zi, int i)
+        public float BeamLikelihood(Pose robotPose, float zi, int i)
         {
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= RangefinderProperties.MaxRange);
             Contract.Requires(i >= 0);
             Contract.Ensures(Contract.Result<float>() >= 0);
 
-            var beamEndPointPosition = BeamEndPointPosition(zi, i, robotPose);
+            var beamEndPointPosition = BeamEndPointPosition(robotPose, zi, i);
 	        if (!Map.Covers(beamEndPointPosition))
 		        return 0;
 
             return Vector2.Dot(
-                new Vector2(DensityHit(DistanceToNearestObstacle(beamEndPointPosition)), DensityRandom()),
+                new Vector2((float)DensityHit(DistanceToNearestObstacle(beamEndPointPosition)), (float)DensityRandom()),
                 new Vector2(WeightHit, WeightRandom));
         }
 
-        float DensityHit(float distanceToObstacle)
+        double DensityHit(float distanceToObstacle)
         {
             Contract.Requires(distanceToObstacle >= 0);
-            Contract.Ensures(Contract.Result<float>() >= 0);
+            Contract.Ensures(Contract.Result<double>() >= 0);
 
-            return (float)new Normal(0, SigmaHit).Density(distanceToObstacle);
+            return new Normal(0, SigmaHit).Density(distanceToObstacle);
         }
 
-        float DensityRandom()
+        double DensityRandom()
         {
             Contract.Requires(RangefinderProperties.MaxRange > 0);
-            Contract.Ensures(Contract.Result<float>() >= 0);
+            Contract.Ensures(Contract.Result<double>() >= 0);
 
-            return 1f / RangefinderProperties.MaxRange;
+            return 1d / RangefinderProperties.MaxRange;
         }
 
-        public Vector2 BeamEndPointPosition(float zi, int i, Vector3 robotPose)
+        public Vector2 BeamEndPointPosition(Pose robotPose, float zi, int i)
         {
             Contract.Requires(zi >= 0);
             Contract.Requires(zi <= RangefinderProperties.MaxRange);
@@ -110,9 +110,9 @@ namespace Brumba.WaiterStupid.McLocalization
             return RobotToMapTransformation(RangefinderProperties.BeamToVectorInRobotTransformation(zi, i), robotPose);
         }
 
-        public static Vector2 RobotToMapTransformation(Vector2 beam, Vector3 robotPose)
+        public static Vector2 RobotToMapTransformation(Vector2 beam, Pose robotPose)
         {
-            return Vector2.Transform(beam, Matrix.CreateRotationZ(robotPose.Z) * Matrix.CreateTranslation(new Vector3(robotPose.X, robotPose.Y, 0)));
+            return Vector2.Transform(beam, Matrix.CreateRotationZ((float)robotPose.Bearing) * Matrix.CreateTranslation(new Vector3(robotPose.Position, 0)));
         }
 
         public float DistanceToNearestObstacle(Vector2 position)

@@ -1,4 +1,5 @@
 ﻿using System;
+using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
@@ -10,11 +11,13 @@ namespace Brumba.Utils.Tests
         [Test]
         public void ToPositiveAngle()
         {
-            Assert.That(MathHelper2.ToPositiveAngle((float)Math.PI / 4), Is.EqualTo((float)Math.PI / 4));
-            Assert.That(MathHelper2.ToPositiveAngle(-(float)Math.PI / 4), Is.EqualTo((float)Math.PI * 7 / 4));
-            Assert.That(MathHelper2.ToPositiveAngle(-(float)Math.PI), Is.EqualTo((float)Math.PI));
-            Assert.That(MathHelper2.ToPositiveAngle(-6 * (float)Math.PI), Is.EqualTo(0).Within(1e-6));
-            Assert.That(MathHelper2.ToPositiveAngle(float.NaN), Is.EqualTo(float.NaN));
+            Assert.That(Constants.PiOver4.ToPositiveAngle(), Is.EqualTo(Constants.PiOver4));
+            Assert.That((-Constants.PiOver4).ToPositiveAngle(), Is.EqualTo(7 * Constants.PiOver4));
+            Assert.That((-Constants.Pi).ToPositiveAngle(), Is.EqualTo(Constants.Pi));
+            Assert.That((-6 * Constants.Pi).ToPositiveAngle(), Is.EqualTo(0).Within(1e-6));
+            Assert.That(double.NaN.ToPositiveAngle(), Is.NaN);
+            Assert.That((-double.Epsilon).ToPositiveAngle(), Is.EqualTo(0));
+            Assert.That((-100 * double.Epsilon).ToPositiveAngle(), Is.Not.EqualTo(0));
         }
 
         [Test]
@@ -35,20 +38,20 @@ namespace Brumba.Utils.Tests
 		[Test]
 		public void DoubleEqualsRelatively()
 		{
-			Assert.That(10f.EqualsRelatively(10, 0.1f));
-            Assert.That(11f.EqualsRelatively(10, 0.1f));
-			Assert.That(12f.EqualsRelatively(10, 0.1f), Is.False);
-			Assert.That(9f.EqualsRelatively(10, 0.1f));
-            Assert.That(8f.EqualsRelatively(10, 0.1f), Is.False);
+			Assert.That(10d.EqualsRelatively(10, 0.1));
+            Assert.That(11d.EqualsRelatively(10, 0.1));
+			Assert.That(12d.EqualsRelatively(10, 0.1), Is.False);
+			Assert.That(9d.EqualsRelatively(10, 0.1));
+            Assert.That(8d.EqualsRelatively(10, 0.1), Is.False);
 
-			Assert.That((-10f).EqualsRelatively(-10, 0.1f));            
-			Assert.That((-11f).EqualsRelatively(-10, 0.1f));
-            Assert.That((-12f).EqualsRelatively(-10, 0.1f), Is.False);
-			Assert.That((-9f).EqualsRelatively(-10, 0.1f));
-            Assert.That((-8f).EqualsRelatively(-10, 0.1f), Is.False);
+			Assert.That((-10d).EqualsRelatively(-10, 0.1));
+			Assert.That((-11d).EqualsRelatively(-10, 0.1));
+            Assert.That((-12d).EqualsRelatively(-10, 0.1), Is.False);
+			Assert.That((-9d).EqualsRelatively(-10, 0.1));
+            Assert.That((-8d).EqualsRelatively(-10, 0.1), Is.False);
 
-            Assert.That(10f.EqualsRelatively(10, 0));
-            Assert.That(10.000001f.EqualsRelatively(10, 0), Is.False);
+            Assert.That(10d.EqualsRelatively(10, 0));
+            Assert.That(10.000001d.EqualsRelatively(10, 0), Is.False);
 		}
 
 	    [Test]
@@ -66,24 +69,24 @@ namespace Brumba.Utils.Tests
 	    [Test]
 	    public void ToMinAbsValueAngle()
 	    {
-            Assert.That(0f.ToMinAbsValueAngle(), Is.EqualTo(0));
-            Assert.That((-MathHelper.Pi).ToMinAbsValueAngle(), Is.EqualTo(-MathHelper.Pi));
-            Assert.That(MathHelper.Pi.ToMinAbsValueAngle(), Is.EqualTo(-MathHelper.Pi));
-            Assert.That(MathHelper.PiOver4.ToMinAbsValueAngle(), Is.EqualTo(MathHelper.PiOver4));
-            Assert.That((3 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * MathHelper.PiOver4));
-            Assert.That((5 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
-            Assert.That((-3 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
-            Assert.That((-5 * MathHelper.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * MathHelper.PiOver4));
-            Assert.That((5 * MathHelper.PiOver4 + MathHelper.TwoPi).ToMinAbsValueAngle(), Is.EqualTo(-3 * MathHelper.PiOver4));
+            Assert.That(0d.ToMinAbsValueAngle(), Is.EqualTo(0));
+            Assert.That((-Constants.Pi).ToMinAbsValueAngle(), Is.EqualTo(-Constants.Pi));
+            Assert.That(Constants.Pi.ToMinAbsValueAngle(), Is.EqualTo(-Constants.Pi));
+            Assert.That(Constants.PiOver4.ToMinAbsValueAngle(), Is.EqualTo(Constants.PiOver4));
+            Assert.That((3 * Constants.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * Constants.PiOver4));
+            Assert.That((5 * Constants.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * Constants.PiOver4));
+            Assert.That((-3 * Constants.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(-3 * Constants.PiOver4));
+            Assert.That((-5 * Constants.PiOver4).ToMinAbsValueAngle(), Is.EqualTo(3 * Constants.PiOver4));
+            Assert.That((5 * Constants.PiOver4 + Constants.Pi2).ToMinAbsValueAngle(), Is.EqualTo(-3 * Constants.PiOver4).Within(1e-10));
 	    }
 
         [Test]
         public void AngleMean()
         {
-            Assert.That(MathHelper2.AngleMean(new[] { MathHelper.PiOver2, MathHelper.PiOver4 }), Is.EqualTo(MathHelper.Pi * 3 / 8));
-            Assert.That(MathHelper2.AngleMean(new[] { 3 * MathHelper.PiOver4, 5 * MathHelper.PiOver4 }), Is.EqualTo(MathHelper.Pi).Within(1e-5));
-            Assert.That(MathHelper2.AngleMean(new[] { MathHelper.PiOver4, 7 * MathHelper.PiOver4 }), Is.EqualTo(0).Within(1e-5));
-            Assert.That(MathHelper2.AngleMean(new[] { MathHelper.PiOver4, 5 * MathHelper.PiOver4 }), Is.NaN);
+            Assert.That(MathHelper2.AngleMean(new[] { Constants.PiOver2, Constants.PiOver4 }), Is.EqualTo(Constants.Pi * 3 / 8));
+            Assert.That(MathHelper2.AngleMean(new[] { 3 * Constants.PiOver4, 5 * Constants.PiOver4 }), Is.EqualTo(Constants.Pi));
+            Assert.That(MathHelper2.AngleMean(new[] { Constants.PiOver4, 7 * Constants.PiOver4 }), Is.EqualTo(0).Within(1e-5));
+            Assert.That(MathHelper2.AngleMean(new[] { Constants.PiOver4, 5 * Constants.PiOver4 }), Is.NaN);
         }
     }
 }
