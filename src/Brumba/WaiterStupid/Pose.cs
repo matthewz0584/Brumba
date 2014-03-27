@@ -1,5 +1,4 @@
 using Brumba.Utils;
-using Brumba.WaiterStupid.McLocalization;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
@@ -49,8 +48,6 @@ namespace Brumba.WaiterStupid
 
         public void Freeze()
         {
-            DC.Contract.Requires(!Freezed);
-
             _freezed = true;
         }
 

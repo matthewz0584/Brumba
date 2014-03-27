@@ -16,7 +16,7 @@ using xVector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("waiter_stupid_odometry_tests", Wip = true)]
+    [SimTestFixture("waiter_stupid_odometry_tests")]
 	public class WaiterStupidOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }

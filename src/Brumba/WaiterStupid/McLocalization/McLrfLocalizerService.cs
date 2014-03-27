@@ -30,7 +30,7 @@ namespace Brumba.WaiterStupid.McLocalization
                 AngularResolution = Constants.Degree,
                 AngularRange = Constants.Pi,
                 MaxRange = 10,
-                ZeroBeamAngleInRobot = -Constants.PiOver2
+                OriginPose = new Pose(new Vector2(), -Constants.PiOver2)
             },
             Map = new OccupancyGrid(new bool[100, 100], 0.1f),
             ParticlesNumber = 100,
@@ -49,7 +49,6 @@ namespace Brumba.WaiterStupid.McLocalization
         McLrfLocalizer _localizer;
         TimerFacade _timerFacade;
         Pose _currentOdometry;
-
 
         public McLrfLocalizerService(DsspServiceCreationPort creationPort)
             : base(creationPort)
@@ -124,7 +123,7 @@ namespace Brumba.WaiterStupid.McLocalization
             _timerFacade = new TimerFacade(this, _state.DeltaT);
         }
 
-        //This convenience method is implemented in Proxy, but I can not refer to proxy of the very assembly, wait for separation
+        //This convenience method is implemented in Proxy, but I can not refer to proxy of the very assembly, waiting for the separation
         PortSet<DiffDriveOdometryServiceState, Fault> GetOdometry()
         {
             var get = new Odometry.Get(new GetRequestType());

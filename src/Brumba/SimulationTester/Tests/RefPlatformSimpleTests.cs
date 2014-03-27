@@ -74,7 +74,7 @@ namespace Brumba.SimulationTester.Tests
 				yield break;
 			}
 
-            private void OnLrfNotification(SickLrfPxy.Replace replace)
+            void OnLrfNotification(SickLrfPxy.Replace replace)
 		    {
 		        _correctNotificationReceived = CheckStateAndMeasurements(replace.Body);
 		    }
@@ -82,14 +82,14 @@ namespace Brumba.SimulationTester.Tests
 		    [Test]
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
-				Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.State lrfState = null;
-                yield return Arbiter.Receive<SickLrfPxy.State>(false, (Fixture as RefPlatformSimpleTests).SickLrfPort.Get(), ss => lrfState = ss);
+				SickLrfPxy.State lrfState = null;
+                yield return Arbiter.Receive<SickLrfPxy.State>(false, Fixture.SickLrfPort.Get(), ss => lrfState = ss);
 
 			    @return(CheckStateAndMeasurements(lrfState) && _correctNotificationReceived);
 		        _correctNotificationReceived = false;
 			}
 
-            bool CheckStateAndMeasurements(Microsoft.Robotics.Services.Sensors.SickLRF.Proxy.State lrfState)
+			bool CheckStateAndMeasurements(SickLrfPxy.State lrfState)
             {
 				if (lrfState.DistanceMeasurements == null)
 					return false;
@@ -102,8 +102,8 @@ namespace Brumba.SimulationTester.Tests
 			                         (int)((lrfState.AngularRange / 2 - 90) / lrfState.AngularResolution);
 				return lrfState.DistanceMeasurements.Length == 667 &&
                         lrfState.DistanceMeasurements[minMeasurIndex] == 4500 &&
-                        lrfState.DistanceMeasurements[minMeasurIndex - 5] > 4500 && lrfState.DistanceMeasurements[minMeasurIndex - 5] < 4510 &&
-                        lrfState.DistanceMeasurements[minMeasurIndex + 5] > 4500 && lrfState.DistanceMeasurements[minMeasurIndex + 5] < 4510 &&
+                        lrfState.DistanceMeasurements[minMeasurIndex - 5].Between(4500, 4510) &&
+                        lrfState.DistanceMeasurements[minMeasurIndex + 5].Between(4500, 4510) &&
                         lrfState.DistanceMeasurements.Take(minMeasurIndex - 50).
                         Concat(lrfState.DistanceMeasurements.Skip(minMeasurIndex + 50)).All(d => d == 5600);
             }

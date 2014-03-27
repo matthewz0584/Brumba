@@ -65,7 +65,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateInfraredRfRing();
             //PopulateTurret();
             //PopulateHamster();
-	        PopulateReferencePlatform();
+	        PopulateRefPlatformSimpleTests();
 
             base.Start();
 
@@ -74,7 +74,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //_turret.BaseAngle = (float)Math.PI / 4;
         }
 
-	    private void PopulateReferencePlatform()
+	    private void PopulateRefPlatformSimpleTests()
 	    {
 			PopulateSimpleEnvironment();
 

@@ -136,8 +136,6 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public void Freeze()
         {
-            DC.Contract.Requires(!Freezed);
-
             Freezed = true;
         }
 

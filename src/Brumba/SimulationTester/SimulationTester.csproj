@@ -177,6 +177,7 @@
     <Compile Include="SimulationTesterAttributes.cs" />
     <Compile Include="Tests\FloorPlanBuilderTests.cs" />
     <Compile Include="Tests\RefPlatformSimpleTests.cs" />
+    <Compile Include="Tests\WaiterStupidMcLrfLocalizationTests.cs" />
     <Compile Include="Tests\WaiterStupidOdometryTests.cs" />
     <Compile Include="Tests\TurretTests.cs" />
     <Compile Include="Tests\InfraredRfRingTests.cs" />

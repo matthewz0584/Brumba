@@ -26,7 +26,7 @@ namespace Brumba.WaiterStupid.Tests
                     AngularResolution = Constants.Pi,
                     AngularRange = Constants.Pi,
                     MaxRange = 5,
-                    ZeroBeamAngleInRobot = 3 * Constants.PiOver2
+                    OriginPose = new Pose(new Vector2(), 0),
                 },
 				particlesNumber: 1000
                 );
@@ -81,7 +81,7 @@ namespace Brumba.WaiterStupid.Tests
                     AngularResolution = Constants.Pi,
                     AngularRange = Constants.Pi,
                     MaxRange = 5f,
-                    ZeroBeamAngleInRobot = 3 * Constants.PiOver2
+                    OriginPose = new Pose(new Vector2(), 0),
 				},
 				particlesNumber: 1000
                 );
@@ -112,7 +112,7 @@ namespace Brumba.WaiterStupid.Tests
                     AngularResolution = MathHelper.Pi,
                     AngularRange = MathHelper.Pi,
                     MaxRange = 5f,
-                    ZeroBeamAngleInRobot = 3 * MathHelper.PiOver2
+                    OriginPose = new Pose(new Vector2(), 0)
                 },
                 particlesNumber: 1000
                 );

@@ -133,9 +133,20 @@ namespace Brumba.FloorPlanBuilderTests
 		}
 
 		[Test]
-		[Ignore]
-		public void CreateMap()
+		public void CreateOccupancyGrids()
 		{
+			var occupancy = _eb.CreateOccupancyGrid((Bitmap)Image.FromFile("red_and_blue_boxes.bmp"));
+
+			Assert.That(occupancy.GetLength(0), Is.EqualTo(180));
+			Assert.That(occupancy.GetLength(1), Is.EqualTo(220));
+
+			for (var row = 0; row < 180; ++row)
+				for (var col = 0; col < 220; ++col)
+					if ((row >= 31 && row <= 43 && col >= 28 && col <= 34) ||
+						(row >= 125 && row <= 131 && col >= 112 && col <= 133))
+							Assert.That(occupancy[row, col]);
+					else
+						Assert.That(occupancy[row, col], Is.False);
 		}
 
 		static Vector3 ToXna(Microsoft.Robotics.PhysicalModel.Vector3 vec)

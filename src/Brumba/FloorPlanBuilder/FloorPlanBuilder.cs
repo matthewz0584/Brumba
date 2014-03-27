@@ -31,6 +31,14 @@ namespace Brumba.FloorPlanBuilder
 					.SelectMany(pair => CreateTypeBoxes(pair.Key as BoxType, pair.Value, State.GridCellSize));
 		}
 
+		public bool[,] CreateOccupancyGrid(Bitmap bitmap)
+		{
+			var occupancyGrid = new bool[bitmap.Height, bitmap.Width];
+			foreach (var point in ClassifyPixels(bitmap).Where(pair => pair.Key != State.FloorType).SelectMany(pair => pair.Value))
+				occupancyGrid[point.Y, point.X] = true;
+			return occupancyGrid;
+		}
+
 		public IEnumerable<SingleShapeEntity> CreateTypeBoxes(BoxType type, IEnumerable<Point> pixels, float gridCellSize)
 		{
 			return new PixelGlue().GetPixelBlocks(pixels).Select((pixelBlock, i) =>

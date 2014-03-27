@@ -27,7 +27,7 @@ namespace Brumba.WaiterStupid.Tests
                     AngularResolution = Constants.PiOver2,
                     AngularRange = Constants.Pi,
                     MaxRange = 2f,
-                    ZeroBeamAngleInRobot = 3 * Constants.PiOver2
+                    OriginPose = new Pose(new Vector2(), 0)
                 },
                 sigmaHit: 0.1f,
                 weightHit: 0.7f,
@@ -97,11 +97,21 @@ namespace Brumba.WaiterStupid.Tests
                 AngularResolution = Constants.PiOver2,
                 AngularRange = Constants.Pi,
                 MaxRange = 2f,
-                ZeroBeamAngleInRobot = 3 * Constants.PiOver2
+                OriginPose = new Pose(new Vector2(), Constants.PiOver2)
             };
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0).EqualsRelatively(new Vector2(0, -1), 0.001));
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1).EqualsRelatively(new Vector2(1, 0), 0.001));
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2).EqualsRelatively(new Vector2(0, 1), 0.001));
+            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0).EqualsRelatively(new Vector2(1, 0), 0.001));
+            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1).EqualsRelatively(new Vector2(0, 1), 0.001));
+            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2).EqualsRelatively(new Vector2(-1, 0), 0.001));
+
+	        rfp.OriginPose = new Pose(new Vector2(1, 2), 0);
+			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0).EqualsRelatively(new Vector2(1, 1), 0.001));
+			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1).EqualsRelatively(new Vector2(2, 2), 0.001));
+			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2).EqualsRelatively(new Vector2(1, 3), 0.001));
+
+			rfp.OriginPose = new Pose(new Vector2(1, 2), Constants.PiOver4);
+			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0).EqualsRelatively(new Vector2(1 + (float)Constants.Sqrt1Over2, 2 - (float)Constants.Sqrt1Over2), 0.001));
+			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1).EqualsRelatively(new Vector2(1 + (float)Constants.Sqrt1Over2, 2 + (float)Constants.Sqrt1Over2), 0.001));
+			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2).EqualsRelatively(new Vector2(1 - (float)Constants.Sqrt1Over2, 2 + (float)Constants.Sqrt1Over2), 0.001));
         }
 
         [Test]
@@ -124,7 +134,7 @@ namespace Brumba.WaiterStupid.Tests
             var lfmm = new LikelihoodFieldMeasurementModel
             (
                 new OccupancyGrid(new[,] { { false, false, false }, { false, false, false} }, 1),
-                new RangefinderProperties { AngularResolution = Constants.PiOver2, AngularRange = Constants.Pi, MaxRange = 2f, ZeroBeamAngleInRobot = 3 * Constants.PiOver2 },
+                new RangefinderProperties { AngularResolution = Constants.PiOver2, AngularRange = Constants.Pi, MaxRange = 2f, OriginPose = new Pose(new Vector2(), 3 * Constants.PiOver2) },
                 0.1f, 0.7f, 0.3f
             );
 
