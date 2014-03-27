@@ -79,7 +79,7 @@
   <ItemGroup>
     <Compile Include="GridCircleFringeGeneratorTests.cs" />
     <Compile Include="LikelyhoodFieldMeasurementModelTests.cs" />
-    <Compile Include="McLrfLocalizatorTests.cs" />
+    <Compile Include="McLrfLocalizerTests.cs" />
     <Compile Include="OccupancyGridTests.cs" />
     <Compile Include="OdometryMotionModelTests.cs" />
     <Compile Include="ParticleFilterTests.cs" />

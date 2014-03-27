@@ -12,12 +12,12 @@ using NUnit.Framework;
 namespace Brumba.WaiterStupid.Tests
 {
     [TestFixture]
-    public class McLrfLocalizatorTests
+    public class McLrfLocalizerTests
     {
         [Test]
         public void GlobalLocalization()
         {
-            var mcl = new McLrfLocalizator(
+            var mcl = new McLrfLocalizer(
                 map: new OccupancyGrid(
                     new[,] { {true, false, false, true, false, false, true, false, false},
                         {false, false, false, false, false, false, false, false, false}}, 1),
@@ -52,7 +52,7 @@ namespace Brumba.WaiterStupid.Tests
             mcl.Update(new Pose(new Vector2(0.5f, 0), 0), new[] { 0.5f, 5 });
 //            Console.WriteLine(mcl);
             mcl.Update(new Pose(new Vector2(0, 0), 0), new[] { 0.5f, 5 });
-            var h = new PoseHistogram(mcl.Map, McLrfLocalizator.THETA_BIN_SIZE);
+            var h = new PoseHistogram(mcl.Map, McLrfLocalizer.THETA_BIN_SIZE);
             h.Build(mcl.Particles);
             Console.WriteLine(h);
             Console.WriteLine("Total particles: {0, 5}; Outside of map: {1, 5}", mcl.Particles.Count(), mcl.Particles.Count(p => !mcl.Map.Covers(p.Position)));
@@ -71,7 +71,7 @@ namespace Brumba.WaiterStupid.Tests
         [Test]
         public void InitPoseUnknown()
         {
-            var mcl = new McLrfLocalizator(
+            var mcl = new McLrfLocalizer(
                 map: new OccupancyGrid(
                     new[,] {{false, true, false, false},
                         {false, false, false, false},
@@ -102,7 +102,7 @@ namespace Brumba.WaiterStupid.Tests
         [Test]
         public void InitPose()
         {
-            var mcl = new McLrfLocalizator(
+            var mcl = new McLrfLocalizer(
                 map: new OccupancyGrid(new[,] 
                     {{false, false, false},
                      {false, false, false},

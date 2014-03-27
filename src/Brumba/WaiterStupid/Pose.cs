@@ -1,48 +1,62 @@
+using Brumba.Utils;
+using Brumba.WaiterStupid.McLocalization;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.WaiterStupid
 {
 	[DataContract]
-    public struct Pose
+    public struct Pose : IFreezable
     {
         Vector2 _position;
         double _bearing;
-		readonly bool _freezed;
 
-		//You can not see empty ctor, but it exists
+	    //_freezed will be set to true only from explicit ctor, then modification will not be allowed
         public Pose(Vector2 position, double bearing)
         {
             _position = position;
             _bearing = bearing;
-	        _freezed = true;
+
+            _freezed = true;
         }
 
 		[DataMember]
 		public Vector2 Position
         {
             get { return _position; }
-			set
-			{
-				System.Diagnostics.Contracts.Contract.Assume(!_freezed);
-				_position = value;
-			}
+			set { DC.Contract.Requires(!Freezed); _position = value; }
         }
 
         [DataMember]
 		public double Bearing
         {
             get { return _bearing; }
-	        set
-	        {
-				System.Diagnostics.Contracts.Contract.Assume(!_freezed);
-		        _bearing = value;
-	        }
+	        set { DC.Contract.Requires(!Freezed); _bearing = value; }
         }
 
         public override string ToString()
         {
             return string.Format("{0} {1}", Position, Bearing);
         }
+
+        public static Pose operator -(Pose lhs, Pose rhs)
+        {
+            return new Pose(lhs.Position - rhs.Position, lhs.Bearing - rhs.Bearing);
+        }
+
+        bool _freezed;
+
+        public void Freeze()
+        {
+            DC.Contract.Requires(!Freezed);
+
+            _freezed = true;
+        }
+
+	    public bool Freezed
+	    {
+	        get { return _freezed; }
+	    }
     }
 }

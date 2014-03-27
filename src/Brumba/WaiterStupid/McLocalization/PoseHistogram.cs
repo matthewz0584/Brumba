@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using DC = System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Brumba.Utils;
@@ -14,11 +14,11 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public PoseHistogram(OccupancyGrid map, double thetaBinSize)
         {
-            Contract.Requires(map != null);
-            Contract.Requires(map.SizeInCells.X > 0);
-            Contract.Requires(map.SizeInCells.Y > 0);
-            Contract.Requires(thetaBinSize > 0);
-            Contract.Requires(thetaBinSize <= MathHelper.TwoPi);
+            DC.Contract.Requires(map != null);
+            DC.Contract.Requires(map.SizeInCells.X > 0);
+            DC.Contract.Requires(map.SizeInCells.Y > 0);
+            DC.Contract.Requires(thetaBinSize > 0);
+            DC.Contract.Requires(thetaBinSize <= MathHelper.TwoPi);
 
             Map = map;
             ThetaBinSize = thetaBinSize;
@@ -30,7 +30,7 @@ namespace Brumba.WaiterStupid.McLocalization
 
 		public IEnumerable<PoseBin> Bins { get { return _histogram == null ? null : _histogram.Cast<PoseBin>(); } }
 
-        [Pure]
+        [DC.PureAttribute]
         public Vector3 Size
         {
             get { return new Vector3(Map.SizeInCells.X, Map.SizeInCells.Y, (int) Math.Ceiling(2 * Math.PI / ThetaBinSize)); }
@@ -38,14 +38,14 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public void Build(IEnumerable<Pose> poseSamples)
         {
-            Contract.Requires(poseSamples != null);
-            Contract.Requires(poseSamples.Any());
-			Contract.Ensures(_histogram.Rank == 3);
-            Contract.Ensures(_histogram.GetLength(0) == (int)Size.X);
-            Contract.Ensures(_histogram.GetLength(1) == (int)Size.Y);
-            Contract.Ensures(_histogram.GetLength(2) == (int)Size.Z);
-            Contract.Ensures(Contract.ForAll(Bins, b => b != null));
-            Contract.Ensures(Bins.Sum(pb => pb.Samples.Count()) <= poseSamples.Count());
+            DC.Contract.Requires(poseSamples != null);
+            DC.Contract.Requires(poseSamples.Any());
+			DC.Contract.Ensures(_histogram.Rank == 3);
+            DC.Contract.Ensures(_histogram.GetLength(0) == (int)Size.X);
+            DC.Contract.Ensures(_histogram.GetLength(1) == (int)Size.Y);
+            DC.Contract.Ensures(_histogram.GetLength(2) == (int)Size.Z);
+            DC.Contract.Ensures(DC.Contract.ForAll(Bins, b => b != null));
+            DC.Contract.Ensures(Bins.Sum(pb => pb.Samples.Count()) <= poseSamples.Count());
 
             _histogram = new PoseBin[Map.SizeInCells.X, Map.SizeInCells.Y, (int)Size.Z];
             for (var x = 0; x < _histogram.GetLength(0); ++x)
@@ -60,9 +60,9 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             get
             {
-				Contract.Requires(Bins != null);
-                Contract.Requires(Map.Covers(poseSample.Position));
-                Contract.Ensures(Contract.Result<PoseBin>() != null);
+				DC.Contract.Requires(Bins != null);
+                DC.Contract.Requires(Map.Covers(poseSample.Position));
+                DC.Contract.Ensures(DC.Contract.Result<PoseBin>() != null);
 
                 var poseCell = Map.PosToCell(poseSample.Position);
                 return this[poseCell.X, poseCell.Y, (int)(poseSample.Bearing.ToPositiveAngle() / ThetaBinSize)];
@@ -73,9 +73,9 @@ namespace Brumba.WaiterStupid.McLocalization
         {
             get
             {
-				Contract.Requires(Bins != null);
-                Contract.Requires(new Vector3(xBin, yBin, thetaBin).Between(new Vector3(), Size));
-                Contract.Ensures(Contract.Result<PoseBin>() != null);
+				DC.Contract.Requires(Bins != null);
+                DC.Contract.Requires(new Vector3(xBin, yBin, thetaBin).Between(new Vector3(), Size));
+                DC.Contract.Ensures(DC.Contract.Result<PoseBin>() != null);
 
                 return _histogram[xBin, yBin, thetaBin];
             }
@@ -83,10 +83,10 @@ namespace Brumba.WaiterStupid.McLocalization
 
 		public int[,] ToXyMarginal()
 		{
-			Contract.Requires(Bins != null);
-			Contract.Ensures(Contract.Result<int[,]>().Rank == 2);
-			Contract.Ensures(Contract.Result<int[,]>().GetLength(0) == (int)Size.X);
-			Contract.Ensures(Contract.Result<int[,]>().GetLength(1) == (int)Size.Y);
+			DC.Contract.Requires(Bins != null);
+			DC.Contract.Ensures(DC.Contract.Result<int[,]>().Rank == 2);
+			DC.Contract.Ensures(DC.Contract.Result<int[,]>().GetLength(0) == (int)Size.X);
+			DC.Contract.Ensures(DC.Contract.Result<int[,]>().GetLength(1) == (int)Size.Y);
 
 			var xyM = new int[(int)Size.X, (int)Size.Y];
 			for (var x = 0; x < (int)Size.X; ++x)
@@ -128,14 +128,14 @@ namespace Brumba.WaiterStupid.McLocalization
 
             public void AddSample(Pose poseSample)
             {
-                Contract.Ensures(Samples.Count() == Contract.OldValue(Samples.Count()) + 1);
+                DC.Contract.Ensures(Samples.Count() == DC.Contract.OldValue(Samples.Count()) + 1);
 
                 _samples.Add(poseSample);
             }
 
             public Pose CalculatePoseMean()
             {
-                Contract.Requires(Samples.Any());
+                DC.Contract.Requires(Samples.Any());
 
                 var position = _samples.Aggregate(new Vector2(), (sum, next) => next.Position + sum) / _samples.Count;
                 var bearing = MathHelper2.AngleMean(_samples.Select(s => s.Bearing));

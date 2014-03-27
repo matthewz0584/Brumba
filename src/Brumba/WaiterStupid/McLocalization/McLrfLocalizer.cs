@@ -6,24 +6,24 @@ using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
-using Contract = System.Diagnostics.Contracts.Contract;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.WaiterStupid.McLocalization
 {
-    public class McLrfLocalizator
+    public class McLrfLocalizer
     {
         public const double THETA_BIN_SIZE = Math.PI / 18;
 
         readonly ParticleFilter<Pose, IEnumerable<float>, Pose> _particleFilter;
         readonly Random _random;
 
-        public McLrfLocalizator(OccupancyGrid map, RangefinderProperties rangefinderProperties, int particlesNumber)
+        public McLrfLocalizer(OccupancyGrid map, RangefinderProperties rangefinderProperties, int particlesNumber)
 	    {
-			Contract.Requires(map != null);
-			Contract.Requires(particlesNumber > 1);
-			Contract.Ensures(Map == map);
-			Contract.Ensures(_random != null);
-			Contract.Ensures(_particleFilter != null);
+			DC.Contract.Requires(map != null);
+			DC.Contract.Requires(particlesNumber > 1);
+			DC.Contract.Ensures(Map == map);
+			DC.Contract.Ensures(_random != null);
+			DC.Contract.Ensures(_particleFilter != null);
 
 		    Map = map;
 		    ParticlesNumber = particlesNumber;
@@ -40,11 +40,11 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public void InitPoseUnknown()
 	    {
-			Contract.Ensures(Particles != null);
-			Contract.Ensures(Particles.Any());
-            Contract.Ensures(Particles.Count() == ParticlesNumber);
-			Contract.Ensures(Contract.ForAll(Particles, p => Map.Covers(p.Position) && !Map[p.Position]));
-            Contract.Ensures(Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
+			DC.Contract.Ensures(Particles != null);
+			DC.Contract.Ensures(Particles.Any());
+            DC.Contract.Ensures(Particles.Count() == ParticlesNumber);
+			DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => Map.Covers(p.Position) && !Map[p.Position]));
+            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
 
 			_particleFilter.Init(Enumerable.Range(0, int.MaxValue).
 									Select(i => new Pose(new Vector2((float)ContinuousUniform.Sample(_random, 0, Map.SizeInMeters.X),
@@ -56,12 +56,12 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public void InitPose(Pose poseMean, Pose poseStdDev)
         {
-            Contract.Requires(Map.Covers(poseMean.Position));
-            Contract.Requires(!Map[poseMean.Position]);
-            Contract.Requires(poseStdDev.Position.GreaterOrEqual(new Vector2()));
-            Contract.Requires(poseStdDev.Bearing >= 0);
-            Contract.Ensures(Contract.ForAll(Particles, p => Map.Covers(p.Position) && !Map[p.Position]));
-            Contract.Ensures(Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
+            DC.Contract.Requires(Map.Covers(poseMean.Position));
+            DC.Contract.Requires(!Map[poseMean.Position]);
+            DC.Contract.Requires(poseStdDev.Position.GreaterOrEqual(new Vector2()));
+            DC.Contract.Requires(poseStdDev.Bearing >= 0);
+            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => Map.Covers(p.Position) && !Map[p.Position]));
+            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
 
             _particleFilter.Init(Enumerable.Range(0, int.MaxValue).
                                     Select(i => new Pose(new Vector2((float)Normal.Sample(_random, poseMean.Position.X, poseStdDev.Position.X),
@@ -73,22 +73,22 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public void Update(Pose odometry, IEnumerable<float> scan)
 		{
-			Contract.Requires(scan != null);
-			Contract.Requires(scan.Any());
-            Contract.Requires(Particles != null);
-            Contract.Requires(Particles.Any());
-            Contract.Ensures(Particles.Count() == ParticlesNumber);
-            Contract.Ensures(Contract.ForAll(Particles, p => !Map.Covers(p.Position) || (Map.Covers(p.Position) && !Map[p.Position])));
-            Contract.Ensures(Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
+			DC.Contract.Requires(scan != null);
+			DC.Contract.Requires(scan.Any());
+            DC.Contract.Requires(Particles != null);
+            DC.Contract.Requires(Particles.Any());
+            DC.Contract.Ensures(Particles.Count() == ParticlesNumber);
+            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => !Map.Covers(p.Position) || (Map.Covers(p.Position) && !Map[p.Position])));
+            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
 
 			_particleFilter.Update(odometry, scan);
 		}
 
         public Pose CalculatePoseMean()
         {
-            Contract.Requires(Particles != null);
-            Contract.Requires(Particles.Any());
-            Contract.Ensures(Contract.Result<Pose>().Bearing.Between(0, Constants.Pi2));
+            DC.Contract.Requires(Particles != null);
+            DC.Contract.Requires(Particles.Any());
+            DC.Contract.Ensures(DC.Contract.Result<Pose>().Bearing.Between(0, Constants.Pi2));
 
             return new Pose(new Vector2(
                 (float)MomentFor(Particles.Select(v => (double)v.Position.X), statistics => statistics.Mean),
@@ -98,10 +98,10 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public Pose CalculatePoseStdDev()
         {
-            Contract.Requires(Particles != null);
-            Contract.Requires(Particles.Any());
-            Contract.Ensures(Contract.Result<Pose>().Position.GreaterOrEqual(new Vector2()));
-            Contract.Ensures(Contract.Result<Pose>().Bearing >= 0);
+            DC.Contract.Requires(Particles != null);
+            DC.Contract.Requires(Particles.Any());
+            DC.Contract.Ensures(DC.Contract.Result<Pose>().Position.GreaterOrEqual(new Vector2()));
+            DC.Contract.Ensures(DC.Contract.Result<Pose>().Bearing >= 0);
 
 			return new Pose(new Vector2(
                 (float)MomentFor(Particles.Select(v => (double)v.Position.X), statistics => statistics.StandardDeviation),
@@ -111,9 +111,9 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public IEnumerable<Pose> GetPoseCandidates()
         {
-            Contract.Requires(Particles != null);
-            Contract.Requires(Particles.Any());
-            Contract.Ensures(Contract.ForAll(Contract.Result<IEnumerable<Pose>>(),
+            DC.Contract.Requires(Particles != null);
+            DC.Contract.Requires(Particles.Any());
+            DC.Contract.Ensures(DC.Contract.ForAll(DC.Contract.Result<IEnumerable<Pose>>(),
                 p => Map.Covers(p.Position) && !Map[p.Position] && p.Bearing.Between(0, Constants.Pi2)));
 
             var h = new PoseHistogram(Map, THETA_BIN_SIZE);
@@ -123,8 +123,8 @@ namespace Brumba.WaiterStupid.McLocalization
 
 		static double MomentFor(IEnumerable<double> data, Func<DescriptiveStatistics, double> func)
 		{
-            Contract.Requires(data != null);
-            Contract.Requires(func != null);
+            DC.Contract.Requires(data != null);
+            DC.Contract.Requires(func != null);
 
 		    return func(new DescriptiveStatistics(data));
 		}

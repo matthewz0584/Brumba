@@ -109,6 +109,10 @@
     <Reference Include="RoboticsCommon.proxy">
       <HintPath>..\..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
     </Reference>
+    <Reference Include="SickLRF.Y2005.M12.proxy, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\SickLRF.Y2005.M12.proxy.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
@@ -137,7 +141,9 @@
     <Compile Include="Gui\MainWindow.xaml.cs" />
     <Compile Include="Gui\MatrixVizualizerService.cs" />
     <Compile Include="Gui\MatrixVizualizerServiceHelper.cs" />
-    <Compile Include="McLocalization\McLrfLocalizator.cs" />
+    <Compile Include="McLocalization\McLrfLocalizer.cs" />
+    <Compile Include="McLocalization\McLrfLocalizerService.cs" />
+    <Compile Include="McLocalization\McLrfLocalizerTypes.cs" />
     <Compile Include="McLocalization\OdometryMotionModel.cs" />
     <Compile Include="McLocalization\ParticleFilterInterfaces.cs" />
     <Compile Include="McLocalization\LikelihoodFieldMeasurementModel.cs" />

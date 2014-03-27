@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using DC = System.Diagnostics.Contracts;
 using System.Linq;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
@@ -16,27 +16,27 @@ namespace Brumba.WaiterStupid.McLocalization
         public float WeightHit { get; private set; }
         public float WeightRandom { get; private set; }
 
-        [ContractInvariantMethod]
+        [DC.ContractInvariantMethodAttribute]
         void ObjectInvariant()
         {
-            Contract.Invariant(Map != null);
-            Contract.Invariant(RangefinderProperties.MaxRange > 0);
-            Contract.Invariant(RangefinderProperties.AngularResolution > 0);
-            Contract.Invariant(SigmaHit > 0);
-            Contract.Invariant(WeightHit >= 0);
-            Contract.Invariant(WeightRandom >= 0);
-            Contract.Invariant((WeightHit + WeightRandom).AlmostEqualInDecimalPlaces(1, 5));            
+            DC.Contract.Invariant(Map != null);
+            DC.Contract.Invariant(RangefinderProperties.MaxRange > 0);
+            DC.Contract.Invariant(RangefinderProperties.AngularResolution > 0);
+            DC.Contract.Invariant(SigmaHit > 0);
+            DC.Contract.Invariant(WeightHit >= 0);
+            DC.Contract.Invariant(WeightRandom >= 0);
+            DC.Contract.Invariant((WeightHit + WeightRandom).AlmostEqualInDecimalPlaces(1, 5));            
         }
 
         public LikelihoodFieldMeasurementModel(OccupancyGrid map, RangefinderProperties rangefinderProperties, float sigmaHit, float weightHit, float weightRandom)
         {
-            Contract.Requires(map != null);
-            Contract.Requires(rangefinderProperties.MaxRange > 0);
-            Contract.Requires(rangefinderProperties.AngularResolution > 0);
-            Contract.Requires(sigmaHit > 0);
-            Contract.Requires(weightHit >= 0);
-            Contract.Requires(weightRandom >= 0);
-            Contract.Requires((weightHit + weightRandom).AlmostEqualInDecimalPlaces(1, 5));
+            DC.Contract.Requires(map != null);
+            DC.Contract.Requires(rangefinderProperties.MaxRange > 0);
+            DC.Contract.Requires(rangefinderProperties.AngularResolution > 0);
+            DC.Contract.Requires(sigmaHit > 0);
+            DC.Contract.Requires(weightHit >= 0);
+            DC.Contract.Requires(weightRandom >= 0);
+            DC.Contract.Requires((weightHit + weightRandom).AlmostEqualInDecimalPlaces(1, 5));
 
             Map = map;
             RangefinderProperties = rangefinderProperties;
@@ -47,8 +47,8 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public float ComputeMeasurementLikelihood(Pose robotPose, IEnumerable<float> scan)
         {
-            Contract.Assume(scan != null);
-            Contract.Assume(scan.Count() == RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution + 1);
+            DC.Contract.Assume(scan != null);
+            DC.Contract.Assume(scan.Count() == RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution + 1);
 
 			var beamLikelihoods = scan.Select((zi, i) => new { zi, i }).Where(p => p.zi != RangefinderProperties.MaxRange).
 				Select(p => BeamLikelihood(robotPose, p.zi, p.i)).ToList();
@@ -70,10 +70,10 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public float BeamLikelihood(Pose robotPose, float zi, int i)
         {
-            Contract.Requires(zi >= 0);
-            Contract.Requires(zi <= RangefinderProperties.MaxRange);
-            Contract.Requires(i >= 0);
-            Contract.Ensures(Contract.Result<float>() >= 0);
+            DC.Contract.Requires(zi >= 0);
+            DC.Contract.Requires(zi <= RangefinderProperties.MaxRange);
+            DC.Contract.Requires(i >= 0);
+            DC.Contract.Ensures(DC.Contract.Result<float>() >= 0);
 
             var beamEndPointPosition = BeamEndPointPosition(robotPose, zi, i);
 	        if (!Map.Covers(beamEndPointPosition))
@@ -86,26 +86,26 @@ namespace Brumba.WaiterStupid.McLocalization
 
         double DensityHit(float distanceToObstacle)
         {
-            Contract.Requires(distanceToObstacle >= 0);
-            Contract.Ensures(Contract.Result<double>() >= 0);
+            DC.Contract.Requires(distanceToObstacle >= 0);
+            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0);
 
             return new Normal(0, SigmaHit).Density(distanceToObstacle);
         }
 
         double DensityRandom()
         {
-            Contract.Requires(RangefinderProperties.MaxRange > 0);
-            Contract.Ensures(Contract.Result<double>() >= 0);
+            DC.Contract.Requires(RangefinderProperties.MaxRange > 0);
+            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0);
 
             return 1d / RangefinderProperties.MaxRange;
         }
 
         public Vector2 BeamEndPointPosition(Pose robotPose, float zi, int i)
         {
-            Contract.Requires(zi >= 0);
-            Contract.Requires(zi <= RangefinderProperties.MaxRange);
-            Contract.Requires(i >= 0);
-            Contract.Requires(i < RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution + 1);
+            DC.Contract.Requires(zi >= 0);
+            DC.Contract.Requires(zi <= RangefinderProperties.MaxRange);
+            DC.Contract.Requires(i >= 0);
+            DC.Contract.Requires(i < RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution + 1);
 
             return RobotToMapTransformation(RangefinderProperties.BeamToVectorInRobotTransformation(zi, i), robotPose);
         }
@@ -117,9 +117,9 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public float DistanceToNearestObstacle(Vector2 position)
         {
-            Contract.Requires(Map.Covers(position));
-            Contract.Ensures(Contract.Result<float>() >= 0);
-            Contract.Ensures(float.IsPositiveInfinity(Contract.Result<float>()) || Contract.Result<float>() <= Math.Sqrt(Map.SizeInCells.X * Map.SizeInCells.X + Map.SizeInCells.Y * Map.SizeInCells.Y) * Map.CellSize);
+            DC.Contract.Requires(Map.Covers(position));
+            DC.Contract.Ensures(DC.Contract.Result<float>() >= 0);
+            DC.Contract.Ensures(float.IsPositiveInfinity(DC.Contract.Result<float>()) || DC.Contract.Result<float>() <= Math.Sqrt(Map.SizeInCells.X * Map.SizeInCells.X + Map.SizeInCells.Y * Map.SizeInCells.Y) * Map.CellSize);
 
             if (Map[position])
                 return 0;
@@ -133,9 +133,9 @@ namespace Brumba.WaiterStupid.McLocalization
 
         Point FindNearestOccupiedCell(Vector2 position)
         {
-            Contract.Requires(Map.Covers(position));
-            Contract.Ensures(Contract.Result<Point>() == new Point(-1, -1) || Map.Covers(Contract.Result<Point>()));
-            Contract.Ensures(Contract.Result<Point>() == new Point(-1, -1) || Map[Contract.Result<Point>()]);
+            DC.Contract.Requires(Map.Covers(position));
+            DC.Contract.Ensures(DC.Contract.Result<Point>() == new Point(-1, -1) || Map.Covers(DC.Contract.Result<Point>()));
+            DC.Contract.Ensures(DC.Contract.Result<Point>() == new Point(-1, -1) || Map[DC.Contract.Result<Point>()]);
 
             var circleFringe = new GridCircleFringeGenerator(Map.SizeInCells);
             var radius = 0;

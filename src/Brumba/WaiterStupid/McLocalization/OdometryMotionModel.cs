@@ -1,5 +1,5 @@
 using System;
-using System.Diagnostics.Contracts;
+using DC = System.Diagnostics.Contracts;
 using Brumba.Utils;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
@@ -17,7 +17,7 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public OdometryMotionModel(OccupancyGrid map, Vector2 rotNoiseCoeffs, Vector2 transNoiseCoeffs)
         {
-            Contract.Requires(map != null);
+            DC.Contract.Requires(map != null);
 
             Map = map;
             _rotNoiseCoeffs = rotNoiseCoeffs;
@@ -27,9 +27,9 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public Pose PredictParticleState(Pose particle, Pose control)
         {
-			Contract.Ensures(!Map.Covers(Contract.Result<Pose>().Position) || !Map[Contract.Result<Pose>().Position]);
-            Contract.Ensures(Contract.Result<Pose>().Bearing.Between(0, Constants.Pi2));
-			Contract.Assume(!Map.Covers(particle.Position) || !Map[particle.Position]);
+			DC.Contract.Ensures(!Map.Covers(DC.Contract.Result<Pose>().Position) || !Map[DC.Contract.Result<Pose>().Position]);
+            DC.Contract.Ensures(DC.Contract.Result<Pose>().Bearing.Between(0, Constants.Pi2));
+			DC.Contract.Assume(!Map.Covers(particle.Position) || !Map[particle.Position]);
 
             var rotTransRot = OdometryToRotTransRotSequence(particle, control);
 
@@ -46,8 +46,8 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public static Vector3 OdometryToRotTransRotSequence(Pose particle, Pose control)
         {
-			Contract.Ensures(Contract.Result<Vector3>().X.Between(-MathHelper.Pi, MathHelper.Pi));
-            Contract.Ensures(Contract.Result<Vector3>().Z.Between(-MathHelper.Pi, MathHelper.Pi));
+			DC.Contract.Ensures(DC.Contract.Result<Vector3>().X.Between(-MathHelper.Pi, MathHelper.Pi));
+            DC.Contract.Ensures(DC.Contract.Result<Vector3>().Z.Between(-MathHelper.Pi, MathHelper.Pi));
 
             var rot1Delta = Math.Atan2(control.Position.Y, control.Position.X) - particle.Bearing;
             var transDelta = control.Position.Length();
@@ -58,7 +58,7 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public static Pose RotTransRotSequenceToOdometry(Pose particle, Vector3 rotTransRot)
         {
-            Contract.Ensures(Contract.Result<Pose>().Bearing.Between(0, Constants.Pi2));
+            DC.Contract.Ensures(DC.Contract.Result<Pose>().Bearing.Between(0, Constants.Pi2));
 
             return new Pose(new Vector2(rotTransRot.Y * (float)Math.Cos(particle.Bearing + rotTransRot.X),
                                         rotTransRot.Y * (float)Math.Sin(particle.Bearing + rotTransRot.X)),
@@ -67,8 +67,8 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public Vector3 ComputeRotTransRotNoise(Vector3 rotTransRot)
         {
-            Contract.Requires(rotTransRot.X.Between(-MathHelper.Pi, MathHelper.Pi));
-            Contract.Requires(rotTransRot.Z.Between(-MathHelper.Pi, MathHelper.Pi));
+            DC.Contract.Requires(rotTransRot.X.Between(-MathHelper.Pi, MathHelper.Pi));
+            DC.Contract.Requires(rotTransRot.Z.Between(-MathHelper.Pi, MathHelper.Pi));
 
             return new Vector3(
                 (float)Normal.Sample(_random, 0,

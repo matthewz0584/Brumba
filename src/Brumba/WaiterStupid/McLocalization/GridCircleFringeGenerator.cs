@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
+using DC = System.Diagnostics.Contracts;
 using Brumba.Utils;
 using Microsoft.Xna.Framework;
 
@@ -12,8 +12,8 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public GridCircleFringeGenerator(Point gridSize)
         {
-            Contract.Requires(gridSize.X > 0);
-            Contract.Requires(gridSize.Y > 0);
+            DC.Contract.Requires(gridSize.X > 0);
+            DC.Contract.Requires(gridSize.Y > 0);
 
             _gridSize = gridSize;
         }
@@ -25,8 +25,8 @@ namespace Brumba.WaiterStupid.McLocalization
 
         public IEnumerable<Point> Generate(Point center, int radius)
         {
-            Contract.Requires(radius >= 0);
-            Contract.Requires(center.Between(new Point(), GridSize));
+            DC.Contract.Requires(radius >= 0);
+            DC.Contract.Requires(center.Between(new Point(), GridSize));
 
             for (var x = -radius; x <= radius; ++x)
             {
@@ -51,7 +51,7 @@ namespace Brumba.WaiterStupid.McLocalization
 
         static double CircleY(int radius, int x)
         {
-            Contract.Requires(radius >= 0);
+            DC.Contract.Requires(radius >= 0);
 
             return Math.Sqrt(radius * radius - x * x);
         }
