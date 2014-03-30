@@ -14,7 +14,7 @@ using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 
 namespace Brumba.Simulation.SimulatedLrf
 {
-	[DisplayName("Simulated Laser Range Finder")]
+	[DisplayName("Brumba Simulated Laser Range Finder")]
     [AlternateContract(SickLrfPxy.Contract.Identifier)]
 	[Contract(Contract.Identifier)]
 	class SimulatedLrfService : SimulatedEntityServiceBase

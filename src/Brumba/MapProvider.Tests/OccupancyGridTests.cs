@@ -1,8 +1,7 @@
-using Brumba.WaiterStupid.McLocalization;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
-namespace Brumba.WaiterStupid.Tests
+namespace Brumba.MapProvider.Tests
 {
 	[TestFixture]
 	public class OccupancyGridTests
@@ -87,5 +86,19 @@ namespace Brumba.WaiterStupid.Tests
 
             Assert.That(_grid.Covers(new Point(1, 1)));
 	    }
+
+		[Test]
+		public void Data()
+		{
+			var data = _grid.Data;
+
+			Assert.That(data[0, 0], Is.False);
+			Assert.That(data[0, 1], Is.True);
+			Assert.That(data[0, 2], Is.False);
+
+			Assert.That(data[1, 0], Is.False);
+			Assert.That(data[1, 1], Is.False);
+			Assert.That(data[1, 2], Is.True);
+		}
 	}
 }

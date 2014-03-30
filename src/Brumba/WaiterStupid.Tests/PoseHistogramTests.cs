@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Brumba.Utils;
+using Brumba.MapProvider;
 using Brumba.WaiterStupid.McLocalization;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;

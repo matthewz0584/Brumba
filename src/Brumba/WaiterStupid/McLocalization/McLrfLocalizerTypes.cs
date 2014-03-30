@@ -1,3 +1,4 @@
+using Brumba.MapProvider;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -31,7 +32,7 @@ namespace Brumba.WaiterStupid.McLocalization
     }
 
     [ServicePort]
-    public class McLrfLocalizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Replace, QueryPose>
+    public class McLrfLocalizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, QueryPose>
     {
     }
 
@@ -50,10 +51,6 @@ namespace Brumba.WaiterStupid.McLocalization
             : base(body, responsePort)
         {
         }
-    }
-
-    public class Replace : Replace<McLrfLocalizerState, PortSet<DefaultUpdateResponseType, Fault>>
-    {
     }
 
     public class QueryPose : Query<PoseRequest, PortSet<Pose, DefaultQueryResponseType>>

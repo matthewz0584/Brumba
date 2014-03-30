@@ -25,7 +25,7 @@ namespace Brumba.WaiterStupid.Odometry
 	}
 
 	[ServicePort]
-	public class DiffDriveOdometryOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Replace>
+	public class DiffDriveOdometryOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
 	{
 	}
 
@@ -44,9 +44,5 @@ namespace Brumba.WaiterStupid.Odometry
 			: base(body, responsePort)
 		{
 		}
-	}
-
-    public class Replace : Replace<DiffDriveOdometryServiceState, PortSet<DefaultUpdateResponseType, Fault>>
-	{
 	}
 }

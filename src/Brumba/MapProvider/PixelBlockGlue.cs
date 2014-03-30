@@ -1,26 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
+using Point = Microsoft.Xna.Framework.Point;
 
-namespace Brumba.FloorPlanBuilder
+namespace Brumba.MapProvider
 {
-	public class PixelGlue
-	{
-		public IEnumerable<PixelBlock> GetPixelBlocks(IEnumerable<Point> pixels)
+    public interface IPixelBlockGlue
+    {
+        IEnumerable<PixelBlock> GluePixelBlocks(IEnumerable<Point> pixels);
+    }
+
+    public class PixelBlockGlue : IPixelBlockGlue
+    {
+		public IEnumerable<PixelBlock> GluePixelBlocks(IEnumerable<Point> pixels)
 		{
-			return from psEqualStartX in GetPixelStripes(pixels).GroupBy(p => p.Start.X)
+			return from psEqualStartX in GluePixelStripes(pixels).GroupBy(p => p.Start.X)
 				   from psEqualLength in psEqualStartX.GroupBy(p => p.Length)
 				   from boxLeftTopAndHeight in GetSequenceLengthes(psEqualLength, ps => ps.Start.Y)
 				   select new PixelBlock(boxLeftTopAndHeight.Item1.Start, psEqualLength.First().Length, boxLeftTopAndHeight.Item2);
 		}
 
-		public IEnumerable<PixelStripe> GetPixelStripes(IEnumerable<Point> pixels)
+		public IEnumerable<PixelStripe> GluePixelStripes(IEnumerable<Point> pixels)
 		{
-			return GetRows(pixels).SelectMany(GetPixelStripeFromRow);
+			return GetRows(pixels).SelectMany(GluePixelStripeFromRow);
 		}
 
-		static IEnumerable<PixelStripe> GetPixelStripeFromRow(IEnumerable<Point> pixelRow)
+		static IEnumerable<PixelStripe> GluePixelStripeFromRow(IEnumerable<Point> pixelRow)
 		{
 			return GetSequenceLengthes(pixelRow, ps => ps.X).
 				Select(stripeStartAndLength => new PixelStripe(stripeStartAndLength.Item1, stripeStartAndLength.Item2));

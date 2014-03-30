@@ -90,6 +90,7 @@
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="mscorlib">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
@@ -129,8 +130,11 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoxWorldBuilder.cs" />
+    <Compile Include="BoxWorldBuilderSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnvironmentBuilderService.cs" />
     <Compile Include="EnvironmentBuilderTypes.cs" />
@@ -140,6 +144,12 @@
     <Content Include="EnvironmentBuilder.manifest.xml">
       <SubType>Designer</SubType>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MapProvider\MapProvider.csproj">
+      <Project>{2D37BDFC-A8F0-4356-ABCF-487A4A350038}</Project>
+      <Name>MapProvider</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">

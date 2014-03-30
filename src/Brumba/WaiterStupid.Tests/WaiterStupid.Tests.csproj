@@ -80,7 +80,6 @@
     <Compile Include="GridCircleFringeGeneratorTests.cs" />
     <Compile Include="LikelyhoodFieldMeasurementModelTests.cs" />
     <Compile Include="McLrfLocalizerTests.cs" />
-    <Compile Include="OccupancyGridTests.cs" />
     <Compile Include="OdometryMotionModelTests.cs" />
     <Compile Include="ParticleFilterTests.cs" />
     <Compile Include="OdometryCalculatorTests.cs" />
@@ -88,6 +87,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MapProvider\MapProvider.csproj">
+      <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
+      <Name>MapProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>

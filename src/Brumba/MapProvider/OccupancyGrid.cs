@@ -1,10 +1,11 @@
+using System;
 using System.Diagnostics.Contracts;
 using Brumba.Utils;
 using Microsoft.Dss.Core.Attributes;
 using DC = System.Diagnostics.Contracts;
 using Microsoft.Xna.Framework;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.MapProvider
 {
     [DataContract]
 	public class OccupancyGrid : IFreezable
@@ -74,7 +75,7 @@ namespace Brumba.WaiterStupid.McLocalization
         [DataMember]
 	    public float CellSize
 	    {
-            get { DC.Contract.Requires(Freezed); return _cellSize; }
+            get { return _cellSize; }
             set
             {
                 DC.Contract.Requires(!Freezed);
@@ -88,7 +89,12 @@ namespace Brumba.WaiterStupid.McLocalization
         [DataMember]
         public bool[,] Data
         {
-            get { DC.Contract.Requires(!Freezed); return _occupancy; }
+	        get
+	        {
+				var occupancyCopy = new bool[_occupancy.GetLength(0), _occupancy.GetLength(1)];
+				Array.Copy(_occupancy, 0, occupancyCopy, 0, _occupancy.Length);
+		        return occupancyCopy;
+	        }
             set
             {
                 DC.Contract.Requires(!Freezed);

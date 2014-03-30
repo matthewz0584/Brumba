@@ -1,4 +1,5 @@
 using System;
+using Brumba.MapProvider;
 using DC = System.Diagnostics.Contracts;
 using Brumba.Utils;
 using MathNet.Numerics;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using Brumba.DsspUtils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Utilities;
@@ -8,7 +9,7 @@ using WaiterStupidPxy = Brumba.WaiterStupid.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("ref_platform_simple_tests", Wip = true)]
+	[SimTestFixture("waiter_stupid_mc_lrf_localization_tests", Wip = true)]
 	public class WaiterStupidMcLrfLocalizationTests
 	{
 		public SimulationTesterService TesterService { get; private set; }
@@ -24,24 +25,30 @@ namespace Brumba.SimulationTester.Tests
 		}
 
 		[SimTest(10)]
-		public class Tracking : IStart
+		public class Tracking// : IStart
 		{
 			[Fixture]
 			public WaiterStupidMcLrfLocalizationTests Fixture { get; set; }
 
-			public IEnumerator<ITask> Start()
-			{
-				yield return To.Exec(Fixture.McLrfLocalizationPort.Replace(new McLocalizationPxy.McLrfLocalizerState
-				{
-					DeltaT = 0.3f,
-					//FirstPoseCandidate = new Pose().
-					Map = new McLocalizationPxy.OccupancyGrid
-					{
-						CellSize = 0.1f,
-						Data = new DssTwoDimArray<bool>(null)
-					}
-				}));
-			}
+			//public IEnumerator<ITask> Start()
+			//{
+			//	yield return To.Exec(Fixture.McLrfLocalizationPort.Replace(new McLocalizationPxy.McLrfLocalizerState
+			//	{
+			//		DeltaT = 0.3f,
+			//		//FirstPoseCandidate = new Pose().
+			//		Map = new McLocalizationPxy.OccupancyGrid
+			//		{
+			//			CellSize = 0.1f,
+			//			Data = new DssTwoDimArray<bool>(new FloorPlanBuilder.FloorPlanBuilder(
+			//				new EnvironmentBuilderState
+			//			{
+			//				BoxTypes = {new BoxType { ColorOnImage = Color.Black }},
+			//				FloorType = new ObjectType { ColorOnImage = Color.White},
+			//				GridCellSize = 0.1f
+			//			}).CreateOccupancyGrid())
+			//		}
+			//	}));
+			//}
 		}
 	}
 }

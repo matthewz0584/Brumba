@@ -22,20 +22,8 @@ namespace Brumba.WaiterStupid.McLocalization
     public class McLrfLocalizerService : DsspServiceExposing
     {
         [ServiceState]
-        McLrfLocalizerState _state = new McLrfLocalizerState
-        {
-            FirstPoseCandidate = new Pose(new Vector2(), float.NaN),
-            RangeFinderProperties = new RangefinderProperties
-            {
-                AngularResolution = Constants.Degree,
-                AngularRange = Constants.Pi,
-                MaxRange = 10,
-                OriginPose = new Pose(new Vector2(), -Constants.PiOver2)
-            },
-            Map = new OccupancyGrid(new bool[100, 100], 0.1f),
-            ParticlesNumber = 100,
-            DeltaT = 0.3f
-        };
+		[InitialStatePartner(Optional = false)]
+        McLrfLocalizerState _state;
 
         [ServicePort("/McLrfLocalizer", AllowMultipleInstances = true)]
         McLrfLocalizerOperations _mainPort = new McLrfLocalizerOperations();
@@ -57,21 +45,27 @@ namespace Brumba.WaiterStupid.McLocalization
 
         protected override void Start()
         {
-            InitFromState(_state);
+	        _localizer = new McLrfLocalizer(_state.Map, _state.RangeFinderProperties, _state.ParticlesNumber);
+	        if (IsPoseUnknown(_state.FirstPoseCandidate))
+		        _localizer.InitPoseUnknown();
+	        else
+		        _localizer.InitPose(_state.FirstPoseCandidate, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
 
-            base.Start();
+	        _timerFacade = new TimerFacade(this, _state.DeltaT);
 
-            SpawnIterator(Restart);
+	        base.Start();
+
+            SpawnIterator(StartIt);
         }
 
-        IEnumerator<ITask> Restart()
+
+	    IEnumerator<ITask> StartIt()
         {
             yield return GetOdometry().Receive(os =>
             {
                 _currentOdometry = (Pose) DssTypeHelper.TransformFromProxy(os.State.Pose);
             });
 
-            //To synchronize UpdateLocalizer with Replace
             MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
                     Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateLocalizer))));
 
@@ -88,18 +82,6 @@ namespace Brumba.WaiterStupid.McLocalization
                     });
         }
 
-        [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
-        public IEnumerator<ITask> OnReplace(Replace replaceRq)
-        {
-            _timerFacade.Dispose();
-
-            InitFromState(replaceRq.Body);
-
-            yield return To.Exec(Restart);
-
-            replaceRq.ResponsePort.Post(DefaultUpdateResponseType.Instance);
-        }
-
         [ServiceHandler(ServiceHandlerBehavior.Teardown)]
         public void OnDropDown(DsspDefaultDrop dropDownRq)
         {
@@ -110,25 +92,17 @@ namespace Brumba.WaiterStupid.McLocalization
             DefaultDropHandler(dropDownRq);
         }
 
-        void InitFromState(McLrfLocalizerState state)
-        {
-            _state = state;
-
-            _localizer = new McLrfLocalizer(_state.Map, _state.RangeFinderProperties, _state.ParticlesNumber);
-            if (double.IsNaN(_state.FirstPoseCandidate.Bearing))
-                _localizer.InitPoseUnknown();
-            else
-                _localizer.InitPose(_state.FirstPoseCandidate, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
-
-            _timerFacade = new TimerFacade(this, _state.DeltaT);
-        }
-
-        //This convenience method is implemented in Proxy, but I can not refer to proxy of the very assembly, waiting for the separation
+	    //This convenience method is implemented in Proxy, but I can not refer to proxy of the very assembly, waiting for the separation
         PortSet<DiffDriveOdometryServiceState, Fault> GetOdometry()
         {
             var get = new Odometry.Get(new GetRequestType());
             _odometry.Post(get);
             return get.ResponsePort;
         }
+
+		bool IsPoseUnknown(Pose pose)
+		{
+			return double.IsNaN(pose.Bearing);
+		}
     }
 }

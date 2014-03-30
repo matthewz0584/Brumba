@@ -15,6 +15,9 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
+using Vector2 = Microsoft.Robotics.PhysicalModel.Vector2;
+using Vector3 = Microsoft.Robotics.PhysicalModel.Vector3;
+using Vector4 = Microsoft.Robotics.PhysicalModel.Vector4;
 
 namespace Brumba.Simulation.EnvironmentBuilder
 {

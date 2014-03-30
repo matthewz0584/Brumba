@@ -12,12 +12,12 @@ namespace Brumba.WaiterStupid
 	public class TimerFacade : IDisposable
 	{
 		readonly DsspServiceExposing _srv;
-		float _interval;
 
-	    [DC.ContractInvariantMethodAttribute]
+		[DC.ContractInvariantMethodAttribute]
 	    void ObjectInvariant()
 	    {
-	        DC.Contract.Invariant(_interval > 0);
+	        DC.Contract.Invariant(Interval > 0);
+			DC.Contract.Invariant(_srv != null);
 	    }
 
 		public TimerFacade(DsspServiceExposing srv, float interval)
@@ -25,15 +25,16 @@ namespace Brumba.WaiterStupid
             DC.Contract.Requires(srv != null);
             DC.Contract.Requires(interval > 0);
             DC.Contract.Ensures(_srv != null);
-            DC.Contract.Ensures(_interval > 0);
+            DC.Contract.Ensures(Interval > 0);
             DC.Contract.Ensures(TickPort != null);
 
 			_srv = srv;
-			_interval = interval;
+			Interval = interval;
 			TickPort = new Port<TimeSpan>();
 		}
 
 		public Port<TimeSpan> TickPort { get; private set; }
+		public float Interval { get; private set; }
 
 		public IEnumerator<ITask> Set()
 		{
@@ -46,14 +47,19 @@ namespace Brumba.WaiterStupid
 		}
 
         //ToDo:!!!Not tested at all!!! Test or remove
+		/// <summary>
+		/// Not tested
+		/// </summary>
+		/// <param name="interval"></param>
+		/// <returns></returns>
         public IEnumerator<ITask> Reset(float interval)
         {
             DC.Contract.Requires(interval > 0);
-            DC.Contract.Ensures(_interval > 0);
+            DC.Contract.Ensures(Interval > 0);
 
             Dispose();
             _disposed = false;
-            _interval = interval;
+            Interval = interval;
             yield return To.Exec(Set);
         }
 
@@ -79,7 +85,7 @@ namespace Brumba.WaiterStupid
 		    simTimer.Post(
 		        new simTimerPxy.Subscribe
 		            {
-		                Body = new simTimerPxy.SubscribeRequest(_interval),
+		                Body = new simTimerPxy.SubscribeRequest(Interval),
 		                NotificationPort = _simTimerNotificationPort,
 		                NotificationShutdownPort = _simTimerUnsubscribePort
 		            });
@@ -106,7 +112,7 @@ namespace Brumba.WaiterStupid
 	        if (_lastDate != new DateTime())
                 TickPort.Post(time - _lastDate);
             _lastDate = time;
-	        _srv.Activate(_srv.TimeoutPort(IntervalToSpan(_interval).Milliseconds).Receive(InternalTimerHandler));
+	        _srv.Activate(_srv.TimeoutPort(IntervalToSpan(Interval).Milliseconds).Receive(InternalTimerHandler));
 	    }
 
 	    static TimeSpan IntervalToSpan(double interval)

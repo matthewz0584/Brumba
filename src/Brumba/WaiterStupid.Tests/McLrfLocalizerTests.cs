@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
+using Brumba.MapProvider;
 using Brumba.Utils;
 using Brumba.WaiterStupid.McLocalization;
 using MathNet.Numerics;
-using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 

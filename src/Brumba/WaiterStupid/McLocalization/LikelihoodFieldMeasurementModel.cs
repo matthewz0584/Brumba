@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Brumba.MapProvider;
 using DC = System.Diagnostics.Contracts;
 using System.Linq;
 using MathNet.Numerics;

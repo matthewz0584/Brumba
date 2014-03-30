@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A32BC228-9820-4FF8-A4E3-06C61AE9C650}</ProjectGuid>
+    <ProjectGuid>{8FC58E7B-066F-4B5C-8F80-45C0F1BB6CB3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brumba.FloorPlanBuilderTests</RootNamespace>
-    <AssemblyName>Brumba.FloorPlanBuilderTests</AssemblyName>
+    <RootNamespace>Brumba.MapProvider.Tests</RootNamespace>
+    <AssemblyName>Brumba.MapProvider.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,15 +48,26 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Ccr.Core, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Ccr.Core\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Ccr.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Dss.Base, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Base\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Runtime\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+    <Reference Include="NSubstitute">
+      <HintPath>..\..\..\utils\NSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\utils\nunit.framework.dll</HintPath>
     </Reference>
@@ -79,14 +90,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FloorPlanBuilderTests.cs" />
+    <Compile Include="BoxWorldBuilderTests.cs" />
+    <Compile Include="MapProviderServiceTests.cs" />
+    <Compile Include="OccupancyGridTests.cs" />
+    <Compile Include="PixelColorClassifierTests.cs" />
     <Compile Include="PixelGlueTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FloorPlanBuilder\FloorPlanBuilder.csproj">
+    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
+      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
+      <Name>DsspUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EnvironmentBuilder\EnvironmentBuilder.csproj">
+      <Project>{bf9957ab-2a19-4904-b423-bd0a09d0eb01}</Project>
+      <Name>EnvironmentBuilder</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
-      <Name>FloorPlanBuilder</Name>
+      <Name>MapProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
+      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
