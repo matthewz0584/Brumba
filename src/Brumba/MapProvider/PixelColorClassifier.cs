@@ -1,38 +1,39 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Point = Microsoft.Xna.Framework.Point;
-using Vector3 = Microsoft.Xna.Framework.Vector3;
+using xColor = Microsoft.Xna.Framework.Color;
+using xPoint = Microsoft.Xna.Framework.Point;
+using xVector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace Brumba.MapProvider
 {
     public interface IPixelColorClassifier
     {
-        IDictionary<Color, List<Point>> Classify(Bitmap bitmap, IEnumerable<Color> classColors);
+        IDictionary<xColor, List<xPoint>> Classify(Bitmap bitmap, IEnumerable<xColor> classColors);
     }
 
     public class PixelColorClassifier : IPixelColorClassifier
     {
-        public IDictionary<Color, List<Point>> Classify(Bitmap bitmap, IEnumerable<Color> classColors)
+        public IDictionary<xColor, List<xPoint>> Classify(Bitmap bitmap, IEnumerable<xColor> classColors)
         {
-            var colorsPixels = classColors.ToDictionary(ot => ot, ot => new List<Point>());
+            var colorsPixels = classColors.ToDictionary(ot => ot, ot => new List<xPoint>());
             for (var i = 0; i < bitmap.Height; i++)
                 for (var j = 0; j < bitmap.Width; j++)
-                    colorsPixels[GetColorClass(bitmap.GetPixel(j, i), classColors)].Add(new Point(j, i));
+                    colorsPixels[GetColorClass(ColorToXColor(bitmap.GetPixel(j, i)), classColors)].Add(new xPoint(j, i));
             return colorsPixels;
         }
 
-        public Color GetColorClass(Color color, IEnumerable<Color> classColors)
+        public xColor GetColorClass(xColor color, IEnumerable<xColor> classColors)
         {
             return classColors
-                .Select(cc => new { ClassColor = cc, DistToClass = (ColorToVector(cc) - ColorToVector(color)).Length() })
-                .OrderBy(classColorDist => classColorDist.DistToClass).ThenBy(classColorDist => classColorDist.ClassColor.ToArgb())
+                .Select(cc => new { ClassColor = cc, DistToClass = (cc.ToVector3() - color.ToVector3()).Length() })
+                .OrderBy(classColorDist => classColorDist.DistToClass).ThenBy(classColorDist => classColorDist.ClassColor.ToString())
                 .First().ClassColor;
         }
 
-        static Vector3 ColorToVector(Color color)
+        static xColor ColorToXColor(Color color)
         {
-            return new Vector3(color.R, color.G, color.B);
+            return new xColor(color.R, color.G, color.B);
         }
     }
 }

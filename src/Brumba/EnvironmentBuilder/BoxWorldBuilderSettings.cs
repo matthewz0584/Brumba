@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Drawing;
 using Microsoft.Dss.Core.Attributes;
+using Microsoft.Xna.Framework;
 
 namespace Brumba.Simulation.EnvironmentBuilder
 {

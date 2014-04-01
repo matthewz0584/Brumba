@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
-using System.Drawing;
+using Microsoft.Xna.Framework;
 using W3C.Soap;
 
 namespace Brumba.MapProvider

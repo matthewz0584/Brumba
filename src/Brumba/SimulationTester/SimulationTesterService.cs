@@ -308,7 +308,7 @@ namespace Brumba.SimulationTester
             resetFilter = resetFilter ?? (pxy => true);
 
             MrsPxy.SimulationState simState = null;
-            yield return Arbiter.Choice(_simEngine.Get(), st => simState = st, LogError);
+            yield return _simEngine.Get().Choice(st => simState = st, LogError);
 
             var renderMode = simState.RenderMode;
             simState.Pause = true;
@@ -317,7 +317,7 @@ namespace Brumba.SimulationTester
             IEnumerable<MrsePxy.VisualEntity> entityPxies = null;
             yield return To.Exec(DeserializeTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> ePxies) => entityPxies = ePxies, simState, (Func<XmlElement, bool>)null);
             foreach (var entityPxy in entityPxies.Where(resetFilter).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
-                yield return Arbiter.Choice(_simEngine.DeleteSimulationEntity(entityPxy), deleted => {}, failed => {});
+                yield return _simEngine.DeleteSimulationEntity(entityPxy).Choice(deleted => {}, failed => {});
 
             simState.Pause = false;
             simState.RenderMode = renderMode;
@@ -325,7 +325,7 @@ namespace Brumba.SimulationTester
 
             var get = new DsspDefaultGet();
             ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
-            yield return Arbiter.Choice(get.ResponsePort, LogError, success => simState = (MrsPxy.SimulationState)success);
+            yield return get.ResponsePort.Choice(LogError, success => simState = (MrsPxy.SimulationState)success);
 
             IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> entities = null;
             yield return To.Exec(DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> ens) => entities = ens, simState);

@@ -9,7 +9,7 @@ using WaiterStupidPxy = Brumba.WaiterStupid.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("waiter_stupid_mc_lrf_localization_tests", Wip = true)]
+	[SimTestFixture("waiter_stupid_mc_lrf_localization_tests")]
 	public class WaiterStupidMcLrfLocalizationTests
 	{
 		public SimulationTesterService TesterService { get; private set; }
@@ -24,7 +24,7 @@ namespace Brumba.SimulationTester.Tests
 			McLrfLocalizationPort = testerService.ForwardTo<McLocalizationPxy.McLrfLocalizerOperations>("localization@");
 		}
 
-		[SimTest(10)]
+		//[SimTest(10)]
 		public class Tracking// : IStart
 		{
 			[Fixture]

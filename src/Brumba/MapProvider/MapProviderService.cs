@@ -1,11 +1,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using Brumba.DsspUtils;
 using Microsoft.Ccr.Core;
+using Microsoft.Dss.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
+using Microsoft.Xna.Framework;
+using Color = Microsoft.Xna.Framework.Color;
 using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.MapProvider
@@ -16,7 +20,7 @@ namespace Brumba.MapProvider
     public class MapProviderService : DsspServiceExposing
     {
         [ServiceState]
-		[InitialStatePartner(Optional = true, ServiceUri = "qq.config.xml")]
+		[InitialStatePartner(Optional = false)]
         MapProviderState _state;
 
         [ServicePort("/MapProvider", AllowMultipleInstances = true)]
@@ -31,22 +35,18 @@ namespace Brumba.MapProvider
         {
 			base.Start();
 
-            //SaveState(new MapProviderState
-            //{                
-            //    MapImageFile = "qq.bmp",
-            //    GridCellSize = 0.1,
-            //    OccupiedColors = new List<Color> {Color.Red, Color.Blue},
-            //    UnoccupiedColor = Color.Gray
-            //});
-
 	        Activate(Arbiter.FromHandler(CreateMap));
         }
 
-	    void CreateMap()
-	    {
-	        _state.Map = CreateOccupancyGrid((Bitmap) Image.FromFile(_state.MapImageFile),
+        void CreateMap()
+        {
+            var mapImageFile = Path.IsPathRooted(_state.MapImageFile)
+                ? Path.Combine(LayoutPaths.RootDir, _state.MapImageFile.Trim(Path.DirectorySeparatorChar))
+                : Path.Combine(LayoutPaths.RootDir, LayoutPaths.MediaDir, _state.MapImageFile);
+
+            _state.Map = CreateOccupancyGrid((Bitmap)Image.FromFile(mapImageFile),
                 _state.GridCellSize, _state.OccupiedColors, _state.UnoccupiedColor);
-	    }
+        }
 
         public static OccupancyGrid CreateOccupancyGrid(Bitmap bitmap, double gridCellSize, IEnumerable<Color> occupiedColors, Color unoccupiedColor)
         {

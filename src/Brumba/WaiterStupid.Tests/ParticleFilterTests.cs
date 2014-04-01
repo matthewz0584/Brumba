@@ -100,7 +100,7 @@ namespace Brumba.WaiterStupid.Tests
 
             var u1 = new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(50);
             var u2 = new ContinuousUniform { Lower = 0, Upper = 10 }.Samples().Take(50);
-            pf.Init(from x in u1 from y in u2 select new Vector2((float)x, (float)y));
+            pf.Init((from x in u1 from y in u2 select new Vector2((float)x, (float)y)).Take(2500 - 1).Concat(new [] {new Vector2(0, 0)}));
 
             pf.Update(control: new Vector2(1, 1), measurement: 5);
 

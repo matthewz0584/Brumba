@@ -99,6 +99,19 @@ namespace Brumba.MapProvider.Tests
 			Assert.That(data[1, 0], Is.False);
 			Assert.That(data[1, 1], Is.False);
 			Assert.That(data[1, 2], Is.True);
+
+		    var occGridFromData = new OccupancyGrid {Data = data, CellSize = 0.2f};
+            occGridFromData.Freeze();
+
+            Assert.That(occGridFromData.SizeInCells, Is.EqualTo(new Point(3, 2)));
+
+            Assert.That(occGridFromData[new Point(0, 0)], Is.False);
+            Assert.That(occGridFromData[new Point(1, 0)], Is.True);
+            Assert.That(occGridFromData[new Point(2, 0)], Is.False);
+
+            Assert.That(occGridFromData[new Point(0, 1)], Is.False);
+            Assert.That(occGridFromData[new Point(1, 1)], Is.False);
+            Assert.That(occGridFromData[new Point(2, 1)], Is.True);
 		}
 	}
 }

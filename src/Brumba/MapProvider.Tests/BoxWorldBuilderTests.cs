@@ -5,6 +5,7 @@ using Brumba.Simulation.EnvironmentBuilder;
 using Microsoft.Robotics.Simulation.Engine;
 using NSubstitute;
 using NUnit.Framework;
+using xColor = Microsoft.Xna.Framework.Color;
 using xPoint = Microsoft.Xna.Framework.Point;
 using xVector2 = Microsoft.Xna.Framework.Vector2;
 using xVector3 = Microsoft.Xna.Framework.Vector3;
@@ -26,7 +27,7 @@ namespace Brumba.MapProvider.Tests
         {
             _blueType = new BoxType
             {
-                ColorOnMapImage = Color.Blue,
+                ColorOnMapImage = xColor.Blue,
                 TextureFileName = "blue box texture",
                 Height = 2,
                 Mass = 100
@@ -38,12 +39,12 @@ namespace Brumba.MapProvider.Tests
             _settings = new BoxWorldBuilderSettings
             {
                 GridCellSize = 0.1f,
-                FloorType = new ObjectType { ColorOnMapImage = Color.Gray },
+                FloorType = new ObjectType { ColorOnMapImage = xColor.Gray },
                 BoxTypes =
                 {
                     new BoxType
                         {
-                            ColorOnMapImage = Color.Red,
+                            ColorOnMapImage = xColor.Red,
                             TextureFileName = "red box texture",
                             Height = 1,
                             Mass = 10
@@ -84,31 +85,31 @@ namespace Brumba.MapProvider.Tests
         {
             var bitmap = new Bitmap(10, 20);
 
-            var colorClassPixels = new Dictionary<Color, List<xPoint>>
+            var colorClassPixels = new Dictionary<xColor, List<xPoint>>
             {
-                {Color.Red, new List<xPoint> {new xPoint(1, 2)}},
-                {Color.Blue, new List<xPoint> {new xPoint(10, 20)}},
-                {Color.Gray, new List<xPoint> {new xPoint(100, 200)}},
+                {xColor.Red, new List<xPoint> {new xPoint(1, 2)}},
+                {xColor.Blue, new List<xPoint> {new xPoint(10, 20)}},
+                {xColor.Gray, new List<xPoint> {new xPoint(100, 200)}},
             };
-            _pixelClassifier.Classify(bitmap, Arg.Any<IEnumerable<Color>>()).Returns(colorClassPixels);
+            _pixelClassifier.Classify(bitmap, Arg.Any<IEnumerable<xColor>>()).Returns(colorClassPixels);
 
-            _pixelGlue.GluePixelBlocks(colorClassPixels[Color.Blue]).
+            _pixelGlue.GluePixelBlocks(colorClassPixels[xColor.Blue]).
                 Returns(new List<PixelBlock> { new PixelBlock(new xPoint(1, 2), 1, 1), new PixelBlock(new xPoint(2, 3), 1, 2) });
 
-            _pixelGlue.GluePixelBlocks(colorClassPixels[Color.Red]).
+            _pixelGlue.GluePixelBlocks(colorClassPixels[xColor.Red]).
                 Returns(new List<PixelBlock> { new PixelBlock(new xPoint(4, 5), 1, 1) });
 
-            _pixelGlue.GluePixelBlocks(colorClassPixels[Color.Gray]).
+            _pixelGlue.GluePixelBlocks(colorClassPixels[xColor.Gray]).
                 Returns(new List<PixelBlock> { new PixelBlock(new xPoint(7, 8), 1, 1) });
 
             var entities = _bwb.CreateBoxes(bitmap).ToList();
 
-            _pixelClassifier.Received().Classify(bitmap, Arg.Is<IEnumerable<Color>>(
-                cs => cs.SequenceEqual(new[] { Color.Red, Color.Blue, Color.Gray })));
+            _pixelClassifier.Received().Classify(bitmap, Arg.Is<IEnumerable<xColor>>(
+                cs => cs.SequenceEqual(new[] { xColor.Red, xColor.Blue, xColor.Gray })));
 
-            _pixelGlue.Received().GluePixelBlocks(colorClassPixels[Color.Blue]);
-            _pixelGlue.Received().GluePixelBlocks(colorClassPixels[Color.Red]);
-            _pixelGlue.DidNotReceive().GluePixelBlocks(colorClassPixels[Color.Gray]);
+            _pixelGlue.Received().GluePixelBlocks(colorClassPixels[xColor.Blue]);
+            _pixelGlue.Received().GluePixelBlocks(colorClassPixels[xColor.Red]);
+            _pixelGlue.DidNotReceive().GluePixelBlocks(colorClassPixels[xColor.Gray]);
 
             Assert.That(entities.Count(), Is.EqualTo(3));
             Assert.That(entities.All(e => e.BoxShape != null));

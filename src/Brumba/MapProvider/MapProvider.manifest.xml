@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:mapproviderservice="http://brumba.ru/contracts/2014/03/mapproviderservice.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:22f881a8-1dcb-46ae-8703-f357bc9f6243" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
+          <dssp:Service>MapProvider.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:BrumbaMapProvider</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
+</Manifest>
