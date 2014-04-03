@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Brumba.Simulation.EnvironmentBuilder;
+using Brumba.Utils;
 using Microsoft.Robotics.Simulation.Engine;
 using NSubstitute;
 using NUnit.Framework;
@@ -9,18 +11,19 @@ using xColor = Microsoft.Xna.Framework.Color;
 using xPoint = Microsoft.Xna.Framework.Point;
 using xVector2 = Microsoft.Xna.Framework.Vector2;
 using xVector3 = Microsoft.Xna.Framework.Vector3;
+using xVector4 = Microsoft.Xna.Framework.Vector4;
 using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 
 namespace Brumba.MapProvider.Tests
 {
     [TestFixture]
-    public class BoxWorldBuilderTests
+    public class BoxWorldParserTests
     {
-        private BoxWorldBuilder _bwb;
+        private BoxWorldParser _bwp;
         private BoxType _blueType;
         private IPixelBlockGlue _pixelGlue;
         private IPixelColorClassifier _pixelClassifier;
-        private BoxWorldBuilderSettings _settings;
+        private BoxWorldParserSettings _settings;
 
         [SetUp]
         public void Setup()
@@ -36,7 +39,7 @@ namespace Brumba.MapProvider.Tests
             _pixelGlue = Substitute.For<IPixelBlockGlue>();
             _pixelClassifier = Substitute.For<IPixelColorClassifier>();
 
-            _settings = new BoxWorldBuilderSettings
+            _settings = new BoxWorldParserSettings
             {
                 GridCellSize = 0.1f,
                 FloorType = new ObjectType { ColorOnMapImage = xColor.Gray },
@@ -53,35 +56,41 @@ namespace Brumba.MapProvider.Tests
                 }
             };
 
-            _bwb = new BoxWorldBuilder(_settings, _pixelGlue, _pixelClassifier);
+            _bwp = new BoxWorldParser(_settings, _pixelGlue, _pixelClassifier);
         }
 
         [Test]
         public void Acceptance()
         {
-            //blue box: (28, 31) - (35, 44); red box: (112, 125) - (134, 132)
-            var entities = new BoxWorldBuilder(_settings, new PixelBlockGlue(), new PixelColorClassifier()).CreateBoxes((Bitmap)Image.FromFile("red_and_blue_boxes.bmp"));
+            //blue box: (28, 180 - 1 - 43) - (34, 180 - 1 - 31); red box: (112, 131) - (133, 125)
+            var entities = new BoxWorldParser(_settings, new PixelBlockGlue(), new PixelColorClassifier()).ParseBoxes((Bitmap)Image.FromFile("red_and_blue_boxes.bmp"));
 
             Assert.That(entities.Count(), Is.EqualTo(2));
             Assert.That(entities.All(e => e.BoxShape != null));
 
             var blueBox = entities.Single(e => e.BoxShape.BoxState.TextureFileName == "blue box texture");
-            var blueBoxCenter = (new xVector2(28, 31) + (new xVector2(35, 44) - new xVector2(28, 31)) * 0.5f) * 0.1f;
-            Assert.That(blueBox.State.Pose.Position, Is.EqualTo(TypeConversion.FromXNA(new xVector3(blueBoxCenter.X, 1f, blueBoxCenter.Y))));
-            var blueBoxDimensions = (new xVector2(35, 44) - new xVector2(28, 31)) * 0.1f;
-            Assert.That(blueBox.BoxShape.BoxState.Dimensions, Is.EqualTo(TypeConversion.FromXNA(new xVector3(blueBoxDimensions.X, 2, blueBoxDimensions.Y))));
+			var blueBoxDimensions = (new xVector2(34 + 1, 180 - 1 - 31 + 1) - new xVector2(28, 180 - 1 - 43)) * 0.1f;
+			var blueBoxCenter = new xVector2(28, 180 - 1 - 43) * 0.1f + blueBoxDimensions * 0.5f;
+            Assert.That(TypeConversion.ToXNA(blueBox.State.Pose.Position).EqualsRelatively(new xVector3(blueBoxCenter.Y, 1f, blueBoxCenter.X), 0.001));
+            Assert.That(TypeConversion.ToXNA(blueBox.BoxShape.BoxState.Dimensions), Is.EqualTo(new xVector3(blueBoxDimensions.Y, 2, blueBoxDimensions.X)));
+			Assert.That(TypeConversion.ToXNA(blueBox.BoxShape.BoxState.DiffuseColor), Is.EqualTo(new xVector4(0, 0, 1, 1)));
             Assert.That(blueBox.BoxShape.BoxState.MassDensity.Mass, Is.EqualTo(100));
+			//Console.WriteLine("blue center {0}", new xVector3(blueBoxCenter.Y, 1f, blueBoxCenter.X));
+			//Console.WriteLine("blue dim {0}", new xVector3(blueBoxDimensions.Y, 2, blueBoxDimensions.X));
 
             var redBox = entities.Single(e => e.BoxShape.BoxState.TextureFileName == "red box texture");
-            var redBoxCenter = (new xVector2(112, 125) + (new xVector2(134, 132) - new xVector2(112, 125)) * 0.5f) * 0.1f;
-            Assert.That(redBox.State.Pose.Position, Is.EqualTo(TypeConversion.FromXNA(new xVector3(redBoxCenter.X, 0.5f, redBoxCenter.Y))));
-            var redBoxDimensions = (new xVector2(134, 132) - new xVector2(112, 125)) * 0.1f;
-            Assert.That(redBox.BoxShape.BoxState.Dimensions, Is.EqualTo(TypeConversion.FromXNA(new xVector3(redBoxDimensions.X, 1, redBoxDimensions.Y))));
+			var redBoxDimensions = (new xVector2(133 + 1, 180 - 1 - 125 + 1) - new xVector2(112, 180 - 1 - 131)) * 0.1f;
+            var redBoxCenter = new xVector2(112, 180 - 1 - 131) * 0.1f + redBoxDimensions * 0.5f;
+			Assert.That(TypeConversion.ToXNA(redBox.State.Pose.Position), Is.EqualTo(new xVector3(redBoxCenter.Y, 0.5f, redBoxCenter.X)));
+            Assert.That(TypeConversion.ToXNA(redBox.BoxShape.BoxState.Dimensions), Is.EqualTo(new xVector3(redBoxDimensions.Y, 1, redBoxDimensions.X)));
+			Assert.That(TypeConversion.ToXNA(redBox.BoxShape.BoxState.DiffuseColor), Is.EqualTo(new xVector4(1, 0, 0, 1)));
             Assert.That(redBox.BoxShape.BoxState.MassDensity.Mass, Is.EqualTo(10));
+			//Console.WriteLine("red center {0}", new xVector3(redBoxCenter.Y, 1f, redBoxCenter.X));
+			//Console.WriteLine("red dim {0}", new xVector3(redBoxDimensions.Y, 0.5f, redBoxDimensions.X));
         }
 
         [Test]
-        public void CreateBoxes()
+        public void ParseBoxes()
         {
             var bitmap = new Bitmap(10, 20);
 
@@ -94,15 +103,15 @@ namespace Brumba.MapProvider.Tests
             _pixelClassifier.Classify(bitmap, Arg.Any<IEnumerable<xColor>>()).Returns(colorClassPixels);
 
             _pixelGlue.GluePixelBlocks(colorClassPixels[xColor.Blue]).
-                Returns(new List<PixelBlock> { new PixelBlock(new xPoint(1, 2), 1, 1), new PixelBlock(new xPoint(2, 3), 1, 2) });
+                Returns(new List<PixelBlock> { new PixelBlock(new xPoint(1, 2), new xPoint(1, 1)), new PixelBlock(new xPoint(2, 3), new xPoint(1, 2)) });
 
             _pixelGlue.GluePixelBlocks(colorClassPixels[xColor.Red]).
-                Returns(new List<PixelBlock> { new PixelBlock(new xPoint(4, 5), 1, 1) });
+                Returns(new List<PixelBlock> { new PixelBlock(new xPoint(4, 5), new xPoint(1, 1)) });
 
             _pixelGlue.GluePixelBlocks(colorClassPixels[xColor.Gray]).
-                Returns(new List<PixelBlock> { new PixelBlock(new xPoint(7, 8), 1, 1) });
+                Returns(new List<PixelBlock> { new PixelBlock(new xPoint(7, 8), new xPoint(1, 1)) });
 
-            var entities = _bwb.CreateBoxes(bitmap).ToList();
+            var entities = _bwp.ParseBoxes(bitmap).ToList();
 
             _pixelClassifier.Received().Classify(bitmap, Arg.Is<IEnumerable<xColor>>(
                 cs => cs.SequenceEqual(new[] { xColor.Red, xColor.Blue, xColor.Gray })));
@@ -119,28 +128,37 @@ namespace Brumba.MapProvider.Tests
         }
 
         [Test]
-        public void CreateTypeBoxes()
+        public void ParseTypeBoxes()
         {
             var points = new xPoint[1];
 
-            _pixelGlue.GluePixelBlocks(points).Returns(new[] { new PixelBlock(new xPoint(1, 1), 2, 3), new PixelBlock(new xPoint(5, 5), 1, 1) });
+            _pixelGlue.GluePixelBlocks(points).Returns(new[] { new PixelBlock(new xPoint(1, 1), new xPoint(2, 3)), new PixelBlock(new xPoint(5, 6), new xPoint(1, 1)) });
 
-            var boxes = _bwb.CreateTypeBoxes(_blueType, points);
+            var boxes = _bwp.ParseTypeBoxes(_blueType, points);
 
             _pixelGlue.Received().GluePixelBlocks(points);
 
             Assert.That(boxes.Count(), Is.EqualTo(2));
 
             var boxesOrdered = boxes.OrderByDescending(e => e.BoxShape.BoxState.Dimensions.X);
-            Assert.That(boxesOrdered.First().State.Pose.Position, Is.EqualTo(new rVector3(0.2f, (float)_blueType.Height / 2, 0.25f)));
-            Assert.That(boxesOrdered.First().BoxShape.BoxState.Dimensions, Is.EqualTo(new rVector3(0.2f, (float)_blueType.Height, 0.3f)));
+            Assert.That(boxesOrdered.First().State.Pose.Position, Is.EqualTo(new rVector3(0.25f, (float)_blueType.Height / 2, 0.2f)));
+            Assert.That(boxesOrdered.First().BoxShape.BoxState.Dimensions, Is.EqualTo(new rVector3(0.3f, (float)_blueType.Height, 0.2f)));
             Assert.That(boxesOrdered.First().BoxShape.BoxState.MassDensity.Mass, Is.EqualTo(_blueType.Mass));
             Assert.That(boxesOrdered.First().BoxShape.BoxState.TextureFileName, Is.EqualTo(_blueType.TextureFileName));
+			Assert.That(TypeConversion.ToXNA(boxesOrdered.First().BoxShape.BoxState.DiffuseColor), Is.EqualTo(new xVector4(0, 0, 1, 1f)));
 
-            Assert.That(boxesOrdered.Last().State.Pose.Position, Is.EqualTo(new rVector3(0.55f, (float)_blueType.Height / 2, 0.55f)));
+	        Assert.That(TypeConversion.ToXNA(boxesOrdered.Last().State.Pose.Position).EqualsRelatively(new xVector3(0.65f, (float)_blueType.Height / 2, 0.55f), 0.001));
             Assert.That(boxesOrdered.Last().BoxShape.BoxState.Dimensions, Is.EqualTo(new rVector3(0.1f, (float)_blueType.Height, 0.1f)));
             Assert.That(boxesOrdered.Last().BoxShape.BoxState.MassDensity.Mass, Is.EqualTo(_blueType.Mass));
             Assert.That(boxesOrdered.Last().BoxShape.BoxState.TextureFileName, Is.EqualTo(_blueType.TextureFileName));
+			Assert.That(TypeConversion.ToXNA(boxesOrdered.Last().BoxShape.BoxState.DiffuseColor), Is.EqualTo(new xVector4(0, 0, 1, 1f)));
         }
+
+	    [Test]
+	    public void MapToSim()
+	    {
+		    Assert.That(BoxWorldParser.MapToSim(new xVector2(1, 2), 3), Is.EqualTo(new xVector3(2, 3, 1)));
+			Assert.That(BoxWorldParser.SimToMap(new xVector3(3, 2, 1)), Is.EqualTo(new xVector2(1, 3)));
+	    }
     }
 }

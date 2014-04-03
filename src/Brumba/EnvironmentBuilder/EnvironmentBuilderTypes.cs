@@ -14,10 +14,14 @@ namespace Brumba.Simulation.EnvironmentBuilder
 	[DataContract]
     public class EnvironmentBuilderState
 	{
+		[DataMember]
+		public BoxWorldParserSettings BoxWorldParserSettings { get; set; }
+		[DataMember]
+		public string MapImageFile { get; set; }
 	}
 	
 	[ServicePort]
-    public class EnvironmentBuilderOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+	public class EnvironmentBuilderOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, BuildBoxWorld>
 	{
 	}
 
@@ -37,6 +41,11 @@ namespace Brumba.Simulation.EnvironmentBuilder
 		{
 		}
 	}
+
+	[DataContract]
+	public class BuildBoxWorldRequest {}
+	
+	public class BuildBoxWorld : Submit<BuildBoxWorldRequest, PortSet<DefaultSubmitResponseType, Fault>> {}
 }
 
 

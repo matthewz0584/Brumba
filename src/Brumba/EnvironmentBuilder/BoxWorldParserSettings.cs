@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 namespace Brumba.Simulation.EnvironmentBuilder
 {
 	[DataContract]
-	public class BoxWorldBuilderSettings
+	public class BoxWorldParserSettings
 	{
 		[DataMember]
 		public float GridCellSize { get; set; }
@@ -14,7 +14,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 		[DataMember]
 		public ObjectType FloorType { get; set; }
 
-		public BoxWorldBuilderSettings()
+		public BoxWorldParserSettings()
 		{
 			BoxTypes = new List<BoxType>();
 		}

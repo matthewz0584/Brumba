@@ -17,7 +17,7 @@ namespace Brumba.MapProvider
 			return from psEqualStartX in GluePixelStripes(pixels).GroupBy(p => p.Start.X)
 				   from psEqualLength in psEqualStartX.GroupBy(p => p.Length)
 				   from boxLeftTopAndHeight in GetSequenceLengthes(psEqualLength, ps => ps.Start.Y)
-				   select new PixelBlock(boxLeftTopAndHeight.Item1.Start, psEqualLength.First().Length, boxLeftTopAndHeight.Item2);
+				   select new PixelBlock(boxLeftTopAndHeight.Item1.Start, new Point(psEqualLength.First().Length, boxLeftTopAndHeight.Item2));
 		}
 
 		public IEnumerable<PixelStripe> GluePixelStripes(IEnumerable<Point> pixels)
@@ -71,14 +71,12 @@ namespace Brumba.MapProvider
 	public class PixelBlock
 	{
 		public Point LeftTop { get; private set; }
-		public int Width { get; private set; }
-		public int Height { get; private set; }
+		public Point Size { get; private set; }
 
-		public PixelBlock(Point leftTop, int width, int height)
+		public PixelBlock(Point leftTop, Point size)
 		{
 			LeftTop = leftTop;
-			Width = width;
-			Height = height;
+			Size = size;
 		}
 	}
 }

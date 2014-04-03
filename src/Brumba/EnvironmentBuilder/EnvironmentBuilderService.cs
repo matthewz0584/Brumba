@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.IO;
 using System.Threading;
+using Brumba.MapProvider;
 using Brumba.Simulation.SimulatedAckermanVehicle;
 using Brumba.Simulation.SimulatedInfraredRfRing;
 using Brumba.Simulation.SimulatedLrf;
@@ -9,12 +12,16 @@ using Brumba.Simulation.SimulatedReferencePlatform2011;
 using Brumba.Simulation.SimulatedTail;
 using Brumba.Simulation.SimulatedTimer;
 using Brumba.Simulation.SimulatedTurret;
+using Microsoft.Ccr.Core;
+using Microsoft.Dss.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
+using W3C.Soap;
+using Color = Microsoft.Xna.Framework.Color;
 using Vector2 = Microsoft.Robotics.PhysicalModel.Vector2;
 using Vector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using Vector4 = Microsoft.Robotics.PhysicalModel.Vector4;
@@ -27,13 +34,14 @@ namespace Brumba.Simulation.EnvironmentBuilder
     class EnvironmentBuilderService : DsspServiceBase
     {
         [ServiceState]
-        EnvironmentBuilderState _state = new EnvironmentBuilderState();
+		[InitialStatePartner(Optional = true)]
+        EnvironmentBuilderState _state;
 
         [ServicePort("/EnvironmentBuilder", AllowMultipleInstances = true)]
         EnvironmentBuilderOperations _mainPort = new EnvironmentBuilderOperations();
 
         [Partner("Engine", Contract = Microsoft.Robotics.Simulation.Engine.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExistingOrCreate)]
-        SimulationEnginePort _engineStub = new SimulationEnginePort();//only for auto engine creation
+		SimulationEnginePort _engineStub = new SimulationEnginePort();//only for auto engine creation
 
         public EnvironmentBuilderService(DsspServiceCreationPort creationPort)
             : base(creationPort)
@@ -68,7 +76,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateInfraredRfRing();
             //PopulateTurret();
             //PopulateHamster();
-	        PopulateRefPlatformSimpleTests();
+	        //PopulateRefPlatformSimpleTests();
 
             base.Start();
 
@@ -82,7 +90,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			PopulateSimpleEnvironment();
 
 	        SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter"));
-     SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
+			SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(8, 0.501f, 0)) { State = { Name = "golden_brick_out_of_range" } });
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(-5f, 0.501f, 0)) { State = { Name = "golden_brick_in_range" } });
 	    }
@@ -348,5 +356,28 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //var ground = new TerrainEntity("terrain.bmp", "", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
             //SimulationEngine.GlobalInstancePort.Insert(ground);
         }
+
+	    [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+		public IEnumerator<ITask> OnBuildBoxWorld(BuildBoxWorld bbwRq)
+	    {
+			if (_state == null)
+				bbwRq.ResponsePort.Post(new Fault {Reason = new [] {new ReasonText {Value = "There is no state to build world from."}}});
+
+		    var bwb = new BoxWorldParser(_state.BoxWorldParserSettings, new PixelBlockGlue(), new PixelColorClassifier());
+
+			var mapImageFile = Path.IsPathRooted(_state.MapImageFile)
+                ? Path.Combine(LayoutPaths.RootDir, _state.MapImageFile.Trim(Path.DirectorySeparatorChar))
+                : Path.Combine(LayoutPaths.RootDir, LayoutPaths.MediaDir, _state.MapImageFile);
+
+		    var boxes = bwb.ParseBoxes((Bitmap) Image.FromFile(mapImageFile));
+		    foreach (var box in boxes)
+		    {
+				var insRequest = new InsertSimulationEntity(box);
+				SimulationEngine.GlobalInstancePort.Post(insRequest);
+				yield return insRequest.ResponsePort.Receive((DefaultInsertResponseType success) => {});
+		    }
+
+			bbwRq.ResponsePort.Post(new DefaultSubmitResponseType());
+	    }
     }
 }

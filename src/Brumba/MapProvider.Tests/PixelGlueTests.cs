@@ -66,8 +66,7 @@ namespace Brumba.MapProvider.Tests
 
 			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Count(), Is.EqualTo(1));
 			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Single().LeftTop, Is.EqualTo(new Point(1, 1)));
-			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Single().Width, Is.EqualTo(1));
-			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Single().Height, Is.EqualTo(1));
+			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Single().Size, Is.EqualTo(new Point(1, 1)));
 		}
 
 		[Test]
@@ -77,8 +76,7 @@ namespace Brumba.MapProvider.Tests
 
 			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Count(), Is.EqualTo(1));
 			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Single().LeftTop, Is.EqualTo(new Point(1, 1)));
-			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Single().Width, Is.EqualTo(2));
-			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Single().Height, Is.EqualTo(3));
+			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Single().Size, Is.EqualTo(new Point(2, 3)));
 		}
 
 		[Test]
@@ -87,10 +85,10 @@ namespace Brumba.MapProvider.Tests
 			var pixels = new[] { new Point(1, 1), new Point(2, 1), new Point(1, 2), new Point(1, 3) };
 
 			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).Count(), Is.EqualTo(2));
-			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).First(p => p.Width == 2).LeftTop, Is.EqualTo(new Point(1, 1)));
-			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).First(p => p.Width == 2).Height, Is.EqualTo(1));
-			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).First(p => p.Width == 1).LeftTop, Is.EqualTo(new Point(1, 2)));
-			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).First(p => p.Width == 1).Height, Is.EqualTo(2));
+			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).First(p => p.Size.X == 2).LeftTop, Is.EqualTo(new Point(1, 1)));
+			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).First(p => p.Size.X == 2).Size.Y, Is.EqualTo(1));
+			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).First(p => p.Size.X == 1).LeftTop, Is.EqualTo(new Point(1, 2)));
+			Assert.That(m_pixelGlue.GluePixelBlocks(pixels).First(p => p.Size.X == 1).Size.Y, Is.EqualTo(2));
 		}
 	}
 }

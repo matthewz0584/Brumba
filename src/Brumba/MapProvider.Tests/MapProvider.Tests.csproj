@@ -90,7 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoxWorldBuilderTests.cs" />
+    <Compile Include="BoxWorldParserTests.cs" />
     <Compile Include="MapProviderServiceTests.cs" />
     <Compile Include="OccupancyGridTests.cs" />
     <Compile Include="PixelColorClassifierTests.cs" />

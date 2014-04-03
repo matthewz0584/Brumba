@@ -19,7 +19,7 @@ namespace Brumba.MapProvider
             var colorsPixels = classColors.ToDictionary(ot => ot, ot => new List<xPoint>());
             for (var i = 0; i < bitmap.Height; i++)
                 for (var j = 0; j < bitmap.Width; j++)
-                    colorsPixels[GetColorClass(ColorToXColor(bitmap.GetPixel(j, i)), classColors)].Add(new xPoint(j, i));
+					colorsPixels[GetColorClass(ColorToXColor(bitmap.GetPixel(j, i)), classColors)].Add(new xPoint(j, bitmap.Height - i - 1));
             return colorsPixels;
         }
 
