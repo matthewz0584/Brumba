@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="ContractExtensions.cs" />
     <Compile Include="DsspServiceExposing.cs" />
+    <Compile Include="DumpMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="To.cs" />
   </ItemGroup>

@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using Brumba.DsspUtils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core;
@@ -18,6 +21,7 @@ namespace Brumba.MapProvider
     [Description("no description provided")]
     public class MapProviderService : DsspServiceExposing
     {
+     
         [ServiceState]
 		[InitialStatePartner(Optional = false)]
         MapProviderState _state;
@@ -30,11 +34,11 @@ namespace Brumba.MapProvider
         {
         }
 
+
         protected override void Start()
         {
-			base.Start();
-
-	        Activate(Arbiter.FromHandler(CreateMap));
+           base.Start();
+            Activate(Arbiter.FromHandler(CreateMap));
         }
 
         void CreateMap()

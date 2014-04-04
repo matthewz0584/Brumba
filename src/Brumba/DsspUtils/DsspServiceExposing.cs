@@ -1,5 +1,6 @@
 using System;
 //using System.Diagnostics.CodeAnalysis;
+using System.Net.Mime;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -10,6 +11,22 @@ namespace Brumba.DsspUtils
 {
 	public class DsspServiceExposing : DsspServiceBase
 	{
+	    static DsspServiceExposing()
+	    {
+            DC.Contract.ContractFailed += (sender, e) =>
+            {
+                try
+                {
+                    string s_null = null;
+                    s_null.ToString();
+                }
+                catch (Exception)
+                {
+                    DumpMaker.CreateMiniDump();  
+                }
+            };
+	    }
+
 		public DsspServiceExposing(ServiceEnvironment environment) : base(environment)
 		{
 		}
