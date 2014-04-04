@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Brumba.DiffDriveOdometry;
 using Brumba.DsspUtils;
-using Brumba.WaiterStupid.Odometry;
+using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -14,7 +15,7 @@ using W3C.Soap;
 using DC = System.Diagnostics.Contracts;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.McLrfLocalizer
 {
     [Contract(Contract.Identifier)]
     [DisplayName("Brumba MonteCarlo Localizer")]
@@ -28,7 +29,7 @@ namespace Brumba.WaiterStupid.McLocalization
         [ServicePort("/McLrfLocalizer", AllowMultipleInstances = true)]
         McLrfLocalizerOperations _mainPort = new McLrfLocalizerOperations();
 
-        [Partner("Odometry", Contract = Odometry.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        [Partner("Odometry", Contract = DiffDriveOdometry.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         DiffDriveOdometryOperations _odometry = new DiffDriveOdometryOperations();
 
         [Partner("Lrf", Contract = SickLrfPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
@@ -95,7 +96,7 @@ namespace Brumba.WaiterStupid.McLocalization
 	    //This convenience method is implemented in Proxy, but I can not refer to proxy of the very assembly, waiting for the separation
         PortSet<DiffDriveOdometryServiceState, Fault> GetOdometry()
         {
-            var get = new Odometry.Get(new GetRequestType());
+            var get = new DiffDriveOdometry.Get(new GetRequestType());
             _odometry.Post(get);
             return get.ResponsePort;
         }

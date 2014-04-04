@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Brumba.MapProvider;
+using Brumba.WaiterStupid;
 using DC = System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Brumba.Utils;
 using Microsoft.Xna.Framework;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.McLrfLocalizer
 {
     public class PoseHistogram
     {

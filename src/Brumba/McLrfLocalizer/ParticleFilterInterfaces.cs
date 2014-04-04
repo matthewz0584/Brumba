@@ -2,7 +2,7 @@
 using DC = System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.McLrfLocalizer
 {
     public interface IPredictionModel<TParticle, in TControl>
     {

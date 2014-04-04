@@ -3,7 +3,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 
-namespace Brumba.WaiterStupid.Odometry
+namespace Brumba.DiffDriveOdometry
 {
 	public sealed class Contract
 	{

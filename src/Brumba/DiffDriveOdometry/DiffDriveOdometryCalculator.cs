@@ -1,9 +1,9 @@
 using System;
-using Brumba.WaiterStupid.McLocalization;
+using Brumba.WaiterStupid;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.WaiterStupid.Odometry
+namespace Brumba.DiffDriveOdometry
 {
 	public class DiffDriveOdometryCalculator
 	{

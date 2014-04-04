@@ -1,11 +1,12 @@
 using System.ComponentModel;
 using Brumba.Utils;
+using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using DC = System.Diagnostics.Contracts;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.McLrfLocalizer
 {
     [DataContract]
     public struct RangefinderProperties

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DC = System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.McLrfLocalizer
 {
     public class ParticleFilter<TParticle, TMeasurement, TControl>
     {

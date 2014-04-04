@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.MapProvider;
 using Brumba.Utils;
+using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.McLrfLocalizer
 {
     public class McLrfLocalizer
     {

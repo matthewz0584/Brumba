@@ -4,7 +4,7 @@ using DC = System.Diagnostics.Contracts;
 using Brumba.Utils;
 using Microsoft.Xna.Framework;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.McLrfLocalizer
 {
     public class GridCircleFringeGenerator
     {

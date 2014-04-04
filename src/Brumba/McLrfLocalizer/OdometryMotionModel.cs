@@ -1,12 +1,13 @@
 using System;
 using Brumba.MapProvider;
+using Brumba.WaiterStupid;
 using DC = System.Diagnostics.Contracts;
 using Brumba.Utils;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using Microsoft.Xna.Framework;
 
-namespace Brumba.WaiterStupid.McLocalization
+namespace Brumba.McLrfLocalizer
 {
     public class OdometryMotionModel : IPredictionModel<Pose, Pose>
     {

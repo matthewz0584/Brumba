@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Brumba.DsspUtils;
+using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Robotics.Services.Drive.Proxy;
 using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.WaiterStupid.Odometry
+namespace Brumba.DiffDriveOdometry
 {
 	[Contract(Contract.Identifier)]
 	[DisplayName("Brumba Differential Drive Odometry")]
