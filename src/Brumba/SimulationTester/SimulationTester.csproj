@@ -186,7 +186,7 @@
     <Compile Include="SimulationTesterAttributes.cs" />
     <Compile Include="Tests\EnvironmentBuilderTests.cs" />
     <Compile Include="Tests\MapProviderTests.cs" />
-    <Compile Include="Tests\RefPlatformSimpleTests.cs" />
+    <Compile Include="Tests\RefPlatformTests.cs" />
     <Compile Include="Tests\WaiterStupidMcLrfLocalizationTests.cs" />
     <Compile Include="Tests\WaiterStupidOdometryTests.cs" />
     <Compile Include="Tests\TurretTests.cs" />
@@ -196,6 +196,10 @@
     <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
       <Project>{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}</Project>
       <Name>DsspUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EnvironmentBuilder\EnvironmentBuilder.csproj">
+      <Project>{BF9957AB-2A19-4904-B423-BD0A09D0EB01}</Project>
+      <Name>EnvironmentBuilder</Name>
     </ProjectReference>
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>

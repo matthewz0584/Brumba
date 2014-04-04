@@ -20,8 +20,10 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
+using Microsoft.Xna.Framework;
 using W3C.Soap;
 using Color = Microsoft.Xna.Framework.Color;
+using Quaternion = Microsoft.Robotics.PhysicalModel.Quaternion;
 using Vector2 = Microsoft.Robotics.PhysicalModel.Vector2;
 using Vector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using Vector4 = Microsoft.Robotics.PhysicalModel.Vector4;
@@ -76,7 +78,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateInfraredRfRing();
             //PopulateTurret();
             //PopulateHamster();
-	        //PopulateRefPlatformSimpleTests();
+	        PopulateRefPlatformSimpleTests();
 
             base.Start();
 
@@ -97,7 +99,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 
         private static ReferencePlatform2011Entity BuildWaiter1(string waiterName)
         {
-            var refPlatform = new ReferencePlatform2011Entity {State = {Name = waiterName}};
+            var refPlatform = new ReferencePlatform2011Entity {State = {Name = waiterName, Pose = new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))}};
             var lidar = new LaserRangeFinderExEntity
                 {
                     State = {Name = waiterName + "_lidar"},

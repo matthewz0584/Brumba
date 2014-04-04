@@ -82,7 +82,7 @@
     <Compile Include="McLrfLocalizerTests.cs" />
     <Compile Include="OdometryMotionModelTests.cs" />
     <Compile Include="ParticleFilterTests.cs" />
-    <Compile Include="OdometryCalculatorTests.cs" />
+    <Compile Include="DiffDriveOdometryCalculatorTests.cs" />
     <Compile Include="PoseHistogramTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

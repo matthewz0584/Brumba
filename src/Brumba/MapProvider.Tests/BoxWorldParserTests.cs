@@ -4,7 +4,10 @@ using System.Drawing;
 using System.Linq;
 using Brumba.Simulation.EnvironmentBuilder;
 using Brumba.Utils;
+using MathNet.Numerics;
 using Microsoft.Robotics.Simulation.Engine;
+using Microsoft.Robotics.Simulation.Physics;
+using Microsoft.Xna.Framework;
 using NSubstitute;
 using NUnit.Framework;
 using xColor = Microsoft.Xna.Framework.Color;
@@ -157,8 +160,11 @@ namespace Brumba.MapProvider.Tests
 	    [Test]
 	    public void MapToSim()
 	    {
-		    Assert.That(BoxWorldParser.MapToSim(new xVector2(1, 2), 3), Is.EqualTo(new xVector3(2, 3, 1)));
-			Assert.That(BoxWorldParser.SimToMap(new xVector3(3, 2, 1)), Is.EqualTo(new xVector2(1, 3)));
+		    Assert.That(BoxWorldParser.MapToSim(new xVector2(1, 2), 3), Is.EqualTo(new rVector3(2, 3, 1)));
+			Assert.That(BoxWorldParser.SimToMap(new rVector3(3, 2, 1)), Is.EqualTo(new xVector2(1, 3)));
+
+			Assert.That(BoxWorldParser.SimToMap(UIMath.EulerToQuaternion(new Vector3(0, 90, 0))), Is.EqualTo(3 * Constants.PiOver2).Within(1e-5));
+			Assert.That(BoxWorldParser.SimToMap(UIMath.EulerToQuaternion(new Vector3(0, 45, 0))), Is.EqualTo(5 * Constants.PiOver4).Within(1e-5));
 	    }
     }
 }

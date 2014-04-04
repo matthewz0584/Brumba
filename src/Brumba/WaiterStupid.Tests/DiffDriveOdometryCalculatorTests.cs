@@ -1,6 +1,5 @@
 ﻿using System;
 using Brumba.Utils;
-using Brumba.WaiterStupid.McLocalization;
 using Brumba.WaiterStupid.Odometry;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
@@ -8,7 +7,7 @@ using NUnit.Framework;
 namespace Brumba.WaiterStupid.Tests
 {
 	[TestFixture]
-    public class OdometryCalculatorTests
+    public class DiffDriveOdometryCalculatorTests
     {
 		private DiffDriveOdometryCalculator _ddoc;
 

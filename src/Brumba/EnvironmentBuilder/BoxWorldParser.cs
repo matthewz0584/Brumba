@@ -6,9 +6,13 @@ using Brumba.Utils;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
+using Microsoft.Xna.Framework;
+using rQuaternion = Microsoft.Robotics.PhysicalModel.Quaternion;
+using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using xPoint = Microsoft.Xna.Framework.Point;
 using xVector2 = Microsoft.Xna.Framework.Vector2;
 using xVector3 = Microsoft.Xna.Framework.Vector3;
+using xQuaternion = Microsoft.Xna.Framework.Quaternion;
 
 namespace Brumba.Simulation.EnvironmentBuilder
 {
@@ -39,31 +43,34 @@ namespace Brumba.Simulation.EnvironmentBuilder
         {
             return _pixelGlue.GluePixelBlocks(pixels).Select((pixelBlock, i) =>
             {
-	            var center = (MapToSim(pixelBlock.LeftTop.ToVec(), 0) +
-	                          MapToSim(pixelBlock.Size.ToVec(), (float) type.Height / _settings.GridCellSize) / 2) *
-	                         _settings.GridCellSize;
+	            var center = MapToSim((pixelBlock.LeftTop.ToVec() + pixelBlock.Size.ToVec() / 2) * _settings.GridCellSize, (float) type.Height / 2);
 	            var dimensions = MapToSim(pixelBlock.Size.ToVec() * _settings.GridCellSize, (float) type.Height);
 				return new SingleShapeEntity(new BoxShape(
-					new BoxShapeProperties((float)type.Mass, new Pose(), TypeConversion.FromXNA(dimensions))
+					new BoxShapeProperties((float)type.Mass, new Pose(), dimensions)
 					{
 						DiffuseColor = TypeConversion.FromXNA(type.ColorOnMapImage.ToVector4()),
 						TextureFileName = type.TextureFileName
 					}),
-					TypeConversion.FromXNA(center))
+					center)
 				{
 					State = { Name = string.Format("{0} {1}", type.ColorOnMapImage, i) }
 				};
             });
         }
 
-	    public static xVector3 MapToSim(xVector2 v, float height)
+	    public static rVector3 MapToSim(xVector2 v, float height)
 	    {
-		    return new xVector3(v.Y, height, v.X);
+		    return new rVector3(v.Y, height, v.X);
 	    }
 
-		public static xVector2 SimToMap(xVector3 v)
+		public static xVector2 SimToMap(rVector3 v)
 		{
 			return new xVector2(v.Z, v.X);
+		}
+
+		public static double SimToMap(rQuaternion q)
+		{
+			return (MathHelper.ToRadians(UIMath.QuaternionToEuler(q).Y) - MathHelper.Pi).ToPositiveAngle();
 		}
     }
 }

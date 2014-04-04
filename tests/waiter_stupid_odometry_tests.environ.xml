@@ -402,10 +402,10 @@
             <physm:Z>-2.988943E-11</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-2.62912514E-09</physm:X>
-            <physm:Y>-4.39272352E-09</physm:Y>
-            <physm:Z>-6.0023293E-09</physm:Z>
-            <physm:W>1</physm:W>
+            <physm:X>1.9031793E-08</physm:X>
+            <physm:Y>1</physm:Y>
+            <physm:Z>-1.17970411E-09</physm:Z>
+            <physm:W>-3.91083219E-08</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>

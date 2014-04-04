@@ -9,7 +9,7 @@ using MapPxy = Brumba.MapProvider.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("map_provider_tests")]
+	[SimTestFixture("map_provider", Wip = true)]
 	public class MapProviderTests
 	{
 	    public MapPxy.MapProviderOperations MapProviderPort { get; set; }
@@ -48,7 +48,8 @@ namespace Brumba.SimulationTester.Tests
 
 		        for (var y = 0; y < 180; ++y)
 		            for (var x = 0; x < 220; ++x)
-		                if ((y >= 31 && y <= 43 && x >= 28 && x <= 34) || (y >= 125 && y <= 131 && x >= 112 && x <= 133))
+						if ((y >= (180 - 1 - 43) && y <= (180 - 1 - 31) && x >= 28 && x <= 34) ||
+							(y >= (180 - 1 - 131) && y <= (180 - 1 - 125) && x >= 112 && x <= 133))
 		                {
 		                    if (!occGrid[new Point(x, y)])
 		                        return false;

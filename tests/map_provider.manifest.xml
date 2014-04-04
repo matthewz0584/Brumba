@@ -8,7 +8,7 @@
       <dssp:PartnerList>
         <dssp:Partner>
           <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
-          <dssp:Service>map_provider_tests_map_provider.config.xml</dssp:Service>
+          <dssp:Service>map_provider.config.xml</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>dssp:StateService</dssp:Name>
         </dssp:Partner>

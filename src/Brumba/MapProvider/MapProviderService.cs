@@ -8,7 +8,6 @@ using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
-using Microsoft.Xna.Framework;
 using Color = Microsoft.Xna.Framework.Color;
 using DC = System.Diagnostics.Contracts;
 

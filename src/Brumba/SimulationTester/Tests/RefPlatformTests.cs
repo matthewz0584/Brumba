@@ -13,8 +13,8 @@ using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("ref_platform_simple_tests")]
-    public class RefPlatformSimpleTests
+    [SimTestFixture("ref_platform")]
+    public class RefPlatformTests
     {
 		public SimulationTesterService TesterService { get; private set; }
         public DrivePxy.DriveOperations RefPlDrivePort { get; private set; }
@@ -33,7 +33,7 @@ namespace Brumba.SimulationTester.Tests
         public class DriveForwardTest
         {
             [Fixture]
-            public RefPlatformSimpleTests Fixture { get; set; }
+            public RefPlatformTests Fixture { get; set; }
 
 	        [Start]
             public IEnumerator<ITask> Start()
@@ -59,7 +59,7 @@ namespace Brumba.SimulationTester.Tests
             bool _correctNotificationReceived;
 
             [Fixture]
-            public RefPlatformSimpleTests Fixture { get; set; }
+            public RefPlatformTests Fixture { get; set; }
 
 		    [Prepare]
             public void PrepareEntities(Microsoft.Robotics.Simulation.Engine.VisualEntity entity)
