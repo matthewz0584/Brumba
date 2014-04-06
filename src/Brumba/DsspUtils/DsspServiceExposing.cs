@@ -11,18 +11,19 @@ namespace Brumba.DsspUtils
 	{
 	    static DsspServiceExposing()
 	    {
-            DC.Contract.ContractFailed += (sender, e) =>
-            {
-                try
-                {
-                    //Throw system exception, manual throw is not good enough for Marshal.GetExceptionPointers()
-                    ((string) null).ToString();
-                }
-                catch (Exception)
-                {
-                    DumpMaker.CreateMiniDump();  
-                }
-            };
+            //Place it in the main service start method
+            //DC.Contract.ContractFailed += (sender, e) =>
+            //{
+            //    try
+            //    {
+            //        //Throw system exception, manual throw is not good enough for Marshal.GetExceptionPointers()
+            //        ((string) null).ToString();
+            //    }
+            //    catch (Exception)
+            //    {
+            //        DumpMaker.CreateMiniDump();  
+            //    }
+            //};
 	    }
 
 		public DsspServiceExposing(ServiceEnvironment environment) : base(environment)

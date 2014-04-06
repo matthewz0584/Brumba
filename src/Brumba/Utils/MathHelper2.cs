@@ -181,7 +181,8 @@ namespace Brumba.Utils
                 Math.Atan2(avgVector[1], avgVector[0]).ToPositiveAngle();
         }
 
-	    public static Vector2 ToVec(this Point me)
+	    [Pure]
+        public static Vector2 ToVec(this Point me)
 	    {
 		    return new Vector2(me.X, me.Y);
 	    }
