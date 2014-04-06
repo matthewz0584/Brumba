@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Brumba.DiffDriveOdometry;
 using Brumba.DsspUtils;
 using Brumba.WaiterStupid;
 using MathNet.Numerics;
@@ -11,9 +10,9 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Xna.Framework;
-using W3C.Soap;
 using DC = System.Diagnostics.Contracts;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
+using OdomPxy = Brumba.DiffDriveOdometry.Proxy;
 
 namespace Brumba.McLrfLocalizer
 {
@@ -29,8 +28,8 @@ namespace Brumba.McLrfLocalizer
         [ServicePort("/McLrfLocalizer", AllowMultipleInstances = true)]
         McLrfLocalizerOperations _mainPort = new McLrfLocalizerOperations();
 
-        [Partner("Odometry", Contract = DiffDriveOdometry.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        DiffDriveOdometryOperations _odometry = new DiffDriveOdometryOperations();
+        [Partner("Odometry", Contract = OdomPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        OdomPxy.DiffDriveOdometryOperations _odometry = new OdomPxy.DiffDriveOdometryOperations();
 
         [Partner("Lrf", Contract = SickLrfPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         SickLrfPxy.SickLRFOperations _lrf = new SickLrfPxy.SickLRFOperations();
@@ -62,7 +61,7 @@ namespace Brumba.McLrfLocalizer
 
 	    IEnumerator<ITask> StartIt()
         {
-            yield return GetOdometry().Receive(os =>
+            yield return _odometry.Get().Receive(os =>
             {
                 _currentOdometry = (Pose) DssTypeHelper.TransformFromProxy(os.State.Pose);
             });
@@ -75,7 +74,7 @@ namespace Brumba.McLrfLocalizer
        
         IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)
         {
-            yield return Arbiter.JoinedReceive(false, _lrf.Get().P0, GetOdometry().P0, 
+            yield return Arbiter.JoinedReceive(false, _lrf.Get().P0, _odometry.Get().P0, 
                 (lrfScan, odometry) =>
                     {
                         _localizer.Update((Pose)DssTypeHelper.TransformFromProxy(odometry) - _currentOdometry,
@@ -91,14 +90,6 @@ namespace Brumba.McLrfLocalizer
 
             _timerFacade.Dispose();
             DefaultDropHandler(dropDownRq);
-        }
-
-	    //This convenience method is implemented in Proxy, but I can not refer to proxy of the very assembly, waiting for the separation
-        PortSet<DiffDriveOdometryServiceState, Fault> GetOdometry()
-        {
-            var get = new DiffDriveOdometry.Get(new GetRequestType());
-            _odometry.Post(get);
-            return get.ResponsePort;
         }
 
 		bool IsPoseUnknown(Pose pose)
