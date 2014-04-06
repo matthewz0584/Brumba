@@ -85,10 +85,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.AckermanVehicle.Proxy.dll</HintPath>
     </Reference>
-    <Reference Include="Brumba.Simulation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\Brumba.Simulation.dll</HintPath>
-    </Reference>
     <Reference Include="Brumba.Simulation.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
@@ -136,6 +132,10 @@
     <Content Include="AirborneStabilizerBehaviour.manifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Simulation\Simulation.csproj">
+      <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>
+      <Name>Simulation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>
@@ -148,7 +148,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)"
+    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir) " 
 copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -80,9 +80,6 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Brumba.Simulation">
-      <HintPath>..\..\..\..\bin\Brumba.Simulation.dll</HintPath>
-    </Reference>
     <Reference Include="Brumba.Simulation.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
     </Reference>
@@ -150,6 +147,10 @@
       <Project>{2D37BDFC-A8F0-4356-ABCF-487A4A350038}</Project>
       <Name>MapProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Simulation\Simulation.csproj">
+      <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>
+      <Name>Simulation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97C76C15-EED3-45CF-AC3E-E6A5F7445397}</Project>
       <Name>Utils</Name>
@@ -162,7 +163,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)\"
+    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir) " 
 copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

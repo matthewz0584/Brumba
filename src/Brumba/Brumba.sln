@@ -3,22 +3,38 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulationTester", "SimulationTester\SimulationTester.csproj", "{105800AF-F412-413D-8D51-A417E39B6960}"
 	ProjectSection(ProjectDependencies) = postProject
+		{F84E44C8-5728-4643-96E8-496B508086AE} = {F84E44C8-5728-4643-96E8-496B508086AE}
+		{4372FAD1-D6CE-404D-8738-7A7014B0623A} = {4372FAD1-D6CE-404D-8738-7A7014B0623A}
 		{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F} = {D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleBehaviours", "VehicleBehaviours\VehicleBehaviours.csproj", "{8D34F077-4275-418D-B1C0-CF780E61B8D0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F84E44C8-5728-4643-96E8-496B508086AE} = {F84E44C8-5728-4643-96E8-496B508086AE}
+		{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F} = {D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{97C76C15-EED3-45CF-AC3E-E6A5F7445397}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnvironmentBuilder", "EnvironmentBuilder\EnvironmentBuilder.csproj", "{BF9957AB-2A19-4904-B423-BD0A09D0EB01}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F} = {D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AckermanVehicle", "AckermanVehicle\AckermanVehicle.csproj", "{F84E44C8-5728-4643-96E8-496B508086AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simulation", "Simulation\Simulation.csproj", "{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HamsterControls", "HamsterControls\HamsterControls.csproj", "{727ADF74-19DA-4644-8B55-967E6FA5C2AE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F84E44C8-5728-4643-96E8-496B508086AE} = {F84E44C8-5728-4643-96E8-496B508086AE}
+		{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F} = {D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaiterStupid", "WaiterStupid\WaiterStupid.csproj", "{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F84E44C8-5728-4643-96E8-496B508086AE} = {F84E44C8-5728-4643-96E8-496B508086AE}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaiterStupid.Tests", "WaiterStupid.Tests\WaiterStupid.Tests.csproj", "{C5474478-2624-4481-9771-C5C85389B69A}"
 	ProjectSection(ProjectDependencies) = postProject

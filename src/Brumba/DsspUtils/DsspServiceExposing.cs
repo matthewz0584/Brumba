@@ -1,6 +1,4 @@
 using System;
-//using System.Diagnostics.CodeAnalysis;
-using System.Net.Mime;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -17,8 +15,8 @@ namespace Brumba.DsspUtils
             {
                 try
                 {
-                    string s_null = null;
-                    s_null.ToString();
+                    //Throw system exception, manual throw is not good enough for Marshal.GetExceptionPointers()
+                    ((string) null).ToString();
                 }
                 catch (Exception)
                 {
