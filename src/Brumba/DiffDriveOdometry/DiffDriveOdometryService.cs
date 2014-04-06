@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Brumba.DsspUtils;
+using Brumba.Utils;
 using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -33,6 +34,7 @@ namespace Brumba.DiffDriveOdometry
 			: base(creationPort)
 		{
             DC.Contract.Requires(creationPort != null);
+		    (new Pose() as IFreezable).Freeze(); //real usage of Utils assembly, VS can not strip reference
 		}
 
 		protected override void Start()

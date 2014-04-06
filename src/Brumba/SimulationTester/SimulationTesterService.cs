@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using Brumba.DsspUtils;
-using Brumba.Utils;
+using Brumba.Simulation.SimulatedTimer;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.Diagnostics;
@@ -19,8 +19,7 @@ using Microsoft.Dss.Services.MountService;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
-using BrSimTimer = Brumba.Simulation.SimulatedTimer;
-using BrSimTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
+using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
 namespace Brumba.SimulationTester
 {
@@ -47,8 +46,8 @@ namespace Brumba.SimulationTester
         [Partner("SimEngine", Contract = MrsePxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.CreateAlways)]
         MrsePxy.SimulationEnginePort _simEngine = new MrsePxy.SimulationEnginePort();
 
-        [Partner("SimTimer", Contract = BrSimTimerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UsePartnerListEntry)]
-        BrSimTimerPxy.SimulatedTimerOperations _timer = new BrSimTimerPxy.SimulatedTimerOperations();
+        [Partner("Timer", Contract = BrTimerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        BrTimerPxy.TimerOperations _timer = new BrTimerPxy.TimerOperations();
 
 		[Partner("Manifest loader", Contract = Microsoft.Dss.Services.ManifestLoaderClient.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		ManifestLoaderClientPort _manifestLoader = new ManifestLoaderClientPort();
@@ -197,7 +196,7 @@ namespace Brumba.SimulationTester
 
                 //Wait for estimated time
                 var dt = 0.0;
-                yield return (subscribeRq.NotificationPort as BrSimTimerPxy.SimulatedTimerOperations).P4.Receive(u => dt = u.Body.Delta);
+                yield return (subscribeRq.NotificationPort as BrTimerPxy.TimerOperations).P4.Receive(u => dt = u.Body.Delta);
                 subscribeRq.NotificationShutdownPort.Post(new Shutdown());
                 LogInfo(SimulationTesterLogCategory.TestEstimatedTimeElapsed, fixtureInfo.Name, testInfo.Name, i, dt);
 
@@ -338,7 +337,7 @@ namespace Brumba.SimulationTester
 				yield return To.Exec(insRequest.ResponsePort);
 			}
 
-            var timerInsRequest = new Mrse.InsertSimulationEntity(new BrSimTimer.TimerEntity("timer"));
+            var timerInsRequest = new Mrse.InsertSimulationEntity(new TimerEntity("timer"));
             Mrse.SimulationEngine.GlobalInstancePort.Post(timerInsRequest);
             yield return To.Exec(timerInsRequest.ResponsePort);
         }

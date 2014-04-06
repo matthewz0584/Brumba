@@ -139,6 +139,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IConnectable.cs" />
     <Compile Include="SimulatedAckermanVehicle\AckermanVehicleEntity.cs" />
     <Compile Include="SimulatedAckermanVehicle\AckermanVehicleEntityBuilder.cs" />
     <Compile Include="SimulatedAckermanVehicle\AckermanVehicleExEntity.cs" />
@@ -170,8 +171,8 @@
     <Compile Include="SimulatedTail\SimulatedTailService.cs" />
     <Compile Include="SimulatedTail\SimulatedTailTypes.cs" />
     <Compile Include="SimulatedTimer\MultiTimer.cs" />
-    <Compile Include="SimulatedTimer\SimulatedTimerService.cs" />
     <Compile Include="SimulatedTimer\SimulatedTimerTypes.cs" />
+    <Compile Include="SimulatedTimer\SimulatedTimerService.cs" />
     <Compile Include="SimulatedEntityServiceBase.cs" />
     <Compile Include="HamsterBuilder.cs" />
     <Compile Include="SimulatedTurret\SimulatedTurretService.cs" />
@@ -199,7 +200,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir)\"  /referencepath:"$(TargetDir)"
+    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir) "
 copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>

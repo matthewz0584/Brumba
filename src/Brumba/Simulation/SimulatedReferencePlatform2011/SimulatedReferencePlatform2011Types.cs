@@ -22,7 +22,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
     /// ReferencePlatform2011 state
     /// </summary>
     [DataContract]
-    public class ReferencePlatform2011State : ISimulationEntityServiceState
+    public class ReferencePlatform2011State : IConnectable
     {
 		[DataMember]
 		[Description("If there is any simulation entity under control of this service")]

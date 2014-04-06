@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Brumba.MapProvider;
 using Brumba.Simulation.SimulatedAckermanVehicle;
@@ -17,6 +18,7 @@ using Microsoft.Dss.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Robotics.Simulation;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Robotics.PhysicalModel;
@@ -78,7 +80,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateInfraredRfRing();
             //PopulateTurret();
             //PopulateHamster();
-	        PopulateRefPlatformSimpleTests();
+	        //PopulateRefPlatformSimpleTests();
 
             base.Start();
 

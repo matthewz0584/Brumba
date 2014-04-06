@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.MapProvider;
 using Brumba.Utils;
-using Brumba.WaiterStupid.McLocalization;
+using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
-namespace Brumba.WaiterStupid.Tests
+namespace Brumba.McLrfLocalizer.Tests
 {
     [TestFixture]
     public class OdometryMotionModelTests

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Brumba.Entities.Timer;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using System.ComponentModel;
@@ -11,7 +12,7 @@ using W3C.Soap;
 namespace Brumba.Simulation.SimulatedTimer
 {
     [Contract(Contract.Identifier)]
-    [DisplayName("SimulatedTimerService")]
+    [DisplayName("Simulated Timer")]
     [Description("SimulatedTimerService service (no description provided)")]
     class SimulatedTimerService : SimulatedEntityServiceBase
     {
@@ -29,6 +30,9 @@ namespace Brumba.Simulation.SimulatedTimer
 
         [ServicePort("/SimulatedTimer", AllowMultipleInstances = true)]
         SimulatedTimerOperations _mainPort = new SimulatedTimerOperations();
+
+        [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = Entities.Timer.Contract.Identifier)]
+        TimerOperations _timerPort = new TimerOperations();
 
         [SubscriptionManagerPartner("SubMgr")]
         SubscriptionManagerPort _subMgrPort = new SubscriptionManagerPort();
@@ -82,14 +86,22 @@ namespace Brumba.Simulation.SimulatedTimer
         }
 
         [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
-		public void OnGet(Get getRequest)
+        public void OnGet(Get getRequest)
+        {
+            if (IsConnected)
+                _state.Time = TimerEntity.Time;
+            DefaultGetHandler(getRequest);
+        }
+
+        [ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_timerPort")]
+        public void OnGet(Entities.Timer.Get getRequest)
         {
 			if (IsConnected)
 				_state.Time = TimerEntity.Time;
             DefaultGetHandler(getRequest);
         }
 
-	    [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+        [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_timerPort")]
         public IEnumerator<ITask> OnSubscribe(Subscribe subscribeRq)
         {
             yield return SubscribeHelper(_subMgrPort, subscribeRq.Body, subscribeRq.ResponsePort).Choice(
@@ -97,7 +109,7 @@ namespace Brumba.Simulation.SimulatedTimer
                 LogError);
         }
 
-        [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+        [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_timerPort")]
         public void OnPause(Pause pauseRq)
         {
             if (FaultIfNotConnected(pauseRq))
@@ -107,7 +119,7 @@ namespace Brumba.Simulation.SimulatedTimer
             pauseRq.ResponsePort.Post(new DefaultUpdateResponseType());
         }
 
-		protected override ISimulationEntityServiceState GetState() { return _state; }
+		protected override IConnectable GetState() { return _state; }
 
         void OnTimerEntityTick(double dt, double t)
         {

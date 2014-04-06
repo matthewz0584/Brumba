@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Brumba.WaiterStupid.McLocalization;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
-namespace Brumba.WaiterStupid.Tests
+namespace Brumba.McLrfLocalizer.Tests
 {
     [TestFixture]
     public class GridCircleFringeGeneratorTests

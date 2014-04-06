@@ -14,7 +14,7 @@ using EnvBuilderPxy = Brumba.Simulation.EnvironmentBuilder.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("environment_builder")]
+    [SimTestFixture("environment_builder", Wip = true)]
 	public class EnvironmentBuilderTests
 	{
 		EnvBuilderPxy.EnvironmentBuilderOperations EnvironmentBuilderPort { get; set; }

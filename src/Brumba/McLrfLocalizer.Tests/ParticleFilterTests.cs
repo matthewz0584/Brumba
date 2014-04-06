@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-using Brumba.WaiterStupid.McLocalization;
 using MathNet.Numerics.Distributions;
 //using MathNet.Numerics.LinearAlgebra.Single;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
-namespace Brumba.WaiterStupid.Tests
+namespace Brumba.McLrfLocalizer.Tests
 {
     [TestFixture]
     public class ParticleFilterTests

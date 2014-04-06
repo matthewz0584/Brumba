@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C5474478-2624-4481-9771-C5C85389B69A}</ProjectGuid>
+    <ProjectGuid>{98D8AF9D-B178-4335-A565-4253D6822B63}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brumba.WaiterStupid.Tests</RootNamespace>
-    <AssemblyName>Brumba.WaiterStupid.Tests</AssemblyName>
+    <RootNamespace>Brumba.McLrfLocalizer.Tests</RootNamespace>
+    <AssemblyName>Brumba.McLrfLocalizer.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,33 +48,28 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics">
+    <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Dss.Base, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Base\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Base.dll</HintPath>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\utils\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="RoboticsCommon">
-      <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
-    </Reference>
-    <Reference Include="SimulationCommon">
-      <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
-    </Reference>
-    <Reference Include="SimulationEngine">
-      <HintPath>..\..\..\..\bin\SimulationEngine.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GridCircleFringeGeneratorTests.cs" />
+    <Compile Include="LikelyhoodFieldMeasurementModelTests.cs" />
+    <Compile Include="McLrfLocalizerTests.cs" />
+    <Compile Include="OdometryMotionModelTests.cs" />
+    <Compile Include="ParticleFilterTests.cs" />
+    <Compile Include="PoseHistogramTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -84,12 +77,16 @@
       <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
       <Name>MapProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
+      <Project>{3d1f586f-6408-49e2-83bc-c80716d1c62d}</Project>
+      <Name>McLrfLocalizer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\WaiterStupid\WaiterStupid.csproj">
-      <Project>{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}</Project>
+      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
       <Name>WaiterStupid</Name>
     </ProjectReference>
   </ItemGroup>

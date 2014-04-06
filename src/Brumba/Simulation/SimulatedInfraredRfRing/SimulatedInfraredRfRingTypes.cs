@@ -14,7 +14,7 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
 	}
 	
 	[DataContract]
-    public class SimulatedInfraredRfRingState : ISimulationEntityServiceState
+    public class SimulatedInfraredRfRingState : IConnectable
 	{
         [DataMember]
         [Description("If there is any simulation entity under control of this service")]

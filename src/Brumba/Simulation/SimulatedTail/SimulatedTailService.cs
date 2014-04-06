@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using System.Linq;
-using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Xna.Framework;
@@ -67,7 +66,7 @@ namespace Brumba.Simulation.SimulatedTail
             parkRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-		protected override ISimulationEntityServiceState GetState() { return _state; }
+		protected override IConnectable GetState() { return _state; }
 
 		TailEntity TailEntity { get { return Entity as TailEntity; } }
 	}

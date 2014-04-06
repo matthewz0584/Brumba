@@ -145,7 +145,7 @@ namespace Brumba.Simulation.SimulatedLrf
                 );
         }
 
-		protected override ISimulationEntityServiceState GetState() { return _state; }
+		protected override IConnectable GetState() { return _state; }
 
         LaserRangeFinderExEntity LrfEntity
 	    {

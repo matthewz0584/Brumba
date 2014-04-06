@@ -4,7 +4,7 @@ using Brumba.DsspUtils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
-using simTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
+using timerPxy = Brumba.Entities.Timer.Proxy;
 using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.WaiterStupid
@@ -38,7 +38,7 @@ namespace Brumba.WaiterStupid
 
 		public IEnumerator<ITask> Set()
 		{
-			var directoryResponcePort = _srv.DirectoryQuery(Simulation.SimulatedTimer.Proxy.Contract.Identifier, new TimeSpan(0, 0, 3));
+			var directoryResponcePort = _srv.DirectoryQuery(timerPxy.Contract.Identifier, new TimeSpan(0, 0, 3));
 
 			yield return Arbiter.Choice(
                 _srv.TimeoutPort(1000).Receive(timeout => InternalTimerHandler(DateTime.Now)),
@@ -73,19 +73,19 @@ namespace Brumba.WaiterStupid
                 _simTimerUnsubscribePort.Post(new Shutdown());
         }
 
-		readonly simTimerPxy.SimulatedTimerOperations _simTimerNotificationPort = new simTimerPxy.SimulatedTimerOperations();
+		readonly timerPxy.TimerOperations _simTimerNotificationPort = new timerPxy.TimerOperations();
         Port<Shutdown> _simTimerUnsubscribePort;
 		void StartSimulatedTimer(ServiceInfoType f)
 		{
             DC.Contract.Requires(f != null);
             DC.Contract.Ensures(_simTimerUnsubscribePort != null);
 
-			var simTimer = _srv.ServiceForwarder<simTimerPxy.SimulatedTimerOperations>(new Uri(f.Service));
+			var simTimer = _srv.ServiceForwarder<timerPxy.TimerOperations>(new Uri(f.Service));
 		    _simTimerUnsubscribePort = new Port<Shutdown>();
 		    simTimer.Post(
-		        new simTimerPxy.Subscribe
+		        new timerPxy.Subscribe
 		            {
-		                Body = new simTimerPxy.SubscribeRequest(Interval),
+		                Body = new timerPxy.SubscribeRequest(Interval),
 		                NotificationPort = _simTimerNotificationPort,
 		                NotificationShutdownPort = _simTimerUnsubscribePort
 		            });
@@ -93,7 +93,7 @@ namespace Brumba.WaiterStupid
 			_srv.Activate(_simTimerNotificationPort.P4.Receive(SimulationTimerHandler));
 		}
 
-	    void SimulationTimerHandler(simTimerPxy.Update simTimerUpdate)
+	    void SimulationTimerHandler(timerPxy.Update simTimerUpdate)
 	    {
             DC.Contract.Requires(simTimerUpdate != null);
             DC.Contract.Requires(simTimerUpdate.Body != null);

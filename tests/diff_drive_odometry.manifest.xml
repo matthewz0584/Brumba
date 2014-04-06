@@ -26,7 +26,7 @@
         </dssp:Partner>
         <dssp:Partner>
           <dssp:Contract>http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html</dssp:Contract>
-          <dssp:Service>waiter_stupid_odometry_tests_diff_drive_odometry.config.xml</dssp:Service>
+          <dssp:Service>diff_drive_odometry.config.xml</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>dssp:StateService</dssp:Name>
         </dssp:Partner>

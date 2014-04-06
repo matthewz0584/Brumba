@@ -7,12 +7,7 @@ using W3C.Soap;
 
 namespace Brumba.Simulation
 {
-	interface ISimulationEntityServiceState
-	{
-		bool IsConnected { get; set; }
-	}
-
-	abstract class SimulatedEntityServiceBase : DsspServiceBase
+	public abstract class SimulatedEntityServiceBase : DsspServiceBase
 	{
 	    readonly SimulationEnginePort _simEngineNotifyPort = new SimulationEnginePort();
 	    readonly string _contract;
@@ -41,7 +36,7 @@ namespace Brumba.Simulation
         protected virtual void OnInsertEntity() {}
         protected virtual void OnDeleteEntity() {}
 
-		protected abstract ISimulationEntityServiceState GetState();
+		protected abstract IConnectable GetState();
 
         void OnInsertEntity(InsertSimulationEntity entity)
         {

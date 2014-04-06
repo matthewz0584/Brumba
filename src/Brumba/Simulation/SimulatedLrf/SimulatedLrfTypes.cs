@@ -19,7 +19,7 @@ namespace Brumba.Simulation.SimulatedLrf
 	}
 
 	[DataContract]
-	public class SimulatedLrfState : ISimulationEntityServiceState
+	public class SimulatedLrfState : IConnectable
 	{
 		[DataMember]
 		public SickLrf.State SickLrfState { get; set; }

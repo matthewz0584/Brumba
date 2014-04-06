@@ -13,7 +13,7 @@ namespace Brumba.Simulation.SimulatedTurret
 	}
 	
 	[DataContract]
-	public class SimulatedTurretState : ISimulationEntityServiceState
+	public class SimulatedTurretState : IConnectable
 	{
         [DataMember]
         [Description("If there is any simulation entity under control of this service")]

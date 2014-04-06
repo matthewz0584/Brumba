@@ -8,33 +8,34 @@ using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Diagnostics;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Xna.Framework;
+using bPose = Brumba.WaiterStupid.Pose;
+using rPose = Microsoft.Robotics.PhysicalModel.Pose;
 using xVector2 = Microsoft.Xna.Framework.Vector2;
 using xVector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("waiter_stupid_odometry_tests")]
-	public class WaiterStupidOdometryTests
+	[SimTestFixture("diff_drive_odometry")]
+	public class DiffDriveOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }
 		public Microsoft.Robotics.Services.Drive.Proxy.DriveOperations RefPlDrivePort { get; private set; }
-		public WaiterStupid.Odometry.Proxy.DiffDriveOdometryOperations OdometryPort { get; set; }
+		public DiffDriveOdometry.Proxy.DiffDriveOdometryOperations OdometryPort { get; set; }
 
 		[SetUp]
 		public void SetUp(SimulationTesterService testerService)
 		{
 			TesterService = testerService;
 			RefPlDrivePort = testerService.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");
-			OdometryPort = testerService.ForwardTo<WaiterStupid.Odometry.Proxy.DiffDriveOdometryOperations>("odometry@");
+            OdometryPort = testerService.ForwardTo<DiffDriveOdometry.Proxy.DiffDriveOdometryOperations>("odometry@");
 		}
 
 		[SimTest(8)]
 		public class DriveStraight
 		{
             [Fixture]
-            public WaiterStupidOdometryTests Fixture { get; set; }
+            public DiffDriveOdometryTests Fixture { get; set; }
 
             [Start]
 			public IEnumerator<ITask> Start()
@@ -64,7 +65,7 @@ namespace Brumba.SimulationTester.Tests
 		public class RotateOnPlace
 		{
             [Fixture]
-            public WaiterStupidOdometryTests Fixture { get; set; }
+            public DiffDriveOdometryTests Fixture { get; set; }
 
 			[Start]
             public IEnumerator<ITask> Start()
@@ -96,7 +97,7 @@ namespace Brumba.SimulationTester.Tests
         public class CircleTrajectory
         {
             [Fixture]
-            public WaiterStupidOdometryTests Fixture { get; set; }
+            public DiffDriveOdometryTests Fixture { get; set; }
 
             [Start]
             public IEnumerator<ITask> Start()
@@ -109,7 +110,7 @@ namespace Brumba.SimulationTester.Tests
             [Test]
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
-				var odometryPose = new WaiterStupid.Proxy.Pose();
+				var odometryPose = new bPose();
                 yield return Fixture.OdometryPort.Get().Receive(os => odometryPose = os.State.Pose);
 
 	            var simPosition = BoxWorldParser.SimToMap(ExtractStupidWaiterPose(simStateEntities).Position);
@@ -124,9 +125,9 @@ namespace Brumba.SimulationTester.Tests
             }
         }
 
-		static Pose ExtractStupidWaiterPose(IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities)
+		static rPose ExtractStupidWaiterPose(IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities)
 		{
-			return (Pose)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose);
+			return (rPose)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose);
 		}
 	}
 

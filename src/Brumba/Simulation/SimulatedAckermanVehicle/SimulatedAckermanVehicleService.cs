@@ -87,7 +87,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
             _state.SteeringAngle = Vehicle.GetSteeringAngle();
         }
 
-		protected override ISimulationEntityServiceState GetState() { return _state; }
+		protected override IConnectable GetState() { return _state; }
 
 		AckermanVehicleEntityBase Vehicle { get { return Entity as AckermanVehicleEntityBase; } }
     }

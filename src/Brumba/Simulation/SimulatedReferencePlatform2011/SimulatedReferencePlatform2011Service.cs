@@ -88,7 +88,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             DefaultGetHandler(get);
         }
 
-		protected override ISimulationEntityServiceState GetState() { return _state; }
+		protected override IConnectable GetState() { return _state; }
 
         ReferencePlatform2011Entity RpEntity { get { return Entity as ReferencePlatform2011Entity; } }
     }

@@ -4,12 +4,12 @@ namespace Brumba.SimulationTester
 {
     public static class SimulatedTimerUtils
     {
-        public static Simulation.SimulatedTimer.Proxy.Subscribe Subscribe(this Simulation.SimulatedTimer.Proxy.SimulatedTimerOperations me, float interval)
+        public static Entities.Timer.Proxy.Subscribe Subscribe(this Entities.Timer.Proxy.TimerOperations me, float interval)
         {
-            var subscribeRq = new Simulation.SimulatedTimer.Proxy.Subscribe
+            var subscribeRq = new Entities.Timer.Proxy.Subscribe
                 {
-                    Body = new Simulation.SimulatedTimer.Proxy.SubscribeRequest(interval),
-                    NotificationPort = new Simulation.SimulatedTimer.Proxy.SimulatedTimerOperations(),
+                    Body = new Entities.Timer.Proxy.SubscribeRequest(interval),
+                    NotificationPort = new Entities.Timer.Proxy.TimerOperations(),
                     NotificationShutdownPort = new Port<Shutdown>()
                 };
             me.Post(subscribeRq);

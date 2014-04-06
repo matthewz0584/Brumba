@@ -1,13 +1,13 @@
 using System;
 using Brumba.MapProvider;
 using Brumba.Utils;
-using Brumba.WaiterStupid.McLocalization;
+using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
-namespace Brumba.WaiterStupid.Tests
+namespace Brumba.McLrfLocalizer.Tests
 {
     [TestFixture]
     public class LikelyhoodFieldMeasurementModelTests

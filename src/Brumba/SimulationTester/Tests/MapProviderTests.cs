@@ -9,7 +9,7 @@ using MapPxy = Brumba.MapProvider.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("map_provider", Wip = true)]
+	[SimTestFixture("map_provider"/*, Wip = true*/)]
 	public class MapProviderTests
 	{
 	    public MapPxy.MapProviderOperations MapProviderPort { get; set; }

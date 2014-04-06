@@ -5,7 +5,7 @@ using Microsoft.Dss.ServiceModel.Dssp;
 namespace Brumba.Simulation.SimulatedTurret
 {
 	[Contract(Contract.Identifier)]
-    [DisplayName("Simulated turret")]
+    [DisplayName("Simulated Turret")]
     [Description("no description provided")]
     class SimulatedTurretService : SimulatedEntityServiceBase
 	{
@@ -39,6 +39,6 @@ namespace Brumba.Simulation.SimulatedTurret
             angleRequest.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
-		protected override ISimulationEntityServiceState GetState() { return _state; }
+		protected override IConnectable GetState() { return _state; }
 	}
 }

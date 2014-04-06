@@ -14,7 +14,7 @@ namespace Brumba.Simulation.SimulatedTail
 	}
 	
 	[DataContract]
-	public class SimulatedTailState : ISimulationEntityServiceState
+	public class SimulatedTailState : IConnectable
 	{
         [DataMember]
         [Description("If there is any simulation entity under control of this service")]

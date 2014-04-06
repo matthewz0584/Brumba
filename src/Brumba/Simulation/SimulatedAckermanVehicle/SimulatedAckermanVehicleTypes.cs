@@ -14,7 +14,7 @@ namespace Brumba.Simulation.SimulatedAckermanVehicle
 	}
 
     [DataContract]
-    public class SimulatedAckermanVehicleState : AckermanVehicleState, ISimulationEntityServiceState
+    public class SimulatedAckermanVehicleState : AckermanVehicleState, IConnectable
     {
         [DataMember]
         [Description("If there is any simulation entity under control of this service")]

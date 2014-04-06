@@ -138,7 +138,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="HamsterControls.manifest.xml" />
+    <Content Include="HamsterControls.manifest.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Page Include="MainWindow.xaml">

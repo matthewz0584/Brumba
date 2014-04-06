@@ -36,6 +36,6 @@ namespace Brumba.Simulation.SimulatedInfraredRfRing
             DefaultGetHandler(getRequest);
         }
 
-		protected override ISimulationEntityServiceState GetState() { return _state; }
+		protected override IConnectable GetState() { return _state; }
 	}
 }
