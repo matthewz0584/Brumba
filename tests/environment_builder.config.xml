@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EnvironmentBuilderState xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:d="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns="http://brumba.ru/contracts/2012/10/environmentbuilder.html">
+  <BoxWorldParserSettings>
+    <GridCellSize>0.1</GridCellSize>
+    <BoxTypes>
+      <BoxType>
+        <ColorOnMapImage>
+          <R>255</R>
+          <G>0</G>
+          <B>0</B>
+          <A>255</A>
+          <PackedValue>4278190335</PackedValue>
+        </ColorOnMapImage>
+        <Height>2</Height>
+        <Mass>0</Mass>
+      </BoxType>
+      <BoxType>
+        <ColorOnMapImage>
+          <R>0</R>
+          <G>0</G>
+          <B>255</B>
+          <A>255</A>
+          <PackedValue>4294901760</PackedValue>
+        </ColorOnMapImage>
+        <Height>4</Height>
+        <Mass>0</Mass>
+      </BoxType>
+    </BoxTypes>
+    <FloorType>
+      <ColorOnMapImage>
+        <R>128</R>
+        <G>128</G>
+        <B>128</B>
+        <A>255</A>
+        <PackedValue>4286611584</PackedValue>
+      </ColorOnMapImage>
+    </FloorType>
+  </BoxWorldParserSettings>
+  <MapImageFile>\brumba\tests\red_and_blue_boxes.bmp</MapImageFile>
+</EnvironmentBuilderState>
