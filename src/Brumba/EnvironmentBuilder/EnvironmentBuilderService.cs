@@ -81,13 +81,22 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateTurret();
             //PopulateHamster();
 	        //PopulateRefPlatformSimpleTests();
-
+			//PopulateMcLrfLocalizerTests();
+	        
             base.Start();
 
             //Thread.Sleep(5000);
             //_tPort.SetBaseAngle((float) Math.PI/4);
             //_turret.BaseAngle = (float)Math.PI / 4;
         }
+
+	    void PopulateMcLrfLocalizerTests()
+	    {
+			PopulateSimpleEnvironment();
+
+			SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter@"));
+		    _mainPort.P3.Post(new BuildBoxWorld {ResponsePort = new PortSet<DefaultSubmitResponseType, Fault>()});
+	    }
 
 	    private void PopulateRefPlatformSimpleTests()
 	    {

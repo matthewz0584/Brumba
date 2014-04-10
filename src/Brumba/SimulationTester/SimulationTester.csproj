@@ -94,6 +94,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.MapProvider.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Brumba.McLrfLocalizer.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6116ea904cc50a06, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.McLrfLocalizer.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="Brumba.Simulation.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
@@ -187,12 +191,20 @@
     <Compile Include="Tests\EnvironmentBuilderTests.cs" />
     <Compile Include="Tests\MapProviderTests.cs" />
     <Compile Include="Tests\RefPlatformTests.cs" />
-    <Compile Include="Tests\WaiterStupidMcLrfLocalizationTests.cs" />
+    <Compile Include="Tests\McLrfLocalizerTests.cs" />
     <Compile Include="Tests\DiffDriveOdometryTests.cs" />
     <Compile Include="Tests\TurretTests.cs" />
     <Compile Include="Tests\InfraredRfRingTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AckermanVehicle\AckermanVehicle.csproj">
+      <Project>{f84e44c8-5728-4643-96e8-496b508086ae}</Project>
+      <Name>AckermanVehicle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DiffDriveOdometry\DiffDriveOdometry.csproj">
+      <Project>{4372fad1-d6ce-404d-8738-7a7014b0623a}</Project>
+      <Name>DiffDriveOdometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
       <Project>{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}</Project>
       <Name>DsspUtils</Name>
@@ -204,6 +216,10 @@
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
       <Name>MapProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
+      <Project>{3d1f586f-6408-49e2-83bc-c80716d1c62d}</Project>
+      <Name>McLrfLocalizer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Simulation\Simulation.csproj">
       <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>

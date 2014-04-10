@@ -109,11 +109,11 @@ namespace Brumba.McLrfLocalizer
             {
                 sb.AppendFormat("{0, -5}", row);
                 for (var col = 0; col < (int)Size.X; ++col)
-                    sb.AppendFormat("{0, 5}", xyM[col, row]);
+                    sb.AppendFormat("{0, 3}", xyM[col, row]);
                 sb.AppendLine();
             }
             sb.AppendLine();
-            sb.AppendFormat("{0, -5}", "");
+            sb.AppendFormat("{0, -3}", "");
             Enumerable.Range(0, Map.SizeInCells.X).ToList().ForEach(colInd => sb.AppendFormat("{0, 5}", colInd));
             sb.AppendLine();
             return sb.ToString();

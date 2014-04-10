@@ -90,6 +90,9 @@
     <Reference Include="Brumba.DiffDriveOdometry.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.DiffDriveOdometry.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Brumba.MapProvider.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.MapProvider.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
@@ -142,6 +145,10 @@
     <Compile Include="ResamplingWheel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DiffDriveOdometry\DiffDriveOdometry.csproj">
+      <Project>{4372fad1-d6ce-404d-8738-7a7014b0623a}</Project>
+      <Name>DiffDriveOdometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
       <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
       <Name>DsspUtils</Name>

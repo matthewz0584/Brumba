@@ -16,6 +16,7 @@ using System.Xml;
 using Microsoft.Dss.Services.Serializer;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.Services.MountService;
+using Microsoft.Robotics.PhysicalModel;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
@@ -340,6 +341,14 @@ namespace Brumba.SimulationTester
             var timerInsRequest = new Mrse.InsertSimulationEntity(new TimerEntity("timer"));
             Mrse.SimulationEngine.GlobalInstancePort.Post(timerInsRequest);
             yield return To.Exec(timerInsRequest.ResponsePort);
+
+	        var updCameraViewRq = new Mrse.UpdateCameraView(new Mrse.CameraView
+	        {
+		        EyePosition = (Vector3) DssTypeHelper.TransformFromProxy(simState.CameraPosition),
+		        LookAtPoint = (Vector3) DssTypeHelper.TransformFromProxy(simState.CameraLookAt)
+	        });
+	        Mrse.SimulationEngine.GlobalInstancePort.Post(updCameraViewRq);
+	        yield return To.Exec(updCameraViewRq.ResponsePort);
         }
 
         IEnumerator<ITask> DeserializeTopLevelEntityProxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, MrsPxy.SimulationState simState, Func<XmlElement, bool> filter)

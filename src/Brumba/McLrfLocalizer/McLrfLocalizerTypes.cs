@@ -1,4 +1,3 @@
-using Brumba.MapProvider;
 using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -21,9 +20,6 @@ namespace Brumba.McLrfLocalizer
 
         [DataMember]
         public RangefinderProperties RangeFinderProperties { get; set; }
-
-        [DataMember]
-        public OccupancyGrid Map { get; set; }
 
         [DataMember]
         public int ParticlesNumber { get; set; }

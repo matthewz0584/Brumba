@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<McLrfLocalizerState xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:d="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">
+  <FirstPoseCandidate>
+    <Position>
+      <X>0</X>
+      <Y>0</Y>
+    </Position>
+    <Bearing>NaN</Bearing>
+  </FirstPoseCandidate>
+  <RangeFinderProperties>
+    <!--<AngularResolution>0.0062831853071795</AngularResolution>
+    <AngularRange>4.1887902047863909</AngularRange>
+    <MaxRange>5.6</MaxRange>-->
+    <AngularResolution>0.1745329251994329</AngularResolution>
+    <AngularRange>4.1887902047863909</AngularRange>
+    <MaxRange>5.6</MaxRange>
+    <OriginPose>
+      <Position>
+        <X>0</X>
+        <Y>0</Y>
+      </Position>
+      <Bearing>1.5707963267948966</Bearing>
+    </OriginPose>
+  </RangeFinderProperties>
+  <ParticlesNumber>1000</ParticlesNumber>
+  <DeltaT>1</DeltaT>
+</McLrfLocalizerState>

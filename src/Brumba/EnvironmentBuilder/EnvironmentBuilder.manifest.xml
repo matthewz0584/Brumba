@@ -4,7 +4,14 @@
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
-      <dssp:PartnerList />
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2012/10/environmentbuilder.html</dssp:Contract>
+          <dssp:Service>EnvironmentBuilder.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
       <Name>this:environmentbuilder</Name>
     </ServiceRecordType>
     <ServiceRecordType>

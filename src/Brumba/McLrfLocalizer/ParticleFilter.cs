@@ -50,8 +50,8 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Requires(MeasurementModel != null);
             DC.Contract.Ensures(DC.Contract.OldValue(Particles.Count()) == Particles.Count());
 
-            var weightedParticles = Particles.
-                Select(p => WeighParticle(measurement, PredictionModel.PredictParticleState(p, control))).ToList();
+			var weightedParticles = Particles.//AsParallel().
+				Select(p => WeighParticle(measurement, PredictionModel.PredictParticleState(p, control))).ToList();
 
             DC.Contract.Assume(DC.Contract.Exists(weightedParticles, wp => wp.Weight > 0));
 
