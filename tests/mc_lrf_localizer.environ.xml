@@ -565,7 +565,7 @@
         </MeshTranslation>
         <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <phys:WheelState>
-            <phys:Name>stupid_waiter@/front right wheel</phys:Name>
+            <phys:Name>stupid_waiter/front right wheel</phys:Name>
             <phys:ShapeId>Wheel</phys:ShapeId>
             <phys:Dimensions>
               <physm:X>0</physm:X>
@@ -749,7 +749,7 @@
         </MeshTranslation>
         <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <phys:WheelState>
-            <phys:Name>stupid_waiter@/front left wheel</phys:Name>
+            <phys:Name>stupid_waiter/front left wheel</phys:Name>
             <phys:ShapeId>Wheel</phys:ShapeId>
             <phys:Dimensions>
               <physm:X>0</physm:X>
@@ -1006,7 +1006,7 @@
       <RotateDegreesAngleThreshold>0.20000000298023224</RotateDegreesAngleThreshold>
       <FrontWheelShape>
         <phys:SphereState>
-          <phys:Name>stupid_waiter@FrontWheel</phys:Name>
+          <phys:Name>stupid_waiterFrontWheel</phys:Name>
           <phys:ShapeId>Sphere</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -1094,7 +1094,7 @@
       </FrontWheelShape>
       <RearWheelShape>
         <phys:SphereState>
-          <phys:Name>stupid_waiter@RearWheel</phys:Name>
+          <phys:Name>stupid_waiterRearWheel</phys:Name>
           <phys:ShapeId>Sphere</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0</physm:X>
@@ -1182,7 +1182,7 @@
       </RearWheelShape>
       <Kinect>
         <sim:State>
-          <sim:Name>stupid_waiter@KinectEntity</sim:Name>
+          <sim:Name>stupid_waiterKinectEntity</sim:Name>
           <sim:Assets>
             <sim:Mesh>kinectbase.obj</sim:Mesh>
           </sim:Assets>
@@ -1252,7 +1252,7 @@
         <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">2</ChildCount>
         <ParentJoint xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <physm:State>
-            <physm:Name>stupid_waiter@KinectEntity's parent joint</physm:Name>
+            <physm:Name>stupid_waiterKinectEntity's parent joint</physm:Name>
             <physm:Connectors>
               <physm:EntityJointConnector>
                 <physm:JointNormal>
@@ -1317,7 +1317,7 @@
         </MeshTranslation>
         <BoxShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <phys:BoxState>
-            <phys:Name>stupid_waiter@KinectEntity/KinectBaseBox</phys:Name>
+            <phys:Name>stupid_waiterKinectEntity/KinectBaseBox</phys:Name>
             <phys:ShapeId>Box</phys:ShapeId>
             <phys:Dimensions>
               <physm:X>0.07</physm:X>
@@ -1392,7 +1392,7 @@
         </Dimension>
         <DepthCam xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <sim:State>
-            <sim:Name>stupid_waiter@KinectCamera</sim:Name>
+            <sim:Name>stupid_waiterKinectCamera</sim:Name>
             <sim:Assets>
               <sim:Mesh>kinectcamera.obj</sim:Mesh>
             </sim:Assets>
@@ -1505,7 +1505,7 @@
         </DepthCam>
         <WebCam xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <sim:State>
-            <sim:Name>stupid_waiter@SimulatedWebcam</sim:Name>
+            <sim:Name>stupid_waiterSimulatedWebcam</sim:Name>
             <sim:Assets />
             <sim:Pose>
               <physm:Position>
@@ -1611,7 +1611,7 @@
       </Kinect>
       <LeftSonar>
         <sim:State>
-          <sim:Name>stupid_waiter@LeftSonar</sim:Name>
+          <sim:Name>stupid_waiterLeftSonar</sim:Name>
           <sim:Assets />
           <sim:Pose>
             <physm:Position>
@@ -1719,7 +1719,7 @@
       </LeftSonar>
       <RightSonar>
         <sim:State>
-          <sim:Name>stupid_waiter@RightSonar</sim:Name>
+          <sim:Name>stupid_waiterRightSonar</sim:Name>
           <sim:Assets />
           <sim:Pose>
             <physm:Position>
@@ -1827,7 +1827,7 @@
       </RightSonar>
       <FrontLeftIr>
         <sim:State>
-          <sim:Name>stupid_waiter@FrontLeftIR</sim:Name>
+          <sim:Name>stupid_waiterFrontLeftIR</sim:Name>
           <sim:Assets />
           <sim:Pose>
             <physm:Position>
@@ -1935,7 +1935,7 @@
       </FrontLeftIr>
       <FrontMiddleIr>
         <sim:State>
-          <sim:Name>stupid_waiter@FrontMiddleIR</sim:Name>
+          <sim:Name>stupid_waiterFrontMiddleIR</sim:Name>
           <sim:Assets />
           <sim:Pose>
             <physm:Position>
@@ -2043,7 +2043,7 @@
       </FrontMiddleIr>
       <FrontRightIr>
         <sim:State>
-          <sim:Name>stupid_waiter@FrontRightIR</sim:Name>
+          <sim:Name>stupid_waiterFrontRightIR</sim:Name>
           <sim:Assets />
           <sim:Pose>
             <physm:Position>
@@ -2153,7 +2153,7 @@
     </ReferencePlatform2011Entity>
     <LaserRangeFinderExEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/11/simulatedlrf.html">
       <sim:State>
-        <sim:Name>stupid_waiter@_lidar</sim:Name>
+        <sim:Name>stupid_waiter_lidar</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
@@ -2221,7 +2221,7 @@
       <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
       <ParentJoint xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <physm:State>
-          <physm:Name>stupid_waiter@_lidar's parent joint</physm:Name>
+          <physm:Name>stupid_waiter_lidar's parent joint</physm:Name>
           <physm:Connectors>
             <physm:EntityJointConnector>
               <physm:JointNormal>
@@ -2286,7 +2286,7 @@
       </MeshTranslation>
       <LaserBox xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <phys:BoxState>
-          <phys:Name>stupid_waiter@_lidar/0</phys:Name>
+          <phys:Name>stupid_waiter_lidar/0</phys:Name>
           <phys:ShapeId>Box</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0.04</physm:X>
@@ -2379,7 +2379,7 @@
     </LaserRangeFinderExEntity>
     <IREntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>
-        <sim:Name>stupid_waiter@FrontLeftIR</sim:Name>
+        <sim:Name>stupid_waiterFrontLeftIR</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
@@ -2487,7 +2487,7 @@
     </IREntity>
     <IREntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>
-        <sim:Name>stupid_waiter@FrontRightIR</sim:Name>
+        <sim:Name>stupid_waiterFrontRightIR</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
@@ -2595,7 +2595,7 @@
     </IREntity>
     <IREntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>
-        <sim:Name>stupid_waiter@FrontMiddleIR</sim:Name>
+        <sim:Name>stupid_waiterFrontMiddleIR</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
@@ -2703,7 +2703,7 @@
     </IREntity>
     <SonarEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>
-        <sim:Name>stupid_waiter@LeftSonar</sim:Name>
+        <sim:Name>stupid_waiterLeftSonar</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
@@ -2811,7 +2811,7 @@
     </SonarEntity>
     <SonarEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>
-        <sim:Name>stupid_waiter@RightSonar</sim:Name>
+        <sim:Name>stupid_waiterRightSonar</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
@@ -2919,7 +2919,7 @@
     </SonarEntity>
     <KinectEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>
-        <sim:Name>stupid_waiter@KinectEntity</sim:Name>
+        <sim:Name>stupid_waiterKinectEntity</sim:Name>
         <sim:Assets>
           <sim:Mesh>kinectbase.obj</sim:Mesh>
         </sim:Assets>
@@ -2989,7 +2989,7 @@
       <ChildCount>2</ChildCount>
       <ParentJoint>
         <physm:State>
-          <physm:Name>stupid_waiter@KinectEntity's parent joint</physm:Name>
+          <physm:Name>stupid_waiterKinectEntity's parent joint</physm:Name>
           <physm:Connectors>
             <physm:EntityJointConnector>
               <physm:JointNormal>
@@ -3054,7 +3054,7 @@
       </MeshTranslation>
       <BoxShape>
         <phys:BoxState>
-          <phys:Name>stupid_waiter@KinectEntity/KinectBaseBox</phys:Name>
+          <phys:Name>stupid_waiterKinectEntity/KinectBaseBox</phys:Name>
           <phys:ShapeId>Box</phys:ShapeId>
           <phys:Dimensions>
             <physm:X>0.07</physm:X>
@@ -3129,7 +3129,7 @@
       </Dimension>
       <DepthCam>
         <sim:State>
-          <sim:Name>stupid_waiter@KinectCamera</sim:Name>
+          <sim:Name>stupid_waiterKinectCamera</sim:Name>
           <sim:Assets>
             <sim:Mesh>kinectcamera.obj</sim:Mesh>
           </sim:Assets>
@@ -3242,7 +3242,7 @@
       </DepthCam>
       <WebCam>
         <sim:State>
-          <sim:Name>stupid_waiter@SimulatedWebcam</sim:Name>
+          <sim:Name>stupid_waiterSimulatedWebcam</sim:Name>
           <sim:Assets />
           <sim:Pose>
             <physm:Position>
@@ -3348,7 +3348,7 @@
     </KinectEntity>
     <KinectCameraEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>
-        <sim:Name>stupid_waiter@KinectCamera</sim:Name>
+        <sim:Name>stupid_waiterKinectCamera</sim:Name>
         <sim:Assets>
           <sim:Mesh>kinectcamera.obj</sim:Mesh>
         </sim:Assets>
@@ -3461,7 +3461,7 @@
     </KinectCameraEntity>
     <CameraEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>
-        <sim:Name>stupid_waiter@SimulatedWebcam</sim:Name>
+        <sim:Name>stupid_waiterSimulatedWebcam</sim:Name>
         <sim:Assets />
         <sim:Pose>
           <physm:Position>

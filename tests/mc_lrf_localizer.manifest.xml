@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:simulatedlrf="http://brumba.ru/contracts/2013/11/simulatedlrf.html" xmlns:this="urn:uuid:9543d860-06e9-4291-9b0f-b16c10a485ba" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:mclrflocalizerservice="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html" xmlns:diffdriveodometryservice="http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html" xmlns:mapproviderservice="http://brumba.ru/contracts/2014/03/mapproviderservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:simulatedlrf="http://brumba.ru/contracts/2013/11/simulatedlrf.html" xmlns:this="urn:uuid:bba6670d-0275-4799-854e-ebff26a13b40" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:mclrflocalizerservice="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html" xmlns:diffdriveodometryservice="http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html" xmlns:mapproviderservice="http://brumba.ru/contracts/2014/03/mapproviderservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html</dssp:Contract>
@@ -35,9 +35,10 @@
     </ServiceRecordType>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedlrf.html</dssp:Contract>
+      <dssp:Service>http://localhost:80/lrf</dssp:Service>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Service>http://localhost/stupid_waiter@_lidar</dssp:Service>
+          <dssp:Service>http://localhost/stupid_waiter_lidar</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>simulation:Entity</dssp:Name>
         </dssp:Partner>
@@ -68,7 +69,7 @@
         </dssp:Partner>
         <dssp:Partner>
           <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
-          <dssp:PartnerList/>
+          <dssp:PartnerList />
           <dssp:Name>mclrflocalizerservice:Map</dssp:Name>
           <dssp:ServiceName>this:BrumbaMapProvider</dssp:ServiceName>
         </dssp:Partner>
@@ -77,14 +78,15 @@
     </ServiceRecordType>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
-        <dssp:PartnerList>
-          <dssp:Partner>
-            <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
-            <dssp:Service>mc_lrf_localizer_map_provider.config.xml</dssp:Service>
-            <dssp:PartnerList />
-            <dssp:Name>dssp:StateService</dssp:Name>
-            </dssp:Partner>
-          </dssp:PartnerList>
+      <dssp:Service>http://localhost:80/map_provider</dssp:Service>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
+          <dssp:Service>mc_lrf_localizer_map_provider.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
       <Name>this:BrumbaMapProvider</Name>
     </ServiceRecordType>
   </CreateServiceList>

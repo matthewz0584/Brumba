@@ -94,7 +94,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 	    {
 			PopulateSimpleEnvironment();
 
-			SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter@"));
+			SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter"));
 		    _mainPort.P3.Post(new BuildBoxWorld {ResponsePort = new PortSet<DefaultSubmitResponseType, Fault>()});
 	    }
 

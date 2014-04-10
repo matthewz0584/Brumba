@@ -7,7 +7,9 @@ using Brumba.DiffDriveOdometry;
 using Brumba.DsspUtils;
 using Brumba.MapProvider;
 using Brumba.WaiterStupid;
+using Brumba.WaiterStupid.GUI;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -44,6 +46,7 @@ namespace Brumba.McLrfLocalizer
         McLrfLocalizer _localizer;
         TimerFacade _timerFacade;
         Pose _currentOdometry;
+		MatrixVizualizerServiceHelper _mv = new MatrixVizualizerServiceHelper();
 
 	    public McLrfLocalizerService(DsspServiceCreationPort creationPort)
             : base(creationPort)
@@ -61,6 +64,10 @@ namespace Brumba.McLrfLocalizer
 
 	    IEnumerator<ITask> StartIt()
 	    {
+			_mv.InitOnServiceStart(TaskQueue);
+			_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
+			yield return To.Exec(() => _mv.StartGui());
+
 			OccupancyGrid map = null;
 		    yield return _mapProvider.Get().Receive(ms => map = (OccupancyGrid) DssTypeHelper.TransformFromProxy(ms.Map));
 			map.Freeze();
@@ -72,6 +79,8 @@ namespace Brumba.McLrfLocalizer
 			else
 				_localizer.InitPose(_state.FirstPoseCandidate, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
 
+			yield return To.Exec(Draw);
+
 		    yield return _odometryProvider.Get().Receive(os => _currentOdometry = (Pose) DssTypeHelper.TransformFromProxy(os.State.Pose));
 
             MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
@@ -81,19 +90,38 @@ namespace Brumba.McLrfLocalizer
         }
 
 		IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)
-        {
-            yield return Arbiter.JoinedReceive(false, _lrf.Get().P0, _odometryProvider.Get().P0, 
+		{
+			yield return Arbiter.JoinedReceive(false, _lrf.Get().P0, _odometryProvider.Get().P0, 
                 (lrfScan, odometry) =>
                     {
-                        _localizer.Update(((DiffDriveOdometryServiceState)DssTypeHelper.TransformFromProxy(odometry)).State.Pose - _currentOdometry,
+						_localizer.Update(((Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose)) - _currentOdometry,
                                             lrfScan.DistanceMeasurements.Select(d => d / 1000f));
+						_currentOdometry = ((Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose));
 	                    _state.FirstPoseCandidate = _localizer.GetPoseCandidates().First();
-						
-	                    Log();
                     });
-        }
 
-		static int i = 0;
+			yield return To.Exec(Draw);
+		}
+
+	    IEnumerator<ITask> Draw()
+	    {
+		    var h = new PoseHistogram(_localizer.Map, McLrfLocalizer.THETA_BIN_SIZE);
+		    h.Build(_localizer.Particles);
+		    var p = new DenseMatrix((int) h.Size.Y, (int) h.Size.X);
+		    var m = new DenseMatrix((int) h.Size.Y, (int) h.Size.X);
+		    var xyM = h.ToXyMarginal();
+		    for (var row = 0; row < (int) h.Size.Y; ++row)
+			    for (var col = 0; col < (int) h.Size.X; ++col)
+			    {
+				    p[(int) h.Size.Y - row - 1, col] = xyM[col, row];
+				    m[(int) h.Size.Y - row - 1, col] = _localizer.Map[new Point(col, row)] ? 1 : 0;
+			    }
+
+		    yield return To.Exec(() => _mv.ShowMatrix(p));
+		    yield return To.Exec(() => _mv.ShowMatrix2(m));
+	    }
+
+	    static int i = 0;
 		void Log()
 		{
 			var h = new PoseHistogram(_localizer.Map, McLrfLocalizer.THETA_BIN_SIZE);

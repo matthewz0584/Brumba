@@ -65,6 +65,17 @@ namespace Brumba.Utils
             return Math.Min(diff, MathHelper.TwoPi - diff);
         }
 
+		public static double AngleDifference(double angle1, double angle2)
+		{
+			Contract.Requires(!double.IsInfinity(angle2));
+			Contract.Requires(!double.IsInfinity(angle1));
+			Contract.Ensures(double.IsNaN(angle1) || double.IsNaN(angle2) || Contract.Result<double>() >= 0);
+			Contract.Ensures(double.IsNaN(angle1) || double.IsNaN(angle2) || Contract.Result<double>() <= Constants.Pi2);
+
+			var diff = Math.Abs(angle1.ToPositiveAngle() - angle2.ToPositiveAngle());
+			return Math.Min(diff, MathHelper.TwoPi - diff);
+		}
+
         public static bool EqualsRelatively(this double me, double value, double relativeError)
 	    {
             Contract.Requires(relativeError >= 0);

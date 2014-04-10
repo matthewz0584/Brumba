@@ -50,12 +50,13 @@ namespace Brumba.McLrfLocalizer
         public float ComputeMeasurementLikelihood(Pose robotPose, IEnumerable<float> scan)
         {
             DC.Contract.Assume(scan != null);
-            DC.Contract.Assume(scan.Count() == RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution + 1);
+            DC.Contract.Assume(scan.Count() == (int)(RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution) + 1);
 
 			var beamLikelihoods = scan.Select((zi, i) => new { zi, i }).Where(p => p.zi != RangefinderProperties.MaxRange).
 				Select(p => BeamLikelihood(robotPose, p.zi, p.i)).ToList();
-            var measurementLikelihood = beamLikelihoods.Aggregate(0.1f, (pi, p) => p + pi);
-            
+			var measurementLikelihood = beamLikelihoods.Aggregate(0.1f, (pi, p) => p + pi);
+			return measurementLikelihood;
+
             //if (measurementLikelihood > 0.06)
             //{
             //    beamLikelihoods.ForEach(pi => Console.Write(" {0} ", pi));
@@ -67,7 +68,7 @@ namespace Brumba.McLrfLocalizer
 
             //return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
             //    Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
-	        return measurementLikelihood;
+	        
         }
 
         public float BeamLikelihood(Pose robotPose, float zi, int i)

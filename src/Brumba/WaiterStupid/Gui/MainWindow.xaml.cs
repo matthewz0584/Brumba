@@ -18,16 +18,22 @@ namespace Brumba.WaiterStupid.GUI
         {
             InitializeComponent();
             DataContext = this;
-            HeatMapVm = new HeatMapViewModel();         
+            HeatMapVm = new HeatMapViewModel();
+			HeatMapVm2 = new HeatMapViewModel();  
         }
 
-        public HeatMapViewModel HeatMapVm { get; set; }
+	    public HeatMapViewModel HeatMapVm2 { get; set; }
+
+	    public HeatMapViewModel HeatMapVm { get; set; }
 
         public void ShowMatrix(Matrix matrix)
         {            
             HeatMapVm.UpdateHeatMap(matrix);
         }
-
+		public void ShowMatrix2(Matrix matrix)
+        {            
+            HeatMapVm2.UpdateHeatMap(matrix);
+        }
         public void InitVisual(string matrixName, Color? minColor = null, Color? maxColor = null)
         {
             HeatMapVm.InitVisual(matrixName,minColor,maxColor);

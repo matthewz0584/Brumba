@@ -92,7 +92,7 @@ namespace Brumba.WaiterStupid.GUI
         public HeatMapViewModel()
         {
             HeatMap = new List<MatrixEntry>();
-            MinColor = Colors.Aquamarine;
+            MinColor = Colors.White;
             MaxColor = Colors.Green;
             MatrixName = "";
         }
@@ -100,7 +100,7 @@ namespace Brumba.WaiterStupid.GUI
         public void InitVisual(string matrixName, Color? minColor = null, Color? maxColor = null)
         {
             MatrixName = matrixName;
-            MinColor = minColor.HasValue ? minColor.Value : Colors.Aquamarine;
+            MinColor = minColor.HasValue ? minColor.Value : Colors.White;
             MaxColor = maxColor.HasValue ? maxColor.Value : Colors.Green;
         }
 
@@ -113,7 +113,7 @@ namespace Brumba.WaiterStupid.GUI
             for (int i = 0; i < matrix.RowCount; i++)
             {
                 for (int j = 0; j < matrix.ColumnCount; j++)
-                    lst.Add(new MatrixEntry {X = i, Y = j, Value = matrix[i, j]});
+                    lst.Add(new MatrixEntry {X = i, Y =j, Value = matrix[i, j]});
             }
             HeatMap = lst;
         }

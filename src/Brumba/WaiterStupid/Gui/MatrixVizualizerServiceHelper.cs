@@ -45,6 +45,11 @@ namespace Brumba.WaiterStupid.GUI
         {
             yield return (Choice)_wpfPort.Invoke(() => _mainWindow.ShowMatrix(m));
         }
+
+		public IEnumerator<ITask> ShowMatrix2(Matrix m)
+		{
+			yield return (Choice)_wpfPort.Invoke(() => _mainWindow.ShowMatrix2(m));
+		}
     }
     
 }

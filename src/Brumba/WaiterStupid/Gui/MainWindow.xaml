@@ -11,13 +11,17 @@
             <GradientStop  Offset="0" Color="{Binding HeatMapVm.MinColor}" />
             <GradientStop  Offset ="1" Color="{Binding HeatMapVm.MaxColor}" />
         </telerik:HeatMapValueGradientColorizer>
+        <telerik:HeatMapValueGradientColorizer x:Key="colorizer2">
+            <GradientStop  Offset="0" Color="{Binding HeatMapVm2.MinColor}" />
+            <GradientStop  Offset ="1" Color="{Binding HeatMapVm2.MaxColor}" />
+        </telerik:HeatMapValueGradientColorizer>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-        <telerik:RadHeatMap ShowToolTips="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Grid.Row="0">
+        <telerik:RadHeatMap HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" ShowToolTips="False" Opacity="1" >
             <telerik:RadHeatMap.Definition>
                 <telerik:CategoricalDefinition ItemsSource="{Binding HeatMapVm.HeatMap}" 
                                     RowGroupMemberPath="X" 
@@ -28,6 +32,17 @@
                 </telerik:CategoricalDefinition>
             </telerik:RadHeatMap.Definition>
          </telerik:RadHeatMap>
+        <telerik:RadHeatMap HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" ShowToolTips="False" Opacity="0.1" >
+            <telerik:RadHeatMap.Definition>
+                <telerik:CategoricalDefinition ItemsSource="{Binding HeatMapVm2.HeatMap}" 
+                                    RowGroupMemberPath="X" 
+                                    ColumnGroupMemberPath="Y" 
+                                    ValuePath="Value"
+                                    Colorizer="{StaticResource colorizer2}">
+
+                </telerik:CategoricalDefinition>
+            </telerik:RadHeatMap.Definition>
+        </telerik:RadHeatMap>
         <StackPanel Grid.Row="1">
             <Grid Width="250" Margin="0 0 20 0" >
                 <Grid.Resources>
