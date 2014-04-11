@@ -13,25 +13,18 @@ namespace Brumba.SimulationTester.Tests
 	public class MapProviderTests
 	{
 	    public MapPxy.MapProviderOperations MapProviderPort { get; set; }
-	    public SimulationTesterService HostService { get; set; }
 
 	    [SetUp]
 		public void SetUp(SimulationTesterService hostService)
 		{
-		    HostService = hostService;
 		    MapProviderPort = hostService.ForwardTo<MapPxy.MapProviderOperations>("map_provider");
 		}
 
 	    [SimTest(1, IsProbabilistic = false)]
-		public class GetTest : ITest, IStart
+		public class GetTest : ITest
 		{
 			[Fixture]
             public MapProviderTests Fixture { get; set; }
-
-            public IEnumerator<ITask> Start()
-            {
-                yield return Fixture.HostService.Timeout(1000);
-            }
 
 			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{

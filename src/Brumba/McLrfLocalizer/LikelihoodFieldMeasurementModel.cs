@@ -66,9 +66,8 @@ namespace Brumba.McLrfLocalizer
             //    Console.WriteLine("*****");
             //}
 
-            //return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
-            //    Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
-	        
+			//return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
+			//	Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
         }
 
         public float BeamLikelihood(Pose robotPose, float zi, int i)
@@ -81,6 +80,7 @@ namespace Brumba.McLrfLocalizer
             var beamEndPointPosition = BeamEndPointPosition(robotPose, zi, i);
 	        if (!Map.Covers(beamEndPointPosition))
 		        return 0;
+		        //return 1;
 
             return Vector2.Dot(
                 new Vector2((float)DensityHit(DistanceToNearestObstacle(beamEndPointPosition)), (float)DensityRandom()),

@@ -126,11 +126,10 @@ namespace Brumba.McLrfLocalizer.Tests
                 rotNoiseCoeffs: new Vector2(0.1f, 0.1f),
                 transNoiseCoeffs: new Vector2(0.1f, 0.1f));
 
-            Assert.That(omm.PredictParticleState(new Pose(new Vector2(1.9f, 1.5f), 0), new Pose(new Vector2(0.6f, 0), 0)),
-                Is.EqualTo(new Pose(new Vector2(1.9f, 1.5f), 0)));//move to center of occupied cell, no chance to deviate
-
-            Assert.That(omm.PredictParticleState(new Pose(new Vector2(0, 0), 0), new Pose(new Vector2(2.1f, 1.1f), 0)),
-                Is.Not.EqualTo(new Pose(new Vector2(0, 0), 0)));//move to occupied cell, near its border
+	        var pp = omm.PredictParticleState(new Pose(new Vector2(1.9f, 1.5f), 0), new Pose(new Vector2(0.6f, 0), 0));
+	        Assert.That(pp, Is.Not.EqualTo(new Pose(new Vector2(1.9f, 1.5f), 0)));
+			Assert.That(pp, Is.Not.EqualTo(new Pose(new Vector2(1.9f + 0.6f, 1.5f), 0)));
+			Assert.That(!omm.Map.Covers(pp.Position) || !omm.Map[pp.Position]);
         }
 
         [Test]

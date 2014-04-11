@@ -23,11 +23,13 @@ namespace Brumba.MapProvider
     [DisplayName("Brumba Map Provider")]
     [Description("no description provided")]
     public class MapProviderService : DsspServiceExposing
-    {
-        [ServiceState]
+	{
+#pragma warning disable 0649
+		[ServiceState]
 		[InitialStatePartner(Optional = false)] private MapProviderState _state;
+#pragma warning restore 0649
 
-        [ServicePort("/MapProvider", AllowMultipleInstances = true)]
+		[ServicePort("/MapProvider", AllowMultipleInstances = true)]
         MapProviderOperations _mainPort = new MapProviderOperations();
 
 		public MapProviderService(DsspServiceCreationPort creationPort)

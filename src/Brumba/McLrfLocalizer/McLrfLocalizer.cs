@@ -16,23 +16,22 @@ namespace Brumba.McLrfLocalizer
     {
         public const double THETA_BIN_SIZE = Math.PI / 18;
 
-        readonly ParticleFilter<Pose, IEnumerable<float>, Pose> _particleFilter;
-        readonly Random _random;
+		readonly static Random _random = new Random();
 
+        readonly ParticleFilter<Pose, IEnumerable<float>, Pose> _particleFilter;
+        
         public McLrfLocalizer(OccupancyGrid map, RangefinderProperties rangefinderProperties, int particlesNumber)
 	    {
 			DC.Contract.Requires(map != null);
 			DC.Contract.Requires(particlesNumber > 1);
 			DC.Contract.Ensures(Map == map);
-			DC.Contract.Ensures(_random != null);
 			DC.Contract.Ensures(_particleFilter != null);
 
 		    Map = map;
 		    ParticlesNumber = particlesNumber;
-			_random = new Random();
             _particleFilter = new ParticleFilter<Pose, IEnumerable<float>, Pose>(
 			    new ResamplingWheel(),
-			    new OdometryMotionModel(map, new Vector2(0.1f, 0.1f), new Vector2(0.1f, 0.1f)),
+			    new OdometryMotionModel(map, new Vector2(0.2f, 0.2f), new Vector2(0.2f, 0.2f)),
 			    new LikelihoodFieldMeasurementModel(map, rangefinderProperties, 0.1f, 0.8f, 0.2f));
 	    }
 
@@ -48,15 +47,10 @@ namespace Brumba.McLrfLocalizer
 			DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => Map.Covers(p.Position) && !Map[p.Position]));
             DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
 
-			_particleFilter.Init(Enumerable.Range(0, int.MaxValue).
-									Select(i => new Pose(new Vector2((float)ContinuousUniform.Sample(_random, 0, Map.SizeInMeters.X),
-											  				         (float)ContinuousUniform.Sample(_random, 0, Map.SizeInMeters.Y)),
-															((float)ContinuousUniform.Sample(_random, 0, Constants.Pi2 - double.Epsilon)))).
-									Where(p => !Map[p.Position]).
-                                    Take(ParticlesNumber));
+			_particleFilter.Init(GenerateRandomPoses(Map).Take(ParticlesNumber));
         }
 
-        public void InitPose(Pose poseMean, Pose poseStdDev)
+	    public void InitPose(Pose poseMean, Pose poseStdDev)
         {
             DC.Contract.Requires(Map.Covers(poseMean.Position));
             DC.Contract.Requires(!Map[poseMean.Position]);
@@ -80,7 +74,7 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Requires(Particles != null);
             DC.Contract.Requires(Particles.Any());
             DC.Contract.Ensures(Particles.Count() == ParticlesNumber);
-            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => !Map.Covers(p.Position) || (Map.Covers(p.Position) && !Map[p.Position])));
+            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => !Map.Covers(p.Position) || !Map[p.Position]));
             DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
 
 			_particleFilter.Update(odometry, scan);
@@ -115,6 +109,7 @@ namespace Brumba.McLrfLocalizer
         {
             DC.Contract.Requires(Particles != null);
             DC.Contract.Requires(Particles.Any());
+			DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Pose>>() != null);
             DC.Contract.Ensures(DC.Contract.ForAll(DC.Contract.Result<IEnumerable<Pose>>(),
                 p => Map.Covers(p.Position) && !Map[p.Position] && p.Bearing.Between(0, Constants.Pi2)));
 
@@ -122,6 +117,18 @@ namespace Brumba.McLrfLocalizer
             h.Build(Particles);
             return h.Bins.Where(pb => pb.Samples.Any()).OrderByDescending(pb => pb.Samples.Count()).Select(pb => pb.CalculatePoseMean());
         }
+
+		public static IEnumerable<Pose> GenerateRandomPoses(OccupancyGrid map)
+		{
+			DC.Contract.Requires(map != null);
+			DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Pose>>() != null);
+
+			return Enumerable.Range(0, int.MaxValue).Select(i => new Pose(new Vector2(
+					(float)ContinuousUniform.Sample(_random, 0, map.SizeInMeters.X),
+					(float)ContinuousUniform.Sample(_random, 0, map.SizeInMeters.Y)),
+					((float)ContinuousUniform.Sample(_random, 0, Constants.Pi2 * 0.99999)))).
+				Where(p => !map[p.Position]);
+		}
 
 		static double MomentFor(IEnumerable<double> data, Func<DescriptiveStatistics, double> func)
 		{

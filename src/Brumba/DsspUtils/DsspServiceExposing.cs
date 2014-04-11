@@ -38,6 +38,11 @@ namespace Brumba.DsspUtils
 		{
 		}
 
+		public void SpawnIterator(IteratorHandler handler)
+		{
+			base.SpawnIterator(handler);
+		}
+
         //[SuppressMessage("Microsoft.Contracts", "Ensures", Justification = "base.ServiceForwarder has no contract")]
 		public new T ServiceForwarder<T>(Uri uri) where T : IPort, IPortSet, new()
 		{

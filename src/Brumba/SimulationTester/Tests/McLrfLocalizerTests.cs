@@ -8,10 +8,12 @@ using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
+using Microsoft.Xna.Framework;
 using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using McLocalizationPxy = Brumba.McLrfLocalizer.Proxy;
 using bPose = Brumba.WaiterStupid.Pose;
 using rPose = Microsoft.Robotics.PhysicalModel.Pose;
+using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
@@ -30,7 +32,7 @@ namespace Brumba.SimulationTester.Tests
 			McLrfLocalizationPort = testerService.ForwardTo<McLocalizationPxy.McLrfLocalizerOperations>("localizer@");
 		}
 
-		[SimTest(5)]
+		//[SimTest(5)]
 		public class Tracking : IStart, ITest
 		{
 			[Fixture]
@@ -38,6 +40,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Start()
 			{
+				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new bPose(new Vector2(1.7f, 3.25f), 0)));
 				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.6, 0.6));
 			}
@@ -45,12 +48,82 @@ namespace Brumba.SimulationTester.Tests
 			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
 				var mcPose = new bPose();
-				yield return Fixture.McLrfLocalizationPort.Get().Receive(mcs => mcPose = (bPose) DssTypeHelper.TransformFromProxy(mcs.FirstPoseCandidate));
+				yield return Fixture.McLrfLocalizationPort.QueryPose().Receive(mcp => mcPose = mcp);
 
 				var simPosition = BoxWorldParser.SimToMap((rPose)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose));
 
 				@return(mcPose.Position.EqualsRelatively(simPosition.Position, 0.1) &&
 						MathHelper2.AngleDifference(mcPose.Bearing, simPosition.Bearing).AlmostEqualWithError(0, 0.1));
+			}
+		}
+
+		//[SimTest(10)]
+		public class GlobalLocalizationStraightPath : IStart, ITest
+		{
+			[Fixture]
+			public McLrfLocalizerTests Fixture { get; set; }
+
+			public IEnumerator<ITask> Start()
+			{
+				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPoseUnknown());
+				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
+				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
+			}
+
+			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+			{
+				var mcPose = new bPose();
+				yield return Fixture.McLrfLocalizationPort.QueryPose().Receive(mcp => mcPose = mcp);
+
+				var simPosition = BoxWorldParser.SimToMap((rPose)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose));
+
+				@return(mcPose.Position.EqualsRelatively(simPosition.Position, 0.1) &&
+						MathHelper2.AngleDifference(mcPose.Bearing, simPosition.Bearing).AlmostEqualWithError(0, 0.1));
+			}
+		}
+
+		[SimTest(10)]
+		public class GlobalLocalizationCurvedPath : IStart, ITest
+		{
+			[Fixture]
+			public McLrfLocalizerTests Fixture { get; set; }
+
+			public IEnumerator<ITask> Start()
+			{
+				Fixture.TesterService.SpawnIterator(StraightRightStraightControls);
+				
+				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPoseUnknown());
+				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
+			}
+
+			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+			{
+				var mcPose = new bPose();
+				yield return Fixture.McLrfLocalizationPort.QueryPose().Receive(mcp => mcPose = mcp);
+
+				var simPosition = BoxWorldParser.SimToMap((rPose)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose));
+
+				@return(mcPose.Position.EqualsRelatively(simPosition.Position, 0.1) &&
+						MathHelper2.AngleDifference(mcPose.Bearing, simPosition.Bearing).AlmostEqualWithError(0, 0.1));
+			}
+
+			IEnumerator<ITask> StraightRightStraightControls()
+			{
+				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
+
+				var subscribeRq = Fixture.TesterService.Timer.Subscribe(4.5f);
+				yield return To.Exec(subscribeRq.ResponsePort);
+				yield return (subscribeRq.NotificationPort as BrTimerPxy.TimerOperations).P4.Receive();
+				subscribeRq.NotificationShutdownPort.Post(new Shutdown());
+				
+				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.1));
+
+				subscribeRq = Fixture.TesterService.Timer.Subscribe(1);
+				yield return To.Exec(subscribeRq.ResponsePort);
+				yield return (subscribeRq.NotificationPort as BrTimerPxy.TimerOperations).P4.Receive();
+				subscribeRq.NotificationShutdownPort.Post(new Shutdown());
+
+				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
 			}
 		}
 	}

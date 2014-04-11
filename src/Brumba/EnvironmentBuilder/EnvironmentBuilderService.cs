@@ -36,12 +36,14 @@ namespace Brumba.Simulation.EnvironmentBuilder
     [DisplayName("EnvironmentBuilder")]
     [Description("EnvironmentBuilder service (no description provided)")]
     class EnvironmentBuilderService : DsspServiceBase
-    {
-        [ServiceState]
+	{
+#pragma warning disable 0649
+		[ServiceState]
 		[InitialStatePartner(Optional = true)]
         EnvironmentBuilderState _state;
+#pragma warning restore 0649
 
-        [ServicePort("/EnvironmentBuilder", AllowMultipleInstances = true)]
+		[ServicePort("/EnvironmentBuilder", AllowMultipleInstances = true)]
         EnvironmentBuilderOperations _mainPort = new EnvironmentBuilderOperations();
 
         [Partner("Engine", Contract = Microsoft.Robotics.Simulation.Engine.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExistingOrCreate)]

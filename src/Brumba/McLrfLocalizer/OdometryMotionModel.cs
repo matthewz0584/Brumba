@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Brumba.MapProvider;
 using Brumba.WaiterStupid;
 using DC = System.Diagnostics.Contracts;
@@ -34,16 +35,10 @@ namespace Brumba.McLrfLocalizer
 			DC.Contract.Assume(!Map.Covers(particle.Position) || !Map[particle.Position]);
 
             var rotTransRot = OdometryToRotTransRotSequence(particle, control);
+			var noisyDelta = RotTransRotSequenceToOdometry(particle, rotTransRot + ComputeRotTransRotNoise(rotTransRot));
+			var prediction = new Pose(particle.Position + noisyDelta.Position, (particle.Bearing + noisyDelta.Bearing).ToPositiveAngle());
 
-            var tries = 10;
-            Pose prediction;
-            do
-            {
-                var noisyDelta = RotTransRotSequenceToOdometry(particle, rotTransRot + ComputeRotTransRotNoise(rotTransRot));
-                prediction = new Pose(particle.Position + noisyDelta.Position, (particle.Bearing + noisyDelta.Bearing).ToPositiveAngle());
-            } while (Map.Covers(prediction.Position) && Map[prediction.Position] && tries-- > 0);
-
-	        return tries < 0 ? particle : prediction;
+			return !(Map.Covers(prediction.Position) && Map[prediction.Position]) ? prediction : McLrfLocalizer.GenerateRandomPoses(Map).First();
         }
 
         public static Vector3 OdometryToRotTransRotSequence(Pose particle, Pose control)

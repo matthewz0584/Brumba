@@ -48,7 +48,7 @@ namespace Brumba.SimulationTester
         MrsePxy.SimulationEnginePort _simEngine = new MrsePxy.SimulationEnginePort();
 
         [Partner("Timer", Contract = BrTimerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        BrTimerPxy.TimerOperations _timer = new BrTimerPxy.TimerOperations();
+		BrTimerPxy.TimerOperations _timer = new BrTimerPxy.TimerOperations();
 
 		[Partner("Manifest loader", Contract = Microsoft.Dss.Services.ManifestLoaderClient.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		ManifestLoaderClientPort _manifestLoader = new ManifestLoaderClientPort();
@@ -74,7 +74,12 @@ namespace Brumba.SimulationTester
 		{
 		}
 
-        //Exposes DsspServiceBase capabilities to access other services by URI
+	    public BrTimerPxy.TimerOperations Timer
+	    {
+		    get { return _timer; }
+	    }
+
+	    //Exposes DsspServiceBase capabilities to access other services by URI
         public T ForwardTo<T>(string serviceUri) where T : IPortSet, new()
         {
 	        var serviceTcpUri = new Uri(ServiceInfo.Service);
@@ -189,7 +194,7 @@ namespace Brumba.SimulationTester
                 }
 
                 //Start sim timer (it is not really started: simulation timer is paused)
-                var subscribeRq = _timer.Subscribe(testInfo.EstimatedTime);
+                var subscribeRq = Timer.Subscribe(testInfo.EstimatedTime);
                 yield return To.Exec(subscribeRq.ResponsePort);
 
                 //Unpause all, timer and test will start soon after
@@ -269,11 +274,13 @@ namespace Brumba.SimulationTester
 
         IEnumerator<ITask> DropResettableServices()
         {
+			LogInfo("1");
             IEnumerable<Uri> runningServices = null;
             yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => runningServices = ss);
-
+			LogInfo("2");
             foreach (var uri in runningServices.Where(uri => uri.LocalPath.Contains(RESET_SYMBOL)))
                 yield return To.Exec(DropService, uri);
+			LogInfo("3");
         }
 
         IEnumerator<ITask> GetRunningServices(Action<IEnumerable<Uri>> @return)
@@ -288,19 +295,21 @@ namespace Brumba.SimulationTester
 
         IEnumerator<ITask> DropService(Uri uri)
         {
+			LogInfo("2 {0}", uri);
             var serviceDropPort = ServiceForwarder<PortSet<DsspDefaultLookup, DsspDefaultDrop>>(uri);
             var dsspDefaultDropRq = new DsspDefaultDrop();
             serviceDropPort.Post(dsspDefaultDropRq);
             yield return dsspDefaultDropRq.ResponsePort.Choice(
-                dropped => { },
+                dropped => LogInfo(String.Format("Service {0} dropped!", uri)),
                 failed => LogError(String.Format("Service {0} can not be dropped", uri)));
+			LogInfo("2 q");
         }
 
         IEnumerator<ITask> PauseExecution(bool pause)
         {
             _initialSimState.Pause = pause;
             yield return To.Exec(_simEngine.Replace(_initialSimState));
-            yield return To.Exec(_timer.Pause(pause));
+            yield return To.Exec(Timer.Pause(pause));
         }
 
         IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<MrsePxy.VisualEntity, bool> resetFilter, Action<Mrse.VisualEntity> prepareEntityForReset)

@@ -14,7 +14,7 @@ namespace Brumba.Utils.Tests
             Assert.That(Constants.PiOver4.ToPositiveAngle(), Is.EqualTo(Constants.PiOver4));
             Assert.That((-Constants.PiOver4).ToPositiveAngle(), Is.EqualTo(7 * Constants.PiOver4));
             Assert.That((-Constants.Pi).ToPositiveAngle(), Is.EqualTo(Constants.Pi));
-            Assert.That((-6 * Constants.Pi).ToPositiveAngle(), Is.EqualTo(0).Within(1e-6));
+			Assert.That((-9 * Constants.PiOver4).ToPositiveAngle(), Is.EqualTo(7 * Constants.PiOver4).Within(1e-6));
             Assert.That(double.NaN.ToPositiveAngle(), Is.NaN);
             Assert.That((-double.Epsilon).ToPositiveAngle(), Is.EqualTo(0));
             Assert.That((-100 * double.Epsilon).ToPositiveAngle(), Is.EqualTo(0));
@@ -24,16 +24,16 @@ namespace Brumba.Utils.Tests
         [Test]
         public void AngleDifference()
         {
-            Assert.That(MathHelper2.AngleDifference((float)Math.PI / 2, (float)Math.PI / 4), Is.EqualTo((float)Math.PI / 4));
-            Assert.That(MathHelper2.AngleDifference((float)Math.PI / 4, (float)Math.PI / 2), Is.EqualTo((float)Math.PI / 4));
-            
-            Assert.That(MathHelper2.AngleDifference((float)Math.PI / 4, -(float)Math.PI / 4), Is.EqualTo((float)Math.PI / 2).Within(1e-5));
-            Assert.That(MathHelper2.AngleDifference(-(float)Math.PI / 4, (float)Math.PI / 4), Is.EqualTo((float)Math.PI / 2).Within(1e-5));
+			Assert.That(MathHelper2.AngleDifference(Constants.PiOver2, Constants.PiOver4), Is.EqualTo(Constants.PiOver4));
+			Assert.That(MathHelper2.AngleDifference(Constants.PiOver4, Constants.PiOver2), Is.EqualTo(Constants.PiOver4));
 
-            Assert.That(MathHelper2.AngleDifference((float)Math.PI * 7 / 4, (float)Math.PI / 4), Is.EqualTo((float)Math.PI / 2).Within(1e-5));
-            Assert.That(MathHelper2.AngleDifference((float)Math.PI / 4, (float)Math.PI * 7 / 4), Is.EqualTo((float)Math.PI / 2).Within(1e-5));
+			Assert.That(MathHelper2.AngleDifference(Constants.PiOver4, -Constants.PiOver4), Is.EqualTo(Constants.PiOver2));
+			Assert.That(MathHelper2.AngleDifference(-Constants.PiOver4, Constants.PiOver4), Is.EqualTo(Constants.PiOver2));
 
-            Assert.That(MathHelper2.AngleDifference(float.NaN, float.NaN), Is.EqualTo(float.NaN));
+			Assert.That(MathHelper2.AngleDifference(Constants.PiOver4 * 7, Constants.PiOver4), Is.EqualTo(Constants.PiOver2));
+			Assert.That(MathHelper2.AngleDifference(Constants.PiOver4, Constants.PiOver4 * 7), Is.EqualTo(Constants.PiOver2));
+
+			Assert.That(MathHelper2.AngleDifference(double.NaN, double.NaN), Is.EqualTo(double.NaN));
         }
 
 		[Test]

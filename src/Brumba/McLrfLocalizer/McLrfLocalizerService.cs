@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using Brumba.DiffDriveOdometry;
 using Brumba.DsspUtils;
 using Brumba.MapProvider;
 using Brumba.WaiterStupid;
@@ -26,10 +25,12 @@ namespace Brumba.McLrfLocalizer
     [DisplayName("Brumba MonteCarlo Localizer")]
     [Description("no description provided")]
     public class McLrfLocalizerService : DsspServiceExposing
-    {
-        [ServiceState]
+	{
+#pragma warning disable 0649
+		[ServiceState]
 		[InitialStatePartner(Optional = false)]
-        McLrfLocalizerState _state;
+		McLrfLocalizerState _state;
+#pragma warning restore 0649
 
         [ServicePort("/McLrfLocalizer", AllowMultipleInstances = true)]
         McLrfLocalizerOperations _mainPort = new McLrfLocalizerOperations();
@@ -46,27 +47,21 @@ namespace Brumba.McLrfLocalizer
         McLrfLocalizer _localizer;
         TimerFacade _timerFacade;
         Pose _currentOdometry;
-		MatrixVizualizerServiceHelper _mv = new MatrixVizualizerServiceHelper();
 
 	    public McLrfLocalizerService(DsspServiceCreationPort creationPort)
-            : base(creationPort)
-        {
-        }
+		    : base(creationPort)
+	    {
+			DC.Contract.Requires(creationPort != null);
+	    }
 
         protected override void Start()
         {
-			_timerFacade = new TimerFacade(this, _state.DeltaT);
-
-	        base.Start();
-
             SpawnIterator(StartIt);
         }
 
 	    IEnumerator<ITask> StartIt()
 	    {
-			_mv.InitOnServiceStart(TaskQueue);
-			_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
-			yield return To.Exec(() => _mv.StartGui());
+			_timerFacade = new TimerFacade(this, _state.DeltaT);
 
 			OccupancyGrid map = null;
 		    yield return _mapProvider.Get().Receive(ms => map = (OccupancyGrid) DssTypeHelper.TransformFromProxy(ms.Map));
@@ -79,14 +74,19 @@ namespace Brumba.McLrfLocalizer
 			else
 				_localizer.InitPose(_state.FirstPoseCandidate, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
 
-			yield return To.Exec(Draw);
-
 		    yield return _odometryProvider.Get().Receive(os => _currentOdometry = (Pose) DssTypeHelper.TransformFromProxy(os.State.Pose));
 
-            MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
-                    Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateLocalizer))));
+			base.Start();
+
+			MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
+					Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateLocalizer))));
 
             yield return To.Exec(() => _timerFacade.Set());
+
+			//************************************
+			_mv.InitOnServiceStart(TaskQueue);
+			_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
+			yield return To.Exec(() => _mv.StartGui());
         }
 
 		IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)
@@ -94,34 +94,86 @@ namespace Brumba.McLrfLocalizer
 			yield return Arbiter.JoinedReceive(false, _lrf.Get().P0, _odometryProvider.Get().P0, 
                 (lrfScan, odometry) =>
                     {
-						_localizer.Update(((Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose)) - _currentOdometry,
-                                            lrfScan.DistanceMeasurements.Select(d => d / 1000f));
-						_currentOdometry = ((Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose));
+						DC.Contract.Requires(lrfScan != null);
+						DC.Contract.Requires(lrfScan.DistanceMeasurements != null);
+						DC.Contract.Requires(odometry != null);
+						DC.Contract.Requires(odometry.State != null);
+
+	                    var newOdometry = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose);
+	                    _localizer.Update(newOdometry - _currentOdometry, lrfScan.DistanceMeasurements.Select(d => d / 1000f));
+						_currentOdometry = newOdometry;
 	                    _state.FirstPoseCandidate = _localizer.GetPoseCandidates().First();
                     });
 
 			yield return To.Exec(Draw);
 		}
 
-	    IEnumerator<ITask> Draw()
-	    {
-		    var h = new PoseHistogram(_localizer.Map, McLrfLocalizer.THETA_BIN_SIZE);
-		    h.Build(_localizer.Particles);
-		    var p = new DenseMatrix((int) h.Size.Y, (int) h.Size.X);
-		    var m = new DenseMatrix((int) h.Size.Y, (int) h.Size.X);
-		    var xyM = h.ToXyMarginal();
-		    for (var row = 0; row < (int) h.Size.Y; ++row)
-			    for (var col = 0; col < (int) h.Size.X; ++col)
-			    {
-				    p[(int) h.Size.Y - row - 1, col] = xyM[col, row];
-				    m[(int) h.Size.Y - row - 1, col] = _localizer.Map[new Point(col, row)] ? 1 : 0;
-			    }
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+		public void OnQueryPose(QueryPose queryPoseRq)
+		{
+			DC.Contract.Requires(queryPoseRq != null);
+			DC.Contract.Requires(queryPoseRq.Body != null);
 
-		    yield return To.Exec(() => _mv.ShowMatrix(p));
-		    yield return To.Exec(() => _mv.ShowMatrix2(m));
-	    }
+			queryPoseRq.ResponsePort.Post(_state.FirstPoseCandidate);
+		}
 
-	    static int i = 0;
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+		public void InitPoseRequest(InitPose initPoseRq)
+		{
+			DC.Contract.Requires(initPoseRq != null);
+			DC.Contract.Requires(initPoseRq.Body != null);
+
+			_localizer.InitPose(initPoseRq.Body.Pose, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
+			initPoseRq.ResponsePort.Post(new DefaultSubmitResponseType());
+		}
+
+		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+		public void InitPoseUnknownRequest(InitPoseUnknown initPoseUnknownRq)
+		{
+			DC.Contract.Requires(initPoseUnknownRq != null);
+			DC.Contract.Requires(initPoseUnknownRq.Body != null);
+
+			_localizer.InitPoseUnknown();
+			initPoseUnknownRq.ResponsePort.Post(new DefaultSubmitResponseType());
+		}
+
+        [ServiceHandler(ServiceHandlerBehavior.Teardown)]
+        public void OnDropDown(DsspDefaultDrop dropDownRq)
+        {
+            DC.Contract.Requires(dropDownRq != null);
+            DC.Contract.Requires(dropDownRq.Body != null);
+
+			LogInfo("mc lrf DropDown <");
+            _timerFacade.Dispose();
+            DefaultDropHandler(dropDownRq);
+			LogInfo(">mc lrf DropDown");
+        }
+
+		bool IsPoseUnknown(Pose pose)
+		{
+			return double.IsNaN(pose.Bearing);
+		}
+
+		MatrixVizualizerServiceHelper _mv = new MatrixVizualizerServiceHelper();
+		IEnumerator<ITask> Draw()
+		{
+			var h = new PoseHistogram(_localizer.Map, McLrfLocalizer.THETA_BIN_SIZE);
+			h.Build(_localizer.Particles);
+			var p = new DenseMatrix((int)h.Size.Y, (int)h.Size.X);
+			var m = new DenseMatrix((int)h.Size.Y, (int)h.Size.X);
+			var xyM = h.ToXyMarginal();
+			for (var row = 0; row < (int)h.Size.Y; ++row)
+				for (var col = 0; col < (int)h.Size.X; ++col)
+				{
+					p[(int)h.Size.Y - row - 1, col] = xyM[col, row];
+					m[(int)h.Size.Y - row - 1, col] = _localizer.Map[new Point(col, row)] ? 1 : 0;
+				}
+
+			yield return To.Exec(() => _mv.ShowMatrix(p));
+			yield return To.Exec(() => _mv.ShowMatrix2(m));
+		}
+
+		static int i = 0;
 		void Log()
 		{
 			var h = new PoseHistogram(_localizer.Map, McLrfLocalizer.THETA_BIN_SIZE);
@@ -131,21 +183,6 @@ namespace Brumba.McLrfLocalizer
 				f.Write(h);
 				f.Write(h.Bins.Sum(b => b.Samples.Count()));
 			}
-		}
-
-        [ServiceHandler(ServiceHandlerBehavior.Teardown)]
-        public void OnDropDown(DsspDefaultDrop dropDownRq)
-        {
-            DC.Contract.Requires(dropDownRq != null);
-            DC.Contract.Requires(dropDownRq.Body != null);
-
-            _timerFacade.Dispose();
-            DefaultDropHandler(dropDownRq);
-        }
-
-		bool IsPoseUnknown(Pose pose)
-		{
-			return double.IsNaN(pose.Bearing);
 		}
     }
 }

@@ -18,12 +18,10 @@ namespace Brumba.SimulationTester.Tests
 	public class EnvironmentBuilderTests
 	{
 		EnvBuilderPxy.EnvironmentBuilderOperations EnvironmentBuilderPort { get; set; }
-		SimulationTesterService HostService { get; set; }
 
 		[SetUp]
 		public void SetUp(SimulationTesterService hostService)
 		{
-			HostService = hostService;
 			EnvironmentBuilderPort = hostService.ForwardTo<EnvBuilderPxy.EnvironmentBuilderOperations>("environment_builder");
 		}
 
@@ -35,7 +33,6 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Start()
 			{
-				yield return Fixture.HostService.Timeout(1000);
 				yield return Fixture.EnvironmentBuilderPort.BuildBoxWorld().Receive((DefaultSubmitResponseType success) => { });
 			}
 

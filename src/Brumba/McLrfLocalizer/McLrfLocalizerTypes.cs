@@ -29,7 +29,7 @@ namespace Brumba.McLrfLocalizer
     }
 
     [ServicePort]
-    public class McLrfLocalizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, QueryPose>
+	public class McLrfLocalizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, QueryPose, InitPose, InitPoseUnknown>
     {
     }
 
@@ -50,10 +50,27 @@ namespace Brumba.McLrfLocalizer
         }
     }
 
-    public class QueryPose : Query<PoseRequest, PortSet<Pose, DefaultQueryResponseType>>
-    {}
-
     [DataContract]
     public class PoseRequest
     {}
+
+    public class QueryPose : Query<PoseRequest, PortSet<Pose, DefaultQueryResponseType>>
+    {}
+
+	[DataContract]
+	public class InitPoseRequest
+	{
+		[DataMember, DataMemberConstructor]
+		public Pose Pose { get; set; }
+	}
+
+	public class InitPose : Submit<InitPoseRequest, PortSet<DefaultSubmitResponseType, Fault>>
+	{}
+
+	[DataContract]
+	public class InitPoseUnknownRequest
+	{}
+
+	public class InitPoseUnknown : Submit<InitPoseUnknownRequest, PortSet<DefaultSubmitResponseType, Fault>>
+	{}
 }

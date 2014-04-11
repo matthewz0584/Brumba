@@ -17,9 +17,11 @@ namespace Brumba.DiffDriveOdometry
 	[Description("no description provided")]
 	public class DiffDriveOdometryService : DsspServiceExposing
 	{
+#pragma warning disable 0649
 		[ServiceState]
 		[InitialStatePartner(Optional = false)]
 		DiffDriveOdometryServiceState _state;
+#pragma warning restore 0649
 
 		[ServicePort("/Odometry", AllowMultipleInstances = true)]
 		DiffDriveOdometryOperations _mainPort = new DiffDriveOdometryOperations();
@@ -39,16 +41,14 @@ namespace Brumba.DiffDriveOdometry
 
 		protected override void Start()
 		{
-		    base.Start();
-
-			_diffDriveOdometryCalc = new DiffDriveOdometryCalculator(_state.Constants);
-			_timerFacade = new TimerFacade(this, _state.DeltaT);
-
 			SpawnIterator(StartIt);
 		}
 
 		IEnumerator<ITask> StartIt()
 		{
+			_timerFacade = new TimerFacade(this, _state.DeltaT);
+			_diffDriveOdometryCalc = new DiffDriveOdometryCalculator(_state.Constants);
+
 			yield return _diffDrive.Get().Receive(ds =>
 				{
                     DC.Contract.Requires(ds.LeftWheel != null);
@@ -59,6 +59,8 @@ namespace Brumba.DiffDriveOdometry
 					_state.State.LeftTicks = ds.LeftWheel.EncoderState.CurrentReading;
 					_state.State.RightTicks = ds.RightWheel.EncoderState.CurrentReading;
 				});
+
+			base.Start();
 
 			//To synchronize UpdateOdometry with Replace
 			MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
@@ -91,8 +93,10 @@ namespace Brumba.DiffDriveOdometry
             DC.Contract.Requires(dropDownRq != null);
             DC.Contract.Requires(dropDownRq.Body != null);
 
-            _timerFacade.Dispose();
+			LogInfo("diff drive DropDown <");
+			_timerFacade.Dispose();
             DefaultDropHandler(dropDownRq);
+			LogInfo(">diff drive DropDown");
         }
 	}
 }

@@ -2,8 +2,8 @@
 <McLrfLocalizerState xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:d="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">
   <FirstPoseCandidate>
     <Position>
-      <X>1.7</X>
-      <Y>3.25</Y>
+      <X>0</X>
+      <Y>0</Y>
     </Position>
     <Bearing>0</Bearing>
   </FirstPoseCandidate>
@@ -22,6 +22,6 @@
       <Bearing>0</Bearing>
     </OriginPose>
   </RangeFinderProperties>
-  <ParticlesNumber>100</ParticlesNumber>
+  <ParticlesNumber>1000</ParticlesNumber>
   <DeltaT>0.5</DeltaT>
 </McLrfLocalizerState>
