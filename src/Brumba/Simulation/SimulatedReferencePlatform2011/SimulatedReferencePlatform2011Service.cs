@@ -88,6 +88,15 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             DefaultGetHandler(get);
         }
 
+	    [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+	    public void OnUpdateWheelTicksSigma(UpdateWheelTicksSigma upd)
+	    {
+		    if (FaultIfNotConnected(upd))
+			    return;
+		    _state.WheelTicksSigma = upd.Body.WheelTicksSigma;
+			upd.ResponsePort.Post(new DefaultUpdateResponseType());
+	    }
+
 		protected override IConnectable GetState() { return _state; }
 
         ReferencePlatform2011Entity RpEntity { get { return Entity as ReferencePlatform2011Entity; } }

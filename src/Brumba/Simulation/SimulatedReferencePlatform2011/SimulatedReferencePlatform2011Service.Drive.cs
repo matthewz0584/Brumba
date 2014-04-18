@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MathNet.Numerics.Distributions;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.Core.DsspHttp;
@@ -22,12 +23,12 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <summary>
         /// The encoder value of the left wheel at last reset
         /// </summary>
-        private int lastResetLeftWheelEncoderValue;
+        private int _lastResetLeftWheelEncoderValue;
 
         /// <summary>
         /// The encoder value of the right wheel at last reset
         /// </summary>
-        private int lastResetRightWheelEncoderValue;
+        private int _lastResetRightWheelEncoderValue;
 
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
 		public void DriveHttpGetHandler(HttpGet get)
@@ -85,8 +86,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 			if (FaultIfNotConnected(resetEncoders))
 				return;
 
-            lastResetLeftWheelEncoderValue += _state.DriveState.LeftWheel.EncoderState.CurrentReading;
-            lastResetRightWheelEncoderValue += _state.DriveState.RightWheel.EncoderState.CurrentReading;
+            _lastResetLeftWheelEncoderValue += _state.DriveState.LeftWheel.EncoderState.CurrentReading;
+            _lastResetRightWheelEncoderValue += _state.DriveState.RightWheel.EncoderState.CurrentReading;
             resetEncoders.ResponsePort.Post(DefaultUpdateResponseType.Instance);
         }
 
@@ -287,6 +288,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             return (int)(wheel.Rotations * 2 * Math.PI * wheel.Wheel.State.Radius / MetersPerEncoderTick);
         }
 
+		static Random _rnd = new Random();
         /// <summary>
         /// Updates the state from simulation.
         /// </summary>
@@ -297,9 +299,11 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 	        // Reverse out the encoder ticks
 	        _state.DriveState.LeftWheel.EncoderState.TimeStamp = _state.DriveState.TimeStamp;
 	        _state.DriveState.LeftWheel.EncoderState.CurrentReading =
-		        RotationsToTicks(RpEntity.LeftWheel) - lastResetLeftWheelEncoderValue;
+		        RotationsToTicks(RpEntity.LeftWheel) - _lastResetLeftWheelEncoderValue;
+	        _state.DriveState.LeftWheel.EncoderState.CurrentReading += (int)Normal.Sample(_rnd, 0, _state.WheelTicksSigma.X);
 	        _state.DriveState.RightWheel.EncoderState.CurrentReading =
-		        RotationsToTicks(RpEntity.RightWheel) - lastResetRightWheelEncoderValue;
+		        RotationsToTicks(RpEntity.RightWheel) - _lastResetRightWheelEncoderValue;
+			_state.DriveState.RightWheel.EncoderState.CurrentReading += (int)Normal.Sample(_rnd, 0, _state.WheelTicksSigma.Y);
 
 	        // Compute the wheel speeds
 	        _state.DriveState.LeftWheel.WheelSpeed = -RpEntity.LeftWheel.Wheel.AxleSpeed

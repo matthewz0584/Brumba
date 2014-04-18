@@ -2,6 +2,7 @@ using System.ComponentModel;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
+using Microsoft.Xna.Framework;
 using W3C.Soap;
 
 namespace Brumba.Simulation.SimulatedReferencePlatform2011
@@ -28,6 +29,9 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 		[Description("If there is any simulation entity under control of this service")]
 		public bool IsConnected { get; set; }
 
+		[DataMember]
+		public Vector2 WheelTicksSigma { get; set; }
+
         /// <summary>
         /// Gets or sets the differential drive state
         /// </summary>
@@ -42,7 +46,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
     /// ReferencePlatform2011 main operations port
     /// </summary>
     [ServicePort]
-    public class ReferencePlatform2011Operations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Subscribe>
+	public class ReferencePlatform2011Operations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Subscribe, UpdateWheelTicksSigma>
     {
     }
 
@@ -109,4 +113,14 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         {
         }
     }
+
+	[DataContract]
+	public class UpdateWheelTicksSigmaRequest
+	{
+		[DataMember, DataMemberConstructor]
+		public Vector2 WheelTicksSigma { get; set; }
+	}
+
+	public class UpdateWheelTicksSigma : Update<UpdateWheelTicksSigmaRequest, PortSet<DefaultUpdateResponseType, Fault>>
+	{}
 }

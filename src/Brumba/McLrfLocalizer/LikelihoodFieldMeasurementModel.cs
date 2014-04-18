@@ -52,10 +52,10 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Assume(scan != null);
             DC.Contract.Assume(scan.Count() == (int)(RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution) + 1);
 
-			var beamLikelihoods = scan.Select((zi, i) => new { zi, i }).Where(p => p.zi != RangefinderProperties.MaxRange).
-				Select(p => BeamLikelihood(robotPose, p.zi, p.i)).ToList();
-			var measurementLikelihood = beamLikelihoods.Aggregate(0.1f, (pi, p) => p + pi);
-			return measurementLikelihood;
+			//var beamLikelihoods = scan.Select((zi, i) => new { zi, i }).Where(p => p.zi != RangefinderProperties.MaxRange).
+			//	Select(p => BeamLikelihood(robotPose, p.zi, p.i)).ToList();
+			//var measurementLikelihood = beamLikelihoods.Aggregate(0.1f, (pi, p) => p + pi);
+			//return measurementLikelihood;
 
             //if (measurementLikelihood > 0.06)
             //{
@@ -66,8 +66,8 @@ namespace Brumba.McLrfLocalizer
             //    Console.WriteLine("*****");
             //}
 
-			//return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
-			//	Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
+			return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
+				Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
         }
 
         public float BeamLikelihood(Pose robotPose, float zi, int i)
@@ -78,9 +78,9 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Ensures(DC.Contract.Result<float>() >= 0);
 
             var beamEndPointPosition = BeamEndPointPosition(robotPose, zi, i);
-	        if (!Map.Covers(beamEndPointPosition))
-		        return 0;
-		        //return 1;
+			//if (!Map.Covers(beamEndPointPosition))
+			//	//return 0;
+			//	return 1;
 
             return Vector2.Dot(
                 new Vector2((float)DensityHit(DistanceToNearestObstacle(beamEndPointPosition)), (float)DensityRandom()),
@@ -120,11 +120,10 @@ namespace Brumba.McLrfLocalizer
 
         public float DistanceToNearestObstacle(Vector2 position)
         {
-            DC.Contract.Requires(Map.Covers(position));
             DC.Contract.Ensures(DC.Contract.Result<float>() >= 0);
             DC.Contract.Ensures(float.IsPositiveInfinity(DC.Contract.Result<float>()) || DC.Contract.Result<float>() <= Math.Sqrt(Map.SizeInCells.X * Map.SizeInCells.X + Map.SizeInCells.Y * Map.SizeInCells.Y) * Map.CellSize);
 
-            if (Map[position])
+            if (Map.Covers(position) && Map[position])
                 return 0;
             var nearestOccupiedCell = FindNearestOccupiedCell(position);
             if (nearestOccupiedCell == new Point(-1, -1))
@@ -136,7 +135,6 @@ namespace Brumba.McLrfLocalizer
 
         Point FindNearestOccupiedCell(Vector2 position)
         {
-            DC.Contract.Requires(Map.Covers(position));
             DC.Contract.Ensures(DC.Contract.Result<Point>() == new Point(-1, -1) || Map.Covers(DC.Contract.Result<Point>()));
             DC.Contract.Ensures(DC.Contract.Result<Point>() == new Point(-1, -1) || Map[DC.Contract.Result<Point>()]);
 

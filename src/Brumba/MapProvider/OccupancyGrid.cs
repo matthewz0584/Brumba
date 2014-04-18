@@ -109,8 +109,6 @@ namespace Brumba.MapProvider
 	    public Vector2 CellToPos(Point cell)
 		{
             DC.Contract.Requires(Freezed);
-            DC.Contract.Requires(Covers(cell));
-            DC.Contract.Ensures(Covers(DC.Contract.Result<Vector2>()));
 
 			return new Vector2(cell.X + 0.5f, cell.Y + 0.5f) * CellSize;
 		}
@@ -118,8 +116,6 @@ namespace Brumba.MapProvider
 		public Point PosToCell(Vector2 position)
 		{
             DC.Contract.Requires(Freezed);
-            DC.Contract.Requires(Covers(position));
-            DC.Contract.Ensures(Covers(DC.Contract.Result<Point>()));
 
 			return new Point((int)(position.X / CellSize), (int)(position.Y / CellSize));
 		}

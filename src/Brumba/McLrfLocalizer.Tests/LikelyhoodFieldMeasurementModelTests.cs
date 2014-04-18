@@ -39,10 +39,12 @@ namespace Brumba.McLrfLocalizer.Tests
         [Test]
         public void ScanLikelihood()
         {
-            Assert.That(
-                _lfmm.ComputeMeasurementLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), new[] { 2f, 1, 1 }),
-                Is.EqualTo(
-                    2 *(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom / _lfmm.RangefinderProperties.MaxRange) + 0.1).Within(1e-5));
+			//Assert.That(_lfmm.ComputeMeasurementLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), new[] { 2f, 1, 1 }),
+			//	Is.EqualTo(
+			//		2 * (_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom / _lfmm.RangefinderProperties.MaxRange) + 0.1).Within(1e-5));
+			Assert.That(_lfmm.ComputeMeasurementLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), new[] { 2f, 1, 1 }),
+				Is.EqualTo(
+					Math.Pow((_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom / _lfmm.RangefinderProperties.MaxRange), 2)).Within(1e-5));
         }
 
         [Test]
@@ -68,7 +70,8 @@ namespace Brumba.McLrfLocalizer.Tests
         public void BeamOutOfMap()
         {
             //Если робот вылез за карту - проблема высшего уровня, фильтр не должен быть вызван с такой одометрией
-            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 0), 1f, 2), Is.EqualTo(0));
+	        Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 0), 1f, 2),
+				Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Constants.Sqrt2 - 0.6) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
         }
 
         [Test]

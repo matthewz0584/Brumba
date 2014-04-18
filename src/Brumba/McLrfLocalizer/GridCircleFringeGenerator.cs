@@ -26,7 +26,6 @@ namespace Brumba.McLrfLocalizer
         public IEnumerable<Point> Generate(Point center, int radius)
         {
             DC.Contract.Requires(radius >= 0);
-            DC.Contract.Requires(center.Between(new Point(), GridSize));
 
             for (var x = -radius; x <= radius; ++x)
             {
