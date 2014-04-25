@@ -13,6 +13,7 @@ using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Dss.Services.SubscriptionManager;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
@@ -43,6 +44,9 @@ namespace Brumba.McLrfLocalizer
 
 		[Partner("Map", Contract = MapProviderPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		MapProviderPxy.MapProviderOperations _mapProvider = new MapProviderPxy.MapProviderOperations();
+
+		[SubscriptionManagerPartner("SubMgr")]
+		SubscriptionManagerPort _subMgrPort = new SubscriptionManagerPort();
 
         McLrfLocalizer _localizer;
         TimerFacade _timerFacade;
@@ -84,9 +88,10 @@ namespace Brumba.McLrfLocalizer
             yield return To.Exec(() => _timerFacade.Set());
 
 			//************************************
-			//_mv.InitOnServiceStart(TaskQueue);
-			//_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
-			//yield return To.Exec(() => _mv.StartGui());
+			_mv.InitOnServiceStart(TaskQueue);
+			_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
+			yield return To.Exec(() => _mv.StartGui());
+			yield return To.Exec(Draw);
         }
 
 		IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)
@@ -102,17 +107,19 @@ namespace Brumba.McLrfLocalizer
 	                    var newOdometry = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose);
 	                    _localizer.Update(newOdometry - _currentOdometry, lrfScan.DistanceMeasurements.Select(d => d / 1000f));
 						_currentOdometry = newOdometry;
-	                    _state.FirstPoseCandidate = _localizer.GetPoseCandidates().First();
+	                    
+						UpdateState();
                     });
 
 			//yield return To.Exec(Draw);
 		}
 
-		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+	    [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
 		public void OnQueryPose(QueryPose queryPoseRq)
 		{
 			DC.Contract.Requires(queryPoseRq != null);
 			DC.Contract.Requires(queryPoseRq.Body != null);
+			DC.Contract.Requires(queryPoseRq.ResponsePort != null);
 
 			queryPoseRq.ResponsePort.Post(_state.FirstPoseCandidate);
 		}
@@ -122,8 +129,10 @@ namespace Brumba.McLrfLocalizer
 		{
 			DC.Contract.Requires(initPoseRq != null);
 			DC.Contract.Requires(initPoseRq.Body != null);
+			DC.Contract.Requires(initPoseRq.ResponsePort != null);
 
 			_localizer.InitPose(initPoseRq.Body.Pose, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
+			UpdateState();
 			initPoseRq.ResponsePort.Post(new DefaultSubmitResponseType());
 		}
 
@@ -132,9 +141,21 @@ namespace Brumba.McLrfLocalizer
 		{
 			DC.Contract.Requires(initPoseUnknownRq != null);
 			DC.Contract.Requires(initPoseUnknownRq.Body != null);
+			DC.Contract.Requires(initPoseUnknownRq.ResponsePort != null);
 
 			_localizer.InitPoseUnknown();
+			UpdateState();
 			initPoseUnknownRq.ResponsePort.Post(new DefaultSubmitResponseType());
+		}
+
+		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+		public IEnumerator<ITask> OnSubscribe(Subscribe subscribeRq)
+		{
+			DC.Contract.Requires(subscribeRq != null);
+			DC.Contract.Requires(subscribeRq.Body != null);
+			DC.Contract.Requires(subscribeRq.ResponsePort != null);
+
+			yield return SubscribeHelper(_subMgrPort, subscribeRq.Body, subscribeRq.ResponsePort).Choice(success => { }, LogError);
 		}
 
         [ServiceHandler(ServiceHandlerBehavior.Teardown)]
@@ -148,6 +169,12 @@ namespace Brumba.McLrfLocalizer
             DefaultDropHandler(dropDownRq);
 			LogInfo(">mc lrf DropDown");
         }
+
+		void UpdateState()
+		{
+			_state.FirstPoseCandidate = _localizer.GetPoseCandidates().First();
+			SendNotification(_subMgrPort, new InitPose { Body = { Pose = _state.FirstPoseCandidate } });
+		}
 
 		bool IsPoseUnknown(Pose pose)
 		{

@@ -16,7 +16,7 @@ using xVector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("diff_drive_odometry", Wip = true)]
+	[SimTestFixture("diff_drive_odometry")]
 	public class DiffDriveOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }
@@ -137,6 +137,10 @@ namespace Brumba.SimulationTester.Tests
         [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]
         [CategoryArgument(0, "Ratio1")]
         [CategoryArgument(1, "Ratio2")]
-        ActualToExpectedRatio
+        ActualToExpectedRatio,
+		[OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]
+		[CategoryArgument(0, "Actual value")]
+		[CategoryArgument(1, "Expected value")]
+		ActualAndExpectedValues,
     }
 }

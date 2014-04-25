@@ -87,7 +87,7 @@ namespace Brumba.SimulationTester
 		
 		protected override void Start()
 		{
-			new SimulationTesterPresenterConsole().Setup(this);
+			//new SimulationTesterPresenterConsole().Setup(this);
 
 			base.Start();
 
@@ -244,6 +244,18 @@ namespace Brumba.SimulationTester
             LogInfo(SimulationTesterLogCategory.TestFinished, fixtureInfo.Name, testInfo.Name, (float)successful / i);
             @return((float)successful / i);
         }
+
+		public IEnumerator<ITask> GetTesteeEntities(Action<IEnumerable<MrsePxy.VisualEntity>> @return)
+	    {
+			//Get testee state from simulator
+			MrsPxy.SimulationState simState = null;
+			yield return _simEngine.Get().Choice(st => simState = st, LogError);
+			//LogInfo(SimulationTesterLogCategory.TestSimulationEngineStateAcquired, fixtureInfo.Name, testInfo.Name, i);
+
+			//Deserialize it
+			yield return To.Exec(DeserializeTopLevelEntityProxies, @return, simState,
+						(Func<XmlElement, bool>)(xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
+	    }
 
 		IEnumerator<ITask> SetUpSimulator(SimulationTestFixtureInfo testFixtureInfo)
         {

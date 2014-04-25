@@ -23,5 +23,5 @@
     </OriginPose>
   </RangeFinderProperties>
   <ParticlesNumber>200</ParticlesNumber>
-  <DeltaT>0.5</DeltaT>
+  <DeltaT>1</DeltaT>
 </McLrfLocalizerState>
