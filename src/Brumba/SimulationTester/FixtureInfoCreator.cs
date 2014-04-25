@@ -41,6 +41,7 @@ namespace Brumba.SimulationTester
             var simTestFixtureAttribute = fixtureType.GetCustomAttributes(false).OfType<SimTestFixtureAttribute>().Single();
             fixtureInfo.Name = simTestFixtureAttribute.Name;
             fixtureInfo.Wip = simTestFixtureAttribute.Wip;
+	        fixtureInfo.PhysicsTimeStep = simTestFixtureAttribute.PhysicsTimeStep;
 
             var setupMethod = fixtureType.GetMethods().SingleOrDefault(mi => mi.GetCustomAttributes(false).Any(a => a is SetUpAttribute));
             if (setupMethod != null)

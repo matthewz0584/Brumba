@@ -16,5 +16,6 @@ namespace Brumba.SimulationTester
         public ICollection<SimulationTestInfo> TestInfos { get; private set; }
         public Action<SimulationTesterService> SetUp { get; set; }
         public object Object { get; set; }
+	    public float PhysicsTimeStep { get; set; }
     }
 }

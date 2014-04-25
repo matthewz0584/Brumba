@@ -35,7 +35,6 @@ namespace Brumba.SimulationTester
 		public const int TRIES_NUMBER = 100;
 		public const float SUCCESS_THRESHOLD = 0.79f;
         public const string TESTS_PATH = "brumba/tests";
-        public const float PHYSICS_TIME_STEP = 0.01f;
 	    public const string RESET_SYMBOL = "@";
 
 		[InitialStatePartner(Optional = true)]
@@ -111,8 +110,9 @@ namespace Brumba.SimulationTester
             //TS.Services.Level = TraceLevel.Info;
             //TS.Services.Level = servicesTsLevel;
 
-            yield return To.Exec(SetUpSimulator);
-            
+			yield return Arbiter.Choice(_simEngine.Get(), s => _initialSimState = s, LogError);
+			_initialSimState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
+
             IEnumerable<Uri> servicesBeforeStart = null;
             yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => servicesBeforeStart = ss);
 
@@ -134,6 +134,8 @@ namespace Brumba.SimulationTester
             LogInfo(SimulationTesterLogCategory.FixtureStarted, testFixtureInfo.Name);
             OnFixtureStarted(testFixtureInfo);
 
+			yield return To.Exec(SetUpSimulator, testFixtureInfo);
+
             //Restore static objects
             yield return To.Exec(RestoreEnvironment, testFixtureInfo.Name, null as Func<MrsePxy.VisualEntity, bool>, (Action<Mrse.VisualEntity>)null);
             LogInfo(SimulationTesterLogCategory.FixtureStaticEnvironmentRestored, testFixtureInfo.Name);
@@ -149,7 +151,7 @@ namespace Brumba.SimulationTester
                 OnTestEnded(testInfo, result);
             }
 
-            yield return To.Exec(DropServices, servicesBeforeStart);
+			yield return To.Exec(DropServices, (Func<Uri, bool>)(uri => !servicesBeforeStart.Contains(uri)));
             LogInfo(SimulationTesterLogCategory.FixtureServicesDropped, testFixtureInfo.Name);
             LogInfo(SimulationTesterLogCategory.FixtureFinished, testFixtureInfo.Name);
         }
@@ -229,13 +231,13 @@ namespace Brumba.SimulationTester
                     yield return To.Exec(testInfo.Test, b => testSucceed = b, testeeEntitiesPxies, dt);
                     LogInfo(SimulationTesterLogCategory.TestResultsAssessed, fixtureInfo.Name, testInfo.Name, i, testSucceed);
                 }
-
+				LogInfo("0.1");
                 OnTestTryEnded(testInfo, testSucceed);
-
+				LogInfo("0.2");
                 if (testSucceed) ++successful;
 
 	            //Drop services that need to be restarted
-				yield return To.Exec(DropResettableServices);
+				yield return To.Exec(DropServices, (Func<Uri, bool>)(uri => uri.LocalPath.Contains(RESET_SYMBOL)));
                 LogInfo(SimulationTesterLogCategory.TestServicesDropped, fixtureInfo.Name, testInfo.Name, i);
             }
 
@@ -243,24 +245,13 @@ namespace Brumba.SimulationTester
             @return((float)successful / i);
         }
 
-        IEnumerator<ITask> SetUpSimulator()
+		IEnumerator<ITask> SetUpSimulator(SimulationTestFixtureInfo testFixtureInfo)
         {
-            yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(PHYSICS_TIME_STEP));
-            //yield return To.Exec(_simEngine.UpdateSimulatorConfiguration(new EngPxy.SimulatorConfiguration { Headless = true }));
+			yield return To.Exec(_simEngine.UpdatePhysicsTimeStep(testFixtureInfo.PhysicsTimeStep < 0 ? -1 : testFixtureInfo.PhysicsTimeStep));
+			//yield return To.Exec(_simEngine.UpdateSimulatorConfiguration(new EngPxy.SimulatorConfiguration { Headless = true }));
 
-            yield return Arbiter.Choice(_simEngine.Get(), s => _initialSimState = s, LogError);
-
-            _initialSimState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
-            yield return To.Exec(_simEngine.Replace(_initialSimState));
-        }
-
-        IEnumerator<ITask> DropServices(IEnumerable<Uri> except)
-        {
-            IEnumerable<Uri> runningServices = null;
-            yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => runningServices = ss);
-
-            foreach (var uri in runningServices.Where(uri => !except.Contains(uri)).Distinct(new ServiceUriComparer()))
-                yield return To.Exec(DropService, uri);
+			//_initialSimState.RenderMode = testFixtureInfo.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
+			//yield return To.Exec(_simEngine.Replace(_initialSimState));
         }
 
         IEnumerator<ITask> StartManifest(string manifest)
@@ -272,16 +263,16 @@ namespace Brumba.SimulationTester
                 }));
         }
 
-        IEnumerator<ITask> DropResettableServices()
-        {
+		IEnumerator<ITask> DropServices(Func<Uri, bool> predicate)
+		{
 			LogInfo("1");
-            IEnumerable<Uri> runningServices = null;
-            yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => runningServices = ss);
+			IEnumerable<Uri> runningServices = null;
+			yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => runningServices = ss);
 			LogInfo("2");
-            foreach (var uri in runningServices.Where(uri => uri.LocalPath.Contains(RESET_SYMBOL)))
-                yield return To.Exec(DropService, uri);
+			foreach (var uri in runningServices.Where(predicate).Distinct(new ServiceUriComparer()))
+				yield return To.Exec(DropService, uri);
 			LogInfo("3");
-        }
+		}
 
         IEnumerator<ITask> GetRunningServices(Action<IEnumerable<Uri>> @return)
         {

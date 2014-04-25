@@ -16,7 +16,7 @@ using xVector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("diff_drive_odometry")]
+	[SimTestFixture("diff_drive_odometry", Wip = true)]
 	public class DiffDriveOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }

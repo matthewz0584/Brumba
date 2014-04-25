@@ -38,7 +38,7 @@ namespace Brumba.DsspUtils
 		{
 		}
 
-		public void SpawnIterator(IteratorHandler handler)
+		public new void SpawnIterator(IteratorHandler handler)
 		{
 			base.SpawnIterator(handler);
 		}

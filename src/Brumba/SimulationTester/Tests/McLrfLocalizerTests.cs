@@ -18,7 +18,7 @@ using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("mc_lrf_localizer", Wip = true)]
+	[SimTestFixture("mc_lrf_localizer", Wip = true, PhysicsTimeStep = -1)]
 	public class McLrfLocalizerTests
 	{
 		public SimulationTesterService TesterService { get; private set; }

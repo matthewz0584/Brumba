@@ -21,8 +21,8 @@ namespace Brumba.SimulationTester.Tests
             Assert.That(fi.Name, Is.EqualTo("fixture_name"));
             Assert.That(fi.Wip, Is.False);
             Assert.That(fi.Object, Is.Not.Null);
-            
             Assert.That(fi.SetUp, Is.Not.Null);
+			Assert.That(fi.PhysicsTimeStep, Is.EqualTo(0.001f));
 
             Assert.That(fi.TestInfos.Count, Is.EqualTo(6));
             Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestFixture.TestWithAttributes).Name));
@@ -171,9 +171,9 @@ namespace Brumba.SimulationTester.Tests
 		{
 			new FixtureInfoCreator().CollectFixtures(Assembly.GetAssembly(typeof(FixtureInfoCreaterTests)), false);
 		}
-    }
+	}
 
-	[SimTestFixture("fixture_name")]
+	[SimTestFixture("fixture_name", PhysicsTimeStep = 0.001f)]
     public class TestFixture
     {
         public SimulationTesterService TesterService { get; private set; }

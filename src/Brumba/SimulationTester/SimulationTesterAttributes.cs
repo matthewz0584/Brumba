@@ -8,12 +8,14 @@ namespace Brumba.SimulationTester
         public string Name { get; set; }
         public bool Wip { get; set; }
         public bool Ignore { get; set; }
+		public float PhysicsTimeStep { get; set; }
 
-        public SimTestFixtureAttribute(string name, bool ignore = false, bool wip = false)
+        public SimTestFixtureAttribute(string name, bool ignore = false, bool wip = false, float physicsTimeStep = 0.01f)
         {
             Name = name;
             Ignore = ignore;
             Wip = wip;
+	        PhysicsTimeStep = physicsTimeStep;
         }
     }
 
