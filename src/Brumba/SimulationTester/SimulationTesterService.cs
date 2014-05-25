@@ -383,20 +383,20 @@ namespace Brumba.SimulationTester
             while (entitiesFlat.Any())
             {
                 entitiesTop.Add(entitiesFlat.First());
-                yield return To.Exec(ReuniteEntity, (IEnumerable<Mrse.VisualEntity> withoutChildren) => entitiesFlat = withoutChildren.ToList(), entitiesFlat.First(), entitiesFlat.Skip(1));
+                entitiesFlat = ReuniteEntity(entitiesFlat.First(), entitiesFlat.Skip(1));
             }
             @return(entitiesTop);
         }
 
-        IEnumerator<ITask> ReuniteEntity(Action<IEnumerable<Mrse.VisualEntity>> @return, Mrse.VisualEntity parent, IEnumerable<Mrse.VisualEntity> entitiesFlat)
+        IEnumerable<Mrse.VisualEntity> ReuniteEntity(Mrse.VisualEntity parent, IEnumerable<Mrse.VisualEntity> entitiesFlat)
         {
             if (parent.ChildCount != 0)
 	            for (var i = 0; i < parent.ChildCount; ++i)
 		        {
 			        parent.InsertEntity(entitiesFlat.First());
-                    yield return To.Exec(ReuniteEntity, (IEnumerable<Mrse.VisualEntity> withoutChildren) => entitiesFlat = withoutChildren, entitiesFlat.First(), entitiesFlat.Skip(1));
+                    entitiesFlat = ReuniteEntity(entitiesFlat.First(), entitiesFlat.Skip(1));
 				}
-            @return(entitiesFlat);
+            return entitiesFlat.ToList();
         }
 
         IEnumerator<ITask> DeserializeEntityPxyFromXml(Action<MrsePxy.VisualEntity> @return, XmlElement entityNode)
