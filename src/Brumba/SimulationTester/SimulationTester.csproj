@@ -240,6 +240,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Starters\simulationtester_fastcheck.config.xml" />
+    <Content Include="Starters\simulationTester_fastcheck.manifest.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Starters\simulationtester_nonvisual.config.xml" />
     <Content Include="Starters\SimulationTester_nonvisual.manifest.xml">
       <SubType>Designer</SubType>

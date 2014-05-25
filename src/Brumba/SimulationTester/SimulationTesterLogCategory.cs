@@ -40,12 +40,6 @@ namespace Brumba.SimulationTester
         [CategoryArgument(0, "Fixture")]
         [CategoryArgument(1, "Test")]
         [CategoryArgument(2, "Try")]
-        TestSimulationEngineStateAcquired,
-        [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]
-        [CategoryArgument(0, "Fixture")]
-        [CategoryArgument(1, "Test")]
-        [CategoryArgument(2, "Try")]
-        [CategoryArgument(3, "Count")]
         TestTesteeEntitiesDeserialized,
         [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]
         [CategoryArgument(0, "Fixture")]

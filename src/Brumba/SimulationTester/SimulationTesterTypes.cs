@@ -18,6 +18,8 @@ namespace Brumba.SimulationTester
 		public bool ToRender { get; set; }
 		[DataMember]
 		public bool ToDropHostOnFinish { get; set; }
+        [DataMember]
+        public bool FastCheck { get; set; }
 	}
 	
 	[ServicePort]

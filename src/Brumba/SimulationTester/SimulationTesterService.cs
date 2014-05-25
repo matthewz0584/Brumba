@@ -84,10 +84,15 @@ namespace Brumba.SimulationTester
 	        var serviceTcpUri = new Uri(ServiceInfo.Service);
 			return ServiceForwarder<T>(String.Format(@"{0}://{1}/{2}", serviceTcpUri.Scheme, serviceTcpUri.Authority, serviceUri));
         }
+
+        public IEnumerator<ITask> GetTesteeEntityProxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return)
+        {
+            yield return To.Exec(GetAndDeserializeEntityPxies, @return, (Func<XmlElement, bool>)IsTesteeXmlNode);
+        }
 		
 		protected override void Start()
 		{
-			//new SimulationTesterPresenterConsole().Setup(this);
+			new SimulationTesterPresenterConsole().Setup(this);
 
 			base.Start();
 
@@ -112,6 +117,7 @@ namespace Brumba.SimulationTester
 
 			yield return Arbiter.Choice(_simEngine.Get(), s => _initialSimState = s, LogError);
 			_initialSimState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
+            yield return To.Exec(_simEngine.Replace(_initialSimState));
 
             IEnumerable<Uri> servicesBeforeStart = null;
             yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => servicesBeforeStart = ss);
@@ -210,18 +216,12 @@ namespace Brumba.SimulationTester
 
                 //Pause all, so that sim state will not differ from state from services due to delays between queries
                 yield return To.Exec(PauseExecution, true);
-
-                //Get testee state from simulator
-                MrsPxy.SimulationState simState = null;
-                yield return _simEngine.Get().Choice(st => simState = st, LogError);
-                LogInfo(SimulationTesterLogCategory.TestSimulationEngineStateAcquired, fixtureInfo.Name, testInfo.Name, i);
-
-                //Deserialize it
+               
+                //Get testee state from simulator and deserialize it
                 IEnumerable<MrsePxy.VisualEntity> testeeEntitiesPxies = null;
-                yield return To.Exec(DeserializeTopLevelEntityProxies,
-                            (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens, simState,
-                            (Func<XmlElement, bool>)
-                            (xe => testInfo.TestAllEntities ? true : xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
+                yield return To.Exec(GetAndDeserializeEntityPxies,
+                        (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens,
+                        (Func<XmlElement, bool>) (xe => testInfo.TestAllEntities || IsTesteeXmlNode(xe)));
                 LogInfo(SimulationTesterLogCategory.TestTesteeEntitiesDeserialized, fixtureInfo.Name, testInfo.Name, i, testeeEntitiesPxies.Count());
 
                 //Check test's result
@@ -242,20 +242,8 @@ namespace Brumba.SimulationTester
             }
 
             LogInfo(SimulationTesterLogCategory.TestFinished, fixtureInfo.Name, testInfo.Name, (float)successful / i);
-            @return((float)successful / i);
+            @return(_state.FastCheck ? 1 : (float)successful / i);
         }
-
-		public IEnumerator<ITask> GetTesteeEntities(Action<IEnumerable<MrsePxy.VisualEntity>> @return)
-	    {
-			//Get testee state from simulator
-			MrsPxy.SimulationState simState = null;
-			yield return _simEngine.Get().Choice(st => simState = st, LogError);
-			//LogInfo(SimulationTesterLogCategory.TestSimulationEngineStateAcquired, fixtureInfo.Name, testInfo.Name, i);
-
-			//Deserialize it
-			yield return To.Exec(DeserializeTopLevelEntityProxies, @return, simState,
-						(Func<XmlElement, bool>)(xe => xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL)));
-	    }
 
 		IEnumerator<ITask> SetUpSimulator(SimulationTestFixtureInfo testFixtureInfo)
         {
@@ -327,7 +315,7 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_simEngine.Replace(simState));
 
             IEnumerable<MrsePxy.VisualEntity> entityPxies = null;
-            yield return To.Exec(DeserializeTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> ePxies) => entityPxies = ePxies, simState, (Func<XmlElement, bool>)null);
+            yield return To.Exec(DeserializeTopLevelEntityPxies, (IEnumerable<MrsePxy.VisualEntity> ePxies) => entityPxies = ePxies, simState, (Func<XmlElement, bool>)null);
             foreach (var entityPxy in entityPxies.Where(resetFilter).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
                 yield return _simEngine.DeleteSimulationEntity(entityPxy).Choice(deleted => {}, failed => {});
 
@@ -363,7 +351,14 @@ namespace Brumba.SimulationTester
 	        yield return To.Exec(updCameraViewRq.ResponsePort);
         }
 
-        IEnumerator<ITask> DeserializeTopLevelEntityProxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, MrsPxy.SimulationState simState, Func<XmlElement, bool> filter)
+        IEnumerator<ITask> GetAndDeserializeEntityPxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, Func<XmlElement, bool> filter)
+        {
+            MrsPxy.SimulationState simState = null;
+            yield return _simEngine.Get().Choice(st => simState = st, LogError);
+            yield return To.Exec(DeserializeTopLevelEntityPxies, @return, simState, filter);
+        }
+
+        IEnumerator<ITask> DeserializeTopLevelEntityPxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, MrsPxy.SimulationState simState, Func<XmlElement, bool> filter)
 		{
 			var entities = new List<MrsePxy.VisualEntity>();
 			foreach (var entityNode in simState.SerializedEntities.XmlNodes.Cast<XmlElement>().Where(filter ?? (xe => true)))
@@ -380,7 +375,7 @@ namespace Brumba.SimulationTester
         IEnumerator<ITask> DeserializeTopLevelEntities(Action<IEnumerable<Mrse.VisualEntity>> @return, MrsPxy.SimulationState simState)
         {
             IEnumerable<MrsePxy.VisualEntity> entitiesFlatPxies = null;
-            yield return To.Exec(DeserializeTopLevelEntityProxies, (IEnumerable<MrsePxy.VisualEntity> es) => entitiesFlatPxies = es, simState, (Func<XmlElement, bool>)null);
+            yield return To.Exec(DeserializeTopLevelEntityPxies, (IEnumerable<MrsePxy.VisualEntity> es) => entitiesFlatPxies = es, simState, (Func<XmlElement, bool>)null);
 
             var entitiesFlat = entitiesFlatPxies.Select(ePxy => (Mrse.VisualEntity)DssTypeHelper.TransformFromProxy(ePxy));
 
@@ -413,9 +408,17 @@ namespace Brumba.SimulationTester
             @return((MrsePxy.VisualEntity)desEntity.Instance);
         }
 
-        static bool HasEarlyResults(int i, int successful)
+        bool HasEarlyResults(int i, int successful)
 		{
-			return i == TRIES_NUMBER / 10 && ((float)successful / i > SUCCESS_THRESHOLD || (float)successful / i < 1 - SUCCESS_THRESHOLD);
+            if (!_state.FastCheck)
+			    return i == TRIES_NUMBER / 10 && ((float)successful / i > SUCCESS_THRESHOLD || (float)successful / i < 1 - SUCCESS_THRESHOLD);
+            else
+                return successful > 0;
 		}
+
+        static bool IsTesteeXmlNode(XmlElement xe)
+        {
+            return xe.SelectSingleNode(@"/*[local-name()='State']/*[local-name()='Name']/text()").InnerText.Contains(RESET_SYMBOL);
+        }
 	}
 }
