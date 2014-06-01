@@ -13,7 +13,6 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Dss.Services.ManifestLoaderClient.Proxy;
 using System.Linq;
 using System.Xml;
-using Microsoft.Dss.Services.Serializer;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.Services.MountService;
 using Microsoft.Robotics.PhysicalModel;
@@ -52,6 +51,8 @@ namespace Brumba.SimulationTester
 		[Partner("Manifest loader", Contract = Microsoft.Dss.Services.ManifestLoaderClient.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		ManifestLoaderClientPort _manifestLoader = new ManifestLoaderClientPort();
 
+        EntityDeserializer _entityDeserializer;
+
 		readonly Dictionary<SimulationTestInfo, float> _testResults = new Dictionary<SimulationTestInfo, float>();
 
         MrsPxy.SimulationState _initialSimState;
@@ -71,6 +72,7 @@ namespace Brumba.SimulationTester
 		public SimulationTesterService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
+            _entityDeserializer = new EntityDeserializer(SerializerPort, LogError);
 		}
 
 	    public BrTimerPxy.TimerOperations Timer
@@ -298,37 +300,34 @@ namespace Brumba.SimulationTester
 
         IEnumerator<ITask> PauseExecution(bool pause)
         {
+            yield return To.Exec(PauseSimulator, pause);
+            yield return To.Exec(Timer.Pause(pause));
+        }
+
+        IEnumerator<ITask> PauseSimulator(bool pause)
+        {
             _initialSimState.Pause = pause;
             yield return To.Exec(_simEngine.Replace(_initialSimState));
-            yield return To.Exec(Timer.Pause(pause));
         }
 
         IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<MrsePxy.VisualEntity, bool> resetFilter, Action<Mrse.VisualEntity> prepareEntityForReset)
         {
             resetFilter = resetFilter ?? (pxy => true);
 
-            MrsPxy.SimulationState simState = null;
-            yield return _simEngine.Get().Choice(st => simState = st, LogError);
-
-            var renderMode = simState.RenderMode;
-            simState.Pause = true;
-            yield return To.Exec(_simEngine.Replace(simState));
+            yield return To.Exec(PauseSimulator, true);
 
             IEnumerable<MrsePxy.VisualEntity> entityPxies = null;
-            yield return To.Exec(DeserializeTopLevelEntityPxies, (IEnumerable<MrsePxy.VisualEntity> ePxies) => entityPxies = ePxies, simState, (Func<XmlElement, bool>)null);
+            yield return To.Exec(GetAndDeserializeEntityPxies, (IEnumerable<MrsePxy.VisualEntity> ePxies) => entityPxies = ePxies, (Func<XmlElement, bool>)null);
+
             foreach (var entityPxy in entityPxies.Where(resetFilter).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
                 yield return _simEngine.DeleteSimulationEntity(entityPxy).Choice(deleted => {}, failed => {});
 
-            simState.Pause = false;
-            simState.RenderMode = renderMode;
-            yield return To.Exec(_simEngine.Replace(simState));
+            yield return To.Exec(PauseSimulator, false);
 
-            var get = new DsspDefaultGet();
-            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
-            yield return get.ResponsePort.Choice(LogError, success => simState = (MrsPxy.SimulationState)success);
+            IEnumerable<Mrse.VisualEntity> entities = null;
+            MrsPxy.SimulationState simState = null;
+            yield return To.Exec(LoadAndDeserializeEntities, (System.Tuple<IEnumerable<Mrse.VisualEntity>, MrsPxy.SimulationState> r) => {entities = r.Item1; simState = r.Item2;}, environmentXmlFile);
 
-            IEnumerable<Microsoft.Robotics.Simulation.Engine.VisualEntity> entities = null;
-            yield return To.Exec(DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> ens) => entities = ens, simState);
             foreach (var entity in entities.Where(entity => resetFilter((MrsePxy.VisualEntity)DssTypeHelper.TransformToProxy(entity))))
 			{
 				if (prepareEntityForReset != null)
@@ -355,57 +354,17 @@ namespace Brumba.SimulationTester
         {
             MrsPxy.SimulationState simState = null;
             yield return _simEngine.Get().Choice(st => simState = st, LogError);
-            yield return To.Exec(DeserializeTopLevelEntityPxies, @return, simState, filter);
+            yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntityPxies, @return, simState.SerializedEntities, filter);
         }
 
-        IEnumerator<ITask> DeserializeTopLevelEntityPxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, MrsPxy.SimulationState simState, Func<XmlElement, bool> filter)
-		{
-			var entities = new List<MrsePxy.VisualEntity>();
-			foreach (var entityNode in simState.SerializedEntities.XmlNodes.Cast<XmlElement>().Where(filter ?? (xe => true)))
-			{
-                MrsePxy.VisualEntity entityPxy = null;
-                yield return To.Exec(DeserializeEntityPxyFromXml, (MrsePxy.VisualEntity e) => entityPxy = e, entityNode);
-				if (entityPxy.State.Name == "MainCamera")
-					continue;
-				entities.Add(entityPxy);
-			}
-			@return(entities);
-		}
-
-        IEnumerator<ITask> DeserializeTopLevelEntities(Action<IEnumerable<Mrse.VisualEntity>> @return, MrsPxy.SimulationState simState)
+        IEnumerator<ITask> LoadAndDeserializeEntities(Action<System.Tuple<IEnumerable<Mrse.VisualEntity>, MrsPxy.SimulationState>> @return, string environmentXmlFile)
         {
-            IEnumerable<MrsePxy.VisualEntity> entitiesFlatPxies = null;
-            yield return To.Exec(DeserializeTopLevelEntityPxies, (IEnumerable<MrsePxy.VisualEntity> es) => entitiesFlatPxies = es, simState, (Func<XmlElement, bool>)null);
+            MrsPxy.SimulationState simState = null;
+            var get = new DsspDefaultGet();
+            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
+            yield return get.ResponsePort.Choice(LogError, success => simState = (MrsPxy.SimulationState)success);
 
-            var entitiesFlat = entitiesFlatPxies.Select(ePxy => (Mrse.VisualEntity)DssTypeHelper.TransformFromProxy(ePxy));
-
-            var entitiesTop = new List<Mrse.VisualEntity>();
-            while (entitiesFlat.Any())
-            {
-                entitiesTop.Add(entitiesFlat.First());
-                entitiesFlat = ReuniteEntity(entitiesFlat.First(), entitiesFlat.Skip(1));
-            }
-            @return(entitiesTop);
-        }
-
-        IEnumerable<Mrse.VisualEntity> ReuniteEntity(Mrse.VisualEntity parent, IEnumerable<Mrse.VisualEntity> entitiesFlat)
-        {
-            if (parent.ChildCount != 0)
-	            for (var i = 0; i < parent.ChildCount; ++i)
-		        {
-			        parent.InsertEntity(entitiesFlat.First());
-                    entitiesFlat = ReuniteEntity(entitiesFlat.First(), entitiesFlat.Skip(1));
-				}
-            return entitiesFlat.ToList();
-        }
-
-        IEnumerator<ITask> DeserializeEntityPxyFromXml(Action<MrsePxy.VisualEntity> @return, XmlElement entityNode)
-        {
-            var desRequest = new Deserialize(new XmlNodeReader(entityNode));
-            SerializerPort.Post(desRequest);
-            DeserializeResult desEntity = null;
-            yield return Arbiter.Choice(desRequest.ResultPort, v => desEntity = v, LogError);
-            @return((MrsePxy.VisualEntity)desEntity.Instance);
+            yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> ves) => @return(new System.Tuple<IEnumerable<Mrse.VisualEntity>, MrsPxy.SimulationState>(ves, simState)), simState.SerializedEntities);
         }
 
         bool HasEarlyResults(int i, int successful)

@@ -179,6 +179,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntityDeserializer.cs" />
     <Compile Include="FixtureInfoCreator.cs" />
     <Compile Include="ServiceUriComparer.cs" />
     <Compile Include="SimulatedTimerUtils.cs" />
