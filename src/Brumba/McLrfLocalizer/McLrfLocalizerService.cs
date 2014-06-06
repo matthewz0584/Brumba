@@ -88,10 +88,10 @@ namespace Brumba.McLrfLocalizer
             yield return To.Exec(() => _timerFacade.Set());
 
 			//************************************
-			_mv.InitOnServiceStart(TaskQueue);
-			_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
-			yield return To.Exec(() => _mv.StartGui());
-			yield return To.Exec(Draw);
+			//_mv.InitOnServiceStart(TaskQueue);
+			//_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
+			//yield return To.Exec(() => _mv.StartGui());
+			//yield return To.Exec(Draw);
         }
 
 		IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)

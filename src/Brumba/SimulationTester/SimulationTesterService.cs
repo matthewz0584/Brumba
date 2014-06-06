@@ -177,12 +177,16 @@ namespace Brumba.SimulationTester
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.Prepare);
                 LogInfo(SimulationTesterLogCategory.TestEnvironmentRestored, fixtureInfo.Name, testInfo.Name, i);
 
+	            //Hack. Every "atempt to read/write protected memory" occurs after Timer entity (the last insert in RestoreEnvironment)
+				//is inserted and before any other debug info. So let's try to cool the situation down.
+				yield return TimeoutPort(500).Receive();
+
                 //Pause, now we can set up for starting fixture and timer
                 //PauseExecution pauses physics engine (simulation does not advance), pauses simulation timer (no tick events, so all services dependent from it pause),
                 //but can not pause code in Entity.Update, this code can not know that simulator was paused. So there could be some problems. For example,
                 //ReferencePlatform2011Entity accelerates from actual to target speed linearly, increasing wheel velocity by 0.5 every Update.
                 //It is still happening after test was started, even if simulation was paused. Workaround is to use SimulationTimerService.GetElapsedTime helper method
-                // to aquire elapsed time inside Update method, see AckermanVehicleExEntity.Update as example.
+                //to aquire elapsed time inside Update method, see AckermanVehicleExEntity.Update as example.
                 yield return To.Exec(PauseExecution, true);
 
                 //Restart services from fixture manifest

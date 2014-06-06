@@ -119,17 +119,11 @@ namespace Brumba.Simulation.SimulatedLrf
             LogError("SimulatedLrfService.Replace not implemented");
         }
 
-	    private int i = 0;
 		void InternalReplaceHandler(SickLrf.State sickLrfState)
 		{
-            //Locking this method greatly improves stability
-		    ++i;
-            if (i>1)
-                LogError("InternalReplaceHandler!!!");
 		    _state.SickLrfState = sickLrfState;
 		    _subMgrPort.Post(new Submit(DssTypeHelper.TransformToProxy(sickLrfState) as SickLrfPxy.State,
 		        DsspActions.ReplaceRequest));
-		    --i;
 		}
 
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_sickLrfPort")]
