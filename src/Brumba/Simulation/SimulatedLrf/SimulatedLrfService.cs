@@ -50,9 +50,11 @@ namespace Brumba.Simulation.SimulatedLrf
 
         protected override void OnInsertEntity()
         {
-            _state.SickLrfState.AngularRange = (int)Math.Abs(LrfEntity.RaycastProperties.EndAngle - LrfEntity.RaycastProperties.StartAngle);
-			_state.SickLrfState.AngularResolution = LrfEntity.RaycastProperties.AngleIncrement;
-	        _state.MaxRange = LrfEntity.RaycastProperties.Range;
+            //RaycastProperties may be null if OnInsertEntity coincides with Update method during my own hack (where RaycastProperties is set to null).
+            //That's why I use RaycastProperties_FORDB which is never set to null from code
+            _state.SickLrfState.AngularRange = (int)Math.Abs(LrfEntity.RaycastProperties_FORDB.EndAngle - LrfEntity.RaycastProperties_FORDB.StartAngle);
+            _state.SickLrfState.AngularResolution = LrfEntity.RaycastProperties_FORDB.AngleIncrement;
+            _state.MaxRange = LrfEntity.RaycastProperties_FORDB.Range;
 
             try
             {
@@ -117,11 +119,18 @@ namespace Brumba.Simulation.SimulatedLrf
             LogError("SimulatedLrfService.Replace not implemented");
         }
 
+	    private int i = 0;
 		void InternalReplaceHandler(SickLrf.State sickLrfState)
-        {
-			_state.SickLrfState = sickLrfState;
-			_subMgrPort.Post(new Submit(DssTypeHelper.TransformToProxy(_state.SickLrfState) as SickLrfPxy.State, DsspActions.ReplaceRequest));
-        }
+		{
+            //Locking this method greatly improves stability
+		    ++i;
+            if (i>1)
+                LogError("InternalReplaceHandler!!!");
+		    _state.SickLrfState = sickLrfState;
+		    _subMgrPort.Post(new Submit(DssTypeHelper.TransformToProxy(sickLrfState) as SickLrfPxy.State,
+		        DsspActions.ReplaceRequest));
+		    --i;
+		}
 
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_sickLrfPort")]
 		public IEnumerator<ITask> SubscribeHandler(SickLrfPxy.Subscribe subscribe)

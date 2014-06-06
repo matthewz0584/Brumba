@@ -10,11 +10,12 @@ namespace Brumba.Simulation.SimulatedLrf
 	[DataContract]
 	public class LaserRangeFinderExEntity : LaserRangeFinderEntity
 	{
+        RaycastProperties _raycastProperties_FORDB;
 		[DataMember]
 		public RaycastProperties RaycastProperties_FORDB
 		{
-			get { return RaycastProperties; }
-			set { RaycastProperties = value; }
+            get { return _raycastProperties_FORDB; }
+            set { RaycastProperties = _raycastProperties_FORDB = value; }
 		}
 
 	    public Port<RaycastResult> ServiceNotification { get; private set; }
