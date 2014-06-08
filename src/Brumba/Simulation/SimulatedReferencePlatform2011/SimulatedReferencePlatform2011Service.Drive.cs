@@ -43,7 +43,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 		public void DriveGetHandler(Drive.Get get)
         {
 			if (IsConnected)
-				UpdateStateFromSimulation();
+				 UpdateStateFromSimulation();
 
             get.ResponsePort.Post(_state.DriveState);
         }

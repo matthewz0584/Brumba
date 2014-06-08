@@ -80,8 +80,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <summary>
         /// Chassis dimensions
         /// </summary>
-        private Vector3 _chassisDimensions;
-        
+        public Vector3 ChassisDimensions { get; private set; }
+
         /// <summary>
         /// Left front wheel position
         /// </summary>
@@ -149,30 +149,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// </summary>
         [DataMember, Description("Scaling factor to apply to motor torgue requests.")]
         public float MotorTorqueScaling { get; set; }
-
-        /// <summary>
-        /// Gets or sets the right wheel child entity
-        /// </summary>
-        [DataMember, Description("Right wheel child entity.")]
-        public WheelEntity RightWheel { get; set; }
-
-        /// <summary>
-        /// Gets or sets the left wheel child entity
-        /// </summary>
-        [DataMember, Description("Left wheel child entity.")]
-        public WheelEntity LeftWheel { get; set; }
-
-        /// <summary>
-        /// Gets or sets the chassis physics shapes
-        /// </summary>
-        [DataMember, Description("Chassis physics shapes.")]
-        public BoxShape ChassisShape { get; set; }
-
-        /// <summary>
-        /// Gets or sets the caster wheel physics shape
-        /// </summary>
-        [DataMember, Description("Caster wheel physics shape.")]
-        public SphereShape CasterWheelShape { get; set; }
 
         /// <summary>
         /// Gets or sets the threshold, in radians, for stopping rotation
@@ -249,6 +225,16 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         private float _rightTargetVelocity;
 
         /// <summary>
+        /// Gets or sets the right wheel child entity
+        /// </summary>
+        public WheelEntity RightWheel { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the left wheel child entity
+        /// </summary>
+        public WheelEntity LeftWheel { get; private set; }
+
+        /// <summary>
         /// Gets or sets the Front wheel physics shape
         /// </summary>
         [DataMember, Description("Front wheel physics shape.")]
@@ -263,38 +249,32 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <summary>
         /// Gets or sets the Kinect entity
         /// </summary>
-        [DataMember, Description("Kinect entity.")]
-        public KinectEntity Kinect { get; set; }
+        public KinectEntity Kinect { get; private set; }
 
         /// <summary>
         /// Gets or sets the Left Sonar Entity
         /// </summary>
-        [DataMember, Description("Left Sonar entity.")]
-        public SonarEntity LeftSonar { get; set; }
+        public SonarEntity LeftSonar { get; private set; }
 
         /// <summary>
         /// Gets or sets the Right Sonar Entity
         /// </summary>
-        [DataMember, Description("Right Sonar entity.")]
-        public SonarEntity RightSonar { get; set; }
+        public SonarEntity RightSonar { get; private set; }
 
         /// <summary>
         /// Gets or sets the left IR entity
         /// </summary>
-        [DataMember, Description("IR entity.")]
-        public IREntity FrontLeftIr { get; set; }
+        public IREntity FrontLeftIr { get; private set; }
 
         /// <summary>
         /// Gets or sets the middle IR entity
         /// </summary>
-        [DataMember, Description("IR entity.")]
-        public IREntity FrontMiddleIr { get; set; }
+        public IREntity FrontMiddleIr { get; private set; }
 
         /// <summary>
         /// Gets or sets the right IR entity
         /// </summary>
-        [DataMember, Description("IR entity.")]
-        public IREntity FrontRightIr { get; set; }
+        public IREntity FrontRightIr { get; private set; }
 
         #endregion
 
@@ -306,13 +286,13 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <summary>
         /// Body strut positions
         /// </summary>
-        private Vector3[] _bodyStrutPositions = new[] 
-            { 
-                new Vector3(0.1651f,  0.0f,  0.09398f),
-                new Vector3(-0.1651f, 0.0f,  0.09398f),
-                new Vector3(0.1651f,  0.0f, -0.09398f),
-                new Vector3(-0.1651f, 0.0f, -0.09398f)
-            };
+        private Vector3[] _bodyStrutPositions =
+        { 
+            new Vector3(0.1651f,  0.0f,  0.09398f),
+            new Vector3(-0.1651f, 0.0f,  0.09398f),
+            new Vector3(0.1651f,  0.0f, -0.09398f),
+            new Vector3(-0.1651f, 0.0f, -0.09398f)
+        };
 
         /// <summary>
         /// Body strut dimensions
@@ -322,7 +302,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <summary>
         /// Kinect strut positions
         /// </summary>
-        private Vector3[] _kinectStrutPositions = new[] { new Vector3(0.0762f, 0.0f, 0.153289f), new Vector3(-0.0762f, 0.0f, 0.153289f) };
+        private Vector3[] _kinectStrutPositions = { new Vector3(0.0762f, 0.0f, 0.153289f), new Vector3(-0.0762f, 0.0f, 0.153289f) };
 
         /// <summary>
         /// Kinect strut dimensions
@@ -422,7 +402,85 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             try
             {
                 InitError = string.Empty;
-                ProgrammaticallyBuildModel(device, physicsEngine);
+                if (FrontWheelShape == null)
+                    ProgrammaticallyBuildModel(device, physicsEngine);
+
+                
+                
+                State.PhysicsPrimitives.Add(FrontWheelShape);
+                State.PhysicsPrimitives.Add(RearWheelShape);
+
+                float accumulatedHeight = ChassisDimensions.Y + ChassisSecondDepthOffset + (_bodyStrutDimension.Y / 2.0f);
+                foreach (Vector3 strutPosition in _bodyStrutPositions)
+                {
+                    var strutDesc = new BoxShapeProperties(
+                        "strut",
+                        0.001f,
+                        new Pose(
+                            new Vector3(
+                                strutPosition.X,
+                                strutPosition.Y + accumulatedHeight,
+                                strutPosition.Z)),
+                        _bodyStrutDimension);
+                    var strutShape = new BoxShape(strutDesc);
+                    State.PhysicsPrimitives.Add(strutShape);
+                }
+                accumulatedHeight += _bodyStrutDimension.Y / 2.0f;
+                var topDesc =
+                    new BoxShapeProperties(
+                        "Top",
+                        _mass,
+                        new Pose(
+                            new Vector3(
+                                0,
+                                accumulatedHeight, // chassis is off the ground
+                                0.0f)), // minor offset in the z/depth axis
+                        ChassisDimensions);
+
+                var topShape = new BoxShape(topDesc);
+                State.PhysicsPrimitives.Add(topShape);
+
+                foreach (Vector3 kinectStrut in _kinectStrutPositions)
+                {
+                    var strutDesc =
+                        new BoxShapeProperties(
+                            "kstrut",
+                            0.001f,
+                            new Pose(
+                                new Vector3(
+                                    kinectStrut.X,
+                                    kinectStrut.Y + accumulatedHeight + (_kinectStrutDimension.Y / 2.0f),
+                                    kinectStrut.Z)),
+                            _kinectStrutDimension);
+                    var strutShape = new BoxShape(strutDesc);
+                    State.PhysicsPrimitives.Add(strutShape);
+                }
+
+                accumulatedHeight += _kinectStrutDimension.Y;
+
+                var kinectPlatformDesc =
+                    new BoxShapeProperties(
+                        "kplat",
+                        0.001f,
+                        new Pose(
+                            new Vector3(
+                                _kinectPlatformPosition.X,
+                                _kinectPlatformPosition.Y + accumulatedHeight + (_kinectPlatformDimension.Y / 2.0f),
+                                _kinectPlatformPosition.Z)),
+                        _kinectPlatformDimension);
+                var kinectPlatformShape = new BoxShape(kinectPlatformDesc);
+                State.PhysicsPrimitives.Add(kinectPlatformShape);
+
+                // Add the various meshes for this platform
+                Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "LowerDeck.obj"));
+                Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "UpperDeck.obj"));
+                Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "KinectStand.obj"));
+                Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "Laptop.obj"));
+                Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "Casters_Turned180.obj"));
+
+                CreateAndInsertPhysicsEntity(physicsEngine);
+
+
 
                 // Set the parent entity for the wheel entities, clear any local rotation
                 // on the wheel shape so that the wheel contact is always in the -Y direction.
@@ -457,7 +515,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         {
             _mass = 9.0f; // kg  (around 20 pounds)
 
-            _chassisDimensions = new Vector3(
+            ChassisDimensions = new Vector3(
                 0.315f, // meters wide
                 ChassisThickness,  // meters high
                 0.315f); // meters long
@@ -480,30 +538,19 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             // NOTE: right/left is from the perspective of the robot, looking forward
             // NOTE: X = width of robot (right to left), Y = height, Z = length
 
-            // chassis position
-
-            ChassisShape = new BoxShape(new BoxShapeProperties(
-                                            "Create Body",
-                                            _mass,
-                                            new Pose(new Vector3(
-                                                    0, // Chassis center is also the robot center, so use zero for the X axis offset
-                                                    _chassisClearance, // chassis is off the ground
-                                                    0.0f)), // minor offset in the z/depth axis
-                                            _chassisDimensions));
-
             // rear wheel is also called the caster
             _casterWheelPosition = new Vector3(
                 0, // center of chassis
                 _chassisWheelRadius, // distance from ground
-                _chassisDimensions.Z / 2); // at the rear of the robot
+                ChassisDimensions.Z / 2); // at the rear of the robot
 
             _rightFrontWheelPosition = new Vector3(
-                +(_chassisDimensions.X / 2) - (_frontWheelWidth / 2) + 0.01f, // left of center
+                +(ChassisDimensions.X / 2) - (_frontWheelWidth / 2) + 0.01f, // left of center
                 _frontWheelRadius, // distance from ground of axle
                 _frontAxleDepthOffset); // distance from center, on the z-axis
 
             _leftFrontWheelPosition = new Vector3(
-                -(_chassisDimensions.X / 2) + (_frontWheelWidth / 2) - 0.01f, // right of center
+                -(ChassisDimensions.X / 2) + (_frontWheelWidth / 2) - 0.01f, // right of center
                 _frontWheelRadius, // distance from ground of axle
                 _frontAxleDepthOffset); // distance from center, on the z-axis
 
@@ -511,19 +558,18 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
             MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
 
-            ConstructCasterWheelShape();
             ConstructWheels();
 
             // Add the wheel meshes separately
             LeftWheel.EntityState.Assets.Mesh = "Left_Tire.obj";
             LeftWheel.MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
-            LeftWheel.MeshTranslation = new Vector3(_chassisDimensions.X / 2, -_frontWheelRadius, 0);
+            LeftWheel.MeshTranslation = new Vector3(ChassisDimensions.X / 2, -_frontWheelRadius, 0);
             RightWheel.EntityState.Assets.Mesh = "Right_Tire.obj";
             RightWheel.MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
 
             // Override the 180 degree rotation (that the Diff Drive applies) because we have separate wheel meshes
             RightWheel.MeshRotation = new Vector3(0, 0, 0);
-            RightWheel.MeshTranslation = new Vector3(-_chassisDimensions.X / 2, -_frontWheelRadius, 0);
+            RightWheel.MeshTranslation = new Vector3(-ChassisDimensions.X / 2, -_frontWheelRadius, 0);
         }
 
         /// <summary>
@@ -537,10 +583,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             var frontWheelPosition = new Vector3(
                 0, // center of chassis
                 _chassisWheelRadius, // distance from ground
-                (-_chassisDimensions.Z / 2) + 0.000f); // at the front of the robot
+                (-ChassisDimensions.Z / 2) + 0.000f); // at the front of the robot
 
-            if (FrontWheelShape == null)
-            {
                 FrontWheelShape = new SphereShape(
                     new SphereShapeProperties("front wheel", 0.001f, new Pose(frontWheelPosition), _chassisWheelRadius))
                     {
@@ -562,18 +606,13 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
                 // a fixed caster wheel has high friction when moving laterally, but low friction when it moves along the
                 // body axis its aligned with. We use anisotropic friction to model this
-            }
-
-            State.PhysicsPrimitives.Add(FrontWheelShape);
 
             // add a rear wheel
             var rearWheelPosition = new Vector3(
                 0, // center of chassis
                 _chassisWheelRadius, // distance from ground
-                (_chassisDimensions.Z / 2) + 0.000f); // at the back of the robot
+                (ChassisDimensions.Z / 2) + 0.000f); // at the back of the robot
 
-            if (RearWheelShape == null)
-            {
                 RearWheelShape = new SphereShape(
                     new SphereShapeProperties(
                         "rear wheel",
@@ -600,136 +639,48 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
                 // a fixed caster wheel has high friction when moving laterally, but low friction when it moves along the
                 // body axis its aligned with. We use anisotropic friction to model this
-            }
 
-            State.PhysicsPrimitives.Add(RearWheelShape);
-
-            float accumulatedHeight = _chassisDimensions.Y + ChassisSecondDepthOffset + (_bodyStrutDimension.Y / 2.0f);
-
-            foreach (Vector3 strutPosition in _bodyStrutPositions)
-            {
-                var strutDesc = new BoxShapeProperties(
-                    "strut", 
-                    0.001f,
-                    new Pose(
-                        new Vector3(
-                            strutPosition.X,
-                            strutPosition.Y + accumulatedHeight,
-                            strutPosition.Z)),
-                    _bodyStrutDimension);
-                var strutShape = new BoxShape(strutDesc);
-                State.PhysicsPrimitives.Add(strutShape);
-            }
+            float accumulatedHeight = ChassisDimensions.Y + ChassisSecondDepthOffset + (_bodyStrutDimension.Y / 2.0f);
 
             accumulatedHeight += _bodyStrutDimension.Y / 2.0f;
 
-            if (FrontLeftIr == null)
-            {
                 FrontLeftIr = new IREntity(new Pose(_leftIrBoxPosition))
                     {
                         EntityState = {Name = EntityState.Name + "FrontLeftIR"}
                     };
                 InsertEntity(FrontLeftIr);
-            }
 
-            if (FrontRightIr == null)
-            {
-                FrontRightIr = new IREntity(new Pose(_rightIrBoxPosition))
+            FrontRightIr = new IREntity(new Pose(_rightIrBoxPosition))
                     {
                         EntityState = {Name = EntityState.Name + "FrontRightIR"}
                     };
                 InsertEntity(FrontRightIr);
-            }
 
-            if (FrontMiddleIr == null)
-            {
-                FrontMiddleIr = new IREntity(new Pose(_middleIrBoxPosition))
+            FrontMiddleIr = new IREntity(new Pose(_middleIrBoxPosition))
                     {
                         EntityState = {Name = EntityState.Name + "FrontMiddleIR"}
                     };
                 InsertEntity(FrontMiddleIr);
-            }
 
-            if (LeftSonar == null)
-            {
-                LeftSonar = new SonarEntity(
+            LeftSonar = new SonarEntity(
                     new Pose(_leftSonarBoxPosition, _leftSonarOrientation))
                     {
                         EntityState = {Name = EntityState.Name + "LeftSonar"}
                     };
                 InsertEntity(LeftSonar);
-            }
 
-            if (RightSonar == null)
-            {
-                RightSonar = new SonarEntity(
+            RightSonar = new SonarEntity(
                     new Pose(
                         _rightSonarBoxPosition,
                         _rightSonarOrientation)) {EntityState = {Name = EntityState.Name + "RightSonar"}};
                 InsertEntity(RightSonar);
-            }
-
-            var topDesc = 
-                new BoxShapeProperties(
-                    "Top",
-                    _mass,
-                    new Pose(
-                        new Vector3(
-                            0,
-                            accumulatedHeight, // chassis is off the ground
-                            0.0f)), // minor offset in the z/depth axis
-                    _chassisDimensions);
-
-            var topShape = new BoxShape(topDesc);
-            State.PhysicsPrimitives.Add(topShape);
-
-            foreach (Vector3 kinectStrut in _kinectStrutPositions)
-            {
-                var strutDesc = 
-                    new BoxShapeProperties(
-                        "kstrut", 
-                        0.001f,
-                        new Pose(
-                            new Vector3(
-                                kinectStrut.X,
-                                kinectStrut.Y + accumulatedHeight + (_kinectStrutDimension.Y / 2.0f),
-                                kinectStrut.Z)),
-                        _kinectStrutDimension);
-                var strutShape = new BoxShape(strutDesc);
-                State.PhysicsPrimitives.Add(strutShape);
-            }
 
             accumulatedHeight += _kinectStrutDimension.Y;
 
-            var kinectPlatformDesc = 
-                new BoxShapeProperties(
-                    "kplat", 
-                    0.001f,
-                    new Pose(
-                        new Vector3(
-                            _kinectPlatformPosition.X,
-                            _kinectPlatformPosition.Y + accumulatedHeight + (_kinectPlatformDimension.Y / 2.0f),
-                            _kinectPlatformPosition.Z)),
-                    _kinectPlatformDimension);
-            var kinectPlatformShape = new BoxShape(kinectPlatformDesc);
-            State.PhysicsPrimitives.Add(kinectPlatformShape);
-
             accumulatedHeight += _kinectPlatformDimension.Y;
 
-            if (Kinect == null)
-            {
                 Kinect = new KinectEntity(new Vector3(_kinectPlatformPosition.X, accumulatedHeight, _kinectPlatformPosition.Z), EntityState.Name);
                 InsertEntity(Kinect);
-            }
-
-            // Add the various meshes for this platform
-            Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "LowerDeck.obj"));
-            Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "UpperDeck.obj"));
-            Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "KinectStand.obj"));
-            Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "Laptop.obj"));
-            Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "Casters_Turned180.obj"));
-
-            CreateAndInsertPhysicsEntity(physicsEngine);
         }
 
         /// <summary>
@@ -760,32 +711,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                     State = {Name = State.Name + "RightWheel", Assets = {Mesh = WheelMesh}},
                     MeshRotation = new Vector3(0, 180, 0),
                     Parent = this
-                };
-        }
-
-        /// <summary>
-        /// Constructs the caster wheel shape
-        /// </summary>
-        private void ConstructCasterWheelShape()
-        {
-            // add caster wheel as a basic sphere shape
-            CasterWheelShape = new SphereShape(
-                new SphereShapeProperties("rear wheel", 0.001f, new Pose(_casterWheelPosition), _chassisWheelRadius))
-                {
-                    State = {Name = EntityState.Name + "CasterWheel"}
-                };
-
-            // a fixed caster wheel has high friction when moving laterely, but low friction when it moves along the
-            // body axis its aligned with. We use anisotropic friction to model this
-            CasterWheelShape.State.Material = new MaterialProperties("small friction with anisotropy", 0.5f, 0.5f, 1)
-                {
-                    Advanced =
-                        new MaterialAdvancedProperties
-                            {
-                                AnisotropicDynamicFriction = 0.3f,
-                                AnisotropicStaticFriction = 0.4f,
-                                AnisotropyDirection = new Vector3(0, 0, 1)
-                            }
                 };
         }
 

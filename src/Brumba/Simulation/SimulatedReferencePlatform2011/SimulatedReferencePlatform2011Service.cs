@@ -63,10 +63,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
         protected override void OnInsertEntity()
         {
-            if (RpEntity.ChassisShape != null)
-            {
-                _state.DriveState.DistanceBetweenWheels = RpEntity.ChassisShape.BoxState.Dimensions.X;
-            }
+            _state.DriveState.DistanceBetweenWheels = RpEntity.ChassisDimensions.X;
             _state.DriveState.LeftWheel.MotorState.PowerScalingFactor = RpEntity.MotorTorqueScaling;
             _state.DriveState.RightWheel.MotorState.PowerScalingFactor = RpEntity.MotorTorqueScaling;
         }
