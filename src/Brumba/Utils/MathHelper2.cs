@@ -16,9 +16,12 @@ namespace Brumba.Utils
             Contract.Ensures(double.IsNaN(angle) || Contract.Result<double>() >= 0);
             Contract.Ensures(double.IsNaN(angle) || Contract.Result<double>() < Constants.Pi2);
 
-	        //That form fixes problems with precision: -epsilon converts to 0
 	        var angleRem = angle % Constants.Pi2;
-	        return angle > 0 ? angleRem : ((angleRem + Constants.Pi2) == Constants.Pi2 ? 0 : (angleRem + Constants.Pi2));
+            if (angleRem > 0)
+                return angleRem;
+            //(angleRem + Constants.Pi2) >= Constants.Pi2 can't be true arithmetically
+            //but due to precision errors it can be even simply greater, take it into account
+            return (angleRem + Constants.Pi2) >= Constants.Pi2 ? 0 : (angleRem + Constants.Pi2);
         }
 
 		public static float ToPositiveAngle(this float angle)
@@ -27,8 +30,10 @@ namespace Brumba.Utils
 			Contract.Ensures(float.IsNaN(angle) || Contract.Result<float>() >= 0);
 			Contract.Ensures(float.IsNaN(angle) || Contract.Result<float>() < MathHelper.TwoPi);
 
-			var angleRem = angle % MathHelper.TwoPi;
-			return angle > 0 ? angleRem : ((angleRem + MathHelper.TwoPi) == MathHelper.TwoPi ? 0 : (angleRem + MathHelper.TwoPi));
+            var angleRem = angle % MathHelper.TwoPi;
+            if (angleRem > 0)
+                return angleRem;
+            return (angleRem + MathHelper.TwoPi) >= MathHelper.TwoPi ? 0 : (angleRem + MathHelper.TwoPi);
 		}
 
         public static double ToMinAbsValueAngle(this double angle)
