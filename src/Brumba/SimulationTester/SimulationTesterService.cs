@@ -16,6 +16,7 @@ using System.Xml;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.Services.MountService;
 using Microsoft.Robotics.PhysicalModel;
+using W3C.Soap;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
@@ -145,7 +146,7 @@ namespace Brumba.SimulationTester
 			yield return To.Exec(SetUpSimulator, testFixtureInfo);
 
             //Restore static objects
-            yield return To.Exec(RestoreEnvironment, testFixtureInfo.Name, null as Func<MrsePxy.VisualEntity, bool>, (Action<Mrse.VisualEntity>)null);
+            yield return To.Exec(RestoreEnvironment, testFixtureInfo.Name, (Func<Mrse.VisualEntity, bool>)(ve => true), (Action<Mrse.VisualEntity>)null);
             LogInfo(SimulationTesterLogCategory.FixtureStaticEnvironmentRestored, testFixtureInfo.Name);
 
             foreach (var testInfo in testFixtureInfo.TestInfos)
@@ -174,12 +175,12 @@ namespace Brumba.SimulationTester
 					break;
 
                 //Restore only those entities that need it (@ in name)
-                yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<MrsePxy.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.Prepare);
+                yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<Mrse.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.Prepare);
                 LogInfo(SimulationTesterLogCategory.TestEnvironmentRestored, fixtureInfo.Name, testInfo.Name, i);
-
+                LogInfo("qq1");
 	            //Hack. Every "atempt to read/write protected memory" occurs after Timer entity (the last insert in RestoreEnvironment)
 				//is inserted and before any other debug info. So let's try to cool the situation down.
-				yield return TimeoutPort(500).Receive();
+				yield return TimeoutPort(1000).Receive();
 
                 //Pause, now we can set up for starting fixture and timer
                 //PauseExecution pauses physics engine (simulation does not advance), pauses simulation timer (no tick events, so all services dependent from it pause),
@@ -187,6 +188,7 @@ namespace Brumba.SimulationTester
                 //ReferencePlatform2011Entity accelerates from actual to target speed linearly, increasing wheel velocity by 0.5 every Update.
                 //It is still happening after test was started, even if simulation was paused. Workaround is to use SimulationTimerService.GetElapsedTime helper method
                 //to aquire elapsed time inside Update method, see AckermanVehicleExEntity.Update as example.
+                LogInfo("qq2");
                 yield return To.Exec(PauseExecution, true);
 
                 //Restart services from fixture manifest
@@ -218,6 +220,7 @@ namespace Brumba.SimulationTester
                 var dt = 0.0;
                 yield return (subscribeRq.NotificationPort as BrTimerPxy.TimerOperations).P4.Receive(u => dt = u.Body.Delta);
                 subscribeRq.NotificationShutdownPort.Post(new Shutdown());
+                //yield return TimeoutPort(5000).Receive();
                 LogInfo(SimulationTesterLogCategory.TestEstimatedTimeElapsed, fixtureInfo.Name, testInfo.Name, i, dt);
 
                 //Pause all, so that sim state will not differ from state from services due to delays between queries
@@ -314,44 +317,41 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_simEngine.Replace(_initialSimState));
         }
 
-        IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<MrsePxy.VisualEntity, bool> resetFilter, Action<Mrse.VisualEntity> prepareEntityForReset)
+        IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<Mrse.VisualEntity, bool> resetFilter, Action<Mrse.VisualEntity> prepareEntityForReset)
         {
-            resetFilter = resetFilter ?? (pxy => true);
-
             yield return To.Exec(PauseSimulator, true);
 
-            IEnumerable<MrsePxy.VisualEntity> entityPxies = null;
-            yield return To.Exec(GetAndDeserializeEntityPxies, (IEnumerable<MrsePxy.VisualEntity> ePxies) => entityPxies = ePxies, (Func<XmlElement, bool>)null);
+            MrsPxy.SimulationState simState = null;
+            yield return _simEngine.Get().Choice(st => simState = st, LogError);
 
-            foreach (var entityPxy in entityPxies.Where(resetFilter).Where(pxy => pxy.ParentJoint == null).Union(entityPxies.Where(pxy => pxy.State.Name == "timer")))
-                yield return _simEngine.DeleteSimulationEntity(entityPxy).Choice(deleted => {}, failed => {});
+            IEnumerable<Mrse.VisualEntity> entities = null;
+            yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
+
+            foreach (var entity in entities.Where(e => resetFilter(e) || e.State.Name == "timer"))
+                yield return To.Exec(DeleteEntity(entity));
 
             yield return To.Exec(PauseSimulator, false);
 
-            IEnumerable<Mrse.VisualEntity> entities = null;
-            MrsPxy.SimulationState simState = null;
-            yield return To.Exec(LoadAndDeserializeEntities, (System.Tuple<IEnumerable<Mrse.VisualEntity>, MrsPxy.SimulationState> r) => {entities = r.Item1; simState = r.Item2;}, environmentXmlFile);
+            var get = new DsspDefaultGet();
+            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
+            yield return get.ResponsePort.Choice(LogError, success => simState = (MrsPxy.SimulationState)success);
 
-            foreach (var entity in entities.Where(entity => resetFilter((MrsePxy.VisualEntity)DssTypeHelper.TransformToProxy(entity))))
+            yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
+
+            foreach (var entity in entities.Where(resetFilter))
 			{
 				if (prepareEntityForReset != null)
 					prepareEntityForReset(entity);
-                var insRequest = new Mrse.InsertSimulationEntity(entity);
-                Mrse.SimulationEngine.GlobalInstancePort.Post(insRequest);
-				yield return To.Exec(insRequest.ResponsePort);
+				yield return To.Exec(InsertEntity(entity));
 			}
 
-            var timerInsRequest = new Mrse.InsertSimulationEntity(new TimerEntity("timer"));
-            Mrse.SimulationEngine.GlobalInstancePort.Post(timerInsRequest);
-            yield return To.Exec(timerInsRequest.ResponsePort);
+            yield return To.Exec(InsertEntity(new TimerEntity("timer")));
 
-	        var updCameraViewRq = new Mrse.UpdateCameraView(new Mrse.CameraView
-	        {
-		        EyePosition = (Vector3) DssTypeHelper.TransformFromProxy(simState.CameraPosition),
-		        LookAtPoint = (Vector3) DssTypeHelper.TransformFromProxy(simState.CameraLookAt)
-	        });
-	        Mrse.SimulationEngine.GlobalInstancePort.Post(updCameraViewRq);
-	        yield return To.Exec(updCameraViewRq.ResponsePort);
+            yield return To.Exec(UpdateCameraView(new Mrse.CameraView
+            {
+                EyePosition = (Vector3) DssTypeHelper.TransformFromProxy(simState.CameraPosition),
+                LookAtPoint = (Vector3) DssTypeHelper.TransformFromProxy(simState.CameraLookAt)
+            }));
         }
 
         IEnumerator<ITask> GetAndDeserializeEntityPxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, Func<XmlElement, bool> filter)
@@ -361,14 +361,25 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntityPxies, @return, simState.SerializedEntities, filter);
         }
 
-        IEnumerator<ITask> LoadAndDeserializeEntities(Action<System.Tuple<IEnumerable<Mrse.VisualEntity>, MrsPxy.SimulationState>> @return, string environmentXmlFile)
+        PortSet<DefaultInsertResponseType, Fault> InsertEntity(Mrse.VisualEntity entity)
         {
-            MrsPxy.SimulationState simState = null;
-            var get = new DsspDefaultGet();
-            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
-            yield return get.ResponsePort.Choice(LogError, success => simState = (MrsPxy.SimulationState)success);
+            var insRequest = new Mrse.InsertSimulationEntity(entity);
+            Mrse.SimulationEngine.GlobalInstancePort.Post(insRequest);
+            return insRequest.ResponsePort;
+        }
 
-            yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> ves) => @return(new System.Tuple<IEnumerable<Mrse.VisualEntity>, MrsPxy.SimulationState>(ves, simState)), simState.SerializedEntities);
+        PortSet<DefaultDeleteResponseType, Fault> DeleteEntity(Mrse.VisualEntity entity)
+        {
+            var delRequest = new Mrse.DeleteSimulationEntity(entity);
+            Mrse.SimulationEngine.GlobalInstancePort.Post(delRequest);
+            return delRequest.ResponsePort;
+        }
+
+        PortSet<DefaultUpdateResponseType, Fault> UpdateCameraView(Mrse.CameraView cameraView)
+        {
+            var updCameraViewRq = new Mrse.UpdateCameraView(cameraView);
+            Mrse.SimulationEngine.GlobalInstancePort.Post(updCameraViewRq);
+            return updCameraViewRq.ResponsePort;
         }
 
         bool HasEarlyResults(int i, int successful)
