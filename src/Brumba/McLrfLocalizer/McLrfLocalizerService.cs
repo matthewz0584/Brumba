@@ -88,10 +88,10 @@ namespace Brumba.McLrfLocalizer
             yield return To.Exec(() => _timerFacade.Set());
 
 			//************************************
-			//_mv.InitOnServiceStart(TaskQueue);
-			//_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
-			//yield return To.Exec(() => _mv.StartGui());
-			//yield return To.Exec(Draw);
+			_mv.InitOnServiceStart(TaskQueue);
+			_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
+			yield return To.Exec(() => _mv.StartGui());
+			yield return To.Exec(Draw);
         }
 
 		IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)
@@ -109,9 +109,10 @@ namespace Brumba.McLrfLocalizer
 						_currentOdometry = newOdometry;
 	                    
 						UpdateState();
+						//LogInfo("odometry {0} **** loc {1}", _currentOdometry, _state.FirstPoseCandidate);
                     });
 
-			//yield return To.Exec(Draw);
+			yield return To.Exec(Draw);
 		}
 
 	    [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
@@ -164,10 +165,8 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Requires(dropDownRq != null);
             DC.Contract.Requires(dropDownRq.Body != null);
 
-			LogInfo("mc lrf DropDown <");
             _timerFacade.Dispose();
             DefaultDropHandler(dropDownRq);
-			LogInfo(">mc lrf DropDown");
         }
 
 		void UpdateState()

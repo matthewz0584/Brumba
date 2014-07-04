@@ -93,10 +93,8 @@ namespace Brumba.DiffDriveOdometry
             DC.Contract.Requires(dropDownRq != null);
             DC.Contract.Requires(dropDownRq.Body != null);
 
-			LogInfo("diff drive DropDown <");
 			_timerFacade.Dispose();
             DefaultDropHandler(dropDownRq);
-			LogInfo(">diff drive DropDown");
         }
 	}
 }

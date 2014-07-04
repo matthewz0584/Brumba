@@ -177,10 +177,6 @@ namespace Brumba.SimulationTester
                 //Restore only those entities that need it (@ in name)
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<Mrse.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.Prepare);
                 LogInfo(SimulationTesterLogCategory.TestEnvironmentRestored, fixtureInfo.Name, testInfo.Name, i);
-                LogInfo("qq1");
-	            //Hack. Every "atempt to read/write protected memory" occurs after Timer entity (the last insert in RestoreEnvironment)
-				//is inserted and before any other debug info. So let's try to cool the situation down.
-				yield return TimeoutPort(1000).Receive();
 
                 //Pause, now we can set up for starting fixture and timer
                 //PauseExecution pauses physics engine (simulation does not advance), pauses simulation timer (no tick events, so all services dependent from it pause),
@@ -188,7 +184,6 @@ namespace Brumba.SimulationTester
                 //ReferencePlatform2011Entity accelerates from actual to target speed linearly, increasing wheel velocity by 0.5 every Update.
                 //It is still happening after test was started, even if simulation was paused. Workaround is to use SimulationTimerService.GetElapsedTime helper method
                 //to aquire elapsed time inside Update method, see AckermanVehicleExEntity.Update as example.
-                LogInfo("qq2");
                 yield return To.Exec(PauseExecution, true);
 
                 //Restart services from fixture manifest
@@ -240,9 +235,8 @@ namespace Brumba.SimulationTester
                     yield return To.Exec(testInfo.Test, b => testSucceed = b, testeeEntitiesPxies, dt);
                     LogInfo(SimulationTesterLogCategory.TestResultsAssessed, fixtureInfo.Name, testInfo.Name, i, testSucceed);
                 }
-				LogInfo("0.1");
+
                 OnTestTryEnded(testInfo, testSucceed);
-				LogInfo("0.2");
                 if (testSucceed) ++successful;
 
 	            //Drop services that need to be restarted
@@ -274,13 +268,10 @@ namespace Brumba.SimulationTester
 
 		IEnumerator<ITask> DropServices(Func<Uri, bool> predicate)
 		{
-			LogInfo("1");
 			IEnumerable<Uri> runningServices = null;
 			yield return To.Exec(GetRunningServices, (IEnumerable<Uri> ss) => runningServices = ss);
-			LogInfo("2");
 			foreach (var uri in runningServices.Where(predicate).Distinct(new ServiceUriComparer()))
 				yield return To.Exec(DropService, uri);
-			LogInfo("3");
 		}
 
         IEnumerator<ITask> GetRunningServices(Action<IEnumerable<Uri>> @return)
@@ -295,14 +286,12 @@ namespace Brumba.SimulationTester
 
         IEnumerator<ITask> DropService(Uri uri)
         {
-			LogInfo("2 {0}", uri);
             var serviceDropPort = ServiceForwarder<PortSet<DsspDefaultLookup, DsspDefaultDrop>>(uri);
             var dsspDefaultDropRq = new DsspDefaultDrop();
             serviceDropPort.Post(dsspDefaultDropRq);
             yield return dsspDefaultDropRq.ResponsePort.Choice(
                 dropped => LogInfo(String.Format("Service {0} dropped!", uri)),
                 failed => LogError(String.Format("Service {0} can not be dropped", uri)));
-			LogInfo("2 q");
         }
 
         IEnumerator<ITask> PauseExecution(bool pause)

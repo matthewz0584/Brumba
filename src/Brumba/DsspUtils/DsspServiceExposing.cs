@@ -81,6 +81,13 @@ namespace Brumba.DsspUtils
 			get { return base.TaskQueue; }
 		}
 
+		public new void LogInfo(string text)
+		{
+			DC.Contract.Requires(text != null);
+
+			base.LogInfo(text);
+		}
+
 		public void LogInfo(string text, params object[] args)
 		{
             DC.Contract.Requires(text != null);
