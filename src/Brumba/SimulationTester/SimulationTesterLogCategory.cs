@@ -56,6 +56,11 @@ namespace Brumba.SimulationTester
         [CategoryArgument(0, "Fixture")]
         [CategoryArgument(1, "Test")]
         [CategoryArgument(2, "Result")]
+        TestRunningResult,
+        [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]
+        [CategoryArgument(0, "Fixture")]
+        [CategoryArgument(1, "Test")]
+        [CategoryArgument(2, "Result")]
         TestFinished,
         [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]
         [CategoryArgument(0, "Fixture")]

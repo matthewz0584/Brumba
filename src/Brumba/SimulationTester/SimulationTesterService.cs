@@ -238,6 +238,7 @@ namespace Brumba.SimulationTester
 
                 OnTestTryEnded(testInfo, testSucceed);
                 if (testSucceed) ++successful;
+                LogInfo(SimulationTesterLogCategory.TestRunningResult, fixtureInfo.Name, testInfo.Name, (float)successful / i);
 
 	            //Drop services that need to be restarted
 				yield return To.Exec(DropServices, (Func<Uri, bool>)(uri => uri.LocalPath.Contains(RESET_SYMBOL)));
@@ -320,6 +321,7 @@ namespace Brumba.SimulationTester
                 yield return To.Exec(DeleteEntity(entity));
 
             yield return To.Exec(PauseSimulator, false);
+            yield return TimeoutPort(100).Receive();
 
             var get = new DsspDefaultGet();
             ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);

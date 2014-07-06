@@ -18,7 +18,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("mc_lrf_localizer", Wip = true, PhysicsTimeStep = -1)]
+    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
 	public class McLrfLocalizerTests
 	{
 		SimulationTesterService TesterService { get; set; }
@@ -60,7 +60,7 @@ namespace Brumba.SimulationTester.Tests
 			TesterService.LogInfo(LogCategory.ActualToExpectedRatio, (McPose.Position - SimPose.Position).Length(), MathHelper2.AngleDifference(McPose.Bearing, SimPose.Bearing));
 	    }
 
-		//[SimTest(5)]
+		[SimTest(5)]
 		public class Tracking : IStart, ITest
 		{
 			[Fixture]
@@ -75,14 +75,14 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
-                @return(Fixture.McPose.Position.EqualsRelatively(Fixture.SimPose.Position, 0.1) &&
+                @return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.3) &&
                         MathHelper2.AngleDifference(Fixture.McPose.Bearing, Fixture.SimPose.Bearing).AlmostEqualWithError(0, 0.1));
                 Fixture.LogResults();
                 yield break;
 			}
 		}
 
-		//[SimTest(9)]
+		[SimTest(9)]
 		public class GlobalLocalizationStraightPath : IStart, ITest
 		{
 			[Fixture]
@@ -97,7 +97,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
-                @return(Fixture.McPose.Position.EqualsRelatively(Fixture.SimPose.Position, 0.1) &&
+                @return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.3) &&
                         MathHelper2.AngleDifference(Fixture.McPose.Bearing, Fixture.SimPose.Bearing).AlmostEqualWithError(0, 0.2));
                 Fixture.LogResults();
                 yield break;

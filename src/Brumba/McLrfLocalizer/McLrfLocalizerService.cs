@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Brumba.DsspUtils;
@@ -88,10 +89,10 @@ namespace Brumba.McLrfLocalizer
             yield return To.Exec(() => _timerFacade.Set());
 
 			//************************************
-			_mv.InitOnServiceStart(TaskQueue);
-			_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
-			yield return To.Exec(() => _mv.StartGui());
-			yield return To.Exec(Draw);
+            _mv.InitOnServiceStart(TaskQueue);
+            _mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
+            yield return To.Exec(() => _mv.StartGui());
+            yield return To.Exec(Draw);
         }
 
 		IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)
@@ -104,12 +105,14 @@ namespace Brumba.McLrfLocalizer
 						DC.Contract.Requires(odometry != null);
 						DC.Contract.Requires(odometry.State != null);
 
+                        var sw = Stopwatch.StartNew();
+
 	                    var newOdometry = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose);
 	                    _localizer.Update(newOdometry - _currentOdometry, lrfScan.DistanceMeasurements.Select(d => d / 1000f));
 						_currentOdometry = newOdometry;
 	                    
 						UpdateState();
-						//LogInfo("odometry {0} **** loc {1}", _currentOdometry, _state.FirstPoseCandidate);
+						LogInfo("loc {0} for {1}", _state.FirstPoseCandidate, sw.Elapsed);
                     });
 
 			yield return To.Exec(Draw);
@@ -171,7 +174,8 @@ namespace Brumba.McLrfLocalizer
 
 		void UpdateState()
 		{
-			_state.FirstPoseCandidate = _localizer.GetPoseCandidates().First();
+			//_state.FirstPoseCandidate = _localizer.GetPoseCandidates().First();
+		    _state.FirstPoseCandidate = _localizer.CalculatePoseMean();
 			SendNotification(_subMgrPort, new InitPose { Body = { Pose = _state.FirstPoseCandidate } });
 		}
 
