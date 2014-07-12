@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.MapProvider;
+using Brumba.Utils;
 using Microsoft.Xna.Framework;
 
 namespace Brumba.PathPlanner
@@ -35,34 +37,46 @@ namespace Brumba.PathPlanner
 
 		Point? JumpToward(Point from, Point direction)
 		{
-			while (true)
-			{
-				var neighbour = StepToward(from, direction);
-				if (!_map.Covers(neighbour))
-					return null;
-				if (_map[neighbour])
-					return null;
-				if (neighbour == _searchProblem.GoalState)
-					return neighbour;
-				if (HasForcedNeighbours(neighbour, from))
-					return neighbour;
-				from = neighbour;
-			}
+			var nextCell = from.Plus(direction);
+			if (!_map.Covers(nextCell) || _map[nextCell])
+				return null;
+			if ((nextCell == _searchProblem.GoalState) ||
+			    HasForcedNeighbours(nextCell, direction) ||
+			    (IsDiagonal(direction) &&
+			        (JumpToward(nextCell, new Point(direction.X, 0)).HasValue ||
+			        JumpToward(nextCell, new Point(0, direction.Y)).HasValue)))
+			    return nextCell;
+		    return JumpToward(nextCell, direction);
 		}
 
-		bool HasForcedNeighbours(Point nextRightNeighbour, Point from)
+		bool HasForcedNeighbours(Point cell, Point direction)
 		{
-			return	((_map.Covers(new Point(nextRightNeighbour.X, nextRightNeighbour.Y + 1)) && _map[new Point(nextRightNeighbour.X, nextRightNeighbour.Y + 1)]) ||
-			      	 (_map.Covers(new Point(nextRightNeighbour.X, nextRightNeighbour.Y - 1)) && _map[new Point(nextRightNeighbour.X, nextRightNeighbour.Y - 1)])) &&
-			      	_map.SizeInCells.X > nextRightNeighbour.X + 1 &&
-			      	((_map.Covers(new Point(nextRightNeighbour.X + 1, nextRightNeighbour.Y - 1)) && !_map[new Point(nextRightNeighbour.X + 1, nextRightNeighbour.Y - 1)]) ||
-			      	 (_map.Covers(new Point(nextRightNeighbour.X + 1, nextRightNeighbour.Y)) && !_map[new Point(nextRightNeighbour.X + 1, nextRightNeighbour.Y)]) ||
-			      	 (_map.Covers(new Point(nextRightNeighbour.X + 1, nextRightNeighbour.Y + 1)) && !_map[new Point(nextRightNeighbour.X + 1, nextRightNeighbour.Y + 1)]));
+		    return IsDiagonal(direction) ?
+                HasForcedDiagonalNeighbour(cell, direction, horizontal: true) ||
+                HasForcedDiagonalNeighbour(cell, direction, horizontal: false)
+                :
+                HasForcedStraightNeighbour(cell, direction, up: true) ||
+                HasForcedStraightNeighbour(cell, direction, up: false);
 		}
 
-		static Point StepToward(Point from, Point direction)
-		{
-			return new Point(from.X + direction.X, from.Y + direction.Y);
-		}
+        bool HasForcedStraightNeighbour(Point cell, Point direction, bool up)
+        {
+            var obstacleCell = cell.Plus(direction.Perpendicular().Scale(up ? 1 : -1));
+            return _map.Covers(obstacleCell) && _map[obstacleCell] &&
+                   _map.Covers(obstacleCell.Plus(direction)) && !_map[obstacleCell.Plus(direction)];
+        }
+
+        bool HasForcedDiagonalNeighbour(Point cell, Point direction, bool horizontal)
+        {
+            var obstacleCell = cell.Plus(new Point(horizontal ? -direction.X : 0, horizontal ? 0 : -direction.Y));
+            return _map[obstacleCell] && //obstacle position have to be covered by map due to geometry of rectangular grid 
+                   _map.Covers(cell.Plus(direction.Perpendicular().Scale(horizontal ? 1 : -1))) &&
+                   !_map[cell.Plus(direction.Perpendicular().Scale(horizontal ? 1 : -1))];
+        }
+
+	    static bool IsDiagonal(Point direction)
+	    {
+	        return (direction.X * direction.X + direction.Y * direction.Y) == 2;
+	    }
 	}
 }

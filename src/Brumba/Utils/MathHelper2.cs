@@ -201,5 +201,20 @@ namespace Brumba.Utils
 	    {
 		    return new Vector2(me.X, me.Y);
 	    }
+
+        public static Point Plus(this Point lhs, Point rhs)
+        {
+            return new Point(lhs.X + rhs.X, lhs.Y + rhs.Y);
+        }
+
+        public static Point Scale(this Point lhs, int k)
+        {
+            return new Point(k * lhs.X, k * lhs.Y);
+        }
+
+        public static Point Perpendicular(this Point lhs)
+        {
+            return new Point(-lhs.Y, lhs.X);
+        }
     }
 }
