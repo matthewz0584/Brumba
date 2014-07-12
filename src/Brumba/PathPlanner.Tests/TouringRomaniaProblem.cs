@@ -30,7 +30,7 @@ namespace Brumba.PathPlanner.Tests
 		public string InitialState { get; set; }
 		public string GoalState { get; set; }
 
-		public List<Tuple<string, int>> Expand(string state)
+		public IEnumerable<Tuple<string, int>> Expand(string state)
 		{
 			return _connectivity[state];
 		}

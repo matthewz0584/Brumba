@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="AStarTests.cs" />
     <Compile Include="JumpPointGeneratorTests.cs" />
+    <Compile Include="OccupancyGridPathSearchProblemTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TouringRomaniaProblem.cs" />
   </ItemGroup>

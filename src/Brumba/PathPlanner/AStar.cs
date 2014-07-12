@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.PathPlanner
 {
@@ -7,7 +8,7 @@ namespace Brumba.PathPlanner
 	{
 		T InitialState { get; set; }
 		T GoalState { get; set; }
-		List<Tuple<T, int>> Expand(T state);
+		IEnumerable<Tuple<T, int>> Expand(T state);
 		int GetHeuristic(T state);
 	}
 
@@ -17,6 +18,7 @@ namespace Brumba.PathPlanner
 
 		public AStar(ISearchProblem<T> problem)
 		{
+            DC.Contract.Requires(problem != null);
 			_problem = problem;
 		}
 

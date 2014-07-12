@@ -8,285 +8,294 @@ namespace Brumba.PathPlanner.Tests
 	[TestFixture]
 	public class JumpPointGeneratorTests
 	{
-        [Test]
+	    private IOccupancyGridPathSearchProblem _sp;
+	    private JumpPointGenerator _jpg;
+
+	    [SetUp]
+	    public void SetUp()
+	    {
+	        _sp = Substitute.For<IOccupancyGridPathSearchProblem>();
+	        _jpg = new JumpPointGenerator(_sp);
+	    }
+
+	    [Test]
         public void Goal()
         {
-            var grid = new OccupancyGrid(new[,] { { false, false, false }, { false, false, false }, { false, false, false } }, 0.2f);
+	        _sp.GoalState.Returns(new Point(2, 0));
+	        _sp.Map.Returns(new OccupancyGrid(
+	            new[,] {{false, false, false}, {false, false, false}, {false, false, false}}, 0.2f));
 
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(2, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(2, 0) }));
+            Assert.That(_jpg.Expand(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(2, 0) }));
         }
 
 		[Test]
 		public void NoJumpPointsBecauseOfGridBoundaries()
 		{
-			var grid = new OccupancyGrid(new[,] { { false, false, false }, { false, false, false }, { false, false, false } }, 0.2f);
+		    _sp.GoalState.Returns(new Point(3, 0));
+		    _sp.Map.Returns(new OccupancyGrid(
+                new[,] {{false, false, false}, {false, false, false}, {false, false, false}}, 0.2f));
 
-			var sp = Substitute.For<ISearchProblem<Point>>();
-			sp.GoalState.Returns(new Point(3, 0));
-			var jpg = new JumpPointGenerator(grid, sp);
-
-			Assert.That(jpg.Generate(new Point(0, 0)), Is.Empty);
+			Assert.That(_jpg.Expand(new Point(0, 0)), Is.Empty);
 		}
 
 		[Test]
 		public void NoJumpPointsBecauseOfWalls()
 		{
-			var grid = new OccupancyGrid(new[,] { { false, true, false }, { false, true, false }, { false, true, false } }, 0.2f);
+		    _sp.GoalState.Returns(new Point(2, 0));
+            _sp.Map.Returns(new OccupancyGrid(
+                new[,] { { false, true, false }, { false, true, false }, { false, true, false } }, 0.2f));
 
-			var sp = Substitute.For<ISearchProblem<Point>>();
-			sp.GoalState.Returns(new Point(2, 0));
-			var jpg = new JumpPointGenerator(grid, sp);
-
-			Assert.That(jpg.Generate(new Point(0, 0)), Is.Empty);
+			Assert.That(_jpg.Expand(new Point(0, 0)), Is.Empty);
 		}
 
         [Test]
         public void HorizontalForcedNeighbour()
         {
-            var grid = new OccupancyGrid(new[,] { { false, false, true }, { false, false, false }, { false, true, false } }, 0.2f);
             //| |O| |
             //|p|x| |
             //| | |O|
+            _sp.GoalState.Returns(new Point(3, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+            {
+                { false, false, true },
+                { false, false, false },
+                { false, true, false }
+            }, 0.2f));
 
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(3, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
+            Assert.That(_jpg.Expand(new Point(0, 1)), Is.EquivalentTo(new[] { new Point(1, 1) }));
 
-            Assert.That(jpg.Generate(new Point(0, 1)), Is.EquivalentTo(new[] { new Point(1, 1) }));
-
-            grid = new OccupancyGrid(new[,] { { false, true, false }, { false, false, false }, { false, false, false } }, 0.2f);
             //| | |O|
             //|p|x| |
             //| |O| |
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+            {
+                { false, true, false },
+                { false, false, false },
+                { false, false, false }
+            }, 0.2f));
 
-            jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(0, 1)), Is.EquivalentTo(new[] { new Point(1, 1) }));
+            Assert.That(_jpg.Expand(new Point(0, 1)), Is.EquivalentTo(new[] { new Point(1, 1) }));
         }
 
         [Test]
         public void NotHorizontalForcedNeighbour()
         {
-            var grid = new OccupancyGrid(new[,] { { false, false, false }, { false, false, false }, { false, true, true } }, 0.2f);
             //| |O|O|
             //|p|x| |
             //| | | |
+            _sp.GoalState.Returns(new Point(3, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+            {
+                { false, false, false },
+                { false, false, false },
+                { false, true, true }
+            }, 0.2f));
 
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(3, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
+            Assert.That(_jpg.Expand(new Point(0, 1)), Is.Empty);
 
-            Assert.That(jpg.Generate(new Point(0, 1)), Is.Empty);
-
-            grid = new OccupancyGrid(new[,] { { false, false, false }, { false, false, false }, { false, false, true } }, 0.2f);
             //| | |O|
             //| |p|x|
             //| | | |
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+            {
+                { false, false, false },
+                { false, false, false },
+                { false, false, true }
+            }, 0.2f));
 
-            jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(1, 1)), Is.Empty);
+            Assert.That(_jpg.Expand(new Point(1, 1)), Is.Empty);
         }
 
         [Test]
         public void VerticalForcedNeighbour()
         {
-            var grid = new OccupancyGrid(new[,] { { false, false, false }, { true, false, false }, { false, false, false } }, 0.2f);
             //| |p| |
             //|O|x| |
             //| | | |
+            _sp.GoalState.Returns(new Point(3, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+            {
+                { false, false, false },
+                { true, false, false },
+                { false, false, false }
+            }, 0.2f));
 
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(3, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(1, 2)), Is.EquivalentTo(new[] { new Point(1, 1) }));
+            Assert.That(_jpg.Expand(new Point(1, 2)), Is.EquivalentTo(new[] { new Point(1, 1) }));
         }
 
 		[Test]
 		public void AllStraightDirections()
 		{
-			var grid = new OccupancyGrid(new[,]
+			//| | | | | |
+			//| | |x|O| |
+			//| |x|p|x| |
+			//| |O|x| | |
+			//| | | | | |
+			_sp.GoalState.Returns(new Point(5, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
 					{
 						{false, false, false, false, false},
 						{false, true, false, false, false},
 						{false, false, false, false, false},
 						{false, false, false, true, false},
 						{false, false, false, false, false}
-					}, 0.2f);
-			//| | | | | |
-			//| | |x|O| |
-			//| |x|p|x| |
-			//| |O|x| | |
-			//| | | | | |
+					}, 0.2f));
 
-			var sp = Substitute.For<ISearchProblem<Point>>();
-			sp.GoalState.Returns(new Point(5, 0));
-			var jpg = new JumpPointGenerator(grid, sp);
-
-			Assert.That(jpg.Generate(new Point(2, 2)), Is.EquivalentTo(new[] { new Point(2, 1), new Point(1, 2), new Point(3, 2), new Point(2, 3) }));
+			Assert.That(_jpg.Expand(new Point(2, 2)), Is.EquivalentTo(new[] { new Point(2, 1), new Point(1, 2), new Point(3, 2), new Point(2, 3) }));
 		}
 
         [Test]
         public void DiagonalForcedNeighbour()
         {
-            var grid = new OccupancyGrid(new[,] { { false, false, true }, { true, false, false }, { false, false, false } }, 0.2f);
             //| | | |
             //|O|x| |
             //|p| |O|
+            _sp.GoalState.Returns(new Point(3, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+            {
+                { false, false, true },
+                { true, false, false },
+                { false, false, false }
+            }, 0.2f));
 
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(3, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
+            Assert.That(_jpg.Expand(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(1, 1) }));
 
-            Assert.That(jpg.Generate(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(1, 1) }));
-
-            grid = new OccupancyGrid(new[,] { { false, true, false }, { false, false, false }, { true, false, false } }, 0.2f);
             //|O| | |
             //| |x| |
             //|p|O| |
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+            {
+                { false, true, false },
+                { false, false, false },
+                { true, false, false }
+            }, 0.2f));
 
-            jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(1, 1) }));
+            Assert.That(_jpg.Expand(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(1, 1) }));
         }
 
         [Test]
         public void NotDiagonalForcedNeighbour()
         {
-            var grid = new OccupancyGrid(new[,] { { false, false, false }, { true, false, false }, { true, false, false } }, 0.2f);
             //|O| | |
             //|O|x| |
             //|p| | |
+            _sp.GoalState.Returns(new Point(3, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+            {
+                { false, false, false },
+                { true, false, false },
+                { true, false, false }
+            }, 0.2f));
 
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(3, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
+            Assert.That(_jpg.Expand(new Point(0, 0)), Is.Empty);
 
-            Assert.That(jpg.Generate(new Point(0, 0)), Is.Empty);
-
-            grid = new OccupancyGrid(new[,] { { false, false, false }, { false, false, false }, { false, true, false } }, 0.2f);
             //| |O|x|
             //| |p| |
             //| | | |
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+            {
+                { false, false, false },
+                { false, false, false },
+                { false, true, false }
+            }, 0.2f));
 
-            jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(1, 1)), Is.Empty);
+            Assert.That(_jpg.Expand(new Point(1, 1)), Is.Empty);
         }
 
         [Test]
         public void AllDiagonalDirections()
         {
-            var grid = new OccupancyGrid(new[,]
+            //| | | | | |
+            //| |x|O|x| |
+            //| | |p| | |
+            //| |x|O|x| |
+            //| | | | | |
+            _sp.GoalState.Returns(new Point(5, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
 					{
 						{false, false, false, false, false},
 						{false, false, true, false, false},
 						{false, false, false, false, false},
 						{false, false, true, false, false},
 						{false, false, false, false, false}
-					}, 0.2f);
-            //| | | | | |
-            //| |x|O|x| |
-            //| | |p| | |
-            //| |x|O|x| |
-            //| | | | | |
+					}, 0.2f));
 
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(5, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(2, 2)), Is.EquivalentTo(new[] { new Point(1, 1), new Point(3, 1), new Point(3, 3), new Point(1, 3) }));
+            Assert.That(_jpg.Expand(new Point(2, 2)), Is.EquivalentTo(new[] { new Point(1, 1), new Point(3, 1), new Point(3, 3), new Point(1, 3) }));
         }
 
         [Test]
         public void DistantDiagonalAndStraightDirectionsForcedNeighbours()
         {
-            var grid = new OccupancyGrid(new[,]
+            //| | | | | |
+            //|x|O| | | |
+            //| | |x| | |
+            //| | |O| | |
+            //|p| |x| | |
+            _sp.GoalState.Returns(new Point(5, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
 					{
 						{false, false, false, false, false},
 						{false, false, true, false, false},
 						{false, false, false, false, false},
 						{false, true, true, false, false},
 						{false, false, false, false, false}
-					}, 0.2f);
-            //| | | | | |
-            //|x|O| | | |
-            //| | |x| | |
-            //| | |O| | |
-            //|p| |x| | |
+					}, 0.2f));
 
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(5, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(2, 0), new Point(2, 2), new Point(0, 3) }));
+            Assert.That(_jpg.Expand(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(2, 0), new Point(2, 2), new Point(0, 3) }));
         }
 
         [Test]
         public void DiagonalRecursive()
         {
-            var grid = new OccupancyGrid(new[,]
-					{
-						{false, false, false, false},
-						{false, false, false, true},
-						{true, false, false, false},
-						{false, false, false, false}
-					}, 0.2f);
             //| | | | |
             //|O| | | |
             //| |x| | |
             //|p| | | |
-
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(5, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(1, 1) }));
-
-            grid = new OccupancyGrid(new[,]
+            _sp.GoalState.Returns(new Point(5, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
 					{
 						{false, false, false, false},
 						{false, false, false, true},
 						{true, false, false, false},
 						{false, false, false, false}
-					}, 0.2f);
+					}, 0.2f));
+
+            Assert.That(_jpg.Expand(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(1, 1) }));
+
             //| | | | |
             //| | | | |
             //| |x| | |
             //|p| |O| |
+            _sp.Map.Returns(new OccupancyGrid(new[,]
+					{
+						{false, false, false, false},
+						{false, false, false, true},
+						{true, false, false, false},
+						{false, false, false, false}
+					}, 0.2f));
 
-            jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(1, 1) }));
+            Assert.That(_jpg.Expand(new Point(0, 0)), Is.EquivalentTo(new[] { new Point(1, 1) }));
         }
 
         [Test]
         public void All()
         {
-            var grid = new OccupancyGrid(new[,]
+            //| | | | | |
+            //| | |O| | |
+            //| |x| |x| |
+            //| |O|p|x| |
+            //| |O| |O| |
+            _sp.GoalState.Returns(new Point(5, 0));
+            _sp.Map.Returns(new OccupancyGrid(new[,]
 					{
 						{false, true, false, true, false},
 						{false, true, false, false, false},
 						{false, false, false, false, false},
 						{false, false, true, false, false},
 						{false, false, false, false, false}
-					}, 0.2f);
-            //| | | | | |
-            //| | |O| | |
-            //| |x| |x| |
-            //| |O|p|x| |
-            //| |O| |O| |
+					}, 0.2f));
 
-            var sp = Substitute.For<ISearchProblem<Point>>();
-            sp.GoalState.Returns(new Point(5, 0));
-            var jpg = new JumpPointGenerator(grid, sp);
-
-            Assert.That(jpg.Generate(new Point(2, 1)), Is.EquivalentTo(new[] { new Point(3, 1), new Point(3, 2), new Point(1, 2) }));
+            Assert.That(_jpg.Expand(new Point(2, 1)), Is.EquivalentTo(new[] { new Point(3, 1), new Point(3, 2), new Point(1, 2) }));
         }
 
 		[Test]

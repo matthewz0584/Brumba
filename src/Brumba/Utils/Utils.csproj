@@ -97,6 +97,7 @@
     <Compile Include="CrossCountryGenerator.cs" />
     <Compile Include="IFreezable.cs" />
     <Compile Include="MathHelper2.cs" />
+    <Compile Include="PointExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

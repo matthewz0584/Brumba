@@ -112,6 +112,7 @@
   <ItemGroup>
     <Compile Include="AStar.cs" />
     <Compile Include="JumpPointGenerator.cs" />
+    <Compile Include="OccupancyGridPathSearchProblem.cs" />
     <Compile Include="PriorityQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
