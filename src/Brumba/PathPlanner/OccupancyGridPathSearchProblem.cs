@@ -4,6 +4,7 @@ using System.Linq;
 using Brumba.MapProvider;
 using Brumba.Utils;
 using Microsoft.Xna.Framework;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.PathPlanner
 {
@@ -16,6 +17,8 @@ namespace Brumba.PathPlanner
     {
         public OccupancyGridPathSearchProblem(OccupancyGrid map, Point start, Point goal)
         {
+            DC.Contract.Requires(map != null);
+
             Map = map;
             InitialState = start;
             GoalState = goal;
@@ -25,6 +28,7 @@ namespace Brumba.PathPlanner
         
         public Point InitialState { get; set; }
         public Point GoalState { get; set; }
+        
         public OccupancyGrid Map { get; private set; }
 
         public IEnumerable<Tuple<Point, int>> Expand(Point state)
@@ -39,6 +43,8 @@ namespace Brumba.PathPlanner
 
         static int Distance(Point lhs, Point rhs)
         {
+            DC.Contract.Ensures(DC.Contract.Result<int>() >= 0);
+
             return rhs.Minus(lhs).LengthSq();
         }
     }

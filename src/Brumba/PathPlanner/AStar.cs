@@ -4,14 +4,6 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.PathPlanner
 {
-	public interface ISearchProblem<T>
-	{
-		T InitialState { get; set; }
-		T GoalState { get; set; }
-		IEnumerable<Tuple<T, int>> Expand(T state);
-		int GetHeuristic(T state);
-	}
-
 	public class AStar<T>
 	{
 		private readonly ISearchProblem<T> _problem;
@@ -27,7 +19,7 @@ namespace Brumba.PathPlanner
 			var fringe = new PriorityQueue<SearchNode>();
 			fringe.Enqueue(new SearchNode { State = _problem.InitialState, Value = _problem.GetHeuristic(_problem.InitialState) });
 			var visited = new HashSet<T> {fringe.Peek().State};
-			while (fringe.Count() != 0)
+			while (fringe.Count != 0)
 			{
 				var current = fringe.Dequeue();
 				if (current.State.Equals(_problem.GoalState))
@@ -35,7 +27,7 @@ namespace Brumba.PathPlanner
 				visited.Add(current.State);
 				foreach (var childStateAndCost in _problem.Expand(current.State))
 				{
-					if (visited.Contains(childStateAndCost.Item1))//ought to add check for presence in fringe
+					if (visited.Contains(childStateAndCost.Item1))//ought to add check for presence in fringe also
 						continue;
 					var cost = current.Cost + childStateAndCost.Item2;
 					fringe.Enqueue(new SearchNode

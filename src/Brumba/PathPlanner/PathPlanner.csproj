@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AStar.cs" />
+    <Compile Include="ISearchProblem.cs" />
     <Compile Include="JumpPointGenerator.cs" />
     <Compile Include="OccupancyGridPathSearchProblem.cs" />
     <Compile Include="PriorityQueue.cs" />

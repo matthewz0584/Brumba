@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.PathPlanner
 {
@@ -8,8 +9,16 @@ namespace Brumba.PathPlanner
 	{
 		private readonly List<T> _data = new List<T>();
 
+        [DC.ContractInvariantMethod]
+        void ObjectInvariant()
+        {
+            DC.Contract.Invariant(IsConsistent());
+        }
+
 		public void Enqueue(T item)
 		{
+            DC.Contract.Ensures(Count == DC.Contract.OldValue<int>(Count) + 1);
+
 			_data.Add(item);
 			int ci = _data.Count - 1; // child index; start at end
 			while (ci > 0)
@@ -23,6 +32,8 @@ namespace Brumba.PathPlanner
 
 		public T Dequeue()
 		{
+            DC.Contract.Ensures(Count == DC.Contract.OldValue<int>(Count) - 1);
+
 			// assumes pq is not empty; up to calling code
 			int li = _data.Count - 1; // last index (before removal)
 			T frontItem = _data[0];   // fetch the front
@@ -47,12 +58,14 @@ namespace Brumba.PathPlanner
 
 		public T Peek()
 		{
+            DC.Contract.Ensures(Count == DC.Contract.OldValue<int>(Count));
+
 			return _data[0];
 		}
 
-		public int Count()
+		public int Count
 		{
-			return _data.Count;
+		    get { return _data.Count; }
 		}
 
 		public override string ToString()
