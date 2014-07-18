@@ -48,6 +48,23 @@ namespace Brumba.McLrfLocalizer
             }
         }
 
+        public IEnumerable<Point> Generate(int radius)
+        {
+            DC.Contract.Requires(radius >= 0);
+
+            for (var x = -radius; x <= radius; ++x)
+            {
+                for (var y = (int)Math.Ceiling(CircleY(radius, x)); y < CircleY(radius + 1, x); ++y)
+                    yield return new Point(x, y);
+
+                for (var y = -(int)Math.Ceiling(CircleY(radius, x)); y > -CircleY(radius + 1, x); --y)
+                {
+                    if (y == 0) continue;
+                    yield return new Point(x, y);
+                }
+            }
+        }
+
         static double CircleY(int radius, int x)
         {
             DC.Contract.Requires(radius >= 0);

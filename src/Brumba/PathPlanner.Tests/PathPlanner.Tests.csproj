@@ -49,6 +49,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Ccr.Core, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="NSubstitute">
       <HintPath>..\..\..\utils\NSubstitute.dll</HintPath>
@@ -59,6 +65,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -69,13 +76,22 @@
     <Compile Include="AStarTests.cs" />
     <Compile Include="JumpPointGeneratorTests.cs" />
     <Compile Include="OccupancyGridPathSearchProblemTests.cs" />
+    <Compile Include="PathPlannerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TouringRomaniaProblem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
+      <Project>{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}</Project>
+      <Name>DsspUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2D37BDFC-A8F0-4356-ABCF-487A4A350038}</Project>
       <Name>MapProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
+      <Project>{3D1F586F-6408-49E2-83BC-C80716D1C62D}</Project>
+      <Name>McLrfLocalizer</Name>
     </ProjectReference>
     <ProjectReference Include="..\PathPlanner\PathPlanner.csproj">
       <Project>{aceb8750-11c1-40ff-b01a-2a4d58d7aea1}</Project>
