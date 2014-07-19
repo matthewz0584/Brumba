@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Brumba.MapProvider;
+using Brumba.Utils;
 using Brumba.WaiterStupid;
 using DC = System.Diagnostics.Contracts;
 using System.Linq;
@@ -138,12 +139,12 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Ensures(DC.Contract.Result<Point>() == new Point(-1, -1) || Map.Covers(DC.Contract.Result<Point>()));
             DC.Contract.Ensures(DC.Contract.Result<Point>() == new Point(-1, -1) || Map[DC.Contract.Result<Point>()]);
 
-            var circleFringe = new GridCircleFringeGenerator(Map.SizeInCells);
+            var circleFringe = new GridCircleFringeGenerator();
             var radius = 0;
             IEnumerable<Point> fringe;
             do
             {
-                fringe = circleFringe.Generate(Map.PosToCell(position), radius++).ToList();
+                fringe = circleFringe.GenerateOnMap(radius++, Map.PosToCell(position), Map).ToList();
                 if (fringe.Any(p => Map[p]))
                     return fringe.Where(p => Map[p]).OrderBy(p => (Map.CellToPos(p) - position).Length()).First();
             } while (fringe.Any());

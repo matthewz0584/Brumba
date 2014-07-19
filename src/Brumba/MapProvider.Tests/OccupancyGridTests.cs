@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
@@ -37,6 +38,18 @@ namespace Brumba.MapProvider.Tests
             Assert.That(_grid[new Point(1, 1)], Is.False);
             Assert.That(_grid[new Point(2, 1)], Is.True);
 	    }
+
+        [Test]
+        public void CellIndexer2()
+        {
+            Assert.That(_grid[0, 0], Is.False);
+            Assert.That(_grid[1, 0], Is.True);
+            Assert.That(_grid[2, 0], Is.False);
+
+            Assert.That(_grid[0, 1], Is.False);
+            Assert.That(_grid[1, 1], Is.False);
+            Assert.That(_grid[2, 1], Is.True);
+        }
 
         [Test]
         public void PositionIndexer()
@@ -105,13 +118,24 @@ namespace Brumba.MapProvider.Tests
 
             Assert.That(occGridFromData.SizeInCells, Is.EqualTo(new Point(3, 2)));
 
-            Assert.That(occGridFromData[new Point(0, 0)], Is.False);
-            Assert.That(occGridFromData[new Point(1, 0)], Is.True);
-            Assert.That(occGridFromData[new Point(2, 0)], Is.False);
+            Assert.That(occGridFromData[0, 0], Is.False);
+            Assert.That(occGridFromData[1, 0], Is.True);
+            Assert.That(occGridFromData[2, 0], Is.False);
 
-            Assert.That(occGridFromData[new Point(0, 1)], Is.False);
-            Assert.That(occGridFromData[new Point(1, 1)], Is.False);
-            Assert.That(occGridFromData[new Point(2, 1)], Is.True);
+            Assert.That(occGridFromData[0, 1], Is.False);
+            Assert.That(occGridFromData[1, 1], Is.False);
+            Assert.That(occGridFromData[2, 1], Is.True);
 		}
+
+	    [Test]
+	    public void Enumerator()
+	    {
+	        Assert.That(_grid, Is.EquivalentTo(new[]
+	            {
+	                Tuple.Create(new Point(0, 0), false), Tuple.Create(new Point(1, 0), true),
+	                Tuple.Create(new Point(2, 0), false), Tuple.Create(new Point(0, 1), false),
+	                Tuple.Create(new Point(1, 1), false), Tuple.Create(new Point(2, 1), true)
+	            }));
+	    }
 	}
 }

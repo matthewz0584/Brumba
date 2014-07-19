@@ -113,6 +113,7 @@
     <Compile Include="AStar.cs" />
     <Compile Include="ISearchProblem.cs" />
     <Compile Include="JumpPointGenerator.cs" />
+    <Compile Include="MapInflater.cs" />
     <Compile Include="OccupancyGridPathSearchProblem.cs" />
     <Compile Include="PriorityQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,6 +126,10 @@
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
       <Name>MapProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
+      <Project>{3D1F586F-6408-49E2-83BC-C80716D1C62D}</Project>
+      <Name>McLrfLocalizer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>

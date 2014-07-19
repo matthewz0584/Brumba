@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="AStarTests.cs" />
     <Compile Include="JumpPointGeneratorTests.cs" />
+    <Compile Include="MapInflaterTests.cs" />
     <Compile Include="OccupancyGridPathSearchProblemTests.cs" />
     <Compile Include="PathPlannerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -44,10 +44,10 @@ namespace Brumba.SimulationTester.Tests
 						if ((y >= (180 - 1 - 43) && y <= (180 - 1 - 31) && x >= 28 && x <= 34) ||
 							(y >= (180 - 1 - 131) && y <= (180 - 1 - 125) && x >= 112 && x <= 133))
 		                {
-		                    if (!occGrid[new Point(x, y)])
+		                    if (!occGrid[x, y])
 		                        return false;
 		                }
-		                else if (occGrid[new Point(x, y)])
+		                else if (occGrid[x, y])
 		                    return false;
 		        return true;
 		    }

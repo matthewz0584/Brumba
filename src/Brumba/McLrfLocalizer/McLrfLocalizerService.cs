@@ -196,7 +196,7 @@ namespace Brumba.McLrfLocalizer
 				for (var col = 0; col < (int)h.Size.X; ++col)
 				{
 					p[(int)h.Size.Y - row - 1, col] = xyM[col, row];
-					m[(int)h.Size.Y - row - 1, col] = _localizer.Map[new Point(col, row)] ? 1 : 0;
+					m[(int)h.Size.Y - row - 1, col] = _localizer.Map[col, row] ? 1 : 0;
 				}
 
 			yield return To.Exec(() => _mv.ShowMatrix(p));

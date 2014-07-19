@@ -21,9 +21,9 @@ namespace Brumba.MapProvider.Tests
 				for (var x = 0; x < 220; ++x)
 					if ((y >= (180 - 1 - 43) && y <= (180 - 1 - 31) && x >= 28 && x <= 34) ||
 						(y >= (180 - 1 - 131) && y <= (180 - 1 - 125) && x >= 112 && x <= 133))
-						Assert.That(occupancyGrid[new xPoint(x, y)]);
+						Assert.That(occupancyGrid[x, y]);
 					else
-						Assert.That(occupancyGrid[new xPoint(x, y)], Is.False);
+						Assert.That(occupancyGrid[x, y], Is.False);
 		}
 	}
 }

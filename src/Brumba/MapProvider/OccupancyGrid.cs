@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using Brumba.Utils;
 using Microsoft.Dss.Core.Attributes;
@@ -8,8 +10,8 @@ using Microsoft.Xna.Framework;
 namespace Brumba.MapProvider
 {
     [DataContract]
-	public class OccupancyGrid : IFreezable
-	{
+	public class OccupancyGrid : IFreezable, IEnumerable<Tuple<Point, bool>>
+    {
 		bool[,] _occupancy;
 	    float _cellSize;
 
@@ -30,6 +32,17 @@ namespace Brumba.MapProvider
             Freeze();
 		}
 
+        public bool this[int x, int y]
+        {
+            get
+            {
+                DC.Contract.Requires(Freezed);
+                DC.Contract.Requires(Covers(new Point(x, y)));
+
+                return _occupancy[y, x];
+            }
+        }
+
         public bool this[Point cell]
         {
             get
@@ -37,7 +50,7 @@ namespace Brumba.MapProvider
                 DC.Contract.Requires(Freezed);
                 DC.Contract.Requires(Covers(cell));
 
-                return _occupancy[cell.Y, cell.X];
+                return this[cell.X, cell.Y];
             }
         }
 
@@ -142,5 +155,17 @@ namespace Brumba.MapProvider
         }
 
         public bool Freezed { get; private set; }
-	}
+        
+        public IEnumerator<Tuple<Point, bool>> GetEnumerator()
+        {
+            for (int y = 0; y < SizeInCells.Y; ++y)
+                for (int x = 0; x < SizeInCells.X; ++x)
+                    yield return Tuple.Create(new Point(x, y), this[x, y]);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
 }

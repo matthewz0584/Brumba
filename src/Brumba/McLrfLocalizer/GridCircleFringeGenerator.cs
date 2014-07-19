@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Brumba.MapProvider;
 using DC = System.Diagnostics.Contracts;
 using Brumba.Utils;
 using Microsoft.Xna.Framework;
@@ -8,49 +10,20 @@ namespace Brumba.McLrfLocalizer
 {
     public class GridCircleFringeGenerator
     {
-        private readonly Point _gridSize;
-
-        public GridCircleFringeGenerator(Point gridSize)
-        {
-            DC.Contract.Requires(gridSize.X > 0);
-            DC.Contract.Requires(gridSize.Y > 0);
-
-            _gridSize = gridSize;
-        }
-
-        public Point GridSize
-        {
-            get { return _gridSize; }
-        }
-
-        public IEnumerable<Point> Generate(Point center, int radius)
+        public IEnumerable<Point> GenerateOnMap(int radius, Point center, OccupancyGrid map)
         {
             DC.Contract.Requires(radius >= 0);
+            DC.Contract.Requires(map != null);
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Point>>().All(map.Covers));
 
-            for (var x = -radius; x <= radius; ++x)
-            {
-                for (var y = (int)Math.Ceiling(CircleY(radius, x)); y < CircleY(radius + 1, x); ++y)
-                {
-                    var candidate = new Point(x + center.X, y + center.Y);
-                    if (!candidate.Between(new Point(), GridSize))
-                        continue;
-                    yield return candidate;
-                }
-
-                for (var y = -(int)Math.Ceiling(CircleY(radius, x)); y > -CircleY(radius + 1, x); --y)
-                {
-                    if (y == 0) continue;
-                    var candidate = new Point(x + center.X, y + center.Y);
-                    if (!candidate.Between(new Point(), GridSize))
-                        continue;
-                    yield return candidate;
-                }
-            }
+            return Generate(radius).Select(p => p.Plus(center)).Where(map.Covers);
         }
 
         public IEnumerable<Point> Generate(int radius)
         {
             DC.Contract.Requires(radius >= 0);
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Point>>().All(p => p.LengthSq() >= radius * radius));
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Point>>().All(p => p.LengthSq() < (radius + 1) * (radius + 1)));
 
             for (var x = -radius; x <= radius; ++x)
             {
@@ -65,7 +38,7 @@ namespace Brumba.McLrfLocalizer
             }
         }
 
-        static double CircleY(int radius, int x)
+        double CircleY(int radius, int x)
         {
             DC.Contract.Requires(radius >= 0);
 
