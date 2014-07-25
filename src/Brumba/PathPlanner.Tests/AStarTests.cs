@@ -68,8 +68,8 @@ namespace Brumba.PathPlanner.Tests
 		public Func<int, List<int>> ExpandF { get; set; }
 		public Func<int, int> HeuristicF { get; set; }
 
-		public IEnumerable<Tuple<int, int>> Expand(int state) { return ExpandF(state).Select(s => Tuple.Create(s, 1)); }
+		public IEnumerable<Tuple<int, double>> Expand(int state) { return ExpandF(state).Select(s => Tuple.Create(s, 1.0)); }
 
-		public int GetHeuristic(int state) { return HeuristicF(state); }
+		public double GetHeuristic(int state) { return HeuristicF(state); }
 	}
 }

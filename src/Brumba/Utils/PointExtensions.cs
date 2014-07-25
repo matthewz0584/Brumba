@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Diagnostics.Contracts;
+using Microsoft.Xna.Framework;
 
 namespace Brumba.Utils
 {
@@ -24,9 +26,15 @@ namespace Brumba.Utils
             return new Point(-lhs.Y, lhs.X);
         }
 
+        [Pure]
         public static int LengthSq(this Point lhs)
         {
             return lhs.X * lhs.X + lhs.Y * lhs.Y;
+        }
+
+        public static double Length(this Point lhs)
+        {
+            return Math.Sqrt(lhs.X * lhs.X + lhs.Y * lhs.Y);
         }
     }
 }

@@ -73,7 +73,8 @@ namespace Brumba.PathPlanner
 			return _data.Aggregate("", (current, t) => current + t + " ") + "count = " + _data.Count;
 		}
 
-		public bool IsConsistent()
+		[DC.Pure]
+        public bool IsConsistent()
 		{
 			// is the heap property true for all data?
 			if (_data.Count == 0) return true;
@@ -91,6 +92,9 @@ namespace Brumba.PathPlanner
 
 		void Swap(int ci, int pi)
 		{
+            DC.Contract.Requires(ci >= 0);
+            DC.Contract.Requires(pi >= 0);
+
 			T tmp = _data[ci];
 			_data[ci] = _data[pi];
 			_data[pi] = tmp;

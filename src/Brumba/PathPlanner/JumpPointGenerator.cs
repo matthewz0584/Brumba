@@ -42,8 +42,8 @@ namespace Brumba.PathPlanner
 
 		public IEnumerable<Point> Expand(Point from)
 		{
-            DC.Contract.Requires(SearchProblem.Map.Covers(from));
             DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Point>>() != null);
+            DC.Contract.Assert(SearchProblem.Map.Covers(from));
 
 			return _directions.Select(dir => JumpToward(from, dir)).Where(jp => jp.HasValue).Select(jp => jp.Value);
 		}

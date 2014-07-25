@@ -15,13 +15,11 @@ namespace Brumba.PathPlanner
 
     public class OccupancyGridPathSearchProblem : IOccupancyGridPathSearchProblem
     {
-        public OccupancyGridPathSearchProblem(OccupancyGrid map, Point start, Point goal)
+        public OccupancyGridPathSearchProblem(OccupancyGrid map)
         {
             DC.Contract.Requires(map != null);
 
             Map = map;
-            InitialState = start;
-            GoalState = goal;
         }
 
         public IStateExpander CellExpander { get; set; }
@@ -31,21 +29,23 @@ namespace Brumba.PathPlanner
         
         public OccupancyGrid Map { get; private set; }
 
-        public IEnumerable<Tuple<Point, int>> Expand(Point state)
+        public IEnumerable<Tuple<Point, double>> Expand(Point state)
         {
+            DC.Contract.Assert(CellExpander != null);
+
             return CellExpander.Expand(state).Select(c => Tuple.Create(c, Distance(c, state)));
         }
 
-        public int GetHeuristic(Point state)
+        public double GetHeuristic(Point state)
         {
             return Distance(GoalState, state);
         }
 
-        static int Distance(Point lhs, Point rhs)
+        static double Distance(Point lhs, Point rhs)
         {
-            DC.Contract.Ensures(DC.Contract.Result<int>() >= 0);
+            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0);
 
-            return rhs.Minus(lhs).LengthSq();
+            return rhs.Minus(lhs).Length();
         }
     }
 }

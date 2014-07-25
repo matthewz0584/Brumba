@@ -5,30 +5,30 @@ using DC = System.Diagnostics.Contracts;
 namespace Brumba.PathPlanner
 {
     [DC.ContractClassAttribute(typeof(ISearchProblemContract<>))]
-    public interface ISearchProblem<T>
+    public interface ISearchProblem<StateT>
     {
-        T InitialState { get; set; }
-        T GoalState { get; set; }
-        IEnumerable<Tuple<T, int>> Expand(T state);
-        int GetHeuristic(T state);
+        StateT InitialState { get; set; }
+        StateT GoalState { get; set; }
+        IEnumerable<Tuple<StateT, double>> Expand(StateT state);
+        double GetHeuristic(StateT state);
     }
 
     [DC.ContractClassForAttribute(typeof(ISearchProblem<>))]
-    abstract class ISearchProblemContract<T> : ISearchProblem<T>
+    abstract class ISearchProblemContract<StateT> : ISearchProblem<StateT>
     {
-        public T InitialState { get; set; }
-        public T GoalState { get; set; }
+        public StateT InitialState { get; set; }
+        public StateT GoalState { get; set; }
 
-        public IEnumerable<Tuple<T, int>> Expand(T state)
+        public IEnumerable<Tuple<StateT, double>> Expand(StateT state)
         {
-            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Tuple<T, int>>>() != null);
-            return default(IEnumerable<Tuple<T, int>>);
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Tuple<StateT, double>>>() != null);
+            return default(IEnumerable<Tuple<StateT, double>>);
         }
 
-        public int GetHeuristic(T state)
+        public double GetHeuristic(StateT state)
         {
-            DC.Contract.Ensures(DC.Contract.Result<int>() >= 0);
-            return default(int);
+            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0);
+            return default(double);
         }
     }
 }
