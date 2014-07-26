@@ -8,25 +8,35 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.PathPlanner
 {
-    public interface IOccupancyGridPathSearchProblem : ISearchProblem<Point>
+    public class OccupancyGridPathSearchProblem : ISearchProblem<Point>
     {
-        OccupancyGrid Map { get; }
-    }
+        private Point _goalState;
 
-    public class OccupancyGridPathSearchProblem : IOccupancyGridPathSearchProblem
-    {
-        public OccupancyGridPathSearchProblem(OccupancyGrid map)
+        public OccupancyGridPathSearchProblem(OccupancyGrid map, ICellExpander cellExpander)
         {
             DC.Contract.Requires(map != null);
+            DC.Contract.Requires(cellExpander != null);
 
             Map = map;
+            CellExpander = cellExpander;
         }
 
-        public IStateExpander CellExpander { get; set; }
+        public ICellExpander CellExpander { get; private set; }
         
         public Point InitialState { get; set; }
-        public Point GoalState { get; set; }
-        
+
+        public Point GoalState
+        {
+            get { return _goalState; }
+            set
+            {
+                DC.Contract.Assert(CellExpander != null);
+
+                _goalState = value;
+                CellExpander.Goal = value;
+            }
+        }
+
         public OccupancyGrid Map { get; private set; }
 
         public IEnumerable<Tuple<Point, double>> Expand(Point state)

@@ -111,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AStar.cs" />
+    <Compile Include="ICellExpander.cs" />
     <Compile Include="ISearchProblem.cs" />
     <Compile Include="JumpPointGenerator.cs" />
     <Compile Include="MapInflater.cs" />

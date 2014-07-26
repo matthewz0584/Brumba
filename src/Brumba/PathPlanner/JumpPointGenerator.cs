@@ -7,23 +7,7 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.PathPlanner
 {
-    [DC.ContractClassAttribute(typeof(IStateExpanderContract))]
-    public interface IStateExpander
-    {
-        IEnumerable<Point> Expand(Point from);
-    }
-
-    [DC.ContractClassForAttribute(typeof(IStateExpander))]
-    abstract class IStateExpanderContract : IStateExpander
-    {
-        public IEnumerable<Point> Expand(Point from)
-        {
-            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Point>>() != null);
-            return default(IEnumerable<Point>);
-        }
-    }
-
-    public class JumpPointGenerator : IStateExpander
+    public class JumpPointGenerator : ICellExpander
     {
 		static readonly List<Point> _directions = new List<Point>
 		{
@@ -31,19 +15,20 @@ namespace Brumba.PathPlanner
 			new Point(-1, 0), new Point(-1, -1), new Point(0, -1), new Point(1, -1)
 		};
 
-        public JumpPointGenerator(IOccupancyGridPathSearchProblem searchProblem)
-		{
-            DC.Contract.Requires(searchProblem != null);
+        public OccupancyGrid Map { get; private set; }
+        public Point Goal { get; set; }
 
-			SearchProblem = searchProblem;
-		}
+        public JumpPointGenerator(OccupancyGrid map)
+        {
+            DC.Contract.Requires(map != null);
 
-        public IOccupancyGridPathSearchProblem SearchProblem { get; private set; }
+            Map = map;
+        }
 
 		public IEnumerable<Point> Expand(Point from)
 		{
             DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Point>>() != null);
-            DC.Contract.Assert(SearchProblem.Map.Covers(from));
+            DC.Contract.Assert(Map.Covers(from));
 
 			return _directions.Select(dir => JumpToward(from, dir)).Where(jp => jp.HasValue).Select(jp => jp.Value);
 		}
@@ -58,7 +43,7 @@ namespace Brumba.PathPlanner
 			var nextCell = from.Plus(direction);
             if (!Map.Covers(nextCell) || Map[nextCell])
 				return null;
-			if ((nextCell == SearchProblem.GoalState) ||
+			if ((nextCell == Goal) ||
 			    HasForcedNeighbours(nextCell, direction) ||
 			    (IsDiagonal(direction) &&
 			        (JumpToward(nextCell, new Point(direction.X, 0)).HasValue ||
@@ -107,7 +92,5 @@ namespace Brumba.PathPlanner
 
 	        return direction.LengthSq() == 2;
 	    }
-
-        OccupancyGrid Map { get { return SearchProblem.Map; } }
 	}
 }

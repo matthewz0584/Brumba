@@ -4,21 +4,21 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.PathPlanner
 {
-	public class AStar<StateT>
-	{
-		private readonly ISearchProblem<StateT> _problem;
+    public class AStar<TState>
+    {
+		private readonly ISearchProblem<TState> _problem;
 
-		public AStar(ISearchProblem<StateT> problem)
+		public AStar(ISearchProblem<TState> problem)
 		{
             DC.Contract.Requires(problem != null);
 			_problem = problem;
 		}
 
-		public List<StateT> GraphSearch()
+		public List<TState> GraphSearch()
 		{
 			var fringe = new PriorityQueue<SearchNode>();
 			fringe.Enqueue(new SearchNode { State = _problem.InitialState, Value = _problem.GetHeuristic(_problem.InitialState) });
-			var visited = new HashSet<StateT> {fringe.Peek().State};
+			var visited = new HashSet<TState> {fringe.Peek().State};
 			while (fringe.Count != 0)
 			{
 				var current = fringe.Dequeue();
@@ -42,9 +42,9 @@ namespace Brumba.PathPlanner
 			return null;
 		}
 
-		static List<StateT> PathTo(SearchNode node)
+		static List<TState> PathTo(SearchNode node)
 		{
-			var path = new List<StateT>();
+			var path = new List<TState>();
 			while (node.Parent != null)
 			{
 				path.Add(node.State);
@@ -58,7 +58,7 @@ namespace Brumba.PathPlanner
 		{
 			public SearchNode Parent { get; set; }
 			public double Value { get; set; }
-			public StateT State { get; set; }
+			public TState State { get; set; }
             public double Cost { get; set; }
 
 			public int CompareTo(SearchNode other)
