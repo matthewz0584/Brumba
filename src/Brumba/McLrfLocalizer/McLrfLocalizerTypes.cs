@@ -64,14 +64,14 @@ namespace Brumba.McLrfLocalizer
 		public Pose Pose { get; set; }
 	}
 
-	public class InitPose : Update<InitPoseRequest, PortSet<DefaultSubmitResponseType, Fault>>
+	public class InitPose : Update<InitPoseRequest, PortSet<DefaultUpdateResponseType, Fault>>
 	{}
 
 	[DataContract]
 	public class InitPoseUnknownRequest
 	{}
 
-	public class InitPoseUnknown : Update<InitPoseUnknownRequest, PortSet<DefaultSubmitResponseType, Fault>>
+    public class InitPoseUnknown : Update<InitPoseUnknownRequest, PortSet<DefaultUpdateResponseType, Fault>>
 	{}
 
 	[DataContract]

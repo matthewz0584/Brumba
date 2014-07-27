@@ -16,19 +16,32 @@ namespace Brumba.PathPlanner
         {
             DC.Contract.Requires(map != null);
             DC.Contract.Requires(robotDiameter > 0);
+            DC.Contract.Ensures(InflatedMap != null);
+            DC.Contract.Ensures(_occupancyGridPathSearchProblem != null);
+            DC.Contract.Ensures(_aStar != null);
 
             _inflatedMap = new MapInflater(map, robotDiameter).Inflate();
-            _occupancyGridPathSearchProblem = new OccupancyGridPathSearchProblem(_inflatedMap, new JumpPointGenerator(_inflatedMap));
+            _occupancyGridPathSearchProblem = new OccupancyGridPathSearchProblem(InflatedMap, new JumpPointGenerator(InflatedMap));
             _aStar = new AStar<Point>(_occupancyGridPathSearchProblem);
+        }
+
+        public OccupancyGrid InflatedMap
+        {
+            get { return _inflatedMap; }
         }
 
         public IEnumerable<Vector2> Plan(Vector2 from, Vector2 to)
         {
-            _occupancyGridPathSearchProblem.InitialState = _inflatedMap.PosToCell(from);
-            _occupancyGridPathSearchProblem.GoalState = _inflatedMap.PosToCell(to);
+            DC.Contract.Requires(InflatedMap.Covers(from) && !InflatedMap[from]);
+            DC.Contract.Requires(InflatedMap.Covers(to) && !InflatedMap[to]);
+            DC.Contract.Assume(_occupancyGridPathSearchProblem != null);
+            DC.Contract.Assume(_aStar != null);
+
+            _occupancyGridPathSearchProblem.InitialState = InflatedMap.PosToCell(from);
+            _occupancyGridPathSearchProblem.GoalState = InflatedMap.PosToCell(to);
 
             var path = _aStar.GraphSearch();
-            return path != null ? path.Select(c => _inflatedMap.CellToPos(c)) : null;
+            return path != null ? path.Select(c => InflatedMap.CellToPos(c)) : null;
         }
     }
 }

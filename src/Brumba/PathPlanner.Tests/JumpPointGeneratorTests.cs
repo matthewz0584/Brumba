@@ -277,5 +277,17 @@ namespace Brumba.PathPlanner.Tests
 
             Assert.That(jpg.Expand(new Point(2, 1)), Is.EquivalentTo(new[] { new Point(3, 1), new Point(3, 2), new Point(1, 2) }));
         }
+
+        [Test]
+        public void GoalIsObstacle()
+        {
+            var jpg = new JumpPointGenerator(new OccupancyGrid(new[,]
+                    {
+                        {false, false},
+                        {false, true}
+                    }, 0.2f)) { Goal = new Point(1, 1) };
+
+            Assert.That(jpg.Expand(new Point(0, 0)), Is.Empty);
+        }
 	}
 }

@@ -137,7 +137,7 @@ namespace Brumba.McLrfLocalizer
 
 			_localizer.InitPose(initPoseRq.Body.Pose, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
 			UpdateState();
-			initPoseRq.ResponsePort.Post(new DefaultSubmitResponseType());
+			initPoseRq.ResponsePort.Post(new DefaultUpdateResponseType());
 		}
 
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
@@ -149,7 +149,7 @@ namespace Brumba.McLrfLocalizer
 
 			_localizer.InitPoseUnknown();
 			UpdateState();
-			initPoseUnknownRq.ResponsePort.Post(new DefaultSubmitResponseType());
+            initPoseUnknownRq.ResponsePort.Post(new DefaultUpdateResponseType());
 		}
 
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]

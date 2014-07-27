@@ -154,6 +154,9 @@ namespace Brumba.PathPlanner.Tests
 
             var pp = new PathPlanner(map: map, robotDiameter: 0.1f);
 
+            Assert.That(pp.InflatedMap[0, 0] && pp.InflatedMap[1, 0] && pp.InflatedMap[2, 0] && pp.InflatedMap[1, 1]);
+            Assert.That(!pp.InflatedMap[0, 1] && !pp.InflatedMap[0, 2] && !pp.InflatedMap[1, 2] && !pp.InflatedMap[2, 2] && !pp.InflatedMap[2, 1]);
+            
             var checkPoints = pp.Plan(from: new Vector2(0.1f, 0.3f), to: new Vector2(0.5f, 0.3f));
 
             Assert.That(checkPoints, Is.EquivalentTo(new[] { new Vector2(0.3f, 0.5f), new Vector2(0.5f, 0.3f) }));
