@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:mapproviderservice="http://brumba.ru/contracts/2014/03/mapproviderservice.html" xmlns:pathplannerservice="http://brumba.ru/contracts/2014/07/pathplannerservice.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:45427c14-9231-49cc-a13a-cfb227f37133" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2014/07/pathplannerservice.html</dssp:Contract>
+      <dssp:Service>http://localhost:80/path_planner</dssp:Service>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>pathplannerservice:Map</dssp:Name>
+          <dssp:ServiceName>this:BrumbaMapProvider</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/03/pathplannerrservice.html</dssp:Contract>
+          <dssp:Service>path_planner.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:BrumbaPathPlanner</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
+      <dssp:Service>http://localhost:80/map_provider</dssp:Service>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
+          <dssp:Service>path_planner_map_provider.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:BrumbaMapProvider</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
+</Manifest>

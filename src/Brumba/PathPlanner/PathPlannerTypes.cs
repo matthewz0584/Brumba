@@ -30,7 +30,7 @@ namespace Brumba.PathPlanner
     }
 
     [ServicePort]
-    public class PathPlannerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, InitStart, InitGoal, InitStartAndGoal>
+    public class PathPlannerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, InitStart, InitGoal, InitStartAndGoal, Replan>
     {
     }
 
@@ -82,4 +82,11 @@ namespace Brumba.PathPlanner
 
     public class InitStartAndGoal : Update<InitStartAndGoalRequest, PortSet<DefaultUpdateResponseType, Fault>>
     { }
+
+    [DataContract]
+    public class ReplanRequest
+    {}
+    
+    public class Replan : Submit<ReplanRequest, PortSet<DefaultSubmitResponseType, Fault>>
+    {}
 }

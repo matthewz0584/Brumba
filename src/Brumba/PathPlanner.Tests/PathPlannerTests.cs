@@ -19,7 +19,7 @@ namespace Brumba.PathPlanner.Tests
 
             var pp = new PathPlanner(map: map, robotDiameter: 0.2f);
 
-            var checkPoints = pp.Plan(from: new Vector2(0.1f, 3.5f), to: new Vector2(5.5f, 1.5f));
+            var forwardPoints = pp.Plan(from: new Vector2(0.15f, 3.45f), to: new Vector2(5.45f, 1.45f));
 
             //Console.Write("{0} ", new Point(map.PosToCell(new Vector2(0.1f, 3.5f)).X, map.SizeInCells.Y - map.PosToCell(new Vector2(0.1f, 3.5f)).Y - 1));
             //foreach (var cp in checkPoints)
@@ -29,12 +29,20 @@ namespace Brumba.PathPlanner.Tests
             //}
 
             //simple_house_path.bmp
-            Assert.That(checkPoints.Select(map.PosToCell), Is.EquivalentTo(new[]
+            var forwardPointsCorrect = new[]
             {
-                new Point(10, 43), new Point(21, 43), new Point(22, 42), new Point(23, 41), new Point(28, 36),
-                new Point(38, 26), new Point(41, 26), new Point(61, 26), new Point(62, 25), new Point(63, 24),
-                new Point(63, 21), new Point(61, 19), new Point(59, 19), new Point(54, 14)
-            }));
+                new Point(1, 34), new Point(10, 43), new Point(21, 43), new Point(22, 42), new Point(23, 41),
+                new Point(28, 36), new Point(38, 26), new Point(41, 26), new Point(61, 26), new Point(62, 25),
+                new Point(63, 24), new Point(63, 21), new Point(61, 19), new Point(59, 19), new Point(54, 14)
+            };
+
+            Assert.That(new [] {new Point(1, 34)}.Concat(forwardPoints.Select(map.PosToCell)), Is.EquivalentTo(forwardPointsCorrect));
+
+            var backwardPoints = pp.Plan(from: new Vector2(5.5f, 1.5f), to: new Vector2(0.1f, 3.5f)).ToList();
+            backwardPoints.Reverse();
+
+            //!!!Not equivalent, algorithm is not symmetric(
+            Assert.That(backwardPoints.Select(map.PosToCell).Concat(new[] { new Point(54, 14) }), Is.Not.EquivalentTo(forwardPointsCorrect));
         }
 
         [Test]
