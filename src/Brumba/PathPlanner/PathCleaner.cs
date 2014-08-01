@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
 using Microsoft.Xna.Framework;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.PathPlanner
 {
@@ -9,6 +10,9 @@ namespace Brumba.PathPlanner
     {
         public IEnumerable<Point> Clean(IEnumerable<Point> path)
         {
+            DC.Contract.Requires(path != null);
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Point>>() != null);
+
             if (!path.Any())
                 return path;
 
