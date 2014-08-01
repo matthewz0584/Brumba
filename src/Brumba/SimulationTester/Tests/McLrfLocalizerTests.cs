@@ -51,7 +51,7 @@ namespace Brumba.SimulationTester.Tests
             yield return To.Exec(TesterService.GetTesteeEntityProxies, (Action<IEnumerable<VisualEntity>>)(tep => testeeEntitiesPxies = tep));
             SimPose = BoxWorldParser.SimToMap((rPose)DssTypeHelper.TransformFromProxy(testeeEntitiesPxies.Single().State.Pose));
 
-            TesterService.Activate(Arbiter.ReceiveWithIterator(false, McLrfLocalizationNotify.P4, GetPoses));
+            TesterService.Activate(Arbiter.ReceiveWithIterator<McLocalizationPxy.InitPose>(false, McLrfLocalizationNotify, GetPoses));
         }
 
 	    void LogResults()

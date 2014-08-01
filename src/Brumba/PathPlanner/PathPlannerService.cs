@@ -88,7 +88,7 @@ namespace Brumba.PathPlanner
             DC.Contract.Ensures(State.RobotDiameter == DC.Contract.OldValue(State.RobotDiameter));
             DC.Contract.Ensures(State.Path == DC.Contract.OldValue(State.Path));
 
-            if (FailIfBadLocation(initGoalRq.Body.Goal, initGoalRq.ResponsePort.P1, "Goal"))
+            if (FailIfBadLocation(initGoalRq.Body.Goal, initGoalRq.ResponsePort, "Goal"))
                 return;
 
             State.Goal = initGoalRq.Body.Goal;
@@ -108,7 +108,7 @@ namespace Brumba.PathPlanner
             DC.Contract.Ensures(State.RobotDiameter == DC.Contract.OldValue(State.RobotDiameter));
             DC.Contract.Ensures(State.Path == DC.Contract.OldValue(State.Path));
 
-            if (FailIfBadLocation(initStartRq.Body.Start, initStartRq.ResponsePort.P1, "Start"))
+            if (FailIfBadLocation(initStartRq.Body.Start, initStartRq.ResponsePort, "Start"))
                 return;
 
             State.Start = initStartRq.Body.Start;
@@ -128,8 +128,8 @@ namespace Brumba.PathPlanner
             DC.Contract.Ensures(State.RobotDiameter == DC.Contract.OldValue(State.RobotDiameter));
             DC.Contract.Ensures(State.Path == DC.Contract.OldValue(State.Path));
 
-            if (FailIfBadLocation(initStartAndGoalRq.Body.Goal, initStartAndGoalRq.ResponsePort.P1, "Goal") ||
-                FailIfBadLocation(initStartAndGoalRq.Body.Start, initStartAndGoalRq.ResponsePort.P1, "Start"))
+            if (FailIfBadLocation(initStartAndGoalRq.Body.Goal, initStartAndGoalRq.ResponsePort, "Goal") ||
+                FailIfBadLocation(initStartAndGoalRq.Body.Start, initStartAndGoalRq.ResponsePort, "Start"))
                 return;
 
             State.Start = initStartAndGoalRq.Body.Start;
@@ -150,8 +150,8 @@ namespace Brumba.PathPlanner
             DC.Contract.Ensures(State.RobotDiameter == DC.Contract.OldValue(State.RobotDiameter));
             DC.Contract.Assume(_pathPlanner != null);
 
-            if (FailIfBadLocation(State.Goal, replanRq.ResponsePort.P1, "Goal") ||
-                FailIfBadLocation(State.Start, replanRq.ResponsePort.P1, "Start"))
+            if (FailIfBadLocation(State.Goal, replanRq.ResponsePort, "Goal") ||
+                FailIfBadLocation(State.Start, replanRq.ResponsePort, "Start"))
                 return;
 
             State.Path = _pathPlanner.Plan(State.Start, State.Goal).ToList();
@@ -170,7 +170,7 @@ namespace Brumba.PathPlanner
             return State.InflatedMap.Covers(location) && !State.InflatedMap[location];
         }
 
-        bool FailIfBadLocation(Vector2 location, Port<Fault> responceFaultPort, string locationName)
+        bool FailIfBadLocation<T>(Vector2 location, PortSet<T, Fault> responceFaultPort, string locationName)
         {
             DC.Contract.Requires(responceFaultPort != null);
             DC.Contract.Requires(locationName != null);

@@ -5,6 +5,7 @@ using Brumba.DsspUtils;
 using Brumba.MapProvider;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
+using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Dss.Services.Test.Configuration;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
@@ -49,7 +50,8 @@ namespace Brumba.SimulationTester.Tests
                 var initGoalRsp = Fixture.PathPlannerPort.InitGoal(new Vector2(5.6f, 1.5f));
                 var initStartRsp = Fixture.PathPlannerPort.InitStart(new Vector2(0.1f, 3.5f));
 
-                yield return Arbiter.JoinedReceive(false, initGoalRsp.P0, initStartRsp.P0,
+                yield return Arbiter.JoinedReceive<DefaultUpdateResponseType, DefaultUpdateResponseType>(false,
+                    initGoalRsp, initStartRsp,
                     (successInitStart, successInitGoal) => { });
 
                 yield return Fixture.PathPlannerPort.Get().Choice(
