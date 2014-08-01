@@ -11,6 +11,7 @@ namespace Brumba.PathPlanner
         private readonly OccupancyGrid _inflatedMap;
         private readonly OccupancyGridPathSearchProblem _occupancyGridPathSearchProblem;
         private readonly AStar<Point> _aStar;
+        private readonly PathCleaner _pathCleaner;
 
         public PathPlanner(OccupancyGrid map, float robotDiameter)
         {
@@ -19,10 +20,12 @@ namespace Brumba.PathPlanner
             DC.Contract.Ensures(InflatedMap != null);
             DC.Contract.Ensures(_occupancyGridPathSearchProblem != null);
             DC.Contract.Ensures(_aStar != null);
+            DC.Contract.Ensures(_pathCleaner != null);
 
             _inflatedMap = new MapInflater(map, robotDiameter).Inflate();
             _occupancyGridPathSearchProblem = new OccupancyGridPathSearchProblem(InflatedMap, new JumpPointGenerator(InflatedMap));
             _aStar = new AStar<Point>(_occupancyGridPathSearchProblem);
+            _pathCleaner = new PathCleaner();
         }
 
         public OccupancyGrid InflatedMap
@@ -36,12 +39,16 @@ namespace Brumba.PathPlanner
             DC.Contract.Requires(InflatedMap.Covers(to) && !InflatedMap[to]);
             DC.Contract.Assume(_occupancyGridPathSearchProblem != null);
             DC.Contract.Assume(_aStar != null);
+            DC.Contract.Assume(_pathCleaner != null);
 
             _occupancyGridPathSearchProblem.InitialState = InflatedMap.PosToCell(from);
             _occupancyGridPathSearchProblem.GoalState = InflatedMap.PosToCell(to);
 
             var path = _aStar.GraphSearch();
-            return path != null ? path.Select(c => InflatedMap.CellToPos(c)) : null;
+            if (path == null)
+                return null;
+            
+            return _pathCleaner.Clean(path).Select(c => InflatedMap.CellToPos(c));
         }
     }
 }

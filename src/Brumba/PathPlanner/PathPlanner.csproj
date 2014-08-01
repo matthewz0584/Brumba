@@ -120,6 +120,7 @@
     <Compile Include="JumpPointGenerator.cs" />
     <Compile Include="MapInflater.cs" />
     <Compile Include="OccupancyGridPathSearchProblem.cs" />
+    <Compile Include="PathCleaner.cs" />
     <Compile Include="PathPlanner.cs" />
     <Compile Include="PathPlannerService.cs">
       <SubType>Code</SubType>

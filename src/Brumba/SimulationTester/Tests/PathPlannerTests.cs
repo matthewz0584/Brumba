@@ -7,7 +7,6 @@ using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using Microsoft.Dss.Services.Test.Configuration;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
 using Microsoft.Xna.Framework;
 using W3C.Soap;
@@ -94,9 +93,8 @@ namespace Brumba.SimulationTester.Tests
 
             readonly List<Point> _correctCheckPoints = new List<Point>
             {
-                new Point(10, 43), new Point(21, 43), new Point(22, 42), new Point(23, 41), new Point(28, 36),
-                new Point(38, 26), new Point(41, 26), new Point(61, 26), new Point(62, 25), new Point(63, 24),
-                new Point(63, 21), new Point(61, 19), new Point(59, 19), new Point(54, 14)
+                new Point(10, 43), new Point(21, 43), new Point(38, 26), new Point(61, 26),
+                new Point(63, 24), new Point(63, 21), new Point(61, 19), new Point(59, 19), new Point(54, 14)
             };
         }
 

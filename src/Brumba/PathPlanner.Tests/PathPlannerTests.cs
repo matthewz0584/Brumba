@@ -1,4 +1,6 @@
+using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using Brumba.MapProvider;
 using Microsoft.Xna.Framework;
@@ -22,7 +24,7 @@ namespace Brumba.PathPlanner.Tests
             var forwardPoints = pp.Plan(from: new Vector2(0.15f, 3.45f), to: new Vector2(5.45f, 1.45f));
 
             //Console.Write("{0} ", new Point(map.PosToCell(new Vector2(0.1f, 3.5f)).X, map.SizeInCells.Y - map.PosToCell(new Vector2(0.1f, 3.5f)).Y - 1));
-            //foreach (var cp in checkPoints)
+            //foreach (var cp in forwardPoints)
             //{
             //    var c = new Point(map.PosToCell(cp).X, map.SizeInCells.Y - map.PosToCell(cp).Y - 1);
             //    Console.Write("{0} ", c);
@@ -31,9 +33,9 @@ namespace Brumba.PathPlanner.Tests
             //simple_house_path.bmp
             var forwardPointsCorrect = new[]
             {
-                new Point(1, 34), new Point(10, 43), new Point(21, 43), new Point(22, 42), new Point(23, 41),
-                new Point(28, 36), new Point(38, 26), new Point(41, 26), new Point(61, 26), new Point(62, 25),
-                new Point(63, 24), new Point(63, 21), new Point(61, 19), new Point(59, 19), new Point(54, 14)
+                new Point(1, 34), new Point(10, 43), new Point(21, 43), new Point(38, 26),
+                new Point(61, 26), new Point(63, 24), new Point(63, 21), new Point(61, 19),
+                new Point(59, 19), new Point(54, 14)
             };
 
             Assert.That(new [] {new Point(1, 34)}.Concat(forwardPoints.Select(map.PosToCell)), Is.EquivalentTo(forwardPointsCorrect));
@@ -168,6 +170,30 @@ namespace Brumba.PathPlanner.Tests
             var checkPoints = pp.Plan(from: new Vector2(0.1f, 0.3f), to: new Vector2(0.5f, 0.3f));
 
             Assert.That(checkPoints, Is.EquivalentTo(new[] { new Vector2(0.3f, 0.5f), new Vector2(0.5f, 0.3f) }));
+        }
+
+        [Test]
+        public void Cleaned()
+        {
+            //| | | | |
+            //| |O| |g|
+            //| | |*| |
+            //| |*| | |
+            //|x| |O| |
+            var map = new OccupancyGrid(new[,]
+            {
+                { false, false, true, false },
+                { false, false, false, false },
+                { false, false, false, false },
+                { false, true, false, false },
+                { false, false, false, false }
+            }, 0.2f);
+
+            var pp = new PathPlanner(map: map, robotDiameter: 0.01f);
+
+            var checkPoints = pp.Plan(from: new Vector2(0.1f, 0.1f), to: new Vector2(0.7f, 0.7f));
+
+            Assert.That(checkPoints, Is.EquivalentTo(new[] { new Vector2(0.3f, 0.3f), new Vector2(0.7f, 0.7f) }));
         }
     }
 }

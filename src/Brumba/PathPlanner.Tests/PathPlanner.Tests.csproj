@@ -81,6 +81,7 @@
     <Compile Include="JumpPointGeneratorTests.cs" />
     <Compile Include="MapInflaterTests.cs" />
     <Compile Include="OccupancyGridPathSearchProblemTests.cs" />
+    <Compile Include="PathCleanerTests.cs" />
     <Compile Include="PathPlannerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TouringRomaniaProblem.cs" />

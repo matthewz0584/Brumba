@@ -9,15 +9,6 @@ namespace Brumba.DsspUtils
 {
     public static class To
     {
-        public static List<T> Addd<T>(this List<T> me, T toAdd)
-        {
-            DC.Contract.Requires(me != null);
-            DC.Contract.Ensures(DC.Contract.Result<List<T>>() == me);
-
-            me.Add(toAdd);
-            return me;
-        }
-
         [DC.ContractAbbreviator]
         [Conditional("CONTRACTS_FULL")]
         static void AssertActionCall(object call)
