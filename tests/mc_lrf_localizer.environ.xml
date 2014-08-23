@@ -397,9 +397,9 @@
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
-            <physm:X>3.1</physm:X>
+            <physm:X>2.7</physm:X>
             <physm:Y>0.005</physm:Y>
-            <physm:Z>1.5</physm:Z>
+            <physm:Z>1.6</physm:Z>
           </physm:Position>
           <physm:Orientation>
             <physm:X>-1.50068686E-08</physm:X>

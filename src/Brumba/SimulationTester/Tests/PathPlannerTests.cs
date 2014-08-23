@@ -22,7 +22,7 @@ using PathPxy = Brumba.PathPlanner.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("path_planner", Wip = true)]
+    [SimTestFixture("path_planner")]
 	public class PathPlannerTests
 	{
         public SimulationTesterService HostService { get; private set; }

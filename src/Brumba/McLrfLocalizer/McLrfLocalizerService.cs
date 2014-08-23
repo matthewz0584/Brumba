@@ -89,15 +89,16 @@ namespace Brumba.McLrfLocalizer
             yield return To.Exec(() => _timerFacade.Set());
 
 			//************************************
-            _mv.InitOnServiceStart(TaskQueue);
-            _mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
-            yield return To.Exec(() => _mv.StartGui());
-            yield return To.Exec(Draw);
+            //_mv.InitOnServiceStart(TaskQueue);
+            //_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
+            //yield return To.Exec(() => _mv.StartGui());
+            //yield return To.Exec(Draw);
         }
 
 		IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)
 		{
-			yield return Arbiter.JoinedReceive(false, _lrf.Get().P0, _odometryProvider.Get().P0, 
+			yield return Arbiter.JoinedReceive<SickLrfPxy.State, OdometryPxy.DiffDriveOdometryServiceState>(false,
+                _lrf.Get(), _odometryProvider.Get(), 
                 (lrfScan, odometry) =>
                     {
 						DC.Contract.Requires(lrfScan != null);
@@ -112,10 +113,10 @@ namespace Brumba.McLrfLocalizer
 						_currentOdometry = newOdometry;
 	                    
 						UpdateState();
-						LogInfo("loc {0} for {1}", _state.FirstPoseCandidate, sw.Elapsed);
+						LogInfo("loc {0} for {1}", _state.FirstPoseCandidate, sw.Elapsed.Milliseconds);
                     });
 
-			yield return To.Exec(Draw);
+			//yield return To.Exec(Draw);
 		}
 
 	    [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
@@ -201,18 +202,6 @@ namespace Brumba.McLrfLocalizer
 
 			yield return To.Exec(() => _mv.ShowMatrix(p));
 			yield return To.Exec(() => _mv.ShowMatrix2(m));
-		}
-
-		static int i = 0;
-		void Log()
-		{
-			var h = new PoseHistogram(_localizer.Map, McLrfLocalizer.THETA_BIN_SIZE);
-			h.Build(_localizer.Particles);
-			using (var f = File.CreateText("c:\\Temp\\qq" + i++ + ".txt"))
-			{
-				f.Write(h);
-				f.Write(h.Bins.Sum(b => b.Samples.Count()));
-			}
 		}
     }
 }

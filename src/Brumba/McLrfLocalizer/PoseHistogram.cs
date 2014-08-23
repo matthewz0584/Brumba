@@ -67,7 +67,7 @@ namespace Brumba.McLrfLocalizer
                 DC.Contract.Ensures(DC.Contract.Result<PoseBin>() != null);
 
                 var poseCell = Map.PosToCell(poseSample.Position);
-                return this[poseCell.X, poseCell.Y, (int)(poseSample.Bearing.ToPositiveAngle() / ThetaBinSize)];
+                return this[poseCell.X, poseCell.Y, (int)Math.Floor(poseSample.Bearing.ToPositiveAngle() / ThetaBinSize)];
             }
         }
 
