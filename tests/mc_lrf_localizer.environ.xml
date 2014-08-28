@@ -2371,8 +2371,8 @@
         </phys:OriginPose>
         <phys:StartAngle>-120</phys:StartAngle>
         <phys:EndAngle>120</phys:EndAngle>
-        <!--<phys:AngleIncrement>0.36</phys:AngleIncrement>-->
-        <phys:AngleIncrement>10</phys:AngleIncrement>
+        <phys:AngleIncrement>0.36</phys:AngleIncrement>
+        <!--<phys:AngleIncrement>10</phys:AngleIncrement>-->
         <phys:Range>5.6</phys:Range>
         <phys:ScanInterval>0.1</phys:ScanInterval>
       </RaycastProperties_FORDB>

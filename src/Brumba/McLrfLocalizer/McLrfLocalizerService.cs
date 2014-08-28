@@ -109,7 +109,7 @@ namespace Brumba.McLrfLocalizer
                         var sw = Stopwatch.StartNew();
 
 	                    var newOdometry = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose);
-	                    _localizer.Update(newOdometry - _currentOdometry, lrfScan.DistanceMeasurements.Select(d => d / 1000f));
+	                    _localizer.Update(newOdometry - _currentOdometry, lrfScan.DistanceMeasurements.Where((d, i) => i % 27 == 0).Select(d => d / 1000f));
 						_currentOdometry = newOdometry;
 	                    
 						UpdateState();

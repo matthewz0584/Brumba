@@ -102,7 +102,7 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}
 
-		[SimTest(10.1f)]
+		//[SimTest(10.1f)]
 		public class GlobalLocalizationStraightPath : IStart, ITest
 		{
 			[Fixture]
@@ -135,7 +135,7 @@ namespace Brumba.SimulationTester.Tests
             }
 		}
 
-		[SimTest(10.1f)]
+		//[SimTest(10.1f)]
 		public class GlobalLocalizationCurvedPath : IStart, ITest
 		{
 			[Fixture]
