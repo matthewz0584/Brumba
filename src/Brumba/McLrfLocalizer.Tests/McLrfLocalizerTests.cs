@@ -154,39 +154,5 @@ namespace Brumba.McLrfLocalizer.Tests
 			Assert.That(new DescriptiveStatistics(poses.Select(p => (double)p.Position.Y)).StandardDeviation, Is.EqualTo((float)Math.Sqrt(3) / 2f).Within(0.1));
 			Assert.That(new DescriptiveStatistics(poses.Select(p => p.Bearing)).StandardDeviation, Is.EqualTo(MathHelper.Pi / (float)Math.Sqrt(3)).Within(0.2));
 	    }
-
-        [Test]
-        public void SparsifyRangefinder()
-        {
-            var srcRp = new RangefinderProperties
-            {
-                MaxRange = 2,
-                OriginPose = new Pose(new Vector2(1, 2), 3),
-                AngularRange = 30,
-                AngularResolution = 4
-            };
-            var sparsifiedRp = SparsifyRangefinder(srcRp, 3);
-
-            Assert.That(sparsifiedRp.MaxRange, Is.EqualTo(srcRp.MaxRange));
-            Assert.That(sparsifiedRp.OriginPose, Is.EqualTo(srcRp.OriginPose));
-            Assert.That(sparsifiedRp.AngularRange, Is.EqualTo(srcRp.AngularRange));
-            Assert.That(sparsifiedRp.AngularResolution, Is.EqualTo(4 * 2));
-
-            srcRp.AngularResolution = 3;
-            sparsifiedRp = SparsifyRangefinder(srcRp, 5);
-
-            Assert.That(sparsifiedRp.AngularResolution, Is.EqualTo(3 * 3));
-        }
-
-        RangefinderProperties SparsifyRangefinder(RangefinderProperties rp, int beams)
-        {
-            return new RangefinderProperties
-            {
-                MaxRange = rp.MaxRange,
-                OriginPose = rp.OriginPose,
-                AngularRange = rp.AngularRange,
-                AngularResolution = rp.AngularResolution * Math.Floor((rp.AngularRange / rp.AngularResolution + 1) / beams)
-            };
-        }
     }
 }

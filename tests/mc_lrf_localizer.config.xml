@@ -8,12 +8,10 @@
     <Bearing>0</Bearing>
   </FirstPoseCandidate>
   <RangeFinderProperties>
-    <!--<AngularResolution>0.0062831853071795</AngularResolution>
-    <AngularRange>4.1887902047863909</AngularRange>
-    <MaxRange>5.6</MaxRange>-->
-    <AngularResolution>0.1745329251994329</AngularResolution>
+    <AngularResolution>0.0062831853071795</AngularResolution>
     <AngularRange>4.1887902047863909</AngularRange>
     <MaxRange>5.6</MaxRange>
+<!--    <AngularResolution>0.1745329251994329</AngularResolution> -->
     <OriginPose>
       <Position>
         <X>0.2</X>
@@ -23,5 +21,6 @@
     </OriginPose>
   </RangeFinderProperties>
   <ParticlesNumber>200</ParticlesNumber>
+  <BeamsNumber>25</BeamsNumber>
   <DeltaT>1</DeltaT>
 </McLrfLocalizerState>

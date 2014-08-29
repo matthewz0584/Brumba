@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.MapProvider;
@@ -50,6 +49,7 @@ namespace Brumba.McLrfLocalizer
 		SubscriptionManagerPort _subMgrPort = new SubscriptionManagerPort();
 
         McLrfLocalizer _localizer;
+        int _takeEachNthBeam;
         TimerFacade _timerFacade;
         Pose _currentOdometry;
 
@@ -72,7 +72,9 @@ namespace Brumba.McLrfLocalizer
 		    yield return _mapProvider.Get().Receive(ms => map = (OccupancyGrid) DssTypeHelper.TransformFromProxy(ms.Map));
 			map.Freeze();
 
-			_localizer = new McLrfLocalizer(map, _state.RangeFinderProperties, _state.ParticlesNumber);
+	        var sparsifiedRp = _state.RangeFinderProperties.Sparsify(_state.BeamsNumber);
+            _takeEachNthBeam = (int)Math.Round(sparsifiedRp.AngularResolution / _state.RangeFinderProperties.AngularResolution);
+            _localizer = new McLrfLocalizer(map, sparsifiedRp, _state.ParticlesNumber);
 
 			if (IsPoseUnknown(_state.FirstPoseCandidate))
 				_localizer.InitPoseUnknown();
@@ -109,7 +111,7 @@ namespace Brumba.McLrfLocalizer
                         var sw = Stopwatch.StartNew();
 
 	                    var newOdometry = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose);
-	                    _localizer.Update(newOdometry - _currentOdometry, lrfScan.DistanceMeasurements.Where((d, i) => i % 27 == 0).Select(d => d / 1000f));
+	                    _localizer.Update(newOdometry - _currentOdometry, PreprocessLrfScan(lrfScan));
 						_currentOdometry = newOdometry;
 	                    
 						UpdateState();
@@ -184,6 +186,11 @@ namespace Brumba.McLrfLocalizer
 		{
 			return double.IsNaN(pose.Bearing);
 		}
+
+        IEnumerable<float> PreprocessLrfScan(SickLrfPxy.State lrfScan)
+        {
+            return lrfScan.DistanceMeasurements.Where((d, i) => i % _takeEachNthBeam == 0).Select(d => d / 1000f).Take(_state.BeamsNumber);
+        }
 
 		MatrixVizualizerServiceHelper _mv = new MatrixVizualizerServiceHelper();
 		IEnumerator<ITask> Draw()

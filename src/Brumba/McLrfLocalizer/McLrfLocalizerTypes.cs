@@ -25,6 +25,9 @@ namespace Brumba.McLrfLocalizer
         public int ParticlesNumber { get; set; }
 
         [DataMember]
+        public int BeamsNumber { get; set; }
+
+        [DataMember]
         public float DeltaT { get; set; }
     }
 

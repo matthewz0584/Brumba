@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using Brumba.Utils;
 using Brumba.WaiterStupid;
@@ -32,6 +33,21 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Requires(AngularResolution > 0);
 
 			return OriginPose.Position + Vector2.Transform(new Vector2(zi, 0), Matrix.CreateRotationZ((float)(OriginPose.Bearing - AngularRange / 2 + i * AngularResolution)));
+        }
+
+        public RangefinderProperties Sparsify(int beams)
+        {
+            DC.Contract.Requires(beams <= AngularRange / AngularResolution + 1);
+            DC.Contract.Ensures(DC.Contract.Result<RangefinderProperties>().AngularResolution >= DC.Contract.OldValue(AngularResolution));
+            DC.Contract.Ensures(DC.Contract.Result<RangefinderProperties>().AngularResolution * beams >= AngularRange);
+
+            return new RangefinderProperties
+            {
+                MaxRange = MaxRange,
+                OriginPose = OriginPose,
+                AngularRange = AngularRange,
+                AngularResolution = AngularResolution * Math.Floor(AngularRange / AngularResolution / (beams - 1))
+            };
         }
     }
 }

@@ -119,6 +119,33 @@ namespace Brumba.McLrfLocalizer.Tests
         }
 
         [Test]
+        public void RangefinderPropertiesSparsify()
+        {
+            var srcRp = new RangefinderProperties
+            {
+                MaxRange = 2,
+                OriginPose = new Pose(new Vector2(1, 2), 3),
+                AngularRange = 30,
+                AngularResolution = 4
+            };
+            var sparsifiedRp = srcRp.Sparsify(3);
+
+            Assert.That(sparsifiedRp.MaxRange, Is.EqualTo(srcRp.MaxRange));
+            Assert.That(sparsifiedRp.OriginPose, Is.EqualTo(srcRp.OriginPose));
+            Assert.That(sparsifiedRp.AngularRange, Is.EqualTo(srcRp.AngularRange));
+            Assert.That(sparsifiedRp.AngularResolution, Is.EqualTo(4 * 3));
+            Assert.That(sparsifiedRp.AngularResolution * 2, Is.LessThanOrEqualTo(srcRp.AngularRange));
+            Assert.That(sparsifiedRp.AngularResolution * 3, Is.GreaterThanOrEqualTo(srcRp.AngularRange));
+
+            srcRp.AngularResolution = 3;
+            sparsifiedRp = srcRp.Sparsify(5);
+
+            Assert.That(sparsifiedRp.AngularResolution, Is.EqualTo(3 * 2));
+            Assert.That(sparsifiedRp.AngularResolution * 4, Is.LessThanOrEqualTo(srcRp.AngularRange));
+            Assert.That(sparsifiedRp.AngularResolution * 5, Is.GreaterThanOrEqualTo(srcRp.AngularRange));
+        }
+
+        [Test]
         public void DistanceToNearestObstacle()
         {
             Assert.That(_lfmm.DistanceToNearestObstacle(new Vector2(1.5f, 0.5f)), Is.EqualTo(0)); //center of occupied cell
