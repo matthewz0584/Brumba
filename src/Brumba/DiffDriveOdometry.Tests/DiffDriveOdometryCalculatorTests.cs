@@ -62,5 +62,40 @@ namespace Brumba.DiffDriveOdometry.Tests
             Assert.That(nextOdometry.RightTicks, Is.EqualTo(20));
             Assert.That(nextOdometry.Pose, Is.EqualTo(new Pose(new Vector2(10 + 2 * MathHelper.TwoPi, 0), 0)));
 	    }
+
+        //[Test]
+        //public void TicksToAngularVelocity()
+        //{
+        //    Assert.That(_ddoc.TicksToAngularVelocity(10, deltaT: 2), Is.EqualTo(5 * MathHelper.TwoPi / 5).Within(1e-6));
+        //}
+
+        //[Test]
+        //public void Velocity()
+        //{
+        //    float omegaR = 0;
+        //    float omegaL = 0;
+        //    float theta = 0;
+        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3()));
+
+        //    omegaR = 1;
+        //    omegaL = 1;
+        //    theta = 0;
+        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3(1, 0, 0)));
+
+        //    omegaR = -1;
+        //    omegaL = -1;
+        //    theta = 0;
+        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3(-1, 0, 0)));
+
+        //    omegaR = 1;
+        //    omegaL = -1;
+        //    theta = 0;
+        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3(0, 0, 2)));
+
+        //    omegaR = 1;
+        //    omegaL = 1;
+        //    theta = MathHelper.PiOver4;
+        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3(1 / (float)Math.Sqrt(2), 1 / (float)Math.Sqrt(2), 0)));
+        //}
     }
 }

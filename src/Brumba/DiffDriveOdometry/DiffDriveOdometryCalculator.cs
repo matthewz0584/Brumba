@@ -52,5 +52,25 @@ namespace Brumba.DiffDriveOdometry
                 Pose = new Pose(previousDiffDriveOdometry.Pose.Position + poseDelta.Position, previousDiffDriveOdometry.Pose.Bearing + poseDelta.Bearing)
             };
         }
+
+        
+        //public float TicksToAngularVelocity(int deltaTicks, float deltaT)
+        //{
+        //    DC.Contract.Requires(deltaT > 0);
+        //    DC.Contract.Requires(Constants.TicksPerRotation > 0);
+        //    DC.Contract.Requires(Constants.RadiansPerTick > 0);
+
+        //    return deltaTicks / deltaT * Constants.RadiansPerTick;
+        //}
+
+        //public Vector3 CalculateVelocity(float omegaR, float omegaL, float theta)
+        //{
+        //    DC.Contract.Requires(Constants.WheelRadius > 0);
+        //    DC.Contract.Requires(Constants.WheelBase > 0);
+
+        //    return new Vector3(Constants.WheelRadius / 2 * (omegaR + omegaL) * (float)Math.Cos(theta),
+        //                       Constants.WheelRadius / 2 * (omegaR + omegaL) * (float)Math.Sin(theta),
+        //                       Constants.WheelRadius / Constants.WheelBase * (omegaR - omegaL));
+        //}
 	}
 }
