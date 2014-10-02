@@ -67,8 +67,6 @@ namespace Brumba.DiffDriveOdometry
 					Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateOdometry))));
 
 			yield return To.Exec(() => _timerFacade.Set());
-
-		    //Activate(TimeoutPort(5000).Receive(_ => _timerFacade.Dispose()));
 		}
 
 		IEnumerator<ITask> UpdateOdometry(TimeSpan dt)
@@ -82,7 +80,7 @@ namespace Brumba.DiffDriveOdometry
 
                 //LogInfo("Delta t {0}", dt.TotalSeconds);
 				//LogInfo("Left wheel {0}", ds.LeftWheel.EncoderState.CurrentReading);
-			    _state.State = _diffDriveOdometryCalc.UpdateOdometry(_state.State,
+			    _state.State = _diffDriveOdometryCalc.UpdateOdometry(_state.State, dt.TotalSeconds,
                     ds.LeftWheel.EncoderState.CurrentReading, ds.RightWheel.EncoderState.CurrentReading);
 			});
 		}

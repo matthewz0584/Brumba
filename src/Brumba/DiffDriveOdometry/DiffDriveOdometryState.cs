@@ -11,6 +11,8 @@ namespace Brumba.DiffDriveOdometry
         [DataMember]
         public Pose Pose { get; set; }
         [DataMember]
+        public Pose Velocity { get; set; }
+        [DataMember]
         public int LeftTicks { get; set; }
         [DataMember]
         public int RightTicks { get; set; }

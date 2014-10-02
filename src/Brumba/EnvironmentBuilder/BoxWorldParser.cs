@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using Brumba.MapProvider;
 using Brumba.Utils;
+using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Xna.Framework;
@@ -78,5 +79,10 @@ namespace Brumba.Simulation.EnvironmentBuilder
 		{
 			return (MathHelper.ToRadians(UIMath.QuaternionToEuler(q).Y) - MathHelper.Pi).ToPositiveAngle();
 		}
+
+        public static double SimToMapAngularVelocity(rVector3 v)
+        {
+            return v.Y;
+        }
     }
 }

@@ -189,6 +189,9 @@ namespace Brumba.McLrfLocalizer
 
         IEnumerable<float> PreprocessLrfScan(SickLrfPxy.State lrfScan)
         {
+            DC.Contract.Requires(lrfScan != null);
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<float>>().Count() == _state.BeamsNumber);
+
             return lrfScan.DistanceMeasurements.Where((d, i) => i % _takeEachNthBeam == 0).Select(d => d / 1000f).Take(_state.BeamsNumber);
         }
 

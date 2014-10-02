@@ -1,6 +1,7 @@
 ﻿using System;
 using Brumba.Utils;
 using Brumba.WaiterStupid;
+using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
@@ -56,46 +57,41 @@ namespace Brumba.DiffDriveOdometry.Tests
 	    {
 	        var prevOdometry = new DiffDriveOdometryState {LeftTicks = 5, RightTicks = 10, Pose = new Pose(new Vector2(10, 0), 0)};
 
-	        var nextOdometry = _ddoc.UpdateOdometry(prevOdometry, 15, 20);
+	        var nextOdometry = _ddoc.UpdateOdometry(prevOdometry, 2.0, 15, 20);
 
             Assert.That(nextOdometry.LeftTicks, Is.EqualTo(15));
             Assert.That(nextOdometry.RightTicks, Is.EqualTo(20));
             Assert.That(nextOdometry.Pose, Is.EqualTo(new Pose(new Vector2(10 + 2 * MathHelper.TwoPi, 0), 0)));
+            Assert.That(nextOdometry.Velocity, Is.EqualTo(new Pose(new Vector2(MathHelper.TwoPi, 0), 0)));
+
+            nextOdometry = _ddoc.UpdateOdometry(nextOdometry, 1.0, 20, 15);
+
+            Assert.That(nextOdometry.LeftTicks, Is.EqualTo(20));
+            Assert.That(nextOdometry.RightTicks, Is.EqualTo(15));
+            Assert.That(nextOdometry.Pose, Is.EqualTo(new Pose(new Vector2(10 + 2 * MathHelper.TwoPi, 0), -MathHelper.Pi)));
+            Assert.That(nextOdometry.Velocity, Is.EqualTo(new Pose(new Vector2(), -MathHelper.Pi)));
 	    }
 
-        //[Test]
-        //public void TicksToAngularVelocity()
-        //{
-        //    Assert.That(_ddoc.TicksToAngularVelocity(10, deltaT: 2), Is.EqualTo(5 * MathHelper.TwoPi / 5).Within(1e-6));
-        //}
+        [Test]
+        public void TicksToAngularVelocity()
+        {
+            Assert.That(_ddoc.TicksToAngularVelocity(10, deltaT: 2), Is.EqualTo(5 * Constants.Pi2 / 5).Within(1e-6));
+        }
 
-        //[Test]
-        //public void Velocity()
-        //{
-        //    float omegaR = 0;
-        //    float omegaL = 0;
-        //    float theta = 0;
-        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3()));
+        [Test]
+        public void CalculateVelocity()
+        {
+            Assert.That(_ddoc.CalculateVelocity(0, 0, 0), Is.EqualTo(new Pose(new Vector2(), 0)));
 
-        //    omegaR = 1;
-        //    omegaL = 1;
-        //    theta = 0;
-        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3(1, 0, 0)));
+            Assert.That(_ddoc.CalculateVelocity(Constants.Pi2, Constants.Pi2, 0), Is.EqualTo(new Pose(new Vector2(MathHelper.TwoPi, 0), 0)));
 
-        //    omegaR = -1;
-        //    omegaL = -1;
-        //    theta = 0;
-        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3(-1, 0, 0)));
+            Assert.That(_ddoc.CalculateVelocity(-1, -1, 0), Is.EqualTo(new Pose(new Vector2(-1, 0), 0)));
 
-        //    omegaR = 1;
-        //    omegaL = -1;
-        //    theta = 0;
-        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3(0, 0, 2)));
+            Assert.That(_ddoc.CalculateVelocity(1, -1, 0), Is.EqualTo(new Pose(new Vector2(0, 0), 0.5)));
 
-        //    omegaR = 1;
-        //    omegaL = 1;
-        //    theta = MathHelper.PiOver4;
-        //    Assert.That(_odometryCalc.CalculateVelocity(omegaR, omegaL, theta), Is.EqualTo(new Vector3(1 / (float)Math.Sqrt(2), 1 / (float)Math.Sqrt(2), 0)));
-        //}
+            Assert.That(_ddoc.CalculateVelocity(1, 1, MathHelper.PiOver4), Is.EqualTo(new Pose(new Vector2(1 / (float)Constants.Sqrt2, 1 / (float)Constants.Sqrt2), 0)));
+
+            Assert.That(_ddoc.CalculateVelocity(1, 0, 0), Is.EqualTo(new Pose(new Vector2(0.5f, 0), 0.25)));
+        }
     }
 }

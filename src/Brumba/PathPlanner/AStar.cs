@@ -44,6 +44,9 @@ namespace Brumba.PathPlanner
 
 		static List<TState> PathTo(SearchNode node)
 		{
+            DC.Contract.Requires(node != null);
+            DC.Contract.Ensures(DC.Contract.Result<List<TState>>() != null);
+
 			var path = new List<TState>();
 			while (node.Parent != null)
 			{
