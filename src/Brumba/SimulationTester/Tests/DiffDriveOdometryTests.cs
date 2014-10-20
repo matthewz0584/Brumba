@@ -34,7 +34,7 @@ namespace Brumba.SimulationTester.Tests
             OdometryPort = testerService.ForwardTo<DiffDriveOdometry.Proxy.DiffDriveOdometryOperations>("odometry@");
 		}
 
-		//[SimTest(8)]
+		[SimTest(8)]
 		public class DriveStraight
 		{
             [Fixture]
@@ -68,39 +68,41 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}
 
-		[SimTest(4 * 2)]
-		public class RotateOnPlace
-		{
+        [SimTest(4 * 2)]
+        public class RotateOnPlace
+        {
             [Fixture]
             public DiffDriveOdometryTests Fixture { get; set; }
 
-			[Start]
+            [Start]
             public IEnumerator<ITask> Start()
-			{
-				//Execs for synchronization, otherwise set power message can arrive before enable message
-				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
-				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(-0.2, 0.2));
-			}
+            {
+                //Execs for synchronization, otherwise set power message can arrive before enable message
+                yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
+                //yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(-0.2, 0.2));
+                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(-0.6, 0.6));
+            }
 
-			[Test]
+            [Test]
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
-			{
+            {
                 DiffDriveOdometry.Proxy.DiffDriveOdometryState odometry = null;
                 yield return Fixture.OdometryPort.Get().Receive(os => odometry = os.State);
 
                 var simBearing = BoxWorldParser.SimToMap(ExtractPose(simStateEntities).Orientation);
-                var simAngularVelocity = BoxWorldParser.SimToMapAngularVelocity(ExtractAngularVelocity(simStateEntities));
 
                 var thetaDifference = MathHelper2.AngleDifference(odometry.Pose.Bearing, simBearing);
-                @return(thetaDifference / Math.Abs(odometry.Pose.Bearing) <= 0.05 && odometry.Pose.Position == new Vector2() &&
-                        odometry.Velocity.Bearing.AlmostEqualWithError(simAngularVelocity, 0.05) && odometry.Velocity.Position == new Vector2());
-
-				//Fixture.TesterService.LogInfo("From Odometry {0}", angleFromOdometry);
-				//Fixture.TesterService.LogInfo("From Odometry {0} truncated", MathHelper2.ToPositiveAngle(angleFromOdometry));
-				//Fixture.TesterService.LogInfo("From Simulation {0}", MathHelper2.ToPositiveAngle(angleFromSim));
-                Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, thetaDifference / Math.Abs(odometry.Pose.Bearing));
-			}
-		}
+                @return(thetaDifference / Math.Abs(odometry.Pose.Bearing) <= 0.02 && odometry.Pose.Position == new Vector2() &&
+                //Velocity component total differential (left and right wheels ticks are variables) is 2 * WheelRadius * RadiansPerTick / (deltaT * WheelBase) * (deltaTicksR - deltaTicksL),
+                //Which equals 0.44 * 2 given test constants and possible offset by 1 tick due to ticks and time delta discretization
+                //Velocity from simulation is too noisy (but generally corresponds with predicted result), so I compare with velocity calculated using simulation entity code constants,
+                //Which occures to be equal to 10.05 * p for this test settings
+                        odometry.Velocity.Bearing.AlmostEqualWithError(6, 0.45) && odometry.Velocity.Position == new Vector2());
+                
+                Fixture.TesterService.LogInfo(LogCategory.ActualAndExpectedValues, odometry.Velocity.Bearing, 6, "Angular velocity");
+                //Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, thetaDifference / Math.Abs(odometry.Pose.Bearing));
+            }
+        }
 
         [SimTest(12 + 1)]//Full circle time + correction for acceleration
         public class CircleTrajectory
@@ -119,18 +121,25 @@ namespace Brumba.SimulationTester.Tests
             [Test]
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
-				var odometryPose = new bPose();
-                yield return Fixture.OdometryPort.Get().Receive(os => odometryPose = os.State.Pose);
+                DiffDriveOdometry.Proxy.DiffDriveOdometryState odometry = null;
+                yield return Fixture.OdometryPort.Get().Receive(os => odometry = os.State);
 
 	            var simPosition = BoxWorldParser.SimToMap(ExtractPose(simStateEntities).Position);
+                var simVelocity = BoxWorldParser.SimToMap(ExtractVelocity(simStateEntities));
 				var simBearing = BoxWorldParser.SimToMap(ExtractPose(simStateEntities).Orientation);
+                var simAngularVelocity = BoxWorldParser.SimToMapAngularVelocity(ExtractAngularVelocity(simStateEntities));
 
-				var thetaDifference = MathHelper2.AngleDifference((float)odometryPose.Bearing, (float)simBearing);
-                @return(thetaDifference / Math.Abs(odometryPose.Bearing) <= 0.05 &&
-                        //1.1 - radius of circle trajectory (1.1 - from sim, 1.06 - from calculation)
-                        (odometryPose.Position - simPosition).Length() / (MathHelper.TwoPi * 1.1) <= 0.05);
+				var thetaDifference = MathHelper2.AngleDifference((float)odometry.Pose.Bearing, (float)simBearing);
+                //1.1 - radius of circle trajectory (1.1 - from sim, 1.06 - theoretical)
+                @return(thetaDifference / Math.Abs(odometry.Pose.Bearing) <= 0.05 && (odometry.Pose.Position - simPosition).Length() / (MathHelper.TwoPi * 1.1) <= 0.05 &&
+                //Angular velocity hits almost always to correct value, i.e. no errors due to discretization occures
+                //Linear velocity could have error in both coordinates, so absolute error is 0.18 = (0.13^2 + 0.13^2)^0.5
+                        odometry.Velocity.Position.EqualsWithError(simVelocity, 0.18) && odometry.Velocity.Bearing.AlmostEqualWithAbsoluteError(simAngularVelocity, odometry.Velocity.Bearing - simAngularVelocity, 0.1));
 
-                Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, thetaDifference / Math.Abs(odometryPose.Bearing), (odometryPose.Position - simPosition).Length() / (MathHelper.TwoPi * 1.1));
+                //Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, thetaDifference / Math.Abs(odometry.Pose.Bearing), (odometry.Pose.Position - simPosition).Length() / (MathHelper.TwoPi * 1.1), "position");
+                //Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, (simVelocity - odometry.Velocity.Position).Length(), 0, "linear velocity");
+                //Fixture.TesterService.LogInfo(LogCategory.ActualAndExpectedValues, odometry.Velocity.Position, simVelocity, "linear velocity");
+                //Fixture.TesterService.LogInfo(LogCategory.ActualAndExpectedValues, odometry.Velocity.Bearing, simAngularVelocity, "angular velocity");
             }
         }
 
@@ -156,10 +165,12 @@ namespace Brumba.SimulationTester.Tests
         [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]
         [CategoryArgument(0, "Ratio1")]
         [CategoryArgument(1, "Ratio2")]
+        [CategoryArgument(2, "Description")]
         ActualToExpectedRatio,
 		[OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]
 		[CategoryArgument(0, "Actual value")]
 		[CategoryArgument(1, "Expected value")]
-		ActualAndExpectedValues,
+        [CategoryArgument(2, "Description")]
+		ActualAndExpectedValues
     }
 }

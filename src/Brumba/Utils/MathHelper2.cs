@@ -98,7 +98,7 @@ namespace Brumba.Utils
 		{
             Contract.Requires(relativeError >= 0);
 
-            return (notMe - me).LengthSquared() <= relativeError * relativeError * me.LengthSquared();
+            return me.EqualsWithError(notMe, relativeError * me.Length());
 		}
 
         public static bool EqualsRelatively(this Vector3 me, Vector3 notMe, double relativeError)
@@ -114,6 +114,13 @@ namespace Brumba.Utils
 
             return (notMe - me).LengthSquared() <= relativeError * relativeError * me.LengthSquared();
 		}
+
+        public static bool EqualsWithError(this Vector2 me, Vector2 notMe, double lengthError)
+        {
+            Contract.Requires(lengthError >= 0);
+
+            return (notMe - me).LengthSquared() <= lengthError * lengthError;
+        }
 
         [Pure]
         public static bool Between(this float me, float lower, float upper)

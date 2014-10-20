@@ -89,5 +89,17 @@ namespace Brumba.Utils.Tests
             Assert.That(MathHelper2.AngleMean(new[] { Constants.PiOver4, 7 * Constants.PiOver4 }), Is.EqualTo(0).Within(1e-5));
             Assert.That(MathHelper2.AngleMean(new[] { Constants.PiOver4, 5 * Constants.PiOver4 }), Is.NaN);
         }
+
+        [Test]
+        public void VectorEqualsWithError()
+        {
+            Assert.That(new Vector2(10, 0).EqualsWithError(new Vector2(11, 0), 1));
+            Assert.That(new Vector2(10, 0).EqualsWithError(new Vector2(12, 0), 1), Is.False);
+            Assert.That(new Vector2(10, 0).EqualsWithError(new Vector2(9, 0), 1));
+            Assert.That(new Vector2(10, 0).EqualsWithError(new Vector2(8, 0), 1), Is.False);
+
+            Assert.That(new Vector2(3, 4).EqualsWithError(new Vector2(3.0f, 3.0f), 1));
+            Assert.That(new Vector2(3, 4).EqualsWithError(new Vector2(3.0f, 2.9f), 1), Is.False);
+        }
     }
 }

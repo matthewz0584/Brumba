@@ -79,7 +79,7 @@ namespace Brumba.DiffDriveOdometry
                 DC.Contract.Requires(ds.RightWheel.EncoderState != null);
 
                 //LogInfo("Delta t {0}", dt.TotalSeconds);
-				//LogInfo("Left wheel {0}", ds.LeftWheel.EncoderState.CurrentReading);
+                //LogInfo("Ticks {0}, {1}", ds.LeftWheel.EncoderState.CurrentReading, ds.RightWheel.EncoderState.CurrentReading);
 			    _state.State = _diffDriveOdometryCalc.UpdateOdometry(_state.State, dt.TotalSeconds,
                     ds.LeftWheel.EncoderState.CurrentReading, ds.RightWheel.EncoderState.CurrentReading);
 			});
