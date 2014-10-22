@@ -7,6 +7,7 @@
     <assembly path="McLrfLocalizer.Tests\bin\x86\Debug\Brumba.McLrfLocalizer.Tests.dll" />
     <assembly path="DiffDriveOdometry.Tests\bin\x86\Debug\Brumba.DiffDriveOdometry.Tests.dll" />
     <assembly path="PathPlanner.Tests\bin\x86\Debug\Brumba.PathPlanner.Tests.dll" />
+    <assembly path="DwaNavigator.Tests\bin\x86\Debug\Brumba.DwaNavigator.Tests.dll" />
   </Config>
   <Config name="Release" binpathtype="Auto" />
 </NUnitProject>
