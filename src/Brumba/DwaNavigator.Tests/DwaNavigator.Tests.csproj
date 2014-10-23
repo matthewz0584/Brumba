@@ -64,7 +64,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="QqTests.cs" />
+    <Compile Include="ObstaclesOnLaneDistanceCalculator.cs" />
+    <Compile Include="ObstaclesOnLaneDistanceCalculatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
