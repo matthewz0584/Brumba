@@ -64,11 +64,15 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ObstaclesOnLaneDistanceCalculator.cs" />
+    <Compile Include="AngleToTargetPredictorTests.cs" />
     <Compile Include="ObstaclesOnLaneDistanceCalculatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DwaNavigator\DwaNavigator.csproj">
+      <Project>{6293a5da-4179-4b3d-93b5-84239b65c1a7}</Project>
+      <Name>DwaNavigator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>

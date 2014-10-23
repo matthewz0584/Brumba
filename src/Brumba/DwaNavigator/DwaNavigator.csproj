@@ -7,8 +7,8 @@
     <ProjectGuid>{6293A5DA-4179-4B3D-93B5-84239B65C1A7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brumba.McLrfLocalizer</RootNamespace>
-    <AssemblyName>Brumba.McLrfLocalizer</AssemblyName>
+    <RootNamespace>Brumba.DwaNavigator</RootNamespace>
+    <AssemblyName>Brumba.DwaNavigator</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
@@ -126,6 +126,8 @@
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AngleToTargetPredictor.cs" />
+    <Compile Include="ObstaclesOnLaneDistanceCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

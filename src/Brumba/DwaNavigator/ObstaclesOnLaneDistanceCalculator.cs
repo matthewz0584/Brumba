@@ -4,7 +4,7 @@ using System.Linq;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 
-namespace Brumba.DwaNavigator.Tests
+namespace Brumba.DwaNavigator
 {
     public class ObstaclesOnLaneDistanceCalculator
     {
