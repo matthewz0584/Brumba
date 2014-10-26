@@ -13,6 +13,9 @@ namespace Brumba.DwaNavigator
 
         public AngleToTargetPredictor(Vector2 target, double maxAngularAcceleration, double dt)
         {
+            DC.Contract.Requires(maxAngularAcceleration > 0);
+            DC.Contract.Requires(dt > 0);
+
             _target = target;
             _maxAngularAcceleration = maxAngularAcceleration;
             _dt = dt;
@@ -20,32 +23,42 @@ namespace Brumba.DwaNavigator
 
         public double Evaluate(Pose pose, Velocity v)
         {
+            DC.Contract.Requires(v.Linear >= 0);
+            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0 && DC.Contract.Result<double>() <= Math.PI);
+
             return GetAngleToTarget(MergeSequentialPoseDeltas(pose, PredictPoseDelta(v)));
         }
 
         public Pose PredictPoseDelta(Velocity v)
         {
+            DC.Contract.Requires(v.Linear >= 0);
+
             var angularVelocity2 = CalculateAngularVelocityAfterDeceleration(v.Angular);
 
             return MergeSequentialPoseDeltas(
-                ChooseMotionModel(v.Angular).PredictPoseDelta(v, _dt),
-                ChooseMotionModel(angularVelocity2).PredictPoseDelta(new Velocity(v.Linear, angularVelocity2), _dt));
+                ChooseMotionModel(v).PredictPoseDelta(_dt),
+                ChooseMotionModel(new Velocity(v.Linear, angularVelocity2)).PredictPoseDelta(_dt));
         }
 
         public double GetAngleToTarget(Pose pose)
         {
+            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0 && DC.Contract.Result<double>() <= Math.PI);
+
             return Math.Acos(Vector2.Dot(
                                 Vector2.Normalize(_target - pose.Position),
                                 new Vector2((float)Math.Cos(pose.Bearing), (float)Math.Sin(pose.Bearing))));
         }
 
-        IMotionModel ChooseMotionModel(double angularVelocity)
+        IMotionModel ChooseMotionModel(Velocity v)
         {
-            return Math.Abs(angularVelocity) < 1e-5 ? (IMotionModel)new LineMotionModel() : new CircleMotionModel();
+            return Math.Abs(v.Angular) < 1e-5 ? (IMotionModel)new LineMotionModel(v.Linear) : new CircleMotionModel(v);
         }
 
         double CalculateAngularVelocityAfterDeceleration(double angularVelocity)
         {
+            DC.Contract.Ensures(angularVelocity == 0 && DC.Contract.Result<double>() == 0 ||
+                                angularVelocity != 0 && Math.Abs(DC.Contract.Result<double>()) < Math.Abs(angularVelocity));
+
             var neededDeceleration = - angularVelocity/_dt;
             var angularVelocityDecelerated = Math.Abs(neededDeceleration) > _maxAngularAcceleration
                 ? angularVelocity - Math.Sign(angularVelocity) * _maxAngularAcceleration*_dt : 0;

@@ -12,7 +12,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void PredictPoseDeltaLineAfterLine()
         {
-            var atp = new AngleToTargetPredictor(target: new Vector2(), maxAngularAcceleration: 0, dt: 0.1);
+            var atp = new AngleToTargetPredictor(target: new Vector2(), maxAngularAcceleration: 1, dt: 0.1);
 
             //Robot moves on line over the first time delta, thus there is no need to damp angular velocity over the second delta.
             //Hence, robot proceeds in moving on line over the second time delta.
@@ -53,7 +53,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void GetAngleToTarget()
         {
-            var atp = new AngleToTargetPredictor(new Vector2(10, 0), 0, 0);
+            var atp = new AngleToTargetPredictor(new Vector2(10, 0), 1, 1);
 
             Assert.That(atp.GetAngleToTarget(pose: new Pose(new Vector2(0, 0), 0)), Is.EqualTo(0));
 

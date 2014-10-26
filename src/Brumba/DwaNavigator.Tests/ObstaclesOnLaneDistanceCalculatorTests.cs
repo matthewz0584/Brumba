@@ -36,27 +36,29 @@ namespace Brumba.DwaNavigator.Tests
         public void DistancesToObstaclesOnCircle()
         {
             var dc = new ObstaclesOnLaneDistanceCalculator(1);
+            var cmm = new CircleMotionModel(new Velocity(5, 1));
 
             //No obstacles
-            Assert.That(dc.DistancesToObstaclesOnCircle(circleRadius: 5, obstacles: new Vector2[0]), Is.Empty);
+            
+            Assert.That(dc.DistancesToObstaclesOnCircle(cmm, obstacles: new Vector2[0]), Is.Empty);
 
             //Obstacle is not on the lane
-            Assert.That(dc.DistancesToObstaclesOnCircle(5, new[] { new Vector2(10, 10) }), Is.Empty);
+            Assert.That(dc.DistancesToObstaclesOnCircle(cmm, new[] { new Vector2(10, 10) }), Is.Empty);
 
             //Obstacle is exactly on X axis
-            Assert.That(dc.DistancesToObstaclesOnCircle(5, new[] { new Vector2(0, 10) }).Single(), Is.EqualTo(Constants.Pi * 5));
+            Assert.That(dc.DistancesToObstaclesOnCircle(cmm, new[] { new Vector2(0, 10) }).Single(), Is.EqualTo(Constants.Pi * 5));
             //Obstacle on positive part of the lane
-            Assert.That(dc.DistancesToObstaclesOnCircle(5, new[] { new Vector2(0.1f, 10) }).Single(), Is.LessThan(Constants.Pi * 5));
+            Assert.That(dc.DistancesToObstaclesOnCircle(cmm, new[] { new Vector2(0.1f, 10) }).Single(), Is.LessThan(Constants.Pi * 5));
             //Obstacle on negative part of the lane
-            Assert.That(dc.DistancesToObstaclesOnCircle(5, new[] { new Vector2(-0.1f, 10) }).Single(), Is.GreaterThan(Constants.Pi * 5));
+            Assert.That(dc.DistancesToObstaclesOnCircle(cmm, new[] { new Vector2(-0.1f, 10) }).Single(), Is.GreaterThan(Constants.Pi * 5));
             //Obstacle is exactly on the border of lane
-            Assert.That(dc.DistancesToObstaclesOnCircle(5, new[] { new Vector2(0, 11) }).Single(), Is.EqualTo(Constants.Pi * 5));
+            Assert.That(dc.DistancesToObstaclesOnCircle(cmm, new[] { new Vector2(0, 11) }).Single(), Is.EqualTo(Constants.Pi * 5));
             //Obstacle on positive part of the lane, but has negative Y
-            Assert.That(dc.DistancesToObstaclesOnCircle(5, new[] { new Vector2(1.1f, -0.05f) }).Single(), Is.GreaterThan(0));
+            Assert.That(dc.DistancesToObstaclesOnCircle(cmm, new[] { new Vector2(1.1f, -0.05f) }).Single(), Is.GreaterThan(0));
             //Curve down
-            Assert.That(dc.DistancesToObstaclesOnCircle(-5, new[] { new Vector2(0, -10) }).Single(), Is.EqualTo(Constants.Pi * 5));
+            Assert.That(dc.DistancesToObstaclesOnCircle(new CircleMotionModel(new Velocity(5, -1)), new[] { new Vector2(0, -10) }).Single(), Is.EqualTo(Constants.Pi * 5));
             //Two obstacles are exactly on X axis
-            Assert.That(dc.DistancesToObstaclesOnCircle(5, new[] {new Vector2(0, 9), new Vector2(0, 11)}),
+            Assert.That(dc.DistancesToObstaclesOnCircle(cmm, new[] {new Vector2(0, 9), new Vector2(0, 11)}),
                 Is.EquivalentTo(new[] {Constants.Pi * 5, Constants.Pi * 5}));
         }
 

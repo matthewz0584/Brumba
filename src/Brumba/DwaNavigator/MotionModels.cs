@@ -4,43 +4,71 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
+    [DC.ContractClassAttribute(typeof(IMotionModelContract))]
     public interface IMotionModel
     {
-        Pose PredictPoseDelta(Velocity v, double dt);
+        Pose PredictPoseDelta(double dt);
+    }
+
+    [DC.ContractClassForAttribute(typeof(IMotionModel))]
+    abstract class IMotionModelContract : IMotionModel
+    {
+        public Pose PredictPoseDelta(double dt)
+        {
+            DC.Contract.Requires(dt > 0);
+            return default(Pose);
+        }
     }
 
     public class CircleMotionModel : IMotionModel
     {
-        public Pose PredictPoseDelta(Velocity v, double dt)
+        private readonly Velocity _v;
+        private readonly double _radius;
+        private readonly Vector2 _center;
+
+        public CircleMotionModel(Velocity v)
         {
             DC.Contract.Requires(v.Angular != 0);
+            DC.Contract.Ensures(Radius > double.MinValue && Radius < double.MaxValue);
+            DC.Contract.Ensures(Center.Y == (float)Radius);
 
+            _v = v;
+            _radius = v.Linear / v.Angular;
+            _center = new Vector2(0, (float)_radius);
+        }
+
+        public Pose PredictPoseDelta(double dt)
+        {
             return new Pose(
-                GetCenter(v) + Vector2.Transform(-GetCenter(v), Matrix.CreateRotationZ((float)(v.Angular * dt))),
-                v.Angular * dt);
+                Center + Vector2.Transform(-Center, Matrix.CreateRotationZ((float)(_v.Angular * dt))),
+                _v.Angular * dt);
         }
 
-        public Vector2 GetCenter(Velocity v)
+        public Vector2 Center
         {
-            return new Vector2(0, (float)GetRadius(v));
+            get { return _center; }
         }
 
-        public double GetRadius(Velocity v)
+        public double Radius
         {
-            return v.Linear / v.Angular;
+            get { return _radius; }
         }
     }
 
     public class LineMotionModel : IMotionModel
     {
-        public Pose PredictPoseDelta(double linearVelocity, double dt)
+        private readonly double _linearVelocity;
+
+        public LineMotionModel(double linearVelocity)
         {
-            return new Pose(new Vector2((float)(linearVelocity * dt), 0), 0);
+            _linearVelocity = linearVelocity;
         }
 
-        public Pose PredictPoseDelta(Velocity v, double dt)
+        public Pose PredictPoseDelta(double dt)
         {
-            return PredictPoseDelta(v.Linear, dt);
+            DC.Contract.Ensures(DC.Contract.Result<Pose>().Position.Y == 0 && DC.Contract.Result<Pose>().Bearing == 0);
+
+            return new Pose(new Vector2((float)(_linearVelocity * dt), 0), 0);
         }
     }
 }
