@@ -15,11 +15,11 @@ namespace Brumba.DwaNavigator
             _robotRadius = robotRadius;
         }
 
-        public double GetDistanceToClosestObstacle(double linearVelocity, double angularVelocity, IEnumerable<Vector2> obstacles)
+        public double GetDistanceToClosestObstacle(Velocity v, IEnumerable<Vector2> obstacles)
         {
-            return (angularVelocity == 0
+            return (v.Angular == 0
                 ? DistancesToObstaclesOnLine(obstacles)
-                : DistancesToObstaclesOnCircle(linearVelocity / angularVelocity, obstacles)).
+                : DistancesToObstaclesOnCircle(v.Linear / v.Angular, obstacles)).
                 DefaultIfEmpty(float.PositiveInfinity).Min() - _robotRadius;
         }
 

@@ -194,3 +194,5 @@ ccbaseline.xml.new
 # Brumba
 libs/Telerik.*
 *.DotSettings
+*[Qq][Qq]
+[Qq][Qq]*

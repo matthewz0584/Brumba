@@ -127,8 +127,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AngleToTargetPredictor.cs" />
+    <Compile Include="MotionModels.cs" />
     <Compile Include="ObstaclesOnLaneDistanceCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Velocity.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">

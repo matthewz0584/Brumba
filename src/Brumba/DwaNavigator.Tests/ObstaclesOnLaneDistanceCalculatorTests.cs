@@ -66,13 +66,13 @@ namespace Brumba.DwaNavigator.Tests
             var dc = new ObstaclesOnLaneDistanceCalculator(robotRadius: 1d);
 
             //One obstacle staright ahead, moving on line
-            Assert.That(double.IsPositiveInfinity(dc.GetDistanceToClosestObstacle(50, 0, new Vector2[0])));
+            Assert.That(double.IsPositiveInfinity(dc.GetDistanceToClosestObstacle(new Velocity(50, 0), new Vector2[0])));
 
             //One obstacle staright ahead, moving on line
-            Assert.That(dc.GetDistanceToClosestObstacle(50, 0, new[] { new Vector2(3, 0) }), Is.EqualTo(2));
+            Assert.That(dc.GetDistanceToClosestObstacle(new Velocity(50, 0), new[] { new Vector2(3, 0) }), Is.EqualTo(2));
 
             //Obstacle is exactly on X axis, moving on circle
-            Assert.That(dc.GetDistanceToClosestObstacle(50, 10, new[] { new Vector2(0, 10) }), Is.EqualTo(Constants.Pi * 5 - 1));
+            Assert.That(dc.GetDistanceToClosestObstacle(new Velocity(50, 10), new[] { new Vector2(0, 10) }), Is.EqualTo(Constants.Pi * 5 - 1));
         }
     }
 }

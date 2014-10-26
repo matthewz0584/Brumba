@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AngleToTargetPredictorTests.cs" />
+    <Compile Include="MotionModelsTests.cs" />
     <Compile Include="ObstaclesOnLaneDistanceCalculatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
