@@ -10,7 +10,7 @@ namespace Brumba.DwaNavigator.Tests
     public class MotionModelsTests
     {
         [Test]
-        public void CircleMotionModelPredictPoseDeltaTest()
+        public void CircleMotionModelPredictPoseDelta()
         {
             Assert.That(new CircleMotionModel(new Velocity(2, Constants.PiOver2 / 0.1)).PredictPoseDelta(dt: 0.1),
                 Is.EqualTo(new Pose(new Vector2((float)(2 / (Constants.PiOver2 / 0.1)), (float)(2 / (Constants.PiOver2 / 0.1))), Constants.PiOver2)));
@@ -28,7 +28,7 @@ namespace Brumba.DwaNavigator.Tests
         }
 
         [Test]
-        public void CircleMotionModelGetCenterTest()
+        public void CircleMotionModelGetCenter()
         {
             Assert.That(new CircleMotionModel(new Velocity(6, 2)).Center, Is.EqualTo(new Vector2(0, 3)));
             Assert.That(new CircleMotionModel(new Velocity(6, -2)).Center, Is.EqualTo(new Vector2(0, -3)));
@@ -36,7 +36,7 @@ namespace Brumba.DwaNavigator.Tests
         }
 
         [Test]
-        public void CircleMotionModelGetRadiusTest()
+        public void CircleMotionModelGetRadius()
         {
             Assert.That(new CircleMotionModel(new Velocity(6, 2)).Radius, Is.EqualTo(3));
             Assert.That(new CircleMotionModel(new Velocity(6, -2)).Radius, Is.EqualTo(-3));
@@ -44,7 +44,7 @@ namespace Brumba.DwaNavigator.Tests
         }
 
         [Test]
-        public void LineMotionModelTest()
+        public void LineMotionModel()
         {
             Assert.That(new LineMotionModel(2).PredictPoseDelta(dt: 0.1), Is.EqualTo(new Pose(new Vector2((float)(2 * 0.1), 0), 0)));
 

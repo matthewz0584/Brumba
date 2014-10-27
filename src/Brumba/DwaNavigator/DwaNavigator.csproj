@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AngleToTargetPredictor.cs" />
+    <Compile Include="DynamicDiamondGenerator.cs" />
     <Compile Include="MotionModels.cs" />
     <Compile Include="ObstaclesOnLaneDistanceCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
