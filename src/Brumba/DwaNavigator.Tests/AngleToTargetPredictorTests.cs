@@ -72,14 +72,14 @@ namespace Brumba.DwaNavigator.Tests
             Assert.That(atp.Evaluate(pose: new Pose(new Vector2(0, 2), 0), v: new Velocity(2, 0)),
                 Is.EqualTo(0));
 
-            Assert.That(atp.Evaluate(new Pose(new Vector2(0, 2), 0), new Velocity(0, 0.75 * Constants.Pi / 0.1)),
+            Assert.That(atp.Evaluate(new Velocity(0, 0.75 * Constants.Pi / 0.1), new Pose(new Vector2(0, 2), 0)),
                 Is.EqualTo(Constants.Pi));
 
-            var ev1 = atp.Evaluate(new Pose(new Vector2(0, 2), 0), new Velocity(2, Constants.PiOver2 / 0.1));
+            var ev1 = atp.Evaluate(new Velocity(2, Constants.PiOver2 / 0.1), new Pose(new Vector2(0, 2), 0));
             Assert.That(ev1, 
                 Is.GreaterThan(Constants.PiOver2).And.LessThan(3 * Constants.PiOver4));
 
-            Assert.That(atp.Evaluate(new Pose(new Vector2(0, 2), 0), new Velocity(2, -Constants.PiOver2 / 0.1)),
+            Assert.That(atp.Evaluate(new Velocity(2, -Constants.PiOver2 / 0.1), new Pose(new Vector2(0, 2), 0)),
                 Is.EqualTo(ev1));
         }
     }

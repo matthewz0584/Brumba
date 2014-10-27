@@ -56,6 +56,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\..\..\utils\NSubstitute.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\utils\nunit.framework.dll</HintPath>
@@ -65,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AngleToTargetPredictorTests.cs" />
+    <Compile Include="DwaProblemOptimizerTests.cs" />
     <Compile Include="DynamicDiamondGeneratorTests.cs" />
     <Compile Include="MotionModelsTests.cs" />
     <Compile Include="ObstaclesOnLaneDistanceCalculatorTests.cs" />
@@ -74,6 +78,10 @@
     <ProjectReference Include="..\DwaNavigator\DwaNavigator.csproj">
       <Project>{6293a5da-4179-4b3d-93b5-84239b65c1a7}</Project>
       <Name>DwaNavigator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
+      <Project>{3D1F586F-6408-49E2-83BC-C80716D1C62D}</Project>
+      <Name>McLrfLocalizer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>

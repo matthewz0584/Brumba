@@ -21,7 +21,7 @@ namespace Brumba.DwaNavigator
             _dt = dt;
         }
 
-        public double Evaluate(Pose pose, Velocity v)
+        public double Evaluate(Velocity v, Pose pose)
         {
             DC.Contract.Requires(v.Linear >= 0);
             DC.Contract.Ensures(DC.Contract.Result<double>() >= 0 && DC.Contract.Result<double>() <= Math.PI);

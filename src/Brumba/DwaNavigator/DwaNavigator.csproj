@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AngleToTargetPredictor.cs" />
+    <Compile Include="DwaProblemOptimizer.cs" />
     <Compile Include="DynamicDiamondGenerator.cs" />
     <Compile Include="MotionModels.cs" />
     <Compile Include="ObstaclesOnLaneDistanceCalculator.cs" />
@@ -137,6 +138,10 @@
     <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
       <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
       <Name>DsspUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
+      <Project>{3D1F586F-6408-49E2-83BC-C80716D1C62D}</Project>
+      <Name>McLrfLocalizer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
