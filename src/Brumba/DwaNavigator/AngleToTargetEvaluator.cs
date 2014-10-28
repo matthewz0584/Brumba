@@ -5,9 +5,9 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
-    public class AngleToTargetPredictor : IVelocityEvaluator
+    public class AngleToTargetEvaluator : IVelocityEvaluator
     {
-        public AngleToTargetPredictor(Pose pose, Vector2 target, double maxAngularAcceleration, double dt)
+        public AngleToTargetEvaluator(Pose pose, Vector2 target, double maxAngularAcceleration, double dt)
         {
             DC.Contract.Requires(maxAngularAcceleration > 0);
             DC.Contract.Requires(dt > 0);

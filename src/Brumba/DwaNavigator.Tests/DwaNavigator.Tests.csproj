@@ -67,11 +67,11 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AngleToTargetPredictorTests.cs" />
+    <Compile Include="AngleToTargetEvaluatorTests.cs" />
     <Compile Include="DwaProblemOptimizerTests.cs" />
     <Compile Include="DynamicDiamondGeneratorTests.cs" />
     <Compile Include="MotionModelsTests.cs" />
-    <Compile Include="ObstaclesOnLaneDistanceCalculatorTests.cs" />
+    <Compile Include="ObstaclesEvaluatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

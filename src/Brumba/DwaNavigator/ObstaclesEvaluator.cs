@@ -7,9 +7,9 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
-    public class ObstaclesOnLaneDistanceCalculator : IVelocityEvaluator
+    public class ObstaclesEvaluator : IVelocityEvaluator
     {
-        public ObstaclesOnLaneDistanceCalculator(IEnumerable<Vector2> obstacles, double robotRadius, double linearDecelerationMax, double maxRange)
+        public ObstaclesEvaluator(IEnumerable<Vector2> obstacles, double robotRadius, double linearDecelerationMax, double maxRange)
         {
             DC.Contract.Requires(robotRadius > 0);
             DC.Contract.Requires(obstacles != null);
