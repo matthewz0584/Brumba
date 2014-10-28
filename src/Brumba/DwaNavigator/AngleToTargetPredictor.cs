@@ -5,28 +5,29 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
-    public class AngleToTargetPredictor
+    public class AngleToTargetPredictor : IVelocityEvaluator
     {
-        private readonly Vector2 _target;
-        private readonly double _maxAngularAcceleration;
-        private readonly double _dt;
-
-        public AngleToTargetPredictor(Vector2 target, double maxAngularAcceleration, double dt)
+        public AngleToTargetPredictor(Pose pose, Vector2 target, double maxAngularAcceleration, double dt)
         {
             DC.Contract.Requires(maxAngularAcceleration > 0);
             DC.Contract.Requires(dt > 0);
 
-            _target = target;
-            _maxAngularAcceleration = maxAngularAcceleration;
-            _dt = dt;
+            Pose = pose;
+            Target = target;
+            MaxAngularAcceleration = maxAngularAcceleration;
+            Dt = dt;
         }
 
-        public double Evaluate(Velocity v, Pose pose)
-        {
-            DC.Contract.Requires(v.Linear >= 0);
-            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0 && DC.Contract.Result<double>() <= Math.PI);
+        public Pose Pose { get; private set; }
+        public Vector2 Target { get; private set; }
+        public double MaxAngularAcceleration { get; private set; }
+        public double Dt { get; private set; }
 
-            return GetAngleToTarget(MergeSequentialPoseDeltas(pose, PredictPoseDelta(v)));
+        public double Evaluate(Velocity v)
+        {
+            DC.Contract.Assert(v.Linear >= 0);
+
+            return GetAngleToTarget(MergeSequentialPoseDeltas(Pose, PredictPoseDelta(v))) / Math.PI;
         }
 
         public Pose PredictPoseDelta(Velocity v)
@@ -36,8 +37,8 @@ namespace Brumba.DwaNavigator
             var angularVelocity2 = CalculateAngularVelocityAfterDeceleration(v.Angular);
 
             return MergeSequentialPoseDeltas(
-                ChooseMotionModel(v).PredictPoseDelta(_dt),
-                ChooseMotionModel(new Velocity(v.Linear, angularVelocity2)).PredictPoseDelta(_dt));
+                ChooseMotionModel(v).PredictPoseDelta(Dt),
+                ChooseMotionModel(new Velocity(v.Linear, angularVelocity2)).PredictPoseDelta(Dt));
         }
 
         public double GetAngleToTarget(Pose pose)
@@ -45,7 +46,7 @@ namespace Brumba.DwaNavigator
             DC.Contract.Ensures(DC.Contract.Result<double>() >= 0 && DC.Contract.Result<double>() <= Math.PI);
 
             return Math.Acos(Vector2.Dot(
-                                Vector2.Normalize(_target - pose.Position),
+                                Vector2.Normalize(Target - pose.Position),
                                 new Vector2((float)Math.Cos(pose.Bearing), (float)Math.Sin(pose.Bearing))));
         }
 
@@ -59,13 +60,13 @@ namespace Brumba.DwaNavigator
             DC.Contract.Ensures(angularVelocity == 0 && DC.Contract.Result<double>() == 0 ||
                                 angularVelocity != 0 && Math.Abs(DC.Contract.Result<double>()) < Math.Abs(angularVelocity));
 
-            var neededDeceleration = - angularVelocity/_dt;
-            var angularVelocityDecelerated = Math.Abs(neededDeceleration) > _maxAngularAcceleration
-                ? angularVelocity - Math.Sign(angularVelocity) * _maxAngularAcceleration*_dt : 0;
+            var neededDeceleration = - angularVelocity/Dt;
+            var angularVelocityDecelerated = Math.Abs(neededDeceleration) > MaxAngularAcceleration
+                ? angularVelocity - Math.Sign(angularVelocity) * MaxAngularAcceleration*Dt : 0;
             return angularVelocityDecelerated;
         }
 
-        Pose MergeSequentialPoseDeltas(Pose delta1, Pose delta2)
+        static Pose MergeSequentialPoseDeltas(Pose delta1, Pose delta2)
         {
             var originTransform = Matrix.CreateRotationZ((float)delta1.Bearing) * Matrix.CreateTranslation(new Vector3(delta1.Position, 0));
             return new Pose(Vector2.Transform(delta2.Position, originTransform), delta1.Bearing + delta2.Bearing);

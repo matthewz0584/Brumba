@@ -17,10 +17,9 @@ namespace Brumba.DwaNavigator.Tests
         {
             var dwan = new DwaProblemOptimizer(
                 dynamicWindowGenerator: Substitute.For<IDynamicWindowGenerator>(),
-                velocityEvaluator: Substitute.For<IVelocityEvaluator>(),
-                linearDecelerationMax: 1.0d);
+                velocityEvaluator: Substitute.For<IVelocityEvaluator>());
 
-            var velocityWheelAccRel = new Dictionary<Velocity, Vector2>()
+            var velocityWheelAccRel = new Dictionary<Velocity, Vector2>
             {
                 {new Velocity(1, 2), new Vector2(0.1f, 0.2f)},
                 {new Velocity(3, 4), new Vector2(0.3f, 0.4f)},
@@ -40,10 +39,9 @@ namespace Brumba.DwaNavigator.Tests
         {
             var dwan = new DwaProblemOptimizer(
                 dynamicWindowGenerator: Substitute.For<IDynamicWindowGenerator>(),
-                velocityEvaluator: Substitute.For<IVelocityEvaluator>(),
-                linearDecelerationMax: 1.0d);
+                velocityEvaluator: Substitute.For<IVelocityEvaluator>());
 
-            var velocityWheelAccRel = new Dictionary<Velocity, Vector2>()
+            var velocityWheelAccRel = new Dictionary<Velocity, Vector2>
             {
                 {new Velocity(1, 2), new Vector2(0.1f, 0.2f)},
                 {new Velocity(3, 4), new Vector2(0.3f, 0.4f)},

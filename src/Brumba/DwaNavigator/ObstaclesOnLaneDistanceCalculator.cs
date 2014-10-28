@@ -7,53 +7,76 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
-    public class ObstaclesOnLaneDistanceCalculator
+    public class ObstaclesOnLaneDistanceCalculator : IVelocityEvaluator
     {
-        public ObstaclesOnLaneDistanceCalculator(double robotRadius)
+        public ObstaclesOnLaneDistanceCalculator(IEnumerable<Vector2> obstacles, double robotRadius, double linearDecelerationMax, double maxRange)
         {
             DC.Contract.Requires(robotRadius > 0);
+            DC.Contract.Requires(obstacles != null);
+            DC.Contract.Requires(obstacles.All(o => o.Length() > robotRadius));
+            DC.Contract.Requires(linearDecelerationMax > 0);
 
+            Obstacles = obstacles;
             RobotRadius = robotRadius;
+            LinearDecelerationMax = linearDecelerationMax;
+            MaxRange = maxRange;
         }
 
+        public IEnumerable<Vector2> Obstacles { get; private set; }
         public double RobotRadius { get; private set; }
+        public double LinearDecelerationMax { get; private set; }
+        public double MaxRange { get; private set; }
 
-        public double GetDistanceToClosestObstacle(Velocity v, IEnumerable<Vector2> obstacles)
+        public double Evaluate(Velocity v)
         {
-            DC.Contract.Requires(obstacles != null);
-            DC.Contract.Requires(v.Linear > 0);
-            DC.Contract.Requires(obstacles.All(o => o.Length() > RobotRadius));
+            DC.Contract.Assert(v.Linear >= 0);
+
+            var dist = GetDistanceToClosestObstacle(v);
+            if (double.IsPositiveInfinity(dist))
+                return 1;
+            if (!IsVelocityAdmissible(v, dist))
+                return 0;
+            return 0.5 * dist / ((MaxRange + RobotRadius) * Constants.PiOver2 - RobotRadius);
+        }
+
+        public double GetDistanceToClosestObstacle(Velocity v)
+        {
+            DC.Contract.Requires(v.Linear >= 0);
             DC.Contract.Ensures(DC.Contract.Result<double>() > 0);
 
             //Obstacles are in robot coordinates system
             return (v.Angular == 0
-                ? DistancesToObstaclesOnLine(obstacles)
-                : DistancesToObstaclesOnCircle(new CircleMotionModel(v), obstacles)).
+                ? DistancesToObstaclesOnLine()
+                : DistancesToObstaclesOnCircle(new CircleMotionModel(v))).
                 DefaultIfEmpty(float.PositiveInfinity).Min() - RobotRadius;
         }
 
-        public IEnumerable<double> DistancesToObstaclesOnLine(IEnumerable<Vector2> obstacles)
+        public bool IsVelocityAdmissible(Velocity velocity, double distanceToObstacleOnLane)
         {
-            DC.Contract.Requires(obstacles != null);
-            DC.Contract.Requires(obstacles.All(o => o.Length() > RobotRadius));
+            DC.Contract.Requires(velocity.Linear >= 0);
+            DC.Contract.Requires(distanceToObstacleOnLane > 0);
+
+            return velocity.Linear <= Math.Sqrt(2 * distanceToObstacleOnLane * LinearDecelerationMax);
+        }
+
+        public IEnumerable<double> DistancesToObstaclesOnLine()
+        {
             DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>() != null);
 
-            return obstacles.
+            return Obstacles.
                 Where(o => o.Y <= RobotRadius && o.Y >= -RobotRadius && o.X >= 0).
                 Select(o => (double)o.X);
         }
 
-        public IEnumerable<double> DistancesToObstaclesOnCircle(CircleMotionModel cmm, IEnumerable<Vector2> obstacles)
+        public IEnumerable<double> DistancesToObstaclesOnCircle(CircleMotionModel cmm)
         {
-            DC.Contract.Requires(obstacles != null);
             DC.Contract.Requires(cmm != null);
-            DC.Contract.Requires(obstacles.All(o => o.Length() > RobotRadius));
             DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>() != null);
 
-            return obstacles.
+            return Obstacles.
                 Where(o =>
-                    PointIsInCircle(false, cmm.Center, o, Math.Abs(cmm.Radius) - RobotRadius) &&
-                    PointIsInCircle(true, cmm.Center, o, Math.Abs(cmm.Radius) + RobotRadius)).
+                    PointIsInCircle(true, cmm.Center, o, Math.Abs(cmm.Radius) + RobotRadius) &&
+                    ((Math.Abs(cmm.Radius) - RobotRadius) <= 0 || PointIsInCircle(false, cmm.Center, o, Math.Abs(cmm.Radius) - RobotRadius))).
                 Select(o =>
                 {
                     var angularDistanceAlongCircle = Math.Acos(Vector2.Dot(Vector2.Normalize(o - cmm.Center), Vector2.Normalize(-cmm.Center)));

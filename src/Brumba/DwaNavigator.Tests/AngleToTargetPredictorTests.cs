@@ -12,7 +12,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void PredictPoseDeltaLineAfterLine()
         {
-            var atp = new AngleToTargetPredictor(target: new Vector2(), maxAngularAcceleration: 1, dt: 0.1);
+            var atp = new AngleToTargetPredictor(pose: new Pose(), target: new Vector2(), maxAngularAcceleration: 1, dt: 0.1);
 
             //Robot moves on line over the first time delta, thus there is no need to damp angular velocity over the second delta.
             //Hence, robot proceeds in moving on line over the second time delta.
@@ -22,7 +22,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void PredictPoseDeltaLineAfterCircle()
         {
-            var atp = new AngleToTargetPredictor(new Vector2(), Constants.PiOver2 / 0.1 / 0.1, 0.1);
+            var atp = new AngleToTargetPredictor(new Pose(), new Vector2(), Constants.PiOver2 / 0.1 / 0.1, 0.1);
 
             //Robot moves on circle over the first time delta (gets over exactly quarter of a circle, which determines the angular velocity: Constants.PiOver2 / 0.1).
             //Then it decelerates angularly and proceeds in straight trajectory over the cesond time delta (that determines the value of max ang deceleration: 
@@ -41,7 +41,7 @@ namespace Brumba.DwaNavigator.Tests
             //Then it decelerates angularly but not enough to totally damp the angular velocity out, so it proceeds in circle with greater radius over the cesond time delta
             //(that determines the value of max ang deceleration: it multiplied by time delta equals half of the initial angular velocity).
             //The calculation of resultant position involves simple trigonometry (radius of the second circle is twice the first one).
-            var atp = new AngleToTargetPredictor(new Vector2(), Constants.PiOver2 / 2 / 0.1 / 0.1, 0.1);
+            var atp = new AngleToTargetPredictor(new Pose(), new Vector2(), Constants.PiOver2 / 2 / 0.1 / 0.1, 0.1);
 
             var predictedPoseDelta = atp.PredictPoseDelta(new Velocity(2, Constants.PiOver2 / 0.1));
             Assert.That(predictedPoseDelta.Position.
@@ -53,7 +53,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void GetAngleToTarget()
         {
-            var atp = new AngleToTargetPredictor(new Vector2(10, 0), 1, 1);
+            var atp = new AngleToTargetPredictor(new Pose(), new Vector2(10, 0), 1, 1);
 
             Assert.That(atp.GetAngleToTarget(pose: new Pose(new Vector2(0, 0), 0)), Is.EqualTo(0));
 
@@ -67,20 +67,16 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void Evaluate()
         {
-            var atp = new AngleToTargetPredictor(new Vector2(2, 2), Constants.PiOver2 / 0.1 / 0.1, 0.1);
+            var atp = new AngleToTargetPredictor(new Pose(new Vector2(0, 2), 0), new Vector2(2, 2), Constants.PiOver2 / 0.1 / 0.1, 0.1);
 
-            Assert.That(atp.Evaluate(pose: new Pose(new Vector2(0, 2), 0), v: new Velocity(2, 0)),
-                Is.EqualTo(0));
+            Assert.That(atp.Evaluate(v: new Velocity(2, 0)), Is.EqualTo(0));
 
-            Assert.That(atp.Evaluate(new Velocity(0, 0.75 * Constants.Pi / 0.1), new Pose(new Vector2(0, 2), 0)),
-                Is.EqualTo(Constants.Pi));
+            Assert.That(atp.Evaluate(new Velocity(0, 0.75 * Constants.Pi / 0.1)), Is.EqualTo(1));
 
-            var ev1 = atp.Evaluate(new Velocity(2, Constants.PiOver2 / 0.1), new Pose(new Vector2(0, 2), 0));
-            Assert.That(ev1, 
-                Is.GreaterThan(Constants.PiOver2).And.LessThan(3 * Constants.PiOver4));
+            var ev1 = atp.Evaluate(new Velocity(2, Constants.PiOver2 / 0.1));
+            Assert.That(ev1, Is.GreaterThan(0.5).And.LessThan(0.75));
 
-            Assert.That(atp.Evaluate(new Velocity(2, -Constants.PiOver2 / 0.1), new Pose(new Vector2(0, 2), 0)),
-                Is.EqualTo(ev1));
+            Assert.That(atp.Evaluate(new Velocity(2, -Constants.PiOver2 / 0.1)), Is.EqualTo(ev1));
         }
     }
 }

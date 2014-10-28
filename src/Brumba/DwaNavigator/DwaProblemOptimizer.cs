@@ -1,26 +1,37 @@
 using System.Linq;
 using Brumba.WaiterStupid;
 using Microsoft.Xna.Framework;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
+    [DC.ContractClassAttribute(typeof(IVelocityEvaluatorContract))]
     public interface IVelocityEvaluator
     {
         double Evaluate(Velocity v);
     }
 
+    [DC.ContractClassForAttribute(typeof(IVelocityEvaluator))]
+    abstract class IVelocityEvaluatorContract : IVelocityEvaluator
+    {
+        public double Evaluate(Velocity v)
+        {
+            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0 && DC.Contract.Result<double>() <= 1);
+
+            return default(double);
+        }
+    }
+
     public class DwaProblemOptimizer
     {
-        public DwaProblemOptimizer(IDynamicWindowGenerator dynamicWindowGenerator, IVelocityEvaluator velocityEvaluator, double linearDecelerationMax)
+        public DwaProblemOptimizer(IDynamicWindowGenerator dynamicWindowGenerator, IVelocityEvaluator velocityEvaluator)
         {
             DynamicWindowGenerator = dynamicWindowGenerator;
             VelocityEvaluator = velocityEvaluator;
-            LinearDecelerationMax = linearDecelerationMax;
         }
 
         public IDynamicWindowGenerator DynamicWindowGenerator { get; private set; }
         public IVelocityEvaluator VelocityEvaluator { get; private set; }
-        public double LinearDecelerationMax { get; private set; }
 
         public Vector2 Optimize(Pose velocity)
         {
