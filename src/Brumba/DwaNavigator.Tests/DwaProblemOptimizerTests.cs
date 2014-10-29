@@ -16,7 +16,7 @@ namespace Brumba.DwaNavigator.Tests
         public void Optimize()
         {
             var dwan = new DwaProblemOptimizer(
-                dynamicWindowGenerator: Substitute.For<IDynamicWindowGenerator>(),
+                velocitySearchSpaceGenerator: Substitute.For<IVelocitySearchSpaceGenerator>(),
                 velocityEvaluator: Substitute.For<IVelocityEvaluator>());
 
             var velocityWheelAccRel = new Dictionary<Velocity, Vector2>
@@ -25,12 +25,12 @@ namespace Brumba.DwaNavigator.Tests
                 {new Velocity(3, 4), new Vector2(0.3f, 0.4f)},
                 {new Velocity(5, 6), new Vector2(0.5f, 0.6f)}
             };
-            dwan.DynamicWindowGenerator.Generate(Arg.Any<Velocity>()).Returns(velocityWheelAccRel);
+            dwan.VelocitySearchSpaceGenerator.Generate(Arg.Any<Velocity>()).Returns(velocityWheelAccRel);
             dwan.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
             Assert.That(dwan.Optimize(velocity: new Pose(new Vector2(3, 4), 2)), Is.EqualTo(new Vector2(0.5f, 0.6f)));
 
-            dwan.DynamicWindowGenerator.Received().Generate(new Velocity(5, 2));
+            dwan.VelocitySearchSpaceGenerator.Received().Generate(new Velocity(5, 2));
             dwan.VelocityEvaluator.Received(3).Evaluate(Arg.Is<Velocity>(vel => velocityWheelAccRel.Keys.Contains(vel)));
         }
 
@@ -38,7 +38,7 @@ namespace Brumba.DwaNavigator.Tests
         public void OptimizePrunesNegativeLinearVelocities()
         {
             var dwan = new DwaProblemOptimizer(
-                dynamicWindowGenerator: Substitute.For<IDynamicWindowGenerator>(),
+                velocitySearchSpaceGenerator: Substitute.For<IVelocitySearchSpaceGenerator>(),
                 velocityEvaluator: Substitute.For<IVelocityEvaluator>());
 
             var velocityWheelAccRel = new Dictionary<Velocity, Vector2>
@@ -47,7 +47,7 @@ namespace Brumba.DwaNavigator.Tests
                 {new Velocity(3, 4), new Vector2(0.3f, 0.4f)},
                 {new Velocity(-5, 6), new Vector2(0.5f, 0.6f)}
             };
-            dwan.DynamicWindowGenerator.Generate(Arg.Any<Velocity>()).Returns(velocityWheelAccRel);
+            dwan.VelocitySearchSpaceGenerator.Generate(Arg.Any<Velocity>()).Returns(velocityWheelAccRel);
             dwan.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
             Assert.That(dwan.Optimize(velocity: new Pose(new Vector2(3, 4), 2)), Is.EqualTo(new Vector2(0.3f, 0.4f)));
@@ -59,7 +59,7 @@ namespace Brumba.DwaNavigator.Tests
         //public void OptimizePrunesNonAdmissibleVelocities()
         //{
         //    var dwan = new DwaProblemOptimizer(
-        //        dynamicWindowGenerator: Substitute.For<IDynamicWindowGenerator>(),
+        //        velocitySearchSpaceGenerator: Substitute.For<IVelocitySearchSpaceGenerator>(),
         //        velocityEvaluator: Substitute.For<IVelocityEvaluator>(),
         //        linearDecelerationMax: 1.0d);
 
@@ -69,7 +69,7 @@ namespace Brumba.DwaNavigator.Tests
         //        {new Velocity(3, 4), new Vector2(0.3f, 0.4f)},
         //        {new Velocity(-5, 6), new Vector2(0.5f, 0.6f)}
         //    };
-        //    dwan.DynamicWindowGenerator.Generate(Arg.Any<Velocity>()).Returns(velocityWheelAccRel);
+        //    dwan.velocitySearchSpaceGenerator.Generate(Arg.Any<Velocity>()).Returns(velocityWheelAccRel);
         //    dwan.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
         //    Assert.That(dwan.Optimize(velocity: new Pose(new Vector2(3, 4), 2)), Is.EqualTo(new Vector2(0.3f, 0.4f)));

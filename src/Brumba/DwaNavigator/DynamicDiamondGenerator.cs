@@ -1,18 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MathNet.Numerics.LinearAlgebra.Complex;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
-    public interface IDynamicWindowGenerator
+    [DC.ContractClassAttribute(typeof(IVelocitySearchSpaceGeneratorContract))]
+    public interface IVelocitySearchSpaceGenerator
     {
         IDictionary<Velocity, Vector2> Generate(Velocity center);
     }
 
-    public class DynamicDiamondGenerator : IDynamicWindowGenerator
+    [DC.ContractClassForAttribute(typeof(IVelocitySearchSpaceGenerator))]
+    abstract class IVelocitySearchSpaceGeneratorContract : IVelocitySearchSpaceGenerator
+    {
+        public IDictionary<Velocity, Vector2> Generate(Velocity center)
+        {
+            DC.Contract.Ensures(DC.Contract.Result<IDictionary<Velocity, Vector2>>() != null);
+            DC.Contract.Ensures(DC.Contract.Result<IDictionary<Velocity, Vector2>>().ContainsKey(center));
+
+            return default(IDictionary<Velocity, Vector2>);
+        }
+    }
+
+    public class DynamicDiamondGenerator : IVelocitySearchSpaceGenerator
     {
         public const int STEPS_NUMBER = 10;
 

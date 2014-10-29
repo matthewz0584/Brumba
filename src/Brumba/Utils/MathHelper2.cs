@@ -131,11 +131,35 @@ namespace Brumba.Utils
         }
 
         [Pure]
+        public static bool BetweenR(this float me, float lower, float upper)
+        {
+            Contract.Requires(upper > lower);
+
+            return me > lower && upper >= me;
+        }
+
+        [Pure]
         public static bool Between(this double me, double lower, double upper)
         {
             Contract.Requires(upper > lower);
 
             return me >= lower && upper > me;
+        }
+
+        [Pure]
+        public static bool BetweenR(this double me, double lower, double upper)
+        {
+            Contract.Requires(upper > lower);
+
+            return me > lower && upper >= me;
+        }
+
+        [Pure]
+        public static bool BetweenRL(this double me, double lower, double upper)
+        {
+            Contract.Requires(upper > lower);
+
+            return me >= lower && upper >= me;
         }
 
         [Pure]

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.Utils;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
@@ -13,7 +14,7 @@ namespace Brumba.DwaNavigator
         {
             DC.Contract.Requires(robotRadius > 0);
             DC.Contract.Requires(obstacles != null);
-            DC.Contract.Requires(obstacles.All(o => o.Length() > robotRadius));
+            DC.Contract.Requires(obstacles.All(o => o.Length().BetweenR((float)robotRadius, (float)(maxRange + robotRadius))));
             DC.Contract.Requires(linearDecelerationMax > 0);
 
             Obstacles = obstacles;

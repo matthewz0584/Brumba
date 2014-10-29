@@ -24,18 +24,18 @@ namespace Brumba.DwaNavigator
 
     public class DwaProblemOptimizer
     {
-        public DwaProblemOptimizer(IDynamicWindowGenerator dynamicWindowGenerator, IVelocityEvaluator velocityEvaluator)
+        public DwaProblemOptimizer(IVelocitySearchSpaceGenerator velocitySearchSpaceGenerator, IVelocityEvaluator velocityEvaluator)
         {
-            DynamicWindowGenerator = dynamicWindowGenerator;
+            VelocitySearchSpaceGenerator = velocitySearchSpaceGenerator;
             VelocityEvaluator = velocityEvaluator;
         }
 
-        public IDynamicWindowGenerator DynamicWindowGenerator { get; private set; }
+        public IVelocitySearchSpaceGenerator VelocitySearchSpaceGenerator { get; private set; }
         public IVelocityEvaluator VelocityEvaluator { get; private set; }
 
         public Vector2 Optimize(Pose velocity)
         {
-            var velocityWheelAccRel = DynamicWindowGenerator.Generate(new Velocity(velocity.Position.Length(), velocity.Bearing));
+            var velocityWheelAccRel = VelocitySearchSpaceGenerator.Generate(new Velocity(velocity.Position.Length(), velocity.Bearing));
             return velocityWheelAccRel.
                 Where(p => p.Key.Linear >= 0).
                 Select(p => new {WheelAccRel = p.Value, Eval = VelocityEvaluator.Evaluate(p.Key)}).

@@ -127,11 +127,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AngleToTargetEvaluator.cs" />
+    <Compile Include="CompositeEvaluator.cs" />
     <Compile Include="DwaProblemOptimizer.cs" />
     <Compile Include="DynamicDiamondGenerator.cs" />
     <Compile Include="MotionModels.cs" />
     <Compile Include="ObstaclesEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpeedEvaluator.cs" />
     <Compile Include="Velocity.cs" />
   </ItemGroup>
   <ItemGroup>
