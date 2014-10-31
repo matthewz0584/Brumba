@@ -7,7 +7,10 @@ namespace Brumba.DwaNavigator
 {
     public class CompositeEvaluator : IVelocityEvaluator
     {
-        public IDictionary<IVelocityEvaluator, double> EvaluatorWeights { get; set; }
+        private IDictionary<IVelocityEvaluator, double> _evaluatorWeights;
+
+        public CompositeEvaluator()
+        {}
 
         public CompositeEvaluator(IDictionary<IVelocityEvaluator, double> evaluatorWeights)
         {
@@ -17,8 +20,23 @@ namespace Brumba.DwaNavigator
             EvaluatorWeights = evaluatorWeights;
         }
 
+        public IDictionary<IVelocityEvaluator, double> EvaluatorWeights
+        {
+            get { return _evaluatorWeights; }
+            set
+            {
+                DC.Contract.Requires(value != null);
+                DC.Contract.Requires(value.Values.Sum().AlmostEqualInDecimalPlaces(1, 5));
+
+                _evaluatorWeights = value;
+            }
+        }
+
         public double Evaluate(Velocity v)
         {
+            DC.Contract.Requires(EvaluatorWeights != null);
+            DC.Contract.Requires(EvaluatorWeights.Any());
+
             return EvaluatorWeights.Select(p => p.Key.Evaluate(v) * p.Value).Sum();
         }
     }

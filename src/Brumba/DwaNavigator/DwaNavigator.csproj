@@ -128,6 +128,7 @@
   <ItemGroup>
     <Compile Include="AngleToTargetEvaluator.cs" />
     <Compile Include="CompositeEvaluator.cs" />
+    <Compile Include="DwaNavigator.cs" />
     <Compile Include="DwaProblemOptimizer.cs" />
     <Compile Include="DynamicDiamondGenerator.cs" />
     <Compile Include="MotionModels.cs" />

@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="AngleToTargetEvaluatorTests.cs" />
     <Compile Include="CompositeEvaluatorTests.cs" />
+    <Compile Include="DwaNavigatorTests.cs" />
     <Compile Include="DwaProblemOptimizerTests.cs" />
     <Compile Include="DynamicDiamondGeneratorTests.cs" />
     <Compile Include="MotionModelsTests.cs" />
