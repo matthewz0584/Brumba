@@ -139,6 +139,14 @@ namespace Brumba.Utils
         }
 
         [Pure]
+        public static bool BetweenRL(this float me, float lower, float upper)
+        {
+            Contract.Requires(upper > lower);
+
+            return me >= lower && upper >= me;
+        }
+
+        [Pure]
         public static bool Between(this double me, double lower, double upper)
         {
             Contract.Requires(upper > lower);
@@ -171,12 +179,29 @@ namespace Brumba.Utils
         }
 
         [Pure]
+        public static bool BetweenRL(this int me, int lower, int upper)
+        {
+            Contract.Requires(upper > lower);
+
+            return me >= lower && upper >= me;
+        }
+
+        [Pure]
         public static bool Between(this Vector2 me, Vector2 lower, Vector2 upper)
         {
             Contract.Requires(upper.X > lower.X);
             Contract.Requires(upper.Y > lower.Y);
 
             return me.X.Between(lower.X, upper.X) && me.Y.Between(lower.Y, upper.Y);
+        }
+
+        [Pure]
+        public static bool BetweenRL(this Vector2 me, Vector2 lower, Vector2 upper)
+        {
+            Contract.Requires(upper.X > lower.X);
+            Contract.Requires(upper.Y > lower.Y);
+
+            return me.X.BetweenRL(lower.X, upper.X) && me.Y.BetweenRL(lower.Y, upper.Y);
         }
 
         [Pure]

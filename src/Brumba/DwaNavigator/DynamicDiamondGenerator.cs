@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.Utils;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
@@ -9,18 +9,17 @@ namespace Brumba.DwaNavigator
     [DC.ContractClassAttribute(typeof(IVelocitySearchSpaceGeneratorContract))]
     public interface IVelocitySearchSpaceGenerator
     {
-        IDictionary<Velocity, Vector2> Generate(Velocity center);
+        VelocityAcceleration[,] Generate(Velocity center);
     }
 
     [DC.ContractClassForAttribute(typeof(IVelocitySearchSpaceGenerator))]
     abstract class IVelocitySearchSpaceGeneratorContract : IVelocitySearchSpaceGenerator
     {
-        public IDictionary<Velocity, Vector2> Generate(Velocity center)
+        public VelocityAcceleration[,] Generate(Velocity center)
         {
-            DC.Contract.Ensures(DC.Contract.Result<IDictionary<Velocity, Vector2>>() != null);
-            DC.Contract.Ensures(DC.Contract.Result<IDictionary<Velocity, Vector2>>().ContainsKey(center));
+            DC.Contract.Ensures(DC.Contract.Result<VelocityAcceleration[,]>() != null);
 
-            return default(IDictionary<Velocity, Vector2>);
+            return default(VelocityAcceleration[,]);
         }
     }
 
@@ -57,34 +56,46 @@ namespace Brumba.DwaNavigator
         public Velocity AccelerationMax { get; private set; }
         public Velocity VelocityStep { get; private set; }
 
-        public IDictionary<Velocity, Vector2> Generate(Velocity diamondCenter)
+        public VelocityAcceleration[,] Generate(Velocity diamondCenter)
         {
-            DC.Contract.Ensures(DC.Contract.Result<IDictionary<Velocity, Vector2>>() != null);
-            DC.Contract.Ensures(DC.Contract.Result<IDictionary<Velocity, Vector2>>().Count() == (2 * STEPS_NUMBER + 1) * (2 * STEPS_NUMBER + 1));
-            DC.Contract.Ensures(DC.Contract.Result<IDictionary<Velocity, Vector2>>().Values.All(war => Math.Abs(war.X) <= 1 && Math.Abs(war.Y) <= 1));
+            DC.Contract.Ensures(DC.Contract.Result<VelocityAcceleration[,]>() != null);
+            DC.Contract.Ensures(DC.Contract.Result<VelocityAcceleration[,]>().GetLength(0).BetweenRL(STEPS_NUMBER + 1, 2 * STEPS_NUMBER + 1));
+            DC.Contract.Ensures(DC.Contract.Result<VelocityAcceleration[,]>().GetLength(1) == 2 * STEPS_NUMBER + 1);
 
-            return GenerateWheelAccelerationGrid().
-                    Select(p => new
-                    {
-                        Velocity = new Velocity(
-                            diamondCenter.Linear + WheelAccelerationToAcceleration(p).Linear * Dt,
-                            diamondCenter.Angular + WheelAccelerationToAcceleration(p).Angular * Dt),
-                        WheelAccelerationRelative = p / (float)WheelAngularAccelerationMax
-                    }).
-                ToDictionary(vwar => vwar.Velocity, vwar => vwar.WheelAccelerationRelative);
+            var velocitySpace = new VelocityAcceleration[2 * STEPS_NUMBER + 1, 2 * STEPS_NUMBER + 1];
+            foreach (var p in GenerateWheelAccelerationGrid())
+            {
+                var wheelAcc = p.ToVec() * (float)(WheelAngularAccelerationMax / STEPS_NUMBER);
+                var acc = WheelAccelerationToAcceleration(wheelAcc);
+                velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(
+                    new Velocity(diamondCenter.Linear + acc.Linear * Dt, diamondCenter.Angular + acc.Angular * Dt),
+                    wheelAcc / (float)WheelAngularAccelerationMax);
+            }
+            return velocitySpace;
         }
 
-        IEnumerable<Vector2> GenerateWheelAccelerationGrid()
+        IEnumerable<Point> GenerateWheelAccelerationGrid()
         {
             return Enumerable.Range(-STEPS_NUMBER, 2 * STEPS_NUMBER + 1).
-                SelectMany(wli =>
-                    Enumerable.Range(-STEPS_NUMBER, 2 * STEPS_NUMBER + 1).
-                    Select(wri => new Vector2(wli, wri) * (float)(WheelAngularAccelerationMax / STEPS_NUMBER)));
+                SelectMany(wri => Enumerable.Range(-STEPS_NUMBER, 2 * STEPS_NUMBER + 1).Select(wli => new Point(wli, wri)));
         }
-            
+
         Velocity WheelAccelerationToAcceleration(Vector2 wheelAcc)
         {
             return new Velocity(WheelRadius / 2 * (wheelAcc.Y + wheelAcc.X), WheelRadius / WheelBase * (wheelAcc.Y - wheelAcc.X));
         }
+    }
+
+    public struct VelocityAcceleration
+    {
+        public VelocityAcceleration(Velocity velocity, Vector2 wheelAcceleration)
+            : this()
+        {
+            Velocity = velocity;
+            WheelAcceleration = wheelAcceleration;
+        }
+
+        public Velocity Velocity { get; private set; }
+        public Vector2 WheelAcceleration { get; private set; }
     }
 }
