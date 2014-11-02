@@ -31,7 +31,7 @@ namespace Brumba.DwaNavigator.Tests
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
             var optRes = dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2));
-            Assert.That(optRes.Item1, Is.EqualTo(new Vector2(0.5f, 0.6f)));
+            Assert.That(optRes.Item1, Is.EqualTo(vwa[2, 1]));
 
             Assert.That(vssg.ReceivedGenerate(new Velocity(5, 2)));
             dwapo.VelocityEvaluator.Received(9).Evaluate(Arg.Is<Velocity>(vel => vwa.Cast<VelocityAcceleration>().Any(va => va.Velocity.Equals(vel))));
@@ -64,7 +64,7 @@ namespace Brumba.DwaNavigator.Tests
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
-            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)).Item1, Is.EqualTo(new Vector2(0.1f, 0.2f)));
+            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)).Item1, Is.EqualTo(vwa[0, 1]));
 
             dwapo.VelocityEvaluator.Received(9).Evaluate(Arg.Is<Velocity>(vel => vwa.Cast<VelocityAcceleration>().Any(va => va.Velocity.Equals(vel))));
         }
@@ -86,7 +86,7 @@ namespace Brumba.DwaNavigator.Tests
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
-            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)).Item1, Is.EqualTo(new Vector2(0.3f, 0.4f)));
+            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)).Item1, Is.EqualTo(vwa[1, 1]));
 
             dwapo.VelocityEvaluator.Received(8).Evaluate(Arg.Is<Velocity>(vel => vwa.Cast<VelocityAcceleration>().Any(va => va.Velocity.Equals(vel))));
             dwapo.VelocityEvaluator.DidNotReceive().Evaluate(new Velocity(-5, 6));
@@ -109,7 +109,7 @@ namespace Brumba.DwaNavigator.Tests
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
-            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)).Item1, Is.EqualTo(new Vector2(0.3f, 0.4f)));
+            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)).Item1, Is.EqualTo(vwa[1, 1]));
 
             dwapo.VelocityEvaluator.Received(5).Evaluate(Arg.Is<Velocity>(vel => vwa.Cast<VelocityAcceleration>().Any(va => va.Velocity.Equals(vel))));
             dwapo.VelocityEvaluator.DidNotReceive().Evaluate(new Velocity(1, 320));

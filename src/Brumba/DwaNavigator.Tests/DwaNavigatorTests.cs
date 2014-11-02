@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Brumba.WaiterStupid;
 using Microsoft.Xna.Framework;
@@ -35,27 +36,31 @@ namespace Brumba.DwaNavigator.Tests
             Assert.That(_dwan.VelocityMax, Is.EqualTo(new Velocity(0.076d / 2 * (13 + 13), 0.076d / 0.3d * (13 + 13))));
         }
 
-        //[Test]
+        [Test]
         public void ClearStraightPath()
         {
-            Assert.That(_dwan.Cycle(new Pose(new Vector2(), 0),
-                                    new Pose(new Vector2(), 0),
-                                    new Vector2(10, 0),
-                                    new Vector2[0]),
-                Is.EqualTo(new Vector2(1, 1)));
+            _dwan.Update(new Pose(new Vector2(), 0),
+                        new Pose(new Vector2(), 0),
+                        new Vector2(10, 0),
+                        new Vector2[0]);
+            Console.WriteLine(_dwan.VelocitiesEvaluation.ToString(21, 21));
+            Assert.That(_dwan.OptimalVelocity.Velocity, Is.EqualTo(new Velocity(_dwan.AccelerationMax.Linear * 0.25, 0)));
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
         }
 
         //[Test]
         public void BasicExampleFromDwaArticle()
         {
-            Assert.That(_dwan.Cycle(new Pose(new Vector2(), 0),
-                                    new Pose(new Vector2(), 0),
-                                    new Vector2(1.3f, -2.1f),
-                                    new []
-                                    {
-                                        new Vector2(1.5f, -0.9f), new Vector2(0.3f, -0.9f), new Vector2(0.1f, -0.9f), new Vector2(-0.1f, -0.9f), new Vector2(-0.3f, -0.9f)
-                                    }),
-                Is.EqualTo(new Vector2(1, 1)));
+            _dwan.Update(new Pose(new Vector2(), 0),
+                        new Pose(new Vector2(), 0),
+                        new Vector2(1.3f, -2.1f),
+                        new[]
+                        {
+                            new Vector2(1.5f, -0.9f), new Vector2(0.3f, -0.9f), new Vector2(0.1f, -0.9f),
+                            new Vector2(-0.1f, -0.9f), new Vector2(-0.3f, -0.9f)
+                        });
+            Assert.That(_dwan.OptimalVelocity.Velocity, Is.EqualTo(new Velocity(_dwan.AccelerationMax.Linear * 0.25, 0)));
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
         }
     }
 }

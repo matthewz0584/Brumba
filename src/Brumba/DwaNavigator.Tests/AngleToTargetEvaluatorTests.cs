@@ -69,12 +69,12 @@ namespace Brumba.DwaNavigator.Tests
         {
             var atp = new AngleToTargetEvaluator(new Pose(new Vector2(0, 2), 0), new Vector2(2, 2), Constants.PiOver2 / 0.1 / 0.1, 0.1);
 
-            Assert.That(atp.Evaluate(v: new Velocity(2, 0)), Is.EqualTo(0));
+            Assert.That(atp.Evaluate(v: new Velocity(2, 0)), Is.EqualTo(1));
 
-            Assert.That(atp.Evaluate(new Velocity(0, 0.75 * Constants.Pi / 0.1)), Is.EqualTo(1));
+            Assert.That(atp.Evaluate(new Velocity(0, 0.75 * Constants.Pi / 0.1)), Is.EqualTo(0));
 
             var ev1 = atp.Evaluate(new Velocity(2, Constants.PiOver2 / 0.1));
-            Assert.That(ev1, Is.GreaterThan(0.5).And.LessThan(0.75));
+            Assert.That(ev1, Is.GreaterThan(0.25).And.LessThan(0.5));
 
             Assert.That(atp.Evaluate(new Velocity(2, -Constants.PiOver2 / 0.1)), Is.EqualTo(ev1));
         }

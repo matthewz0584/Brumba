@@ -45,11 +45,11 @@ namespace Brumba.DwaNavigator
         public IVelocityEvaluator VelocityEvaluator { get; private set; }
         public Velocity RobotVelocityMax { get; set; }
 
-        public Tuple<Vector2, DenseMatrix> FindOptimalVelocity(Pose velocity)
+        public Tuple<VelocityAcceleration, DenseMatrix> FindOptimalVelocity(Pose velocity)
         {
-            DC.Contract.Ensures(DC.Contract.Result<Tuple<Vector2, DenseMatrix>>() != null);
-            DC.Contract.Ensures(DC.Contract.Result<Tuple<Vector2, DenseMatrix>>().Item1.BetweenRL(new Vector2(-1), new Vector2(1)));
-            DC.Contract.Ensures(DC.Contract.Result<Tuple<Vector2, DenseMatrix>>().Item2.IndexedEnumerator().All(c => c.Item3.BetweenRL(-1, 1)));
+            DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>() != null);
+            DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item1.WheelAcceleration.BetweenRL(new Vector2(-1), new Vector2(1)));
+            DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item2.IndexedEnumerator().All(c => c.Item3.BetweenRL(-1, 1)));
 
             var velocityWheelAcc = VelocitySearchSpaceGenerator.Generate(new Velocity(velocity.Position.Length(), velocity.Bearing));
             var velocitiesEvalsRaw = DenseMatrix.Create(velocityWheelAcc.GetLength(0), velocityWheelAcc.GetLength(1),
@@ -57,7 +57,7 @@ namespace Brumba.DwaNavigator
                                             ? VelocityEvaluator.Evaluate(velocityWheelAcc[row, col].Velocity) : -1);
             var velocitiesEvalsSmoothed = Smooth(velocitiesEvalsRaw);
             var maxRowColVal = velocitiesEvalsSmoothed.IndexedEnumerator().OrderByDescending(rowColVal => rowColVal.Item3).First();
-            return Tuple.Create(velocityWheelAcc[maxRowColVal.Item1, maxRowColVal.Item2].WheelAcceleration, velocitiesEvalsSmoothed);
+            return Tuple.Create(velocityWheelAcc[maxRowColVal.Item1, maxRowColVal.Item2], velocitiesEvalsSmoothed);
         }
 
         public DenseMatrix Smooth(DenseMatrix matrix)

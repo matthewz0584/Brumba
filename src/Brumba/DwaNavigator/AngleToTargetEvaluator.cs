@@ -27,7 +27,7 @@ namespace Brumba.DwaNavigator
         {
             DC.Contract.Assert(v.Linear >= 0);
 
-            return GetAngleToTarget(MergeSequentialPoseDeltas(Pose, PredictPoseDelta(v))) / Math.PI;
+            return 1 - GetAngleToTarget(MergeSequentialPoseDeltas(Pose, PredictPoseDelta(v))) / Math.PI;
         }
 
         public Pose PredictPoseDelta(Velocity v)

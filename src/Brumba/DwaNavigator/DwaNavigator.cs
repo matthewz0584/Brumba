@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Brumba.WaiterStupid;
+using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
@@ -51,7 +52,10 @@ namespace Brumba.DwaNavigator
         public Velocity AccelerationMax { get; private set; }
         public Velocity VelocityMax { get; private set; }
 
-        public Vector2 Cycle(Pose pose, Pose velocity, Vector2 target, IEnumerable<Vector2> obstacles)
+        public VelocityAcceleration OptimalVelocity { get; private set; }
+        public DenseMatrix VelocitiesEvaluation { get; private set; }
+
+        public void Update(Pose pose, Pose velocity, Vector2 target, IEnumerable<Vector2> obstacles)
         {
             _compositeEvaluator.EvaluatorWeights = new Dictionary<IVelocityEvaluator, double>
             {
@@ -60,7 +64,9 @@ namespace Brumba.DwaNavigator
                 { new SpeedEvaluator(VelocityMax.Linear), 0.1 }
             };
             
-            return _optimizer.FindOptimalVelocity(velocity).Item1;
+            var optRes =  _optimizer.FindOptimalVelocity(velocity);
+            OptimalVelocity = optRes.Item1;
+            VelocitiesEvaluation = optRes.Item2;
         }
     }
 }
