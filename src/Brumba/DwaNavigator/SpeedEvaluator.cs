@@ -5,20 +5,20 @@ namespace Brumba.DwaNavigator
 {
     public class SpeedEvaluator : IVelocityEvaluator
     {
-        public double MaxSpeed { get; private set; }
+        public double RobotMaxSpeed { get; private set; }
 
-        public SpeedEvaluator(double maxSpeed)
+        public SpeedEvaluator(double robotMaxSpeed)
         {
-            DC.Contract.Requires(maxSpeed > 0);
+            DC.Contract.Requires(robotMaxSpeed > 0);
 
-            MaxSpeed = maxSpeed;
+            RobotMaxSpeed = robotMaxSpeed;
         }
 
         public double Evaluate(Velocity v)
         {
-            DC.Contract.Assert(v.Linear.BetweenRL(0, MaxSpeed));
+            DC.Contract.Assert(v.Linear.BetweenRL(0, RobotMaxSpeed));
 
-            return v.Linear / MaxSpeed;
+            return v.Linear / RobotMaxSpeed;
         }
     }
 }

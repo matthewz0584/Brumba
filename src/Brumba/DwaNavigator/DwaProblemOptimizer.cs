@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Brumba.Utils;
 using Brumba.WaiterStupid;
@@ -28,27 +29,35 @@ namespace Brumba.DwaNavigator
     {
         readonly double[] _smoothingKernel = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
 
-        public DwaProblemOptimizer(IVelocitySearchSpaceGenerator velocitySearchSpaceGenerator, IVelocityEvaluator velocityEvaluator)
+        public DwaProblemOptimizer(IVelocitySearchSpaceGenerator velocitySearchSpaceGenerator, IVelocityEvaluator velocityEvaluator, Velocity robotVelocityMax)
         {
             DC.Contract.Requires(velocitySearchSpaceGenerator != null);
             DC.Contract.Requires(velocityEvaluator != null);
+            DC.Contract.Requires(robotVelocityMax.Linear > 0);
+            DC.Contract.Requires(robotVelocityMax.Angular > 0);
 
             VelocitySearchSpaceGenerator = velocitySearchSpaceGenerator;
             VelocityEvaluator = velocityEvaluator;
+            RobotVelocityMax = robotVelocityMax;
         }
 
         public IVelocitySearchSpaceGenerator VelocitySearchSpaceGenerator { get; private set; }
         public IVelocityEvaluator VelocityEvaluator { get; private set; }
+        public Velocity RobotVelocityMax { get; set; }
 
-        public Vector2 FindOptimalVelocity(Pose velocity)
+        public Tuple<Vector2, DenseMatrix> FindOptimalVelocity(Pose velocity)
         {
-            DC.Contract.Ensures(DC.Contract.Result<Vector2>().BetweenRL(new Vector2(-1, -1), new Vector2(1)));
+            DC.Contract.Ensures(DC.Contract.Result<Tuple<Vector2, DenseMatrix>>() != null);
+            DC.Contract.Ensures(DC.Contract.Result<Tuple<Vector2, DenseMatrix>>().Item1.BetweenRL(new Vector2(-1), new Vector2(1)));
+            DC.Contract.Ensures(DC.Contract.Result<Tuple<Vector2, DenseMatrix>>().Item2.IndexedEnumerator().All(c => c.Item3.BetweenRL(-1, 1)));
 
             var velocityWheelAcc = VelocitySearchSpaceGenerator.Generate(new Velocity(velocity.Position.Length(), velocity.Bearing));
-            var velocityEvals = DenseMatrix.Create(velocityWheelAcc.GetLength(0), velocityWheelAcc.GetLength(1),
-                (row, col) => velocityWheelAcc[row, col].Velocity.Linear >= 0 ? VelocityEvaluator.Evaluate(velocityWheelAcc[row, col].Velocity) : -1);
-            var maxRowColVal = Smooth(velocityEvals).IndexedEnumerator().OrderByDescending(rowColVal => rowColVal.Item3).First();
-            return velocityWheelAcc[maxRowColVal.Item1, maxRowColVal.Item2].WheelAcceleration;
+            var velocitiesEvalsRaw = DenseMatrix.Create(velocityWheelAcc.GetLength(0), velocityWheelAcc.GetLength(1),
+                                    (row, col) => VelocityIsFeasible(velocityWheelAcc[row, col].Velocity)
+                                            ? VelocityEvaluator.Evaluate(velocityWheelAcc[row, col].Velocity) : -1);
+            var velocitiesEvalsSmoothed = Smooth(velocitiesEvalsRaw);
+            var maxRowColVal = velocitiesEvalsSmoothed.IndexedEnumerator().OrderByDescending(rowColVal => rowColVal.Item3).First();
+            return Tuple.Create(velocityWheelAcc[maxRowColVal.Item1, maxRowColVal.Item2].WheelAcceleration, velocitiesEvalsSmoothed);
         }
 
         public DenseMatrix Smooth(DenseMatrix matrix)
@@ -78,6 +87,11 @@ namespace Brumba.DwaNavigator
                 }
 
             return smoothed;
+        }
+
+        bool VelocityIsFeasible(Velocity v)
+        {
+            return v.Linear.BetweenRL(0, RobotVelocityMax.Linear) && Math.Abs(v.Angular) <= RobotVelocityMax.Angular;
         }
     }
 }

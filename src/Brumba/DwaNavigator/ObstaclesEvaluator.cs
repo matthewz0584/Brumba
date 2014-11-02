@@ -10,23 +10,23 @@ namespace Brumba.DwaNavigator
 {
     public class ObstaclesEvaluator : IVelocityEvaluator
     {
-        public ObstaclesEvaluator(IEnumerable<Vector2> obstacles, double robotRadius, double linearDecelerationMax, double maxRange)
+        public ObstaclesEvaluator(IEnumerable<Vector2> obstacles, double robotRadius, double linearDecelerationMax, double rangefinderMaxRange)
         {
             DC.Contract.Requires(robotRadius > 0);
             DC.Contract.Requires(obstacles != null);
-            DC.Contract.Requires(obstacles.All(o => o.Length().BetweenR((float)robotRadius, (float)(maxRange + robotRadius))));
+            DC.Contract.Requires(obstacles.All(o => o.Length().BetweenR((float)robotRadius, (float)(rangefinderMaxRange + robotRadius))));
             DC.Contract.Requires(linearDecelerationMax > 0);
 
             Obstacles = obstacles;
             RobotRadius = robotRadius;
             LinearDecelerationMax = linearDecelerationMax;
-            MaxRange = maxRange;
+            RangefinderMaxRange = rangefinderMaxRange;
         }
 
         public IEnumerable<Vector2> Obstacles { get; private set; }
         public double RobotRadius { get; private set; }
         public double LinearDecelerationMax { get; private set; }
-        public double MaxRange { get; private set; }
+        public double RangefinderMaxRange { get; private set; }
 
         public double Evaluate(Velocity v)
         {
@@ -37,7 +37,7 @@ namespace Brumba.DwaNavigator
                 return 1;
             if (!IsVelocityAdmissible(v, dist))
                 return 0;
-            return 0.5 * dist / ((MaxRange + RobotRadius) * Constants.PiOver2 - RobotRadius);
+            return 0.5 * dist / ((RangefinderMaxRange + RobotRadius) * Constants.PiOver2 - RobotRadius);
         }
 
         public double GetDistanceToClosestObstacle(Velocity v)

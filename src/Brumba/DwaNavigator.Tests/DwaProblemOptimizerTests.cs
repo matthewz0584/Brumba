@@ -15,9 +15,9 @@ namespace Brumba.DwaNavigator.Tests
         {
             var vwa = new [,]
             {
-                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(1, 2), new Vector2(0.1f, 0.2f)), new VelocityAcceleration()},
-                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(3, 4), new Vector2(0.3f, 0.4f)), new VelocityAcceleration()},
-                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(5, 6), new Vector2(0.5f, 0.6f)), new VelocityAcceleration()}
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(1, 0.2), new Vector2(0.1f, 0.2f)), new VelocityAcceleration()},
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(3, 0.4), new Vector2(0.3f, 0.4f)), new VelocityAcceleration()},
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(5, 0.6), new Vector2(0.5f, 0.6f)), new VelocityAcceleration()}
             };
 
             //Because NSubstitute has error with multidimensional return values, special fake class used
@@ -25,14 +25,26 @@ namespace Brumba.DwaNavigator.Tests
 
             var dwapo = new DwaProblemOptimizer(
                 velocitySearchSpaceGenerator: vssg,
-                velocityEvaluator: Substitute.For<IVelocityEvaluator>());
+                velocityEvaluator: Substitute.For<IVelocityEvaluator>(),
+                robotVelocityMax: new Velocity(10, 100));
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
-            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)), Is.EqualTo(new Vector2(0.5f, 0.6f)));
+            var optRes = dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2));
+            Assert.That(optRes.Item1, Is.EqualTo(new Vector2(0.5f, 0.6f)));
 
             Assert.That(vssg.ReceivedGenerate(new Velocity(5, 2)));
             dwapo.VelocityEvaluator.Received(9).Evaluate(Arg.Is<Velocity>(vel => vwa.Cast<VelocityAcceleration>().Any(va => va.Velocity.Equals(vel))));
+
+            Assert.That(optRes.Item2[0, 0], Is.EqualTo(0));
+            Assert.That(optRes.Item2[0, 1], Is.EqualTo(0.2));
+            Assert.That(optRes.Item2[0, 2], Is.EqualTo(0));
+            Assert.That(optRes.Item2[1, 0], Is.EqualTo(0));
+            Assert.That(optRes.Item2[1, 1], Is.LessThan(0.4));
+            Assert.That(optRes.Item2[1, 2], Is.EqualTo(0));
+            Assert.That(optRes.Item2[2, 0], Is.EqualTo(0));
+            Assert.That(optRes.Item2[2, 1], Is.EqualTo(0.6));
+            Assert.That(optRes.Item2[2, 2], Is.EqualTo(0));
         }
 
         [Test]
@@ -40,21 +52,19 @@ namespace Brumba.DwaNavigator.Tests
         {
             var vwa = new[,]
             {
-                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(1, 2), new Vector2(0.1f, 0.2f)), new VelocityAcceleration()},
-                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(3, 4), new Vector2(0.3f, 0.4f)), new VelocityAcceleration()},
-                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(5, 1), new Vector2(0.5f, 0.6f)), new VelocityAcceleration()}
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(1, 0.2), new Vector2(0.1f, 0.2f)), new VelocityAcceleration()},
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(3, 0.4), new Vector2(0.3f, 0.4f)), new VelocityAcceleration()},
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(5, 0.1), new Vector2(0.5f, 0.6f)), new VelocityAcceleration()}
             };
 
             //Because NSubstitute has error with multidimensional return values, special fake class used
             var vssg = new FakeVelocitySearchSpaceGenerator(vwa);
 
-            var dwapo = new DwaProblemOptimizer(
-                velocitySearchSpaceGenerator: vssg,
-                velocityEvaluator: Substitute.For<IVelocityEvaluator>());
+            var dwapo = new DwaProblemOptimizer(vssg, Substitute.For<IVelocityEvaluator>(), new Velocity(10, 100));
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
-            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)), Is.EqualTo(new Vector2(0.1f, 0.2f)));
+            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)).Item1, Is.EqualTo(new Vector2(0.1f, 0.2f)));
 
             dwapo.VelocityEvaluator.Received(9).Evaluate(Arg.Is<Velocity>(vel => vwa.Cast<VelocityAcceleration>().Any(va => va.Velocity.Equals(vel))));
         }
@@ -64,32 +74,54 @@ namespace Brumba.DwaNavigator.Tests
         {
             var vwa = new[,]
             {
-                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(1, 2), new Vector2(0.1f, 0.2f)), new VelocityAcceleration()},
-                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(3, 8), new Vector2(0.3f, 0.4f)), new VelocityAcceleration()},
-                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(-5, 16), new Vector2(0.5f, 0.6f)), new VelocityAcceleration()}
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(1, 0.02), new Vector2(0.1f, 0.2f)), new VelocityAcceleration()},
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(3, 0.08), new Vector2(0.3f, 0.4f)), new VelocityAcceleration()},
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(-5, 0.16), new Vector2(0.5f, 0.6f)), new VelocityAcceleration()}
             };
 
             //Because NSubstitute has error with multidimensional return values, special fake class used
             var vssg = new FakeVelocitySearchSpaceGenerator(vwa);
 
-            var dwapo = new DwaProblemOptimizer(
-                velocitySearchSpaceGenerator: vssg,
-                velocityEvaluator: Substitute.For<IVelocityEvaluator>());
+            var dwapo = new DwaProblemOptimizer(vssg, Substitute.For<IVelocityEvaluator>(), new Velocity(10, 100));
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
-            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)), Is.EqualTo(new Vector2(0.3f, 0.4f)));
+            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)).Item1, Is.EqualTo(new Vector2(0.3f, 0.4f)));
 
             dwapo.VelocityEvaluator.Received(8).Evaluate(Arg.Is<Velocity>(vel => vwa.Cast<VelocityAcceleration>().Any(va => va.Velocity.Equals(vel))));
             dwapo.VelocityEvaluator.DidNotReceive().Evaluate(new Velocity(-5, 6));
         }
 
         [Test]
+        public void FindOptimalVelocityPrunesUnfeasibleVelocities()
+        {
+            var vwa = new[,]
+            {
+                {new VelocityAcceleration(new Velocity(1, -0.60), new Vector2(0.1f, 0.2f)), new VelocityAcceleration(new Velocity(1, 0.60), new Vector2(0.1f, 0.2f)), new VelocityAcceleration()},
+                {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(3, 0.08), new Vector2(0.3f, 0.4f)), new VelocityAcceleration()},
+                {new VelocityAcceleration(new Velocity(-1, 0.16), new Vector2(0.7f, 0.8f)), new VelocityAcceleration(new Velocity(100, 0.16), new Vector2(0.5f, 0.6f)), new VelocityAcceleration()}
+            };
+
+            //Because NSubstitute has error with multidimensional return values, special fake class used
+            var vssg = new FakeVelocitySearchSpaceGenerator(vwa);
+
+            var dwapo = new DwaProblemOptimizer(vssg, Substitute.For<IVelocityEvaluator>(), new Velocity(10, 0.50));
+
+            dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
+
+            Assert.That(dwapo.FindOptimalVelocity(velocity: new Pose(new Vector2(3, 4), 2)).Item1, Is.EqualTo(new Vector2(0.3f, 0.4f)));
+
+            dwapo.VelocityEvaluator.Received(5).Evaluate(Arg.Is<Velocity>(vel => vwa.Cast<VelocityAcceleration>().Any(va => va.Velocity.Equals(vel))));
+            dwapo.VelocityEvaluator.DidNotReceive().Evaluate(new Velocity(1, 320));
+            dwapo.VelocityEvaluator.DidNotReceive().Evaluate(new Velocity(1, -320));
+            dwapo.VelocityEvaluator.DidNotReceive().Evaluate(new Velocity(100, 16));
+            dwapo.VelocityEvaluator.DidNotReceive().Evaluate(new Velocity(-1, 16));
+        }
+
+        [Test]
         public void SmoothMatrix()
         {
-            var dwapo = new DwaProblemOptimizer(
-                            velocitySearchSpaceGenerator: Substitute.For<IVelocitySearchSpaceGenerator>(),
-                            velocityEvaluator: Substitute.For<IVelocityEvaluator>());
+            var dwapo = new DwaProblemOptimizer(Substitute.For<IVelocitySearchSpaceGenerator>(), Substitute.For<IVelocityEvaluator>(), new Velocity(1, 1));
 
             var m = DenseMatrix.OfArray(new double[,]
                 {
@@ -124,9 +156,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void SmoothMatrixSkipsNegativeCells()
         {
-            var dwapo = new DwaProblemOptimizer(
-                            velocitySearchSpaceGenerator: Substitute.For<IVelocitySearchSpaceGenerator>(),
-                            velocityEvaluator: Substitute.For<IVelocityEvaluator>());
+            var dwapo = new DwaProblemOptimizer(Substitute.For<IVelocitySearchSpaceGenerator>(), Substitute.For<IVelocityEvaluator>(), new Velocity(1, 1));
 
             var m = DenseMatrix.OfArray(new double[,]
                 {

@@ -34,8 +34,8 @@ namespace Brumba.DwaNavigator
 
         public double Evaluate(Velocity v)
         {
-            DC.Contract.Requires(EvaluatorWeights != null);
-            DC.Contract.Requires(EvaluatorWeights.Any());
+            DC.Contract.Assert(EvaluatorWeights != null);
+            DC.Contract.Assert(EvaluatorWeights.Any());
 
             return EvaluatorWeights.Select(p => p.Key.Evaluate(v) * p.Value).Sum();
         }

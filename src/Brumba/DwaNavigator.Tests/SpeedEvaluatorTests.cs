@@ -8,7 +8,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void Evaluate()
         {
-            var se = new SpeedEvaluator(maxSpeed: 2d);
+            var se = new SpeedEvaluator(robotMaxSpeed: 2d);
 
             Assert.That(se.Evaluate(new Velocity()), Is.EqualTo(0));
             Assert.That(se.Evaluate(new Velocity(1, 0)), Is.EqualTo(0.5));

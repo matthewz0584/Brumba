@@ -78,7 +78,7 @@ namespace Brumba.DwaNavigator.Tests
         public void GetDistanceToClosestObstacle()
         {
             //One obstacle staright ahead, moving on line
-            Assert.That(double.IsPositiveInfinity(new ObstaclesEvaluator(obstacles: new Vector2[0], robotRadius: 1d, linearDecelerationMax: 1d, maxRange: 100d).
+            Assert.That(double.IsPositiveInfinity(new ObstaclesEvaluator(obstacles: new Vector2[0], robotRadius: 1d, linearDecelerationMax: 1d, rangefinderMaxRange: 100d).
                 GetDistanceToClosestObstacle(new Velocity(50, 0))));
 
             //One obstacle staright ahead, moving on line
