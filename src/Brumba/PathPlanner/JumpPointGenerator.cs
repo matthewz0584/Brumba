@@ -36,7 +36,7 @@ namespace Brumba.PathPlanner
 		Point? JumpToward(Point from, Point direction)
 		{
             DC.Contract.Requires(Map.Covers(from));
-            DC.Contract.Requires(direction.Between(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
+            DC.Contract.Requires(direction.BetweenL(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
 		    DC.Contract.Ensures(!DC.Contract.Result<Point?>().HasValue ||
 		                        (Map.Covers(DC.Contract.Result<Point?>().Value) && !Map[DC.Contract.Result<Point?>().Value]));
 
@@ -55,7 +55,7 @@ namespace Brumba.PathPlanner
 		bool HasForcedNeighbours(Point cell, Point direction)
 		{
             DC.Contract.Requires(Map.Covers(cell));
-            DC.Contract.Requires(direction.Between(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
+            DC.Contract.Requires(direction.BetweenL(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
 
 		    return IsDiagonal(direction) ?
                 HasForcedDiagonalNeighbour(cell, direction, horizontal: true) ||
@@ -68,7 +68,7 @@ namespace Brumba.PathPlanner
         bool HasForcedStraightNeighbour(Point cell, Point direction, bool up)
         {
             DC.Contract.Requires(Map.Covers(cell));
-            DC.Contract.Requires(direction.Between(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
+            DC.Contract.Requires(direction.BetweenL(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
 
             var obstacleCell = cell.Plus(direction.Perpendicular().Scale(up ? 1 : -1));
             return Map.Covers(obstacleCell) && Map[obstacleCell] &&
@@ -78,7 +78,7 @@ namespace Brumba.PathPlanner
         bool HasForcedDiagonalNeighbour(Point cell, Point direction, bool horizontal)
         {
             DC.Contract.Requires(Map.Covers(cell));
-            DC.Contract.Requires(direction.Between(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
+            DC.Contract.Requires(direction.BetweenL(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
 
             var obstacleCell = cell.Plus(new Point(horizontal ? -direction.X : 0, horizontal ? 0 : -direction.Y));
             return Map[obstacleCell] && //obstacle position have to be covered by map due to geometry of rectangular grid 
@@ -88,7 +88,7 @@ namespace Brumba.PathPlanner
 
 	    static bool IsDiagonal(Point direction)
 	    {
-            DC.Contract.Requires(direction.Between(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
+            DC.Contract.Requires(direction.BetweenL(new Point(-1, -1), new Point(2, 2)) && direction.LengthSq() != 0);
 
 	        return direction.LengthSq() == 2;
 	    }

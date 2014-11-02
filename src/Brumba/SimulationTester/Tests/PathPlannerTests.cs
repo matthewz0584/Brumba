@@ -137,7 +137,7 @@ namespace Brumba.SimulationTester.Tests
                     }
                 }
 
-                @return(occupiedInInflatedMap.Between((int)(occupiedInMap * 4.5), (int)(occupiedInMap * 5.5)));
+                @return(occupiedInInflatedMap.BetweenL((int)(occupiedInMap * 4.5), (int)(occupiedInMap * 5.5)));
             }
         }
 	}

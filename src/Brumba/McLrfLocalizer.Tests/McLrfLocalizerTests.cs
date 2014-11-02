@@ -143,7 +143,7 @@ namespace Brumba.McLrfLocalizer.Tests
 			var poses = McLrfLocalizer.GenerateRandomPoses(map).Take(1000);
 
 			Assert.That(poses.All(p => !map.Covers(p.Position) || !map[p.Position]));
-			Assert.That(poses.All(p => p.Bearing.Between(0, Constants.Pi2)));
+			Assert.That(poses.All(p => p.Bearing.BetweenL(0, Constants.Pi2)));
 			Assert.That(poses.Distinct().Count(), Is.EqualTo(1000));
 
 			Assert.That(new DescriptiveStatistics(poses.Select(p => (double)p.Position.X)).Mean, Is.EqualTo(2).Within(0.25));

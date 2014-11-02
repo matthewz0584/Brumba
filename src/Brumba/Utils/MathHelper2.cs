@@ -123,7 +123,7 @@ namespace Brumba.Utils
         }
 
         [Pure]
-        public static bool Between(this float me, float lower, float upper)
+        public static bool BetweenL(this float me, float lower, float upper)
         {
             Contract.Requires(upper > lower);
 
@@ -147,7 +147,7 @@ namespace Brumba.Utils
         }
 
         [Pure]
-        public static bool Between(this double me, double lower, double upper)
+        public static bool BetweenL(this double me, double lower, double upper)
         {
             Contract.Requires(upper > lower);
 
@@ -171,7 +171,7 @@ namespace Brumba.Utils
         }
 
         [Pure]
-        public static bool Between(this int me, int lower, int upper)
+        public static bool BetweenL(this int me, int lower, int upper)
         {
             Contract.Requires(upper > lower);
 
@@ -187,12 +187,12 @@ namespace Brumba.Utils
         }
 
         [Pure]
-        public static bool Between(this Vector2 me, Vector2 lower, Vector2 upper)
+        public static bool BetweenL(this Vector2 me, Vector2 lower, Vector2 upper)
         {
             Contract.Requires(upper.X > lower.X);
             Contract.Requires(upper.Y > lower.Y);
 
-            return me.X.Between(lower.X, upper.X) && me.Y.Between(lower.Y, upper.Y);
+            return me.X.BetweenL(lower.X, upper.X) && me.Y.BetweenL(lower.Y, upper.Y);
         }
 
         [Pure]
@@ -205,22 +205,22 @@ namespace Brumba.Utils
         }
 
         [Pure]
-        public static bool Between(this Vector3 me, Vector3 lower, Vector3 upper)
+        public static bool BetweenL(this Vector3 me, Vector3 lower, Vector3 upper)
         {
             Contract.Requires(upper.X > lower.X);
             Contract.Requires(upper.Y > lower.Y);
             Contract.Requires(upper.Z > lower.Z);
 
-            return me.X.Between(lower.X, upper.X) && me.Y.Between(lower.Y, upper.Y) && me.Z.Between(lower.Z, upper.Z);
+            return me.X.BetweenL(lower.X, upper.X) && me.Y.BetweenL(lower.Y, upper.Y) && me.Z.BetweenL(lower.Z, upper.Z);
         }
 
         [Pure]
-        public static bool Between(this Point me, Point lower, Point upper)
+        public static bool BetweenL(this Point me, Point lower, Point upper)
         {
             Contract.Requires(upper.X > lower.X);
             Contract.Requires(upper.Y > lower.Y);
 
-            return me.X.Between(lower.X, upper.X) && me.Y.Between(lower.Y, upper.Y);
+            return me.X.BetweenL(lower.X, upper.X) && me.Y.BetweenL(lower.Y, upper.Y);
         }
 
         [Pure]
@@ -244,7 +244,7 @@ namespace Brumba.Utils
         {
             Contract.Requires(angles != null);
             Contract.Requires(angles.Any());
-            Contract.Ensures(double.IsNaN(Contract.Result<double>()) || Contract.Result<double>().Between(0, Constants.Pi2));
+            Contract.Ensures(double.IsNaN(Contract.Result<double>()) || Contract.Result<double>().BetweenL(0, Constants.Pi2));
 
             var avgVector = angles.Aggregate(new DenseVector(2), (sum, next) => new DenseVector(new []{Math.Cos(next), Math.Sin(next)}) + sum);
             return avgVector.DotProduct(avgVector) < 0.01 ?
