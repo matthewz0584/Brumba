@@ -63,6 +63,7 @@ namespace Brumba.DwaNavigator
         public IEnumerable<double> DistancesToObstaclesOnLine()
         {
             DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>() != null);
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>().All(d => d > RobotRadius));
 
             return Obstacles.
                 Where(o => o.Y <= RobotRadius && o.Y >= -RobotRadius && o.X >= 0).
@@ -73,6 +74,7 @@ namespace Brumba.DwaNavigator
         {
             DC.Contract.Requires(cmm != null);
             DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>() != null);
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>().All(d => d > RobotRadius));
 
             return Obstacles.
                 Where(o =>
@@ -81,7 +83,8 @@ namespace Brumba.DwaNavigator
                 Select(o =>
                 {
                     var angularDistanceAlongCircle = Math.Acos(Vector2.Dot(Vector2.Normalize(o - cmm.Center), Vector2.Normalize(-cmm.Center)));
-                    return Math.Abs(cmm.Radius) * (o.X < 0 ? Constants.Pi2 - angularDistanceAlongCircle : angularDistanceAlongCircle);
+                    var distanceAlongCircle = Math.Abs(cmm.Radius) * (o.X < 0 ? Constants.Pi2 - angularDistanceAlongCircle : angularDistanceAlongCircle);
+                    return distanceAlongCircle > RobotRadius ? distanceAlongCircle : RobotRadius * 1.00001;
                 });
         }
 

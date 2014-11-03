@@ -72,12 +72,19 @@ namespace Brumba.DwaNavigator.Tests
             //Turning almost on place, there is no circle with (R - Rrobot) radius
             Assert.That(new ObstaclesEvaluator(new[] { new Vector2(0, 1.5f) }, 1, 1, 100).
                 DistancesToObstaclesOnCircle(new CircleMotionModel(new Velocity(0.5, 1))).Single(), Is.EqualTo(Constants.Pi * 0.5));
+            //Turning on place
+            Assert.That(new ObstaclesEvaluator(new[] { new Vector2(0, 1.5f) }, 1, 1, 100).
+                DistancesToObstaclesOnCircle(new CircleMotionModel(new Velocity(0, 1))), Is.Empty);
+            //On very small curve radiuses approximating algorithm returns distances smaller than zero
+            //although all distances to obstacles are greater than robot radius. It is fixed explicitly.
+            Assert.That(new ObstaclesEvaluator(new[] { new Vector2(0, 0.6f) }, 0.5, 1, 100).
+                DistancesToObstaclesOnCircle(new CircleMotionModel(new Velocity(0.1, 1))).Single(), Is.GreaterThan(0.5).And.EqualTo(0.5).Within(1e-5));
         }
 
         [Test]
         public void GetDistanceToClosestObstacle()
         {
-            //One obstacle staright ahead, moving on line
+            //No obstacles ahead, moving on line
             Assert.That(double.IsPositiveInfinity(new ObstaclesEvaluator(obstacles: new Vector2[0], robotRadius: 1d, linearDecelerationMax: 1d, rangefinderMaxRange: 100d).
                 GetDistanceToClosestObstacle(new Velocity(50, 0))));
 

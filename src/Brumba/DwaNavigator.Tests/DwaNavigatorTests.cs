@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using Brumba.Utils;
 using Brumba.WaiterStupid;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
@@ -12,7 +12,7 @@ namespace Brumba.DwaNavigator.Tests
         private DwaNavigator _dwan;
 
         [SetUp]
-        public void Setup()
+        public void SetUp()
         {
             _dwan = new DwaNavigator(
                 wheelAngularAccelerationMax: 4,
@@ -43,24 +43,68 @@ namespace Brumba.DwaNavigator.Tests
                         new Pose(new Vector2(), 0),
                         new Vector2(10, 0),
                         new Vector2[0]);
-            Console.WriteLine(_dwan.VelocitiesEvaluation.ToString(21, 21));
             Assert.That(_dwan.OptimalVelocity.Velocity, Is.EqualTo(new Velocity(_dwan.AccelerationMax.Linear * 0.25, 0)));
             Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
         }
 
-        //[Test]
-        public void BasicExampleFromDwaArticle()
+        [Test]
+        public void ObstacleStraightAhead()
         {
             _dwan.Update(new Pose(new Vector2(), 0),
                         new Pose(new Vector2(), 0),
-                        new Vector2(1.3f, -2.1f),
+                        new Vector2(10, 0),
                         new[]
                         {
-                            new Vector2(1.5f, -0.9f), new Vector2(0.3f, -0.9f), new Vector2(0.1f, -0.9f),
-                            new Vector2(-0.1f, -0.9f), new Vector2(-0.3f, -0.9f)
+                            new Vector2(2.5f, 0)
                         });
-            Assert.That(_dwan.OptimalVelocity.Velocity, Is.EqualTo(new Velocity(_dwan.AccelerationMax.Linear * 0.25, 0)));
-            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
+
+            //Console.WriteLine(_dwan.VelocitiesEvaluation.ToString(21, 21));
+            //Evading obstacle by choosing the slightest curve
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration.EqualsWithError(new Vector2(0.9f, 1), 1e-7));
+        }
+
+        [Test]
+        public void ObstacleStraightAheadOnHighSpeed()
+        {
+            _dwan.Update(new Pose(new Vector2(), 0),
+                        new Pose(new Vector2(1.05f, 0), 0),
+                        new Vector2(10, 0),
+                        new[]
+                        {
+                            new Vector2(2.5f, 0)
+                        });
+
+            Console.WriteLine(_dwan.VelocitiesEvaluation.ToString(21, 21));
+            //Speed is to high, no options of circumventing the obstacle, decelerating
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(-1, -1)));
+        }
+
+        [Test]
+        public void ObstacleStraightAheadOnCloseDistance()
+        {
+            _dwan.Update(new Pose(new Vector2(), 0),
+                        new Pose(new Vector2(), 0),
+                        new Vector2(10, 0),
+                        new[]
+                        {
+                            new Vector2(0.4f, 0)
+                        });
+
+            //Evading obstacle by turning on place
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(0.2f, -0.2f)));
+
+            _dwan.Update(new Pose(new Vector2(), 0),
+            new Pose(new Vector2(), 0),
+            new Vector2(10, 0),
+            new[]
+                        {
+                            new Vector2(0.301f, 0)
+                        });
+
+            //Interesting effect: obstacle is so close that every velocity with linear component is severely penalized.
+            //That penalty propagates to entirely rotational trajectories except (1, -1), which lays on the border of matrix
+            //and does not get smoothed. Hence, in limit (1, -1) is chosen, which does not seem very correct.
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, -1)));
         }
     }
 }
