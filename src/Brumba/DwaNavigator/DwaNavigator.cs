@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Brumba.WaiterStupid;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -10,12 +11,10 @@ namespace Brumba.DwaNavigator
     {
         private readonly double _dt;
         private readonly double _robotRadius;
-        private readonly double _wheelAngularVelocityMax;
         private readonly double _rangefinderMaxRange;
         
         private readonly CompositeEvaluator _compositeEvaluator;
         private readonly DwaProblemOptimizer _optimizer;
-        private readonly DynamicDiamondGenerator _dynamicDiamondGenerator;
 
         public DwaNavigator(
             double wheelAngularAccelerationMax,
@@ -29,24 +28,35 @@ namespace Brumba.DwaNavigator
             
             double dt)
         {
+            DC.Contract.Requires(wheelAngularAccelerationMax > 0);
+            DC.Contract.Requires(wheelAngularVelocityMax > 0);
+            DC.Contract.Requires(wheelRadius > 0);
+            DC.Contract.Requires(wheelBase > 0);
+            DC.Contract.Requires(robotRadius >= wheelBase);
+            DC.Contract.Requires(rangefinderMaxRange > 0);
+            DC.Contract.Requires(dt > 0);
             DC.Contract.Ensures(AccelerationMax.Linear > 0 && AccelerationMax.Angular > 0);
+            DC.Contract.Ensures(VelocityMax.Linear > 0 && VelocityMax.Angular > 0);
+            DC.Contract.Ensures(VelocitiesEvaluation != null);
 
             _robotRadius = robotRadius;
             _rangefinderMaxRange = rangefinderMaxRange;
             _dt = dt;
 
-            _dynamicDiamondGenerator = new DynamicDiamondGenerator(wheelAngularAccelerationMax, wheelRadius, wheelBase, dt);
+            var dynamicDiamondGenerator = new DynamicDiamondGenerator(wheelAngularAccelerationMax, wheelRadius, wheelBase, dt);
             
             AccelerationMax = new Velocity(
-                    _dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2((float)wheelAngularAccelerationMax, (float)wheelAngularAccelerationMax)).Linear,
-                    _dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2(-(float)wheelAngularAccelerationMax, (float)wheelAngularAccelerationMax)).Angular);
+                    dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2((float)wheelAngularAccelerationMax, (float)wheelAngularAccelerationMax)).Linear,
+                    dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2(-(float)wheelAngularAccelerationMax, (float)wheelAngularAccelerationMax)).Angular);
 
             VelocityMax = new Velocity(
-                    _dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2((float)wheelAngularVelocityMax, (float)wheelAngularVelocityMax)).Linear,
-                    _dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2(-(float)wheelAngularVelocityMax, (float)wheelAngularVelocityMax)).Angular);
+                    dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2((float)wheelAngularVelocityMax, (float)wheelAngularVelocityMax)).Linear,
+                    dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2(-(float)wheelAngularVelocityMax, (float)wheelAngularVelocityMax)).Angular);
+
+            VelocitiesEvaluation = new DenseMatrix(2 * DynamicDiamondGenerator.STEPS_NUMBER + 1);
 
             _compositeEvaluator = new CompositeEvaluator();
-            _optimizer = new DwaProblemOptimizer(_dynamicDiamondGenerator, _compositeEvaluator, VelocityMax);
+            _optimizer = new DwaProblemOptimizer(dynamicDiamondGenerator, _compositeEvaluator, VelocityMax);
         }
 
         public Velocity AccelerationMax { get; private set; }
@@ -57,6 +67,12 @@ namespace Brumba.DwaNavigator
 
         public void Update(Pose pose, Pose velocity, Vector2 target, IEnumerable<Vector2> obstacles)
         {
+            DC.Contract.Requires(obstacles != null);
+            DC.Contract.Requires(Math.Abs(velocity.Bearing) <= VelocityMax.Angular);
+            DC.Contract.Requires(Math.Abs(velocity.Position.Length()) <= VelocityMax.Linear);
+            DC.Contract.Ensures(VelocitiesEvaluation != null);
+            DC.Contract.Ensures(VelocitiesEvaluation != DC.Contract.OldValue(VelocitiesEvaluation));
+
             _compositeEvaluator.EvaluatorWeights = new Dictionary<IVelocityEvaluator, double>
             {
                 { new AngleToTargetEvaluator(pose, target, AccelerationMax.Angular, _dt), 0.8 },

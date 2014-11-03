@@ -64,19 +64,21 @@ namespace Brumba.DwaNavigator.Tests
         }
 
         [Test]
-        public void ObstacleStraightAheadOnHighSpeed()
+        public void WallStraightAhead()
         {
             _dwan.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(1.05f, 0), 0),
+                        new Pose(new Vector2(0.95f, 0), 0),
                         new Vector2(10, 0),
                         new[]
                         {
-                            new Vector2(2.5f, 0)
+                            new Vector2(1.5f, 0), new Vector2(1.5f, 0.3f), new Vector2(1.5f, -0.3f), new Vector2(1.5f, 0.6f), new Vector2(2.5f, -0.6f)
                         });
 
             Console.WriteLine(_dwan.VelocitiesEvaluation.ToString(21, 21));
-            //Speed is to high, no options of circumventing the obstacle, decelerating
-            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(-1, -1)));
+            Console.WriteLine(_dwan.OptimalVelocity.WheelAcceleration);
+            Console.WriteLine(_dwan.OptimalVelocity.Velocity);
+            //Wall is large, evading by the sharpest turn
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(-1, 1)).Or.EqualTo(new Vector2(1, -1)));
         }
 
         [Test]
@@ -91,7 +93,7 @@ namespace Brumba.DwaNavigator.Tests
                         });
 
             //Evading obstacle by turning on place
-            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(0.2f, -0.2f)));
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(0.2f, -0.2f)).Or.EqualTo(new Vector2(-0.2f, 0.2f)));
 
             _dwan.Update(new Pose(new Vector2(), 0),
             new Pose(new Vector2(), 0),
@@ -104,7 +106,7 @@ namespace Brumba.DwaNavigator.Tests
             //Interesting effect: obstacle is so close that every velocity with linear component is severely penalized.
             //That penalty propagates to entirely rotational trajectories except (1, -1), which lays on the border of matrix
             //and does not get smoothed. Hence, in limit (1, -1) is chosen, which does not seem very correct.
-            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, -1)));
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, -1)).Or.EqualTo(new Vector2(-1, 1)));
         }
     }
 }
