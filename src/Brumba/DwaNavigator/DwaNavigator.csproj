@@ -87,6 +87,10 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Brumba.DiffDriveOdometry.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.DiffDriveOdometry.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
@@ -111,6 +115,9 @@
     <Reference Include="RoboticsCommon">
       <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
     </Reference>
+    <Reference Include="RoboticsCommon.proxy">
+      <HintPath>..\..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
+    </Reference>
     <Reference Include="SickLRF.Y2005.M12.proxy">
       <HintPath>..\..\..\..\bin\SickLRF.Y2005.M12.proxy.dll</HintPath>
     </Reference>
@@ -132,6 +139,7 @@
     <Compile Include="DwaNavigatorService.cs" />
     <Compile Include="DwaProblemOptimizer.cs" />
     <Compile Include="DynamicDiamondGenerator.cs" />
+    <Compile Include="DwaNavigatorTypes.cs" />
     <Compile Include="MotionModels.cs" />
     <Compile Include="ObstaclesEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -74,17 +74,4 @@ namespace Brumba.DwaNavigator
             return new Velocity(WheelRadius / 2 * (wheelsValues.Y + wheelsValues.X), WheelRadius / WheelBase * (wheelsValues.Y - wheelsValues.X));
         }
     }
-
-    public struct VelocityAcceleration
-    {
-        public VelocityAcceleration(Velocity velocity, Vector2 wheelAcceleration)
-            : this()
-        {
-            Velocity = velocity;
-            WheelAcceleration = wheelAcceleration;
-        }
-
-        public Velocity Velocity { get; private set; }
-        public Vector2 WheelAcceleration { get; private set; }
-    }
 }

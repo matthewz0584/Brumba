@@ -74,6 +74,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathPlanner", "PathPlanner\PathPlanner.csproj", "{ACEB8750-11C1-40FF-B01A-2A4D58D7AEA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DwaNavigator", "DwaNavigator\DwaNavigator.csproj", "{6293A5DA-4179-4B3D-93B5-84239B65C1A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4372FAD1-D6CE-404D-8738-7A7014B0623A} = {4372FAD1-D6CE-404D-8738-7A7014B0623A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DwaNavigator.Tests", "DwaNavigator.Tests\DwaNavigator.Tests.csproj", "{66831759-1D1D-45F3-98FD-77723F8CD2F0}"
 EndProject

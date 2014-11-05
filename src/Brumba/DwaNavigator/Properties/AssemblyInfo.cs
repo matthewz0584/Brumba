@@ -37,4 +37,4 @@ using Microsoft.Dss.Core.Attributes;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
-//[assembly: ServiceDeclaration(DssServiceDeclaration.ServiceBehavior)]
+[assembly: ServiceDeclaration(DssServiceDeclaration.ServiceBehavior)]
