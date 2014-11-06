@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
+using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
+using McLrfLocalizerPxy = Brumba.McLrfLocalizer.Proxy;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using DC = System.Diagnostics.Contracts;
@@ -30,6 +33,9 @@ namespace Brumba.DwaNavigator
         [Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         OdometryPxy.DiffDriveOdometryOperations _odometryProvider = new OdometryPxy.DiffDriveOdometryOperations();
 
+        [Partner("McLrfLocalizer", Contract = McLrfLocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        McLrfLocalizerPxy.McLrfLocalizerOperations _localizer = new McLrfLocalizerPxy.McLrfLocalizerOperations();
+
         [Partner("Lrf", Contract = SickLrfPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         SickLrfPxy.SickLRFOperations _lrf = new SickLrfPxy.SickLRFOperations();
 
@@ -50,60 +56,45 @@ namespace Brumba.DwaNavigator
 
         protected override void Start()
         {
-            SpawnIterator(StartIt);
+            _dwaNavigator = new DwaNavigator(_state.WheelAngularAccelerationMax, _state.WheelAngularVelocityMax,
+                _state.WheelRadius, _state.WheelBase, _state.RobotRadius, _state.RangefinderProperties, _state.DeltaT);
+
+            _timerFacade = new TimerFacade(this, _state.DeltaT);
+
+            _takeEachNthBeam = 1;
+
+            base.Start();
+
+            MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
+                    Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateNavigator))));
+
+            To.Exec(() => _timerFacade.Set());
         }
 
-        IEnumerator<ITask> StartIt()
+        IEnumerator<ITask> UpdateNavigator(TimeSpan dt)
         {
-            //_timerFacade = new TimerFacade(this, _state.DeltaT);
+    //        public static JoinReceiver JoinedReceive<T0, T1>(bool persist, Port<T0> port0, Port<T1> port1, Handler<T0, T1> handler)
+    //{
+    //  return new JoinReceiver((persist ? 1 : 0) != 0, (ITask) new Task<T0, T1>(handler), new IPortReceive[2]
+    //  {
+    //    (IPortReceive) port0,
+    //    (IPortReceive) port1
+    //  });
+    //}
+            yield return new JoinReceiver(false, new Task<SickLrfPxy.State, OdometryPxy.DiffDriveOdometryServiceState, Pose>(
+                (lrfScan, odometry, pose) =>
+                {
+                    DC.Contract.Requires(lrfScan != null);
+                    DC.Contract.Requires(lrfScan.DistanceMeasurements != null);
+                    DC.Contract.Requires(odometry != null);
+                    DC.Contract.Requires(odometry.State != null);
 
-            //OccupancyGrid map = null;
-            //yield return _mapProvider.Get().Receive(ms => map = (OccupancyGrid)DssTypeHelper.TransformFromProxy(ms.Map));
-            //map.Freeze();
-
-            //var sparsifiedRp = _state.RangeFinderProperties.Sparsify(_state.BeamsNumber);
-            //_takeEachNthBeam = (int)Math.Round(sparsifiedRp.AngularResolution / _state.RangeFinderProperties.AngularResolution);
-            //_localizer = new McLrfLocalizer(map, sparsifiedRp, _state.ParticlesNumber);
-
-            //if (IsPoseUnknown(_state.FirstPoseCandidate))
-            //    _localizer.InitPoseUnknown();
-            //else
-            //    _localizer.InitPose(_state.FirstPoseCandidate, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
-
-            //yield return _odometryProvider.Get().Receive(os => _currentOdometry = (Pose)DssTypeHelper.TransformFromProxy(os.State.Pose));
-
-            //base.Start();
-
-            //MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
-            //        Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateLocalizer))));
-
-            yield return To.Exec(() => _timerFacade.Set());
-        }
-
-        IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)
-        {
-            //yield return Arbiter.JoinedReceive<SickLrfPxy.State, OdometryPxy.DiffDriveOdometryServiceState>(false,
-            //    _lrf.Get(), _odometryProvider.Get(),
-            //    (lrfScan, odometry) =>
-            //    {
-            //        DC.Contract.Requires(lrfScan != null);
-            //        DC.Contract.Requires(lrfScan.DistanceMeasurements != null);
-            //        DC.Contract.Requires(odometry != null);
-            //        DC.Contract.Requires(odometry.State != null);
-
-            //        var sw = Stopwatch.StartNew();
-
-            //        var newOdometry = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose);
-            //        _localizer.Update(newOdometry - _currentOdometry, PreprocessLrfScan(lrfScan));
-            //        _currentOdometry = newOdometry;
-
-            //        UpdateState();
-            //        LogInfo("loc {0} for {1}", _state.FirstPoseCandidate, sw.Elapsed.Milliseconds);
-            //    });
-
-            yield break;
-
-            //yield return To.Exec(Draw);
+                    var velocity = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Velocity);
+                    _dwaNavigator.Update(pose, velocity, _state.Target, PreprocessLrfScan(lrfScan));
+                    
+                    //UpdateState();
+                }),
+                (IPortReceive)_lrf.Get(), (IPortReceive)_odometryProvider.Get(), (IPortReceive)_localizer.QueryPose());
         }
 
         //[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
@@ -172,12 +163,11 @@ namespace Brumba.DwaNavigator
         //    return double.IsNaN(pose.Bearing);
         //}
 
-        //IEnumerable<float> PreprocessLrfScan(SickLrfPxy.State lrfScan)
-        //{
-        //    DC.Contract.Requires(lrfScan != null);
-        //    DC.Contract.Ensures(DC.Contract.Result<IEnumerable<float>>().Count() == _state.BeamsNumber);
+        IEnumerable<float> PreprocessLrfScan(SickLrfPxy.State lrfScan)
+        {
+            DC.Contract.Requires(lrfScan != null);
 
-        //    return lrfScan.DistanceMeasurements.Where((d, i) => i % _takeEachNthBeam == 0).Select(d => d / 1000f).Take(_state.BeamsNumber);
-        //}
+            return lrfScan.DistanceMeasurements.Where((d, i) => i % _takeEachNthBeam == 0).Select(d => d / 1000f);
+        }
     }
 }

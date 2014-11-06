@@ -29,7 +29,6 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Requires(i >= 0);
             DC.Contract.Requires(i < AngularRange / AngularResolution + 1);
             DC.Contract.Requires(OriginPose.Bearing.BetweenL(0, Constants.Pi2));
-			DC.Contract.Requires(OriginPose.Position.Length() >= 0);
             DC.Contract.Requires(AngularResolution > 0);
 
 			return OriginPose.Position + Vector2.Transform(new Vector2(zi, 0), Matrix.CreateRotationZ((float)(OriginPose.Bearing - AngularRange / 2 + i * AngularResolution)));

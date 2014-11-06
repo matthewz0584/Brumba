@@ -91,6 +91,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.DiffDriveOdometry.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Brumba.McLrfLocalizer.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.McLrfLocalizer.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>

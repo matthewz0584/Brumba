@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Brumba.McLrfLocalizer;
 using Brumba.WaiterStupid;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Xna.Framework;
@@ -11,7 +13,6 @@ namespace Brumba.DwaNavigator
     {
         private readonly double _dt;
         private readonly double _robotRadius;
-        private readonly double _rangefinderMaxRange;
         
         private readonly CompositeEvaluator _compositeEvaluator;
         private readonly DwaProblemOptimizer _optimizer;
@@ -24,7 +25,7 @@ namespace Brumba.DwaNavigator
             double wheelBase,
             double robotRadius,
             
-            double rangefinderMaxRange,
+            RangefinderProperties rangefinderProperties,
             
             double dt)
         {
@@ -33,14 +34,16 @@ namespace Brumba.DwaNavigator
             DC.Contract.Requires(wheelRadius > 0);
             DC.Contract.Requires(wheelBase > 0);
             DC.Contract.Requires(robotRadius >= wheelBase);
-            DC.Contract.Requires(rangefinderMaxRange > 0);
+            DC.Contract.Requires(rangefinderProperties.MaxRange > 0);
+            DC.Contract.Requires(rangefinderProperties.AngularRange > 0);
+            DC.Contract.Requires(rangefinderProperties.AngularResolution > 0);
             DC.Contract.Requires(dt > 0);
             DC.Contract.Ensures(AccelerationMax.Linear > 0 && AccelerationMax.Angular > 0);
             DC.Contract.Ensures(VelocityMax.Linear > 0 && VelocityMax.Angular > 0);
             DC.Contract.Ensures(VelocitiesEvaluation != null);
 
             _robotRadius = robotRadius;
-            _rangefinderMaxRange = rangefinderMaxRange;
+            RangefinderProperties = rangefinderProperties;
             _dt = dt;
 
             var dynamicDiamondGenerator = new DynamicDiamondGenerator(wheelAngularAccelerationMax, wheelRadius, wheelBase, dt);
@@ -65,9 +68,12 @@ namespace Brumba.DwaNavigator
         public VelocityAcceleration OptimalVelocity { get; private set; }
         public DenseMatrix VelocitiesEvaluation { get; private set; }
 
-        public void Update(Pose pose, Pose velocity, Vector2 target, IEnumerable<Vector2> obstacles)
+        public RangefinderProperties RangefinderProperties { get; private set; }
+
+        public void Update(Pose pose, Pose velocity, Vector2 target, IEnumerable<float> obstacles)
         {
             DC.Contract.Requires(obstacles != null);
+            DC.Contract.Requires(obstacles.All(d => d <= RangefinderProperties.MaxRange));
             DC.Contract.Requires(Math.Abs(velocity.Bearing) <= VelocityMax.Angular);
             DC.Contract.Requires(Math.Abs(velocity.Position.Length()) <= VelocityMax.Linear);
             DC.Contract.Ensures(VelocitiesEvaluation != null);
@@ -76,13 +82,24 @@ namespace Brumba.DwaNavigator
             _compositeEvaluator.EvaluatorWeights = new Dictionary<IVelocityEvaluator, double>
             {
                 { new AngleToTargetEvaluator(pose, target, AccelerationMax.Angular, _dt), 0.8 },
-                { new ObstaclesEvaluator(obstacles, _robotRadius, AccelerationMax.Linear, _rangefinderMaxRange), 0.1 },
+                { new ObstaclesEvaluator(TransformMeasurements(obstacles), _robotRadius, AccelerationMax.Linear, RangefinderProperties.MaxRange), 0.1 },
                 { new SpeedEvaluator(VelocityMax.Linear), 0.1 }
             };
             
             var optRes =  _optimizer.FindOptimalVelocity(velocity);
             OptimalVelocity = optRes.Item1;
             VelocitiesEvaluation = optRes.Item2;
+        }
+
+        IEnumerable<Vector2> TransformMeasurements(IEnumerable<float> obstacles)
+        {
+            DC.Contract.Requires(obstacles != null);
+            DC.Contract.Requires(obstacles.All(d => d <= RangefinderProperties.MaxRange));
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Vector2>>() != null);
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Vector2>>().All(v => v.Length() < RangefinderProperties.MaxRange));
+
+            return obstacles.Select((d, i) => new {d, i}).Where(p => p.d != RangefinderProperties.MaxRange).
+                Select(p => RangefinderProperties.BeamToVectorInRobotTransformation(p.d, p.i));
         }
     }
 }

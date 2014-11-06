@@ -1,7 +1,8 @@
+using Brumba.McLrfLocalizer;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
-using Microsoft.Robotics.PhysicalModel;
+using Microsoft.Xna.Framework;
 using W3C.Soap;
 
 namespace Brumba.DwaNavigator
@@ -28,29 +29,29 @@ namespace Brumba.DwaNavigator
         public Vector2 Target { get; set; }
 
         [DataMember]
-        double WheelAngularAccelerationMax { get; set; }
+        public double WheelAngularAccelerationMax { get; set; }
         
         [DataMember]
-        double WheelAngularVelocityMax { get; set; }
+        public double WheelAngularVelocityMax { get; set; }
 
         [DataMember]
-        double WheelRadius { get; set; }
+        public double WheelRadius { get; set; }
 
         [DataMember]
-        double WheelBase { get; set; }
+        public double WheelBase { get; set; }
 
         [DataMember]
-        double RobotRadius { get; set; }
+        public double RobotRadius { get; set; }
 
         [DataMember]
-        double RangefinderMaxRange { get; set; }
+        public RangefinderProperties RangefinderProperties { get; set; }
 
         [DataMember]
         public float DeltaT { get; set; }
     }
 
     [ServicePort]
-	public class DwaNavigatorOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+    public class DwaNavigatorOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, SetTarget>
     {
     }
 
@@ -78,15 +79,15 @@ namespace Brumba.DwaNavigator
     //public class QueryPose : Query<PoseRequest, PortSet<Pose, DefaultQueryResponseType>>
     //{}
 
-    //[DataContract]
-    //public class InitPoseRequest
-    //{
-    //    [DataMember, DataMemberConstructor]
-    //    public Pose Pose { get; set; }
-    //}
+    [DataContract]
+    public class SetTargetRequest
+    {
+        [DataMember, DataMemberConstructor]
+        public Vector2 Target { get; set; }
+    }
 
-    //public class InitPose : Update<InitPoseRequest, PortSet<DefaultUpdateResponseType, Fault>>
-    //{}
+    public class SetTarget : Update<SetTargetRequest, PortSet<DefaultUpdateResponseType, Fault>>
+    {}
 
     //[DataContract]
     //public class InitPoseUnknownRequest
