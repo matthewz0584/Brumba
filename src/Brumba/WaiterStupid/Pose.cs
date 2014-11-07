@@ -20,14 +20,14 @@ namespace Brumba.WaiterStupid
             _freezed = true;
         }
 
-		[DataMember]
+		[DataMember, DataMemberConstructor]
 		public Vector2 Position
         {
             get { return _position; }
 			set { DC.Contract.Requires(!Freezed); _position = value; }
         }
 
-        [DataMember]
+        [DataMember, DataMemberConstructor]
 		public double Bearing
         {
             get { return _bearing; }

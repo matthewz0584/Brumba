@@ -19,7 +19,7 @@ using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("diff_drive_odometry", Wip = true)]
+	[SimTestFixture("diff_drive_odometry")]
 	public class DiffDriveOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }

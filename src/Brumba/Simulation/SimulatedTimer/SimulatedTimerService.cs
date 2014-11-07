@@ -12,7 +12,7 @@ using W3C.Soap;
 namespace Brumba.Simulation.SimulatedTimer
 {
     [Contract(Contract.Identifier)]
-    [DisplayName("Simulated Timer")]
+    [DisplayName("Brumba Simulated Timer")]
     [Description("SimulatedTimerService service (no description provided)")]
     class SimulatedTimerService : SimulatedEntityServiceBase
     {

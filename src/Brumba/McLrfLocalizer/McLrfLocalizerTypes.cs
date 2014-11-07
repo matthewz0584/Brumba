@@ -16,7 +16,7 @@ namespace Brumba.McLrfLocalizer
     public class McLrfLocalizerState
     {
         [DataMember]
-        public Pose FirstPoseCandidate { get; set; }
+        public Pose EstimatedPose { get; set; }
 
         [DataMember]
         public RangefinderProperties RangeFinderProperties { get; set; }

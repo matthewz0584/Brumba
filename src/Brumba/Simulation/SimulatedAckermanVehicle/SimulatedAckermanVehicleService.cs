@@ -6,7 +6,7 @@ using Microsoft.Dss.ServiceModel.Dssp;
 namespace Brumba.Simulation.SimulatedAckermanVehicle
 {
     [Contract(Contract.Identifier)]
-    [DisplayName("Simulated Ackerman Vehicle")]
+    [DisplayName("Brumba Simulated Ackerman Vehicle")]
     [Description("no description provided")]
     class SimulatedAckermanVehicleService : SimulatedEntityServiceBase
     {

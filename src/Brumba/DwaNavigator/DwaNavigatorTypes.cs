@@ -72,13 +72,6 @@ namespace Brumba.DwaNavigator
         }
     }
 
-    //[DataContract]
-    //public class PoseRequest
-    //{}
-
-    //public class QueryPose : Query<PoseRequest, PortSet<Pose, DefaultQueryResponseType>>
-    //{}
-
     [DataContract]
     public class SetTargetRequest
     {
@@ -88,33 +81,4 @@ namespace Brumba.DwaNavigator
 
     public class SetTarget : Update<SetTargetRequest, PortSet<DefaultUpdateResponseType, Fault>>
     {}
-
-    //[DataContract]
-    //public class InitPoseUnknownRequest
-    //{}
-
-    //public class InitPoseUnknown : Update<InitPoseUnknownRequest, PortSet<DefaultUpdateResponseType, Fault>>
-    //{}
-
-    //[DataContract]
-    //public class SubscribeRequest : SubscribeRequestType
-    //{
-    //}
-
-    //public class Subscribe : Subscribe<SubscribeRequest, PortSet<SubscribeResponseType, Fault>>
-    //{
-    //    public Subscribe()
-    //    {
-    //    }
-
-    //    public Subscribe(SubscribeRequest body)
-    //        : base(body)
-    //    {
-    //    }
-
-    //    public Subscribe(SubscribeRequest body, PortSet<SubscribeResponseType, Fault> responsePort)
-    //        : base(body, responsePort)
-    //    {
-    //    }
-    //}
 }

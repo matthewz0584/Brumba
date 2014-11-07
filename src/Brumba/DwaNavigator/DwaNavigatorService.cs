@@ -9,7 +9,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
-using McLrfLocalizerPxy = Brumba.McLrfLocalizer.Proxy;
+using LocalizerPxy = Brumba.GenericLocalizer.Proxy;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using DC = System.Diagnostics.Contracts;
@@ -17,7 +17,7 @@ using DC = System.Diagnostics.Contracts;
 namespace Brumba.DwaNavigator
 {
     [Contract(Contract.Identifier)]
-    [DisplayName("Brumba MonteCarlo Localizer")]
+    [DisplayName("Brumba DWA Navigator")]
     [Description("no description provided")]
     public class DwaNavigatorService : DsspServiceExposing
     {
@@ -33,13 +33,13 @@ namespace Brumba.DwaNavigator
         [Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         OdometryPxy.DiffDriveOdometryOperations _odometryProvider = new OdometryPxy.DiffDriveOdometryOperations();
 
-        [Partner("McLrfLocalizer", Contract = McLrfLocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        McLrfLocalizerPxy.McLrfLocalizerOperations _localizer = new McLrfLocalizerPxy.McLrfLocalizerOperations();
+        [Partner("Localizer", Contract = LocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        LocalizerPxy.GenericLocalizerOperations _localizer = new LocalizerPxy.GenericLocalizerOperations();
 
         [Partner("Lrf", Contract = SickLrfPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         SickLrfPxy.SickLRFOperations _lrf = new SickLrfPxy.SickLRFOperations();
 
-        [Partner("Drive", Contract = DrivePxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        [Partner("DifferentialDrive", Contract = DrivePxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         DrivePxy.DriveOperations _drive = new DrivePxy.DriveOperations();
 
         DwaNavigator _dwaNavigator;
@@ -71,97 +71,53 @@ namespace Brumba.DwaNavigator
             To.Exec(() => _timerFacade.Set());
         }
 
-        IEnumerator<ITask> UpdateNavigator(TimeSpan dt)
+        IEnumerator<ITask> UpdateNavigator(TimeSpan _)
         {
-    //        public static JoinReceiver JoinedReceive<T0, T1>(bool persist, Port<T0> port0, Port<T1> port1, Handler<T0, T1> handler)
-    //{
-    //  return new JoinReceiver((persist ? 1 : 0) != 0, (ITask) new Task<T0, T1>(handler), new IPortReceive[2]
-    //  {
-    //    (IPortReceive) port0,
-    //    (IPortReceive) port1
-    //  });
-    //}
-            yield return new JoinReceiver(false, new Task<SickLrfPxy.State, OdometryPxy.DiffDriveOdometryServiceState, Pose>(
-                (lrfScan, odometry, pose) =>
+            yield return new JoinReceiver(false, new Task<SickLrfPxy.State, OdometryPxy.DiffDriveOdometryServiceState, LocalizerPxy.GenericLocalizerState>(
+                (lrfScan, odometry, localization) =>
                 {
                     DC.Contract.Requires(lrfScan != null);
                     DC.Contract.Requires(lrfScan.DistanceMeasurements != null);
                     DC.Contract.Requires(odometry != null);
                     DC.Contract.Requires(odometry.State != null);
 
+                    var pose = (Pose)DssTypeHelper.TransformFromProxy(localization.EstimatedPose);
                     var velocity = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Velocity);
-                    _dwaNavigator.Update(pose, velocity, _state.Target, PreprocessLrfScan(lrfScan));
                     
-                    //UpdateState();
+                    _dwaNavigator.Update(pose, velocity, _state.Target, PreprocessLrfScan(lrfScan));
+
+                    _state.CurrentVelocityAcceleration = _dwaNavigator.OptimalVelocity;
+                    _state.VelocititesEvaluation = _dwaNavigator.VelocitiesEvaluation.ToArray();
+
+                    _drive.SetDrivePower(_state.CurrentVelocityAcceleration.WheelAcceleration.X,
+                        _state.CurrentVelocityAcceleration.WheelAcceleration.Y);
                 }),
-                (IPortReceive)_lrf.Get(), (IPortReceive)_odometryProvider.Get(), (IPortReceive)_localizer.QueryPose());
+                (IPortReceive)_lrf.Get(), (IPortReceive)_odometryProvider.Get(), (IPortReceive)_localizer.Get());
         }
 
-        //[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
-        //public void OnQueryPose(QueryPose queryPoseRq)
-        //{
-        //    DC.Contract.Requires(queryPoseRq != null);
-        //    DC.Contract.Requires(queryPoseRq.Body != null);
-        //    DC.Contract.Requires(queryPoseRq.ResponsePort != null);
+        [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
+        public void OnSetTarget(SetTarget setTargetRq)
+        {
+            DC.Contract.Requires(setTargetRq != null);
+            DC.Contract.Requires(setTargetRq.Body != null);
+            DC.Contract.Requires(setTargetRq.ResponsePort != null);
 
-        //    queryPoseRq.ResponsePort.Post(_state.FirstPoseCandidate);
-        //}
+            _state.Target = setTargetRq.Body.Target;
+            _drive.EnableDrive(true);
 
-        //[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
-        //public void InitPoseRequest(InitPose initPoseRq)
-        //{
-        //    DC.Contract.Requires(initPoseRq != null);
-        //    DC.Contract.Requires(initPoseRq.Body != null);
-        //    DC.Contract.Requires(initPoseRq.ResponsePort != null);
+            setTargetRq.ResponsePort.Post(new DefaultUpdateResponseType());
+        }
 
-        //    _localizer.InitPose(initPoseRq.Body.Pose, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
-        //    UpdateState();
-        //    initPoseRq.ResponsePort.Post(new DefaultUpdateResponseType());
-        //}
+        [ServiceHandler(ServiceHandlerBehavior.Teardown)]
+        public void OnDropDown(DsspDefaultDrop dropDownRq)
+        {
+            DC.Contract.Requires(dropDownRq != null);
+            DC.Contract.Requires(dropDownRq.Body != null);
 
-        //[ServiceHandler(ServiceHandlerBehavior.Concurrent)]
-        //public void InitPoseUnknownRequest(InitPoseUnknown initPoseUnknownRq)
-        //{
-        //    DC.Contract.Requires(initPoseUnknownRq != null);
-        //    DC.Contract.Requires(initPoseUnknownRq.Body != null);
-        //    DC.Contract.Requires(initPoseUnknownRq.ResponsePort != null);
-
-        //    _localizer.InitPoseUnknown();
-        //    UpdateState();
-        //    initPoseUnknownRq.ResponsePort.Post(new DefaultUpdateResponseType());
-        //}
-
-        //[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
-        //public IEnumerator<ITask> OnSubscribe(Subscribe subscribeRq)
-        //{
-        //    DC.Contract.Requires(subscribeRq != null);
-        //    DC.Contract.Requires(subscribeRq.Body != null);
-        //    DC.Contract.Requires(subscribeRq.ResponsePort != null);
-
-        //    yield return SubscribeHelper(_subMgrPort, subscribeRq.Body, subscribeRq.ResponsePort).Choice(success => { }, LogError);
-        //}
-
-        //[ServiceHandler(ServiceHandlerBehavior.Teardown)]
-        //public void OnDropDown(DsspDefaultDrop dropDownRq)
-        //{
-        //    DC.Contract.Requires(dropDownRq != null);
-        //    DC.Contract.Requires(dropDownRq.Body != null);
-
-        //    _timerFacade.Dispose();
-        //    DefaultDropHandler(dropDownRq);
-        //}
-
-        //void UpdateState()
-        //{
-        //    //_state.FirstPoseCandidate = _localizer.GetPoseCandidates().First();
-        //    _state.FirstPoseCandidate = _localizer.CalculatePoseMean();
-        //    SendNotification(_subMgrPort, new InitPose { Body = { Pose = _state.FirstPoseCandidate } });
-        //}
-
-        //bool IsPoseUnknown(Pose pose)
-        //{
-        //    return double.IsNaN(pose.Bearing);
-        //}
+            _drive.EnableDrive(false);
+            _timerFacade.Dispose();
+            DefaultDropHandler(dropDownRq);
+        }
 
         IEnumerable<float> PreprocessLrfScan(SickLrfPxy.State lrfScan)
         {

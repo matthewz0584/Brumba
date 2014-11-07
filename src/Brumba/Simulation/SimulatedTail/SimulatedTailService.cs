@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 namespace Brumba.Simulation.SimulatedTail
 {
 	[Contract(Contract.Identifier)]
-    [DisplayName("Simulated tail")]
+    [DisplayName("Brumba Simulated Tail")]
     [Description("no description provided")]
     class SimulatedTailService : SimulatedEntityServiceBase
 	{

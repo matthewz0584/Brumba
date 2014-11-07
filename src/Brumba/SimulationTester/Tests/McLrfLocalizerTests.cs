@@ -18,7 +18,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
+    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1, Wip = true)]
 	public class McLrfLocalizerTests
 	{
 		SimulationTesterService TesterService { get; set; }
@@ -45,7 +45,7 @@ namespace Brumba.SimulationTester.Tests
 
 	    IEnumerator<ITask> GetPoses(McLocalizationPxy.InitPose mcPoseMsg)
         {
-            McPose = mcPoseMsg.Body.Pose;
+            McPose = (bPose)DssTypeHelper.TransformFromProxy(mcPoseMsg.Body.Pose);
 
             IEnumerable<VisualEntity> testeeEntitiesPxies = null;
             yield return To.Exec(TesterService.GetTesteeEntityProxies, (Action<IEnumerable<VisualEntity>>)(tep => testeeEntitiesPxies = tep));
@@ -76,7 +76,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Start()
 			{
-				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new bPose(new Vector2(1.7f, 3.25f), 0)));
+				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new WaiterStupid.Proxy.Pose(new Vector2(1.7f, 3.25f), 0)));
 				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
 				
                 //Localization update takes time (~0.3s), if robot keeps moving mclrf position estimate lags for this time (multiplied by velocity)
@@ -102,7 +102,7 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}
 
-		//[SimTest(10.1f)]
+		[SimTest(10.1f)]
 		public class GlobalLocalizationStraightPath : IStart, ITest
 		{
 			[Fixture]
@@ -135,7 +135,7 @@ namespace Brumba.SimulationTester.Tests
             }
 		}
 
-		//[SimTest(10.1f)]
+		[SimTest(10.1f)]
 		public class GlobalLocalizationCurvedPath : IStart, ITest
 		{
 			[Fixture]
@@ -184,7 +184,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Start()
 			{
-				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new bPose(new Vector2(1.7f, 3.25f), 0)));
+				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new WaiterStupid.Proxy.Pose(new Vector2(1.7f, 3.25f), 0)));
 				yield return To.Exec(Fixture.RefPlatformSimulatedPort.UpdateWheelTicksSigma(new Vector2(5)));
 				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.6, 0.6));
