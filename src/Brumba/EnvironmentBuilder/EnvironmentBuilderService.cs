@@ -84,6 +84,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateHamster();
 	        //PopulateRefPlatformSimpleTests();
 			//PopulateMcLrfLocalizerTests();
+            //PopulateDwaNavigatorTests();
 	        
             base.Start();
 
@@ -92,11 +93,21 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //_turret.BaseAngle = (float)Math.PI / 4;
         }
 
+        void PopulateDwaNavigatorTests()
+        {
+            PopulateSimpleEnvironment();
+
+            SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar"));
+            SimulationEngine.GlobalInstancePort.Insert(
+                new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))),
+                    new Vector3(0, 0.501f, 5)) {State = {Name = "brick_on_the_way_to_target"}});
+        }
+
 	    void PopulateMcLrfLocalizerTests()
 	    {
 			PopulateSimpleEnvironment();
 
-			SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter"));
+            SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar"));
 		    _mainPort.P3.Post(new BuildBoxWorld {ResponsePort = new PortSet<DefaultSubmitResponseType, Fault>()});
 	    }
 
@@ -104,18 +115,18 @@ namespace Brumba.Simulation.EnvironmentBuilder
 	    {
 			PopulateSimpleEnvironment();
 
-	        SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter"));
+            SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar"));
 			SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(8, 0.501f, 0)) { State = { Name = "golden_brick_out_of_range" } });
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(-5f, 0.501f, 0)) { State = { Name = "golden_brick_in_range" } });
 	    }
 
-        private static ReferencePlatform2011Entity BuildWaiter1(string waiterName)
+        private static ReferencePlatform2011Entity BuildWaiter1(string waiterName, string lidarName)
         {
             var refPlatform = new ReferencePlatform2011Entity {State = {Name = waiterName, Pose = new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))}};
             var lidar = new LaserRangeFinderExEntity
                 {
-                    State = {Name = waiterName + "_lidar"},
+                    State = { Name = lidarName },
                     LaserBox = new BoxShape(new BoxShapeProperties(0.16f, new Pose(new Vector3(0, 0.2f, -0.2f)),
                                                                    new Vector3(0.04f, 0.07f, 0.04f))),
                     RaycastProperties = new RaycastProperties

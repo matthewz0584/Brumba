@@ -9,7 +9,7 @@ namespace Brumba.GenericLocalizer
     public sealed class Contract
     {
         [DataMember]
-        public const string Identifier = "http://brumba.ru/contracts/2014/11/genericposeestimator.html";
+        public const string Identifier = "http://brumba.ru/contracts/2014/11/genericlocalizer.html";
     }
 
     [DataContract]

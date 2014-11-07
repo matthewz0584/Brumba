@@ -32,8 +32,6 @@ namespace Brumba.Simulation.SimulatedLocalizer
         [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
 		public void OnGet(Get getRequest)
         {
-            //IFreezable qq = new Pose();
-            //qq.Freeze();
             if (IsConnected)
                 UpdateState();
 
