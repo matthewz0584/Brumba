@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.DsspUtils;
+using Brumba.Simulation;
 using Brumba.Simulation.EnvironmentBuilder;
 using Brumba.Utils;
 using MathNet.Numerics;
@@ -18,7 +19,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1, Wip = true)]
+    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
 	public class McLrfLocalizerTests
 	{
 		SimulationTesterService TesterService { get; set; }
@@ -49,7 +50,7 @@ namespace Brumba.SimulationTester.Tests
 
             IEnumerable<VisualEntity> testeeEntitiesPxies = null;
             yield return To.Exec(TesterService.GetTesteeEntityProxies, (Action<IEnumerable<VisualEntity>>)(tep => testeeEntitiesPxies = tep));
-            SimPose = BoxWorldParser.SimToMap((rPose)DssTypeHelper.TransformFromProxy(testeeEntitiesPxies.Single().State.Pose));
+            SimPose = ((rPose)DssTypeHelper.TransformFromProxy(testeeEntitiesPxies.Single().State.Pose)).SimToMap();
 
             TesterService.Activate(Arbiter.ReceiveWithIterator<McLocalizationPxy.InitPose>(false, McLrfLocalizationNotify, GetPoses));
         }

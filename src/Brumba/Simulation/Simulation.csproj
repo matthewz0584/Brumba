@@ -163,6 +163,7 @@
     <Compile Include="SimulatedAckermanVehicle\SimulatedAckermanVehicleService.cs" />
     <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingService.cs" />
     <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingTypes.cs" />
+    <Compile Include="SimToMapTransformations.cs" />
     <Compile Include="SimulatedLocalizer\SimulatedLocalizerService.cs" />
     <Compile Include="SimulatedLocalizer\SimulatedLocalizerTypes.cs" />
     <Compile Include="SimulatedLrf\LaserRangeFinderExEntity.cs" />

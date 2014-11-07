@@ -4,8 +4,6 @@ using Brumba.Utils;
 using Brumba.WaiterStupid;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
-using Microsoft.Robotics.Simulation.Physics;
-using Microsoft.Xna.Framework;
 
 namespace Brumba.Simulation.SimulatedLocalizer
 {
@@ -49,9 +47,7 @@ namespace Brumba.Simulation.SimulatedLocalizer
 
         void UpdateState()
         {
-            _state.EstimatedPose = new Pose(
-                new Vector2(Entity.State.Pose.Position.X, Entity.State.Pose.Position.Z),
-                UIMath.QuaternionToEuler(Entity.State.Pose.Orientation).Y);
+            _state.EstimatedPose = Entity.State.Pose.SimToMap();
         }
 
 		protected override IConnectable GetState() { return _state; }

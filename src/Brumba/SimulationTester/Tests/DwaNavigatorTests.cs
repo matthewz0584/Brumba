@@ -31,8 +31,7 @@ namespace Brumba.SimulationTester.Tests
         public void SetUp(SimulationTesterService testerService)
         {
             TesterService = testerService;
-            RefPlDrivePort =
-                testerService.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>(
+            RefPlDrivePort = testerService.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>(
                     "stupid_waiter_ref_platform/differentialdrive");
             DwaNavigatorPort = testerService.ForwardTo<DwaNavigatorPxy.DwaNavigatorOperations>("dwa_navigator@");
         }
@@ -49,6 +48,7 @@ namespace Brumba.SimulationTester.Tests
                 //Execs for synchronization, otherwise set power message can arrive before enable message
                 yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
                 yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1, 1));
+                //yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(10, 0)));
             }
 
             [Test]

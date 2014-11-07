@@ -33,7 +33,7 @@ namespace Brumba.DwaNavigator
             DC.Contract.Requires(wheelAngularVelocityMax > 0);
             DC.Contract.Requires(wheelRadius > 0);
             DC.Contract.Requires(wheelBase > 0);
-            DC.Contract.Requires(robotRadius >= wheelBase);
+            DC.Contract.Requires(robotRadius > 0);
             DC.Contract.Requires(rangefinderProperties.MaxRange > 0);
             DC.Contract.Requires(rangefinderProperties.AngularRange > 0);
             DC.Contract.Requires(rangefinderProperties.AngularResolution > 0);

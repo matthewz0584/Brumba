@@ -19,7 +19,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <summary>
         /// The Speed Delta
         /// </summary>
-        private const float SpeedDelta = 0.5f;
+        private const float WheelAngularAcceleration = 5f;
 
         /// <summary>
         /// The acceptable rotation error
@@ -884,29 +884,11 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             float left = LeftWheel.Wheel.AxleSpeed + _leftTargetVelocity;
             float right = RightWheel.Wheel.AxleSpeed + _rightTargetVelocity;
 
+            var wheelAngularVelocityDelta = WheelAngularAcceleration * (float)update.ElapsedTime;
             if (Math.Abs(left) > 0.1)
-            {
-                if (left > 0)
-                {
-                    LeftWheel.Wheel.AxleSpeed -= SpeedDelta;
-                }
-                else
-                {
-                    LeftWheel.Wheel.AxleSpeed += SpeedDelta;
-                }
-            }
-
+                LeftWheel.Wheel.AxleSpeed += wheelAngularVelocityDelta * Math.Sign(-left);
             if (Math.Abs(right) > 0.1)
-            {
-                if (right > 0)
-                {
-                    RightWheel.Wheel.AxleSpeed -= SpeedDelta;
-                }
-                else
-                {
-                    RightWheel.Wheel.AxleSpeed += SpeedDelta;
-                }
-            }
+                RightWheel.Wheel.AxleSpeed += wheelAngularVelocityDelta * Math.Sign(-right);
 
             // if the drive is not enabled, it should not be moving.
             if (!IsEnabled)

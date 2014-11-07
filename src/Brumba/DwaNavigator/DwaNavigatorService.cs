@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Brumba.DsspUtils;
+using Brumba.McLrfLocalizer;
 using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Robotics.Simulation.Engine;
+using Microsoft.Robotics.Simulation.Physics;
+using Microsoft.Xna.Framework;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
 using LocalizerPxy = Brumba.GenericLocalizer.Proxy;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
@@ -46,7 +50,6 @@ namespace Brumba.DwaNavigator
         
         int _takeEachNthBeam;
         TimerFacade _timerFacade;
-        Pose _currentOdometry;
 
         public DwaNavigatorService(DsspServiceCreationPort creationPort)
             : base(creationPort)
@@ -83,7 +86,7 @@ namespace Brumba.DwaNavigator
 
                     var pose = (Pose)DssTypeHelper.TransformFromProxy(localization.EstimatedPose);
                     var velocity = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Velocity);
-                    
+
                     _dwaNavigator.Update(pose, velocity, _state.Target, PreprocessLrfScan(lrfScan));
 
                     _state.CurrentVelocityAcceleration = _dwaNavigator.OptimalVelocity;
