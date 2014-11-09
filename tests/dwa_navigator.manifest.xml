@@ -70,6 +70,7 @@
     </ServiceRecordType>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedlrf.html</dssp:Contract>
+      <dssp:Service>http://localhost:80/lrf</dssp:Service>
       <dssp:PartnerList>
         <dssp:Partner>
           <dssp:Service>http://localhost/stupid_waiter_lidar</dssp:Service>

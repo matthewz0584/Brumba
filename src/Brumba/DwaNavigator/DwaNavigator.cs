@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.McLrfLocalizer;
 using Brumba.WaiterStupid;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
@@ -96,9 +97,9 @@ namespace Brumba.DwaNavigator
             DC.Contract.Requires(obstacles != null);
             DC.Contract.Requires(obstacles.All(d => d <= RangefinderProperties.MaxRange));
             DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Vector2>>() != null);
-            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Vector2>>().All(v => v.Length() < RangefinderProperties.MaxRange));
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Vector2>>().All(v => v.Length() < RangefinderProperties.MaxRange + _robotRadius));
 
-            return obstacles.Select((d, i) => new {d, i}).Where(p => p.d != RangefinderProperties.MaxRange).
+            return obstacles.Select((d, i) => new { d, i }).Where(p => !Precision.AlmostEqualWithAbsoluteError(p.d, RangefinderProperties.MaxRange, p.d - RangefinderProperties.MaxRange, 0.01)).
                 Select(p => RangefinderProperties.BeamToVectorInRobotTransformation(p.d, p.i));
         }
     }

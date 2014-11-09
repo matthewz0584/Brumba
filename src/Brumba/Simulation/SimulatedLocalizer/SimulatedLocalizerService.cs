@@ -24,7 +24,7 @@ namespace Brumba.Simulation.SimulatedLocalizer
         public SimulatedLocalizerService(DsspServiceCreationPort creationPort)
             : base(creationPort, Contract.Identifier)
 		{
-            ((IFreezable) new Pose()).Freeze();
+            (new Pose() as IFreezable).Freeze();
 		}
 
         [ServiceHandler(ServiceHandlerBehavior.Concurrent)]

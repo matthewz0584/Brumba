@@ -59,24 +59,30 @@ namespace Brumba.DwaNavigator
 
         protected override void Start()
         {
+            SpawnIterator(StartIt);
+        }
+
+        IEnumerator<ITask> StartIt()
+        {
+            _timerFacade = new TimerFacade(this, _state.DeltaT);
+
             _dwaNavigator = new DwaNavigator(_state.WheelAngularAccelerationMax, _state.WheelAngularVelocityMax,
                 _state.WheelRadius, _state.WheelBase, _state.RobotRadius, _state.RangefinderProperties, _state.DeltaT);
-
-            _timerFacade = new TimerFacade(this, _state.DeltaT);
 
             _takeEachNthBeam = 1;
 
             base.Start();
 
             MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(), new ConcurrentReceiverGroup(
-                    Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateNavigator))));
+                Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateNavigator))));
 
-            To.Exec(() => _timerFacade.Set());
+            yield return To.Exec(() => _timerFacade.Set());
         }
 
         IEnumerator<ITask> UpdateNavigator(TimeSpan _)
         {
-            yield return new JoinReceiver(false, new Task<SickLrfPxy.State, OdometryPxy.DiffDriveOdometryServiceState, LocalizerPxy.GenericLocalizerState>(
+            yield return JoinedReceive<SickLrfPxy.State, OdometryPxy.DiffDriveOdometryServiceState, LocalizerPxy.GenericLocalizerState>(
+                false, _lrf.Get(), _odometryProvider.Get(), _localizer.Get(),
                 (lrfScan, odometry, localization) =>
                 {
                     DC.Contract.Requires(lrfScan != null);
@@ -94,8 +100,7 @@ namespace Brumba.DwaNavigator
 
                     _drive.SetDrivePower(_state.CurrentVelocityAcceleration.WheelAcceleration.X,
                         _state.CurrentVelocityAcceleration.WheelAcceleration.Y);
-                }),
-                (IPortReceive)_lrf.Get(), (IPortReceive)_odometryProvider.Get(), (IPortReceive)_localizer.Get());
+                });
         }
 
         [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
@@ -127,6 +132,11 @@ namespace Brumba.DwaNavigator
             DC.Contract.Requires(lrfScan != null);
 
             return lrfScan.DistanceMeasurements.Where((d, i) => i % _takeEachNthBeam == 0).Select(d => d / 1000f);
+        }
+
+        static JoinReceiver JoinedReceive<T0, T1, T2>(bool persist, Port<T0> port0, Port<T1> port1, Port<T2> port2, Handler<T0, T1, T2> handler)
+        {
+            return new JoinReceiver(persist, new Task<T0, T1, T2>(handler), new IPortReceive[] { port0, port1, port2 });
         }
     }
 }
