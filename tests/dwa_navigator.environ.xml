@@ -3592,7 +3592,7 @@
           <physm:Z>0</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
-          <phys:Mass>1</phys:Mass>
+          <phys:Mass>0</phys:Mass>
           <phys:InertiaTensor>
             <physm:X>0</physm:X>
             <physm:Y>0</physm:Y>
@@ -3659,7 +3659,7 @@
           </phys:Dimensions>
           <phys:Radius>0</phys:Radius>
           <phys:MassDensity>
-            <phys:Mass>1</phys:Mass>
+            <phys:Mass>0</phys:Mass>
             <phys:InertiaTensor>
               <physm:X>0</physm:X>
               <physm:Y>0</physm:Y>

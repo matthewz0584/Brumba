@@ -89,11 +89,12 @@ namespace Brumba.DwaNavigator
                     DC.Contract.Requires(lrfScan.DistanceMeasurements != null);
                     DC.Contract.Requires(odometry != null);
                     DC.Contract.Requires(odometry.State != null);
+                    DC.Contract.Requires(localization != null);
 
                     var pose = (Pose)DssTypeHelper.TransformFromProxy(localization.EstimatedPose);
                     var velocity = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Velocity);
 
-                    _dwaNavigator.Update(pose, velocity, _state.Target, PreprocessLrfScan(lrfScan));
+                    _dwaNavigator.Update(pose, velocity, _state.Target, PreprocessLrfMeasurements(lrfScan.DistanceMeasurements));
 
                     _state.CurrentVelocityAcceleration = _dwaNavigator.OptimalVelocity;
                     _state.VelocititesEvaluation = _dwaNavigator.VelocitiesEvaluation.ToArray();
@@ -127,11 +128,12 @@ namespace Brumba.DwaNavigator
             DefaultDropHandler(dropDownRq);
         }
 
-        IEnumerable<float> PreprocessLrfScan(SickLrfPxy.State lrfScan)
+        IEnumerable<float> PreprocessLrfMeasurements(int[] distanceMeasurements)
         {
-            DC.Contract.Requires(lrfScan != null);
+            DC.Contract.Requires(distanceMeasurements != null);
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<float>>().Count() == distanceMeasurements.Length);
 
-            return lrfScan.DistanceMeasurements.Where((d, i) => i % _takeEachNthBeam == 0).Select(d => d / 1000f);
+            return distanceMeasurements.Where((d, i) => i % _takeEachNthBeam == 0).Select(d => d / 1000f);
         }
 
         static JoinReceiver JoinedReceive<T0, T1, T2>(bool persist, Port<T0> port0, Port<T1> port1, Port<T2> port2, Handler<T0, T1, T2> handler)
