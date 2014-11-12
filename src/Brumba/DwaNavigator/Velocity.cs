@@ -12,7 +12,9 @@ namespace Brumba.DwaNavigator
             Angular = angular;
         }
 
+        [DataMember]
         public double Linear { get; set; }
+        [DataMember]
         public double Angular { get; set; }
 
         public override string ToString()
@@ -31,7 +33,9 @@ namespace Brumba.DwaNavigator
             WheelAcceleration = wheelAcceleration;
         }
 
-        public Velocity Velocity { get; private set; }
-        public Vector2 WheelAcceleration { get; private set; }
+        [DataMember]
+        public Velocity Velocity { get; set; }
+        [DataMember]
+        public Vector2 WheelAcceleration { get; set; }
     }
 }

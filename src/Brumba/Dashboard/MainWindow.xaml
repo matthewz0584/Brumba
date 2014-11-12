@@ -5,22 +5,69 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="580" 
-             Width="380" Height="580">
-    <!--<Window.Resources>
+             Width="500" Height="600">
+    <Window.Resources>
         <telerik:HeatMapValueGradientColorizer x:Key="colorizer">
-            <GradientStop Offset="0" Color="Blue" />
-            <GradientStop Offset="1" Color="Red" />
+            <GradientStop Offset="0" Color="DarkBlue" />
+            <GradientStop Offset="1" Color="DarkOrange" />
         </telerik:HeatMapValueGradientColorizer>
-    </Window.Resources>-->
+    </Window.Resources>
     <Grid>
-        <telerik:RadHeatMap HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" ShowToolTips="False">
-            <telerik:RadHeatMap.Definition>
-                <telerik:CategoricalDefinition ItemsSource="{Binding DwaVelocitiesEvaluation, Mode=OneWay}" 
-                                    RowGroupMemberPath="Row" 
-                                    ColumnGroupMemberPath="Col" 
-                                    ValuePath="Value">
-                </telerik:CategoricalDefinition>
-            </telerik:RadHeatMap.Definition>
-        </telerik:RadHeatMap>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="450"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="DWA" Grid.Row="0" Grid.Column="0" Height="Auto">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="450"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <telerik:RadHeatMap Grid.Row="0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="300" Height="300">
+                    <telerik:RadHeatMap.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="-135"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </telerik:RadHeatMap.RenderTransform>
+                    <telerik:RadHeatMap.Definition>
+                        <telerik:CategoricalDefinition ItemsSource="{Binding DwaVelocitiesEvaluation, Mode=OneWay}" 
+                                        RowGroupMemberPath="Row" 
+                                        ColumnGroupMemberPath="Col" 
+                                        ValuePath="Value"
+                                        Colorizer="{StaticResource colorizer}">
+                        </telerik:CategoricalDefinition>
+                    </telerik:RadHeatMap.Definition>
+                </telerik:RadHeatMap>
+                
+                <StackPanel Grid.Row="1">
+                    <TextBlock Text="Current velocity: "/>
+                    <TextBlock Text="{Binding CurrentVelocity}"/>
+                    <TextBlock Text="Current wheels acceleration: "/>
+                    <TextBlock Text="{Binding CurrentWheelAcceleration}"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <StackPanel Grid.Row="0" Grid.Column="1">
+            <GroupBox Header="Odometry">
+                <StackPanel>
+                    <TextBlock Text="Pose: "/>
+                    <TextBlock Text="{Binding OdometryPose}"/>
+                    <TextBlock Text="Velocity: "/>
+                    <TextBlock Text="{Binding OdometryVelocity}"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Simulation">
+                <StackPanel>
+                    <TextBlock Text="Pose: "/>
+                    <TextBlock Text="{Binding SimulationPose}"/>
+                    <TextBlock Text="Velocity: "/>
+                    <TextBlock Text="{Binding SimulationVelocity}"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
     </Grid>
 </Window>

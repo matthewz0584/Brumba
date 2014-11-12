@@ -4,27 +4,27 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 
-namespace Brumba.GenericLocalizer
+namespace Brumba.GenericVelocimeter
 {
     public sealed class Contract
     {
         [DataMember]
-        public const string Identifier = "http://brumba.ru/contracts/2014/11/genericlocalizer.html";
+        public const string Identifier = "http://brumba.ru/contracts/2014/11/genericvelocimeter.html";
     }
 
     [DataContract]
-    public class GenericLocalizerState
+    public class GenericVelocimeterState
     {
         [DataMember]
-        public Pose EstimatedPose { get; set; }
+        public Pose Velocity { get; set; }
     }
 
     [ServicePort]
-    public class GenericLocalizerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+    public class GenericVelocimeterOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
     {
     }
 
-    public class Get : Get<GetRequestType, PortSet<GenericLocalizerState, Fault>>
+    public class Get : Get<GetRequestType, PortSet<GenericVelocimeterState, Fault>>
     {
         public Get()
         {
@@ -35,7 +35,7 @@ namespace Brumba.GenericLocalizer
         {
         }
 
-        public Get(GetRequestType body, PortSet<GenericLocalizerState, Fault> responsePort)
+        public Get(GetRequestType body, PortSet<GenericVelocimeterState, Fault> responsePort)
             : base(body, responsePort)
         {
         }
