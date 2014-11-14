@@ -14,6 +14,7 @@ using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Xna.Framework;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
 using LocalizerPxy = Brumba.GenericLocalizer.Proxy;
+using VelocimeterPxy = Brumba.GenericVelocimeter.Proxy;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using DC = System.Diagnostics.Contracts;
@@ -34,8 +35,8 @@ namespace Brumba.DwaNavigator
         [ServicePort("/DwaNavigator", AllowMultipleInstances = true)]
         DwaNavigatorOperations _mainPort = new DwaNavigatorOperations();
 
-        [Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        OdometryPxy.DiffDriveOdometryOperations _odometryProvider = new OdometryPxy.DiffDriveOdometryOperations();
+        [Partner("Velocimeter", Contract = VelocimeterPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        VelocimeterPxy.GenericVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericVelocimeterOperations();
 
         [Partner("Localizer", Contract = LocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         LocalizerPxy.GenericLocalizerOperations _localizer = new LocalizerPxy.GenericLocalizerOperations();
@@ -77,22 +78,22 @@ namespace Brumba.DwaNavigator
                 Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateNavigator))));
 
             yield return To.Exec(() => _timerFacade.Set());
+            _timerFacade.TickPort.Post(new TimeSpan());
         }
 
         IEnumerator<ITask> UpdateNavigator(TimeSpan _)
         {
-            yield return JoinedReceive<SickLrfPxy.State, OdometryPxy.DiffDriveOdometryServiceState, LocalizerPxy.GenericLocalizerState>(
-                false, _lrf.Get(), _odometryProvider.Get(), _localizer.Get(),
-                (lrfScan, odometry, localization) =>
+            yield return JoinedReceive<SickLrfPxy.State, VelocimeterPxy.GenericVelocimeterState, LocalizerPxy.GenericLocalizerState>(
+                false, _lrf.Get(), _velocimeter.Get(), _localizer.Get(),
+                (lrfScan, velocimeterSt, localizerSt) =>
                 {
                     DC.Contract.Requires(lrfScan != null);
                     DC.Contract.Requires(lrfScan.DistanceMeasurements != null);
-                    DC.Contract.Requires(odometry != null);
-                    DC.Contract.Requires(odometry.State != null);
-                    DC.Contract.Requires(localization != null);
+                    DC.Contract.Requires(velocimeterSt != null);
+                    DC.Contract.Requires(localizerSt != null);
 
-                    var pose = (Pose)DssTypeHelper.TransformFromProxy(localization.EstimatedPose);
-                    var velocity = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Velocity);
+                    var pose = (Pose)DssTypeHelper.TransformFromProxy(localizerSt.EstimatedPose);
+                    var velocity = (Pose)DssTypeHelper.TransformFromProxy(velocimeterSt.Velocity);
 
                     _dwaNavigator.Update(pose, velocity, _state.Target, PreprocessLrfMeasurements(lrfScan.DistanceMeasurements));
 

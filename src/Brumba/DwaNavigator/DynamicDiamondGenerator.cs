@@ -25,7 +25,7 @@ namespace Brumba.DwaNavigator
 
     public class DynamicDiamondGenerator : IVelocitySearchSpaceGenerator
     {
-        public const int STEPS_NUMBER = 10;
+        public const int STEPS_NUMBER = 2;
 
         public DynamicDiamondGenerator(double wheelAngularAccelerationMax, double wheelRadius, double wheelBase, double dt)
         {

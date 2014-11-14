@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.Simulation;
-using Brumba.Simulation.EnvironmentBuilder;
 using Brumba.Utils;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;
@@ -19,7 +18,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
+    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = 0.0001f, Wip = true)]
 	public class McLrfLocalizerTests
 	{
 		SimulationTesterService TesterService { get; set; }

@@ -19,8 +19,10 @@ namespace Brumba.Simulation.SimulatedLrf
 	[Contract(Contract.Identifier)]
 	class SimulatedLrfService : SimulatedEntityServiceBase
 	{
-		[ServiceState]
-		readonly SimulatedLrfState _state = new SimulatedLrfState { SickLrfState = new SickLrf.State { Units = SickLrf.Units.Millimeters } };
+	    [ServiceState] private readonly SimulatedLrfState _state = new SimulatedLrfState
+	    {
+	        SickLrfState = new SickLrf.State {Units = SickLrf.Units.Millimeters, DistanceMeasurements = new int[0]}
+	    };
 
         [AlternateServicePort("/SickLrf", AllowMultipleInstances = true, AlternateContract = SickLrfPxy.Contract.Identifier)]
         SickLrfPxy.SickLRFOperations _sickLrfPort = new SickLrfPxy.SickLRFOperations();

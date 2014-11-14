@@ -1,10 +1,12 @@
 using System.ComponentModel;
+using Brumba.DwaNavigator;
 using Brumba.GenericLocalizer;
 using Brumba.GenericVelocimeter;
 using Brumba.Utils;
 using Brumba.WaiterStupid;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
+using Microsoft.Xna.Framework;
 
 namespace Brumba.Simulation.SimulatedLocalizer
 {
@@ -13,17 +15,18 @@ namespace Brumba.Simulation.SimulatedLocalizer
     [Description("no description provided")]
     class SimulatedLocalizerService : SimulatedEntityServiceBase
 	{
-		[ServiceState]
-        readonly SimulatedLocalizerState _state = new SimulatedLocalizerState();
+	    [ServiceState]
+        [InitialStatePartner(Optional = false)]
+        SimulatedLocalizerState _state;
 
         [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericLocalizer.Contract.Identifier)]
-        private GenericLocalizerOperations _genericLocalizerPort = new GenericLocalizerOperations();
+        GenericLocalizerOperations _genericLocalizerPort = new GenericLocalizerOperations();
 
         [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericVelocimeter.Contract.Identifier)]
-        private GenericVelocimeterOperations _genericVelocimeterPort = new GenericVelocimeterOperations();
+        GenericVelocimeterOperations _genericVelocimeterPort = new GenericVelocimeterOperations();
 
         [ServicePort("/SimulatedLocalizer", AllowMultipleInstances = true)]
-        private SimulatedLocalizerOperations _mainPort = new SimulatedLocalizerOperations();
+        SimulatedLocalizerOperations _mainPort = new SimulatedLocalizerOperations();
 
         public SimulatedLocalizerService(DsspServiceCreationPort creationPort)
             : base(creationPort, Contract.Identifier)
@@ -46,7 +49,7 @@ namespace Brumba.Simulation.SimulatedLocalizer
             if (IsConnected)
                 UpdateState();
 
-            DefaultGetHandler(get);
+            get.ResponsePort.Post(_state.Localizer);
         }
 
         [ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_genericVelocimeterPort")]
@@ -55,15 +58,28 @@ namespace Brumba.Simulation.SimulatedLocalizer
             if (IsConnected)
                 UpdateState();
 
-            DefaultGetHandler(get);
+            get.ResponsePort.Post(_state.Velocimeter);
         }
 
         void UpdateState()
         {
             _state.Localizer.EstimatedPose = Entity.State.Pose.SimToMap();
-            _state.Velocimeter.Velocity = new Pose(Entity.State.Velocity.SimToMap(), Entity.State.Velocity.SimToMapAngularVelocity());
+            _state.Velocimeter.Velocity = ExtractVelocity();
         }
 
-		protected override IConnectable GetState() { return _state; }
+	    private Pose ExtractVelocity()
+	    {
+	        var vLinear = Entity.State.Velocity.SimToMap();
+	        var vAngular = Entity.State.Velocity.SimToMapAngularVelocity();
+            if (vLinear.Length() > _state.MaxVelocity.Linear)
+                LogWarning(string.Format("Linear velocity ({0}) is greater than given maximum ({1})!", vLinear.Length(), _state.MaxVelocity.Linear));
+            if (vAngular > _state.MaxVelocity.Angular)
+                LogWarning(string.Format("Angular velocity ({0}) is greater than given maximum ({1})!", vAngular, _state.MaxVelocity.Angular));
+	        return new Pose(
+	            vLinear.Length() <= _state.MaxVelocity.Linear ? vLinear : Vector2.Normalize(vLinear) * (float)_state.MaxVelocity.Linear,
+	            vAngular <= _state.MaxVelocity.Angular ? vAngular : _state.MaxVelocity.Angular);
+	    }
+
+	    protected override IConnectable GetState() { return _state; }
 	}
 }

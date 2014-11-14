@@ -84,7 +84,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateHamster();
 	        //PopulateRefPlatformSimpleTests();
 			//PopulateMcLrfLocalizerTests();
-            //PopulateDwaNavigatorTests();
+            PopulateDwaNavigatorTests();
 	        
             base.Start();
 
@@ -123,13 +123,14 @@ namespace Brumba.Simulation.EnvironmentBuilder
 
         private static ReferencePlatform2011Entity BuildWaiter1(string waiterName, string lidarName)
         {
-            var refPlatform = new ReferencePlatform2011Entity {State = {Name = waiterName, Pose = new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))}};
+            //var refPlatform = new ReferencePlatform2011Entity {State = {Name = waiterName, Pose = new Pose(new Vector3(2.7f, 1f, 1.6f), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))}};
+            var refPlatform = new ReferencePlatform2011Entity { State = { Name = waiterName, Pose = new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi)) } };
             var lidar = new LaserRangeFinderExEntity
                 {
                     State = { Name = lidarName },
                     LaserBox = new BoxShape(new BoxShapeProperties(0.16f, new Pose(new Vector3(0, 0.2f, -0.2f)),
                                                                    new Vector3(0.04f, 0.07f, 0.04f))),
-                    RaycastProperties = new RaycastProperties
+                    RaycastProperties_FORDB = new RaycastProperties
                         {
                             StartAngle = -120,
                             EndAngle = +120,

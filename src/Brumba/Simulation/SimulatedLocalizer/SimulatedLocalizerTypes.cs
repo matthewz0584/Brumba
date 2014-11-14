@@ -1,6 +1,8 @@
 using System.ComponentModel;
+using Brumba.DwaNavigator;
 using Brumba.GenericLocalizer;
 using Brumba.GenericVelocimeter;
+using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -26,6 +28,9 @@ namespace Brumba.Simulation.SimulatedLocalizer
 
         [DataMember]
         public GenericVelocimeterState Velocimeter { get; set; }
+
+        [DataMember]
+        public Velocity MaxVelocity { get; set; }
 	}
 	
 	[ServicePort]

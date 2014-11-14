@@ -17,10 +17,11 @@ using xVector3 = Microsoft.Xna.Framework.Vector3;
 using rVector2 = Microsoft.Robotics.PhysicalModel.Vector2;
 using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using DwaNavigatorPxy = Brumba.DwaNavigator.Proxy;
+using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("dwa_navigator", Wip = true)]
+    //[SimTestFixture("dwa_navigator", Wip = true, PhysicsTimeStep = 0.001f)]
     public class DwaNavigatorTests
     {
         public SimulationTesterService TesterService { get; private set; }
@@ -48,6 +49,9 @@ namespace Brumba.SimulationTester.Tests
                 //Execs for synchronization, otherwise set power message can arrive before enable message
                 //yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
                 //yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1, 1));
+
+                yield return Fixture.TesterService.Timeout(10000);
+
                 yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(10, 0)));
             }
 

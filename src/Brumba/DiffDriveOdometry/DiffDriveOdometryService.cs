@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Brumba.DsspUtils;
+using Brumba.GenericVelocimeter;
 using Brumba.Utils;
 using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
@@ -25,6 +26,9 @@ namespace Brumba.DiffDriveOdometry
 
 		[ServicePort("/Odometry", AllowMultipleInstances = true)]
 		DiffDriveOdometryOperations _mainPort = new DiffDriveOdometryOperations();
+
+        [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericVelocimeter.Contract.Identifier)]
+        GenericVelocimeterOperations _genericVelocimeterPort = new GenericVelocimeterOperations();
 
 		[Partner("DifferentialDrive", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		DriveOperations _diffDrive = new DriveOperations();
@@ -93,6 +97,12 @@ namespace Brumba.DiffDriveOdometry
 
 			_timerFacade.Dispose();
             DefaultDropHandler(dropDownRq);
+        }
+
+        [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_genericVelocimeterPort")]
+        public void OnGet(GenericVelocimeter.Get getRq)
+        {
+            getRq.ResponsePort.Post(new GenericVelocimeterState { Velocity = _state.State.Velocity });
         }
 	}
 }

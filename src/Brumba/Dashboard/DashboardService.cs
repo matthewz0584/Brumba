@@ -39,8 +39,8 @@ namespace Brumba.Dashboard
         [Partner("Velocimeter", Contract = VelocimeterPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         VelocimeterPxy.GenericVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericVelocimeterOperations();
 
-        [Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        OdometryPxy.DiffDriveOdometryOperations _odometry = new OdometryPxy.DiffDriveOdometryOperations();
+        //[Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        //OdometryPxy.DiffDriveOdometryOperations _odometry = new OdometryPxy.DiffDriveOdometryOperations();
 
 	    readonly Port<DateTime> _dwaPollingPort = new Port<DateTime>();
         readonly Port<DateTime> _simulationPollingPort = new Port<DateTime>();
@@ -122,7 +122,7 @@ namespace Brumba.Dashboard
                     )));
             _dwaPollingPort.Post(DateTime.Now);
             _simulationPollingPort.Post(DateTime.Now);
-            _odometryPollingPort.Post(DateTime.Now);
+            //_odometryPollingPort.Post(DateTime.Now);
         }
 
         IEnumerator<ITask> UpdateDwaVelocitiesEvaluation(DateTime dateTime)
@@ -174,7 +174,7 @@ namespace Brumba.Dashboard
         IEnumerator<ITask> UpdateOdometry(DateTime dateTime)
         {
             OdometryPxy.DiffDriveOdometryServiceState odometryState = null;
-            yield return _odometry.Get().Receive(os => odometryState = os);
+            //yield return _odometry.Get().Receive(os => odometryState = os);
 
             _odometryPose = odometryState.State.Pose;
             _odometryVelocity = odometryState.State.Velocity;

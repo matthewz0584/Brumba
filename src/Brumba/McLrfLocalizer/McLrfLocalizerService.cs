@@ -38,7 +38,7 @@ namespace Brumba.McLrfLocalizer
         McLrfLocalizerOperations _mainPort = new McLrfLocalizerOperations();
 
         [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericLocalizer.Contract.Identifier)]
-        private GenericLocalizerOperations _genericPoseEstimatorPort = new GenericLocalizerOperations();
+        private GenericLocalizerOperations _genericLocalizerPort = new GenericLocalizerOperations();
 
         [Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         OdometryPxy.DiffDriveOdometryOperations _odometryProvider = new OdometryPxy.DiffDriveOdometryOperations();
@@ -179,7 +179,7 @@ namespace Brumba.McLrfLocalizer
             DefaultDropHandler(dropDownRq);
         }
 
-        [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_genericPoseEstimatorPort")]
+        [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_genericLocalizerPort")]
         public void OnGet(GenericLocalizer.Get getRq)
         {
             getRq.ResponsePort.Post(new GenericLocalizerState { EstimatedPose = _state.EstimatedPose });

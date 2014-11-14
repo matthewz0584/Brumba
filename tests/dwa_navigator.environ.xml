@@ -6,17 +6,17 @@
     <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
   </Gravity>
   <RenderMode>Full</RenderMode>
-  <FramesPerSecond>29.9588833</FramesPerSecond>
-  <Pause>false</Pause>
+  <FramesPerSecond>0.154367492</FramesPerSecond>
+  <Pause>true</Pause>
   <CameraPosition>
-    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-8</X>
-    <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">8</Y>
-    <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">5</Z>
+    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-6.92</X>
+    <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">4.18</Y>
+    <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">4.39</Z>
   </CameraPosition>
   <CameraLookAt>
-    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">2.5</X>
-    <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0.5</Y>
-    <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">5</Z>
+    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">4.8</X>
+    <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-1.21</Y>
+    <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">4.39</Z>
   </CameraLookAt>
   <CameraFieldOfView>0.781</CameraFieldOfView>
   <CameraNearPlane>0.1</CameraNearPlane>
@@ -397,26 +397,26 @@
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
-            <physm:X>0</physm:X>
-            <physm:Y>0.005</physm:Y>
-            <physm:Z>0</physm:Z>
+            <physm:X>1.31967859E-09</physm:X>
+            <physm:Y>-0.00100000016</physm:Y>
+            <physm:Z>-2.988943E-11</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>0</physm:X>
+            <physm:X>1.9031793E-08</physm:X>
             <physm:Y>1</physm:Y>
-            <physm:Z>0</physm:Z>
-            <physm:W>-4.37E-08</physm:W>
+            <physm:Z>-1.17970411E-09</physm:Z>
+            <physm:W>-3.91083219E-08</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>7.425215E-07</physm:X>
-          <physm:Y>-4.03578554E-07</physm:Y>
-          <physm:Z>2.66763635E-07</physm:Z>
+          <physm:X>4.39194139E-08</physm:X>
+          <physm:Y>-5.905336E-08</physm:Y>
+          <physm:Z>-1.23114559E-08</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>2.030721E-06</physm:X>
-          <physm:Y>1.62204822E-06</physm:Y>
-          <physm:Z>-1.62346878E-05</physm:Z>
+          <physm:X>1.921538E-07</physm:X>
+          <physm:Y>-2.54321435E-07</physm:Y>
+          <physm:Z>-1.28791882E-07</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>9.009001</phys:Mass>
@@ -460,6 +460,7 @@
       <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">None</Flags>
       <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">7</ChildCount>
       <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
+      <ServiceContract xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html</ServiceContract>
       <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <physm:X>0.0254</physm:X>
         <physm:Y>0.0254</physm:Y>
@@ -485,15 +486,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>3.2499795</physm:X>
-              <physm:Y>-0.0010000004</physm:Y>
-              <physm:Z>1.49997532</physm:Z>
+              <physm:X>1.31967859E-09</physm:X>
+              <physm:Y>-0.00100000016</physm:Y>
+              <physm:Z>-2.988943E-11</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>-1.50068686E-08</physm:X>
-              <physm:Y>1</physm:Y>
-              <physm:Z>5.713141E-10</physm:Z>
-              <physm:W>-6.65119151E-05</physm:W>
+              <physm:X>-2.62912514E-09</physm:X>
+              <physm:Y>-4.39272352E-09</physm:Y>
+              <physm:Z>-6.0023293E-09</physm:Z>
+              <physm:W>1</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -560,7 +561,7 @@
         </MeshRotation>
         <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <physm:X>-0.1575</physm:X>
-          <physm:Y>-0.0762</physm:Y>
+          <physm:Y>-0.0799846</physm:Y>
           <physm:Z>0</physm:Z>
         </MeshTranslation>
         <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
@@ -572,7 +573,7 @@
               <physm:Y>0</physm:Y>
               <physm:Z>0</physm:Z>
             </phys:Dimensions>
-            <phys:Radius>0.0762</phys:Radius>
+            <phys:Radius>0.0799846</phys:Radius>
             <phys:Material>
               <phys:Name>default wheel material</phys:Name>
               <phys:Restitution>0</phys:Restitution>
@@ -620,7 +621,7 @@
             <phys:LocalPose>
               <physm:Position>
                 <physm:X>0.151624992</physm:X>
-                <physm:Y>0.0762</physm:Y>
+                <physm:Y>0.0799846</physm:Y>
                 <physm:Z>0</physm:Z>
               </physm:Position>
               <physm:Orientation>
@@ -638,7 +639,7 @@
               <physm:W>1</physm:W>
             </phys:DiffuseColor>
             <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-            <phys:InnerRadius>0.05334</phys:InnerRadius>
+            <phys:InnerRadius>0.055989217</phys:InnerRadius>
             <phys:SuspensionTravel>0</phys:SuspensionTravel>
             <phys:Flags>OverrideAxleSpeed</phys:Flags>
             <phys:AxleSpeed>0</phys:AxleSpeed>
@@ -669,15 +670,15 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>3.2499795</physm:X>
-              <physm:Y>-0.0010000004</physm:Y>
-              <physm:Z>1.49997532</physm:Z>
+              <physm:X>1.31967859E-09</physm:X>
+              <physm:Y>-0.00100000016</physm:Y>
+              <physm:Z>-2.988943E-11</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>-1.50068686E-08</physm:X>
-              <physm:Y>1</physm:Y>
-              <physm:Z>5.713141E-10</physm:Z>
-              <physm:W>-6.65119151E-05</physm:W>
+              <physm:X>-2.62912514E-09</physm:X>
+              <physm:Y>-4.39272352E-09</physm:Y>
+              <physm:Z>-6.0023293E-09</physm:Z>
+              <physm:W>1</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
@@ -744,7 +745,7 @@
         </MeshRotation>
         <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
           <physm:X>0.1575</physm:X>
-          <physm:Y>-0.0762</physm:Y>
+          <physm:Y>-0.0799846</physm:Y>
           <physm:Z>0</physm:Z>
         </MeshTranslation>
         <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
@@ -756,7 +757,7 @@
               <physm:Y>0</physm:Y>
               <physm:Z>0</physm:Z>
             </phys:Dimensions>
-            <phys:Radius>0.0762</phys:Radius>
+            <phys:Radius>0.0799846</phys:Radius>
             <phys:Material>
               <phys:Name>default wheel material</phys:Name>
               <phys:Restitution>0</phys:Restitution>
@@ -804,7 +805,7 @@
             <phys:LocalPose>
               <physm:Position>
                 <physm:X>-0.151624992</physm:X>
-                <physm:Y>0.0762</physm:Y>
+                <physm:Y>0.0799846</physm:Y>
                 <physm:Z>0</physm:Z>
               </physm:Position>
               <physm:Orientation>
@@ -822,7 +823,7 @@
               <physm:W>1</physm:W>
             </phys:DiffuseColor>
             <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-            <phys:InnerRadius>0.05334</phys:InnerRadius>
+            <phys:InnerRadius>0.055989217</phys:InnerRadius>
             <phys:SuspensionTravel>0</phys:SuspensionTravel>
             <phys:Flags>OverrideAxleSpeed</phys:Flags>
             <phys:AxleSpeed>0</phys:AxleSpeed>
@@ -1188,26 +1189,26 @@
           </sim:Assets>
           <sim:Pose>
             <physm:Position>
-              <physm:X>3.24995947</physm:X>
-              <physm:Y>0.5572156</physm:Y>
-              <physm:Z>1.34668636</physm:Z>
+              <physm:X>2.62402921E-07</physm:X>
+              <physm:Y>0.5572158</physm:Y>
+              <physm:Z>0.153289</physm:Z>
             </physm:Position>
             <physm:Orientation>
-              <physm:X>-2.02318242E-05</physm:X>
-              <physm:Y>1</physm:Y>
-              <physm:Z>-1.19417809E-11</physm:Z>
-              <physm:W>-6.642618E-05</physm:W>
+              <physm:X>-2.65569744E-09</physm:X>
+              <physm:Y>-1.50218629E-08</physm:Y>
+              <physm:Z>1.2780436E-05</physm:Z>
+              <physm:W>1</physm:W>
             </physm:Orientation>
           </sim:Pose>
           <sim:Velocity>
-            <physm:X>7.15735E-06</physm:X>
-            <physm:Y>-3.17725757E-09</physm:Y>
-            <physm:Z>2.78674224E-06</physm:Z>
+            <physm:X>-2.86391668E-07</physm:X>
+            <physm:Y>-1.079698E-08</physm:Y>
+            <physm:Z>-1.42267824E-08</physm:Z>
           </sim:Velocity>
           <sim:AngularVelocity>
-            <physm:X>2.41058672E-07</physm:X>
-            <physm:Y>-1.99798E-09</physm:Y>
-            <physm:Z>-7.370092E-06</physm:Z>
+            <physm:X>2.2789024E-08</physm:X>
+            <physm:Y>6.09564066E-10</physm:Y>
+            <physm:Z>1.3317989E-06</physm:Z>
           </sim:AngularVelocity>
           <sim:MassDensity>
             <phys:Mass>0.001</phys:Mass>
@@ -1261,9 +1262,9 @@
                   <physm:Z>0</physm:Z>
                 </physm:JointNormal>
                 <physm:JointAxis>
-                  <physm:X>-1</physm:X>
+                  <physm:X>1</physm:X>
                   <physm:Y>0</physm:Y>
-                  <physm:Z>-8.742278E-08</physm:Z>
+                  <physm:Z>0</physm:Z>
                 </physm:JointAxis>
                 <physm:JointConnectPoint>
                   <physm:X>0</physm:X>
@@ -1278,12 +1279,12 @@
                   <physm:Z>0</physm:Z>
                 </physm:JointNormal>
                 <physm:JointAxis>
-                  <physm:X>-1</physm:X>
+                  <physm:X>1</physm:X>
                   <physm:Y>0</physm:Y>
-                  <physm:Z>-8.742278E-08</physm:Z>
+                  <physm:Z>0</physm:Z>
                 </physm:JointAxis>
                 <physm:JointConnectPoint>
-                  <physm:X>-6.107478E-17</physm:X>
+                  <physm:X>0</physm:X>
                   <physm:Y>-0.5582158</physm:Y>
                   <physm:Z>-0.153289</physm:Z>
                 </physm:JointConnectPoint>
@@ -2157,26 +2158,26 @@
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
-            <physm:X>3.24998736</physm:X>
-            <physm:Y>-0.001000081</physm:Y>
-            <physm:Z>1.4999752</physm:Z>
+            <physm:X>5.15767852E-06</physm:X>
+            <physm:Y>-0.00100000238</physm:Y>
+            <physm:Z>-2.92680075E-10</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-1.93596752E-05</physm:X>
-            <physm:Y>1</physm:Y>
-            <physm:Z>-5.35987965E-09</physm:Z>
-            <physm:W>-6.642465E-05</physm:W>
+            <physm:X>8.983534E-10</physm:X>
+            <physm:Y>-1.51493555E-08</physm:Y>
+            <physm:Z>1.290185E-05</physm:Z>
+            <physm:W>1</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>4.53607572E-06</physm:X>
-          <physm:Y>1.71368328E-07</physm:Y>
-          <physm:Z>2.54018323E-06</physm:Z>
+          <physm:X>1.54313454E-07</physm:X>
+          <physm:Y>5.57255468E-08</physm:Y>
+          <physm:Z>9.53524051E-08</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>-7.591263E-07</physm:X>
-          <physm:Y>-3.143421E-09</physm:Y>
-          <physm:Z>-7.716415E-06</physm:Z>
+          <physm:X>4.17371524E-07</physm:X>
+          <physm:Y>-1.3119037E-09</physm:Y>
+          <physm:Z>1.43727777E-06</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.16</phys:Mass>
@@ -2230,9 +2231,9 @@
                 <physm:Z>0</physm:Z>
               </physm:JointNormal>
               <physm:JointAxis>
-                <physm:X>-1</physm:X>
+                <physm:X>1</physm:X>
                 <physm:Y>0</physm:Y>
-                <physm:Z>-8.742278E-08</physm:Z>
+                <physm:Z>0</physm:Z>
               </physm:JointAxis>
               <physm:JointConnectPoint>
                 <physm:X>0</physm:X>
@@ -2247,9 +2248,9 @@
                 <physm:Z>0</physm:Z>
               </physm:JointNormal>
               <physm:JointAxis>
-                <physm:X>-1</physm:X>
+                <physm:X>1</physm:X>
                 <physm:Y>0</physm:Y>
-                <physm:Z>-8.742278E-08</physm:Z>
+                <physm:Z>0</physm:Z>
               </physm:JointAxis>
               <physm:JointConnectPoint>
                 <physm:X>0</physm:X>
@@ -2269,6 +2270,7 @@
         </physm:State>
       </ParentJoint>
       <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
+      <ServiceContract xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">http://brumba.ru/contracts/2013/11/simulatedlrf.html</ServiceContract>
       <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
         <physm:X>1</physm:X>
         <physm:Y>1</physm:Y>
@@ -2358,21 +2360,20 @@
       <RaycastProperties_FORDB>
         <phys:OriginPose>
           <physm:Position>
-            <physm:X>3.2500062</physm:X>
-            <physm:Y>0.198999926</physm:Y>
-            <physm:Z>1.69997525</physm:Z>
+            <physm:X>5.47788659E-09</physm:X>
+            <physm:Y>0.199</physm:Y>
+            <physm:Z>-0.2</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>5.360726E-09</physm:X>
-            <physm:Y>-6.646836E-05</physm:Y>
-            <physm:Z>-1.93596752E-05</physm:Z>
-            <physm:W>-1</physm:W>
+            <physm:X>-1.27806607E-05</physm:X>
+            <physm:Y>1</physm:Y>
+            <physm:Z>-2.65719269E-09</physm:Z>
+            <physm:W>-2.86628783E-08</physm:W>
           </physm:Orientation>
         </phys:OriginPose>
         <phys:StartAngle>-120</phys:StartAngle>
         <phys:EndAngle>120</phys:EndAngle>
         <phys:AngleIncrement>0.36</phys:AngleIncrement>
-        <!--<phys:AngleIncrement>10</phys:AngleIncrement>-->
         <phys:Range>5.6</phys:Range>
         <phys:ScanInterval>0.1</phys:ScanInterval>
       </RaycastProperties_FORDB>
@@ -2925,26 +2926,26 @@
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>3.24995947</physm:X>
-            <physm:Y>0.5572156</physm:Y>
-            <physm:Z>1.34668636</physm:Z>
+            <physm:X>2.67729234E-07</physm:X>
+            <physm:Y>0.5572158</physm:Y>
+            <physm:Z>0.153289</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-1.82341373E-05</physm:X>
-            <physm:Y>1</physm:Y>
-            <physm:Z>-2.35901521E-09</physm:Z>
-            <physm:W>-6.642282E-05</physm:W>
+            <physm:X>-2.44305154E-09</physm:X>
+            <physm:Y>-1.52555089E-08</physm:Y>
+            <physm:Z>1.30617345E-05</physm:Z>
+            <physm:W>1</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>7.39422876E-06</physm:X>
-          <physm:Y>7.24888949E-08</physm:Y>
-          <physm:Z>2.8857196E-06</physm:Z>
+          <physm:X>-2.863927E-07</physm:X>
+          <physm:Y>-1.07969811E-08</physm:Y>
+          <physm:Z>-1.42267611E-08</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>3.76001736E-07</physm:X>
-          <physm:Y>-2.03429051E-09</physm:Y>
-          <physm:Z>-7.730017E-06</physm:Z>
+          <physm:X>2.2789024E-08</physm:X>
+          <physm:Y>6.33665E-10</physm:Y>
+          <physm:Z>1.33180276E-06</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.001</phys:Mass>
@@ -2998,9 +2999,9 @@
                 <physm:Z>0</physm:Z>
               </physm:JointNormal>
               <physm:JointAxis>
-                <physm:X>-1</physm:X>
+                <physm:X>1</physm:X>
                 <physm:Y>0</physm:Y>
-                <physm:Z>-8.742278E-08</physm:Z>
+                <physm:Z>0</physm:Z>
               </physm:JointAxis>
               <physm:JointConnectPoint>
                 <physm:X>0</physm:X>
@@ -3015,12 +3016,12 @@
                 <physm:Z>0</physm:Z>
               </physm:JointNormal>
               <physm:JointAxis>
-                <physm:X>-1</physm:X>
+                <physm:X>1</physm:X>
                 <physm:Y>0</physm:Y>
-                <physm:Z>-8.742278E-08</physm:Z>
+                <physm:Z>0</physm:Z>
               </physm:JointAxis>
               <physm:JointConnectPoint>
-                <physm:X>-6.107478E-17</physm:X>
+                <physm:X>0</physm:X>
                 <physm:Y>-0.5582158</physm:Y>
                 <physm:Z>-0.153289</physm:Z>
               </physm:JointConnectPoint>
@@ -3564,7 +3565,7 @@
         <Z>0</Z>
       </Location>
     </CameraEntity>
-    <SingleShapeEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
+<!--    <SingleShapeEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
       <sim:State>
         <sim:Name>brick_on_the_way_to_target</sim:Name>
         <sim:Assets />
@@ -3718,6 +3719,6 @@
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
         </phys:BoxState>
       </BoxShape>
-    </SingleShapeEntity>
+    </SingleShapeEntity>-->
   </SerializedEntities>
 </SimulationState>

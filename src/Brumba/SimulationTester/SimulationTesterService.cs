@@ -317,11 +317,14 @@ namespace Brumba.SimulationTester
             IEnumerable<Mrse.VisualEntity> entities = null;
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
 
-            foreach (var entity in entities.Where(e => resetFilter(e) || e.State.Name == "timer"))
+            if (entities.Any(e => e.State.Name == "MainCamera"))
+                Mrse.SimulationEngine.GlobalInstance.RefreshEntity(entities.Single(e => e.State.Name == "MainCamera"));
+            
+            foreach (var entity in entities.Where(e => resetFilter(e) || e.State.Name == "timer" || e.State.Name == "MainCamera"))
                 yield return To.Exec(DeleteEntity(entity));
 
-            yield return To.Exec(PauseSimulator, false);
-            yield return TimeoutPort(100).Receive();
+            //yield return To.Exec(PauseSimulator, false);
+            //yield return TimeoutPort(100).Receive();
 
             var get = new DsspDefaultGet();
             ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
@@ -340,9 +343,11 @@ namespace Brumba.SimulationTester
 
             yield return To.Exec(UpdateCameraView(new Mrse.CameraView
             {
-                EyePosition = (Vector3) DssTypeHelper.TransformFromProxy(simState.CameraPosition),
-                LookAtPoint = (Vector3) DssTypeHelper.TransformFromProxy(simState.CameraLookAt)
+                EyePosition = (Vector3)DssTypeHelper.TransformFromProxy(simState.CameraPosition),
+                LookAtPoint = (Vector3)DssTypeHelper.TransformFromProxy(simState.CameraLookAt)
             }));
+
+            yield return Timeout(10000);
         }
 
         IEnumerator<ITask> GetAndDeserializeEntityPxies(Action<IEnumerable<MrsePxy.VisualEntity>> @return, Func<XmlElement, bool> filter)
