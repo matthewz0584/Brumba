@@ -317,7 +317,7 @@ namespace Brumba.SimulationTester
             IEnumerable<Mrse.VisualEntity> entities = null;
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
 
-            foreach (var entity in entities.Where(e => resetFilter(e) || e.State.Name == "timer"))
+            foreach (var entity in entities.Where(e => e.State.Name != "MainCamera").Where(e => resetFilter(e) || e.State.Name == "timer"))
                 yield return To.Exec(DeleteEntity(entity));
 
             yield return To.Exec(PauseSimulator, false);
@@ -329,7 +329,7 @@ namespace Brumba.SimulationTester
 
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
 
-            foreach (var entity in entities.Where(resetFilter))
+            foreach (var entity in entities.Where(e => e.State.Name != "MainCamera").Where(resetFilter))
 			{
 				if (prepareEntityForReset != null)
 					prepareEntityForReset(entity);
