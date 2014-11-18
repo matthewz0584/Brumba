@@ -20,7 +20,7 @@ using DwaNavigatorPxy = Brumba.DwaNavigator.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("dwa_navigator", Wip = true)]
+    [SimTestFixture("dwa_navigator")]
     public class DwaNavigatorTests
     {
         public SimulationTesterService TesterService { get; private set; }

@@ -50,7 +50,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 					}),
 					center)
 				{
-					State = { Name = string.Format("{0} {1}", type.ColorOnMapImage, i) }
+					State = { Name = string.Format("{0} {1}", type.ColorOnMapImage, i), Flags = EntitySimulationModifiers.Kinematic }
 				};
             });
         }

@@ -6,7 +6,7 @@
     <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
   </Gravity>
   <RenderMode>Full</RenderMode>
-  <FramesPerSecond>30.144434</FramesPerSecond>
+  <FramesPerSecond>60.574543</FramesPerSecond>
   <Pause>false</Pause>
   <CameraPosition>
     <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-4</X>
@@ -282,7 +282,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>Ground</Flags>
       <ChildCount>0</ChildCount>
@@ -398,28 +398,28 @@
         <sim:Pose>
           <physm:Position>
             <physm:X>3.1</physm:X>
-            <physm:Y>-0.00100000016</physm:Y>
+            <physm:Y>-0.0009999813</physm:Y>
             <physm:Z>1.6</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>1.87788185E-08</physm:X>
-            <physm:Y>1</physm:Y>
-            <physm:Z>-3.672194E-09</physm:Z>
-            <physm:W>-3.79435221E-08</physm:W>
+            <physm:X>-1.462146E-08</physm:X>
+            <physm:Y>0.99999994</physm:Y>
+            <physm:Z>-3.073364E-08</physm:Z>
+            <physm:W>-6.1457E-08</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>5.904755E-08</physm:X>
-          <physm:Y>-6.33077E-08</physm:Y>
-          <physm:Z>-5.54324675E-09</physm:Z>
+          <physm:X>-2.74986633E-07</physm:X>
+          <physm:Y>-3.30557071E-07</physm:Y>
+          <physm:Z>9.73813741E-08</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>1.3118904E-07</physm:X>
-          <physm:Y>-2.978329E-07</physm:Y>
-          <physm:Z>-4.04628338E-07</physm:Z>
+          <physm:X>4.109062E-06</physm:X>
+          <physm:Y>7.672362E-07</physm:Y>
+          <physm:Z>3.82838925E-06</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
-          <phys:Mass>9.009001</phys:Mass>
+          <phys:Mass>9.107003</phys:Mass>
           <phys:InertiaTensor>
             <physm:X>0</physm:X>
             <physm:Y>0</physm:Y>
@@ -428,14 +428,14 @@
           <phys:CenterOfMass>
             <physm:Position>
               <physm:X>0</physm:X>
-              <physm:Y>0.03</physm:Y>
+              <physm:Y>0</physm:Y>
               <physm:Z>0</physm:Z>
             </physm:Position>
             <physm:Orientation>
               <physm:X>0</physm:X>
               <physm:Y>0</physm:Y>
               <physm:Z>0</physm:Z>
-              <physm:W>1</physm:W>
+              <physm:W>0</physm:W>
             </physm:Orientation>
           </phys:CenterOfMass>
           <phys:Density>0</phys:Density>
@@ -478,7 +478,6 @@
       </MeshTranslation>
       <IsEnabled>true</IsEnabled>
       <MotorTorqueScaling>20</MotorTorqueScaling>
-      <RotateDegreesAngleThreshold>0.20000000298023224</RotateDegreesAngleThreshold>
       <FrontWheelShape>
         <phys:SphereState>
           <phys:Name>stupid_waiterFrontWheel</phys:Name>
@@ -508,7 +507,7 @@
             </phys:Advanced>
           </phys:Material>
           <phys:MassDensity>
-            <phys:Mass>0.001</phys:Mass>
+            <phys:Mass>4.5</phys:Mass>
             <phys:InertiaTensor>
               <physm:X>0</physm:X>
               <physm:Y>0</physm:Y>
@@ -596,7 +595,7 @@
             </phys:Advanced>
           </phys:Material>
           <phys:MassDensity>
-            <phys:Mass>0.001</phys:Mass>
+            <phys:Mass>4.5</phys:Mass>
             <phys:InertiaTensor>
               <physm:X>0</physm:X>
               <physm:Y>0</physm:Y>
@@ -655,7 +654,6 @@
           <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
         </phys:SphereState>
       </RearWheelShape>
-      <TimeoutSeconds>30</TimeoutSeconds>
     </ReferencePlatform2011Entity>
     <LaserRangeFinderExEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/11/simulatedlrf.html">
       <sim:State>
@@ -664,25 +662,25 @@
         <sim:Pose>
           <physm:Position>
             <physm:X>3.1</physm:X>
-            <physm:Y>0.198999926</physm:Y>
+            <physm:Y>0.198999912</physm:Y>
             <physm:Z>1.8</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-7.60246348E-06</physm:X>
+            <physm:X>-3.60815939E-05</physm:X>
             <physm:Y>1</physm:Y>
-            <physm:Z>-5.382696E-09</physm:Z>
-            <physm:W>-4.53300828E-08</physm:W>
+            <physm:Z>-4.676257E-08</physm:Z>
+            <physm:W>-2.36165462E-07</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>2.307437E-07</physm:X>
-          <physm:Y>4.1445368E-08</physm:Y>
-          <physm:Z>-9.767045E-09</physm:Z>
+          <physm:X>-2.63693778E-06</physm:X>
+          <physm:Y>-3.26196066E-08</physm:Y>
+          <physm:Z>1.82618055E-06</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>-1.98062065E-08</physm:X>
-          <physm:Y>3.3062757E-09</physm:Y>
-          <physm:Z>1.6198735E-06</physm:Z>
+          <physm:X>3.85958145E-07</physm:X>
+          <physm:Y>-1.32230955E-08</physm:Y>
+          <physm:Z>1.80292482E-05</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.16</phys:Mass>
@@ -866,13 +864,13 @@
         <phys:OriginPose>
           <physm:Position>
             <physm:X>3.1</physm:X>
-            <physm:Y>0.198999926</physm:Y>
+            <physm:Y>0.198999912</physm:Y>
             <physm:Z>1.8</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>1.74812032E-09</physm:X>
-            <physm:Y>-8.899964E-08</physm:Y>
-            <physm:Z>-7.57933E-06</physm:Z>
+            <physm:X>4.862614E-08</physm:X>
+            <physm:Y>-2.79046446E-07</physm:Y>
+            <physm:Z>-3.527527E-05</physm:Z>
             <physm:W>-1</physm:W>
           </physm:Orientation>
         </phys:OriginPose>
@@ -1431,26 +1429,26 @@
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>3.10000014</physm:X>
-            <physm:Y>0.5572156</physm:Y>
+            <physm:X>3.10000062</physm:X>
+            <physm:Y>0.557215452</physm:Y>
             <physm:Z>1.44671106</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-7.783677E-06</physm:X>
+            <physm:X>-3.75887576E-05</physm:X>
             <physm:Y>1</physm:Y>
-            <physm:Z>-5.255005E-09</physm:Z>
-            <physm:W>-4.527722E-08</physm:W>
+            <physm:Z>-4.932212E-08</physm:Z>
+            <physm:W>-2.358224E-07</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-5.07873551E-07</physm:X>
-          <physm:Y>2.94576949E-08</physm:Y>
-          <physm:Z>-1.32493705E-08</physm:Z>
+          <physm:X>-1.01521446E-05</physm:X>
+          <physm:Y>-8.13437E-08</physm:Y>
+          <physm:Z>1.66101393E-06</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>-1.96928287E-08</physm:X>
-          <physm:Y>3.64960862E-09</physm:Y>
-          <physm:Z>1.7505721E-06</physm:Z>
+          <physm:X>-1.8300959E-07</physm:X>
+          <physm:Y>-8.97033647E-09</physm:Y>
+          <physm:Z>1.96443634E-05</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.001</phys:Mass>
@@ -2134,9 +2132,9 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
-      <Flags>TexturesPending</Flags>
+      <Flags>None</Flags>
       <ChildCount>0</ChildCount>
       <ReferenceFrame>Global</ReferenceFrame>
       <MeshScale>
@@ -2288,7 +2286,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -2442,7 +2440,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -2596,7 +2594,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -2750,7 +2748,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -2904,7 +2902,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -3058,7 +3056,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -3212,7 +3210,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -3366,7 +3364,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -3520,7 +3518,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -3674,7 +3672,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -3828,7 +3826,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -3982,7 +3980,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -4136,7 +4134,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -4290,7 +4288,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -4444,7 +4442,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -4598,7 +4596,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -4752,7 +4750,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -4906,7 +4904,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -5060,7 +5058,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -5214,7 +5212,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>
@@ -5368,7 +5366,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>None</Flags>
       <ChildCount>0</ChildCount>

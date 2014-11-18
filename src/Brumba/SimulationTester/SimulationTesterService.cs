@@ -16,6 +16,7 @@ using System.Xml;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.Services.MountService;
 using Microsoft.Robotics.PhysicalModel;
+using Microsoft.Robotics.Simulation.Physics;
 using W3C.Soap;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
@@ -117,6 +118,7 @@ namespace Brumba.SimulationTester
             //var servicesTsLevel = TS.Services.Level;
             //TS.Services.Level = TraceLevel.Info;
             //TS.Services.Level = servicesTsLevel;
+            PhysicsEngine.TraceLevel = 5;
 
 			yield return Arbiter.Choice(_simEngine.Get(), s => _initialSimState = s, LogError);
 			_initialSimState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
