@@ -31,8 +31,6 @@ namespace Brumba.SimulationTester
             {
                 MrsePxy.VisualEntity entityPxy = null;
                 yield return To.Exec(DeserializeEntityPxyFromXml, (MrsePxy.VisualEntity e) => entityPxy = e, entityNode);
-                //if (entityPxy.State.Name == "MainCamera")
-                //    continue;
                 entities.Add(entityPxy);
             }
             @return(entities);
@@ -62,8 +60,12 @@ namespace Brumba.SimulationTester
             if (parent.ChildCount != 0)
                 for (var i = 0; i < parent.ChildCount; ++i)
                 {
-                    parent.InsertEntityGlobal(entitiesFlat.First());
-                    entitiesFlat = ReuniteEntity(entitiesFlat.First(), entitiesFlat.Skip(1));
+                    var e = entitiesFlat.First();
+                    if (e.ReferenceFrame == Mrse.VisualEntity.ReferenceFrames.Global)
+                        parent.InsertEntityGlobal(e);
+                    else
+                        parent.InsertEntity(e);
+                    entitiesFlat = ReuniteEntity(e, entitiesFlat.Skip(1));
                 }
             return entitiesFlat.ToList();
         }

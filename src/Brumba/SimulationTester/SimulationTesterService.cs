@@ -16,6 +16,7 @@ using System.Xml;
 using Microsoft.Dss.Core;
 using Microsoft.Dss.Services.MountService;
 using Microsoft.Robotics.PhysicalModel;
+using Microsoft.Robotics.Simulation.Physics;
 using W3C.Soap;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
@@ -117,6 +118,7 @@ namespace Brumba.SimulationTester
             //var servicesTsLevel = TS.Services.Level;
             //TS.Services.Level = TraceLevel.Info;
             //TS.Services.Level = servicesTsLevel;
+            PhysicsEngine.TraceLevel = 5;
 
 			yield return Arbiter.Choice(_simEngine.Get(), s => _initialSimState = s, LogError);
 			_initialSimState.RenderMode = _state.ToRender ? MrsPxy.RenderMode.Full : MrsPxy.RenderMode.None;
@@ -317,7 +319,7 @@ namespace Brumba.SimulationTester
             IEnumerable<Mrse.VisualEntity> entities = null;
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
 
-            if (entities.Any(e => e.State.Name == "MainCamera"))
+            foreach (var entity in entities.Where(e => e.State.Name != "MainCamera").Where(e => resetFilter(e) || e.State.Name == "timer"))
                 Mrse.SimulationEngine.GlobalInstance.RefreshEntity(entities.Single(e => e.State.Name == "MainCamera"));
             
             foreach (var entity in entities.Where(e => resetFilter(e) || e.State.Name == "timer" || e.State.Name == "MainCamera"))
@@ -332,7 +334,7 @@ namespace Brumba.SimulationTester
 
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
 
-            foreach (var entity in entities.Where(resetFilter))
+            foreach (var entity in entities.Where(e => e.State.Name != "MainCamera").Where(resetFilter))
 			{
 				if (prepareEntityForReset != null)
 					prepareEntityForReset(entity);

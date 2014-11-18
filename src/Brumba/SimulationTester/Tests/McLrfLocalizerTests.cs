@@ -18,7 +18,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = 0.0001f, Wip = true)]
+    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1, Wip = true)]
 	public class McLrfLocalizerTests
 	{
 		SimulationTesterService TesterService { get; set; }
@@ -68,7 +68,7 @@ namespace Brumba.SimulationTester.Tests
             subscribeRq.NotificationShutdownPort.Post(new Shutdown());
         }
 
-		[SimTest(7.1f)]
+		//[SimTest(7.1f)]
 		public class Tracking : IStart, ITest
 		{
 			[Fixture]
@@ -102,7 +102,7 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}
 
-		[SimTest(10.1f)]
+		//[SimTest(10.1f)]
 		public class GlobalLocalizationStraightPath : IStart, ITest
 		{
 			[Fixture]
@@ -165,7 +165,7 @@ namespace Brumba.SimulationTester.Tests
 				
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.1));
 
-                yield return To.Exec(Fixture.Wait, 1.2f);
+                yield return To.Exec(Fixture.Wait, 1.3f);
 
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
 
