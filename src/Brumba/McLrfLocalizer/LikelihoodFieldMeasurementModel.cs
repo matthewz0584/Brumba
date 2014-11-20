@@ -67,18 +67,15 @@ namespace Brumba.McLrfLocalizer
             //    Console.WriteLine("*****");
             //}
 
-			return scan.Select((zi, i) => new {zi, i}).Where(p => p.zi != RangefinderProperties.MaxRange).
-				Select(p => BeamLikelihood(robotPose, p.zi, p.i)).Aggregate(1f, (pi, p) => p * pi);
+            return RangefinderProperties.PreprocessMeasurements(scan).Select(b => BeamLikelihood(robotPose, b)).
+                Aggregate(1f, (pi, p) => p * pi);
         }
 
-        public float BeamLikelihood(Pose robotPose, float zi, int i)
+        public float BeamLikelihood(Pose robotPose, Vector2 beam)
         {
-            DC.Contract.Requires(zi >= 0);
-            DC.Contract.Requires(zi <= RangefinderProperties.MaxRange);
-            DC.Contract.Requires(i >= 0);
             DC.Contract.Ensures(DC.Contract.Result<float>() >= 0);
 
-            var beamEndPointPosition = BeamEndPointPosition(robotPose, zi, i);
+            var beamEndPointPosition = RobotToMapTransformation(beam, robotPose);
 			//if (!Map.Covers(beamEndPointPosition))
 			//	//return 0;
 			//	return 1;
@@ -102,16 +99,6 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Ensures(DC.Contract.Result<double>() >= 0);
 
             return 1d / RangefinderProperties.MaxRange;
-        }
-
-        public Vector2 BeamEndPointPosition(Pose robotPose, float zi, int i)
-        {
-            DC.Contract.Requires(zi >= 0);
-            DC.Contract.Requires(zi <= RangefinderProperties.MaxRange);
-            DC.Contract.Requires(i >= 0);
-            DC.Contract.Requires(i < RangefinderProperties.AngularRange / RangefinderProperties.AngularResolution + 1);
-
-            return RobotToMapTransformation(RangefinderProperties.BeamToVectorInRobotTransformation(zi, i), robotPose);
         }
 
         public static Vector2 RobotToMapTransformation(Vector2 beam, Pose robotPose)

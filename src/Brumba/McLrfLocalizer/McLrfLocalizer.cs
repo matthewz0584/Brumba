@@ -31,7 +31,7 @@ namespace Brumba.McLrfLocalizer
 		    ParticlesNumber = particlesNumber;
             _particleFilter = new ParticleFilter<Pose, IEnumerable<float>, Pose>(
 			    new ResamplingWheel(),
-			    new OdometryMotionModel(map, new Vector2(0.2f, 0.2f), new Vector2(0.2f, 0.2f)),
+			    new OdometryMotionModel(map, new Vector2(0.1f, 0.1f), new Vector2(0.2f, 0.2f)),
 			    new LikelihoodFieldMeasurementModel(map, rangefinderProperties, 0.4f, 0.8f, 0.2f));
 	    }
 

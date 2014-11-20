@@ -167,7 +167,7 @@ namespace Brumba.MapProvider.Tests
 			Assert.That(UIMath.EulerToQuaternion(new Vector3(0, 90, 0)).SimToMap(), Is.EqualTo(3 * Constants.PiOver2).Within(1e-5));
             Assert.That(UIMath.EulerToQuaternion(new Vector3(0, 45, 0)).SimToMap(), Is.EqualTo(5 * Constants.PiOver4).Within(1e-5));
 
-            Assert.That(new rVector3(3, 2, 1).SimToMap(), Is.EqualTo(2));
+            Assert.That(new rVector3(3, 2, 1).SimToMapAngularVelocity(), Is.EqualTo(2));
 	    }
     }
 }

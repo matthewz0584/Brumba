@@ -120,7 +120,6 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			PopulateSimpleEnvironment();
 
             SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar", new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))));
-			SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(8, 0.501f, 0)) { State = { Name = "golden_brick_out_of_range" } });
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(-5f, 0.501f, 0)) { State = { Name = "golden_brick_in_range" } });
 	    }

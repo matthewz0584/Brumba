@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.McLrfLocalizer;
 using Brumba.WaiterStupid;
-using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
@@ -83,24 +82,13 @@ namespace Brumba.DwaNavigator
             _compositeEvaluator.EvaluatorWeights = new Dictionary<IVelocityEvaluator, double>
             {
                 { new AngleToTargetEvaluator(pose, target, AccelerationMax.Angular, _dt), 0.8 },
-                { new ObstaclesEvaluator(TransformMeasurements(obstacles), _robotRadius, AccelerationMax.Linear, RangefinderProperties.MaxRange), 0.1 },
+                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles), _robotRadius, AccelerationMax.Linear, RangefinderProperties.MaxRange), 0.1 },
                 { new SpeedEvaluator(VelocityMax.Linear), 0.1 }
             };
             
-            var optRes =  _optimizer.FindOptimalVelocity(velocity);
+            var optRes = _optimizer.FindOptimalVelocity(velocity);
             OptimalVelocity = optRes.Item1;
             VelocitiesEvaluation = optRes.Item2;
-        }
-
-        IEnumerable<Vector2> TransformMeasurements(IEnumerable<float> obstacles)
-        {
-            DC.Contract.Requires(obstacles != null);
-            DC.Contract.Requires(obstacles.All(d => d <= RangefinderProperties.MaxRange));
-            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Vector2>>() != null);
-            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Vector2>>().All(v => v.Length() < RangefinderProperties.MaxRange + _robotRadius));
-
-            return obstacles.Select((d, i) => new { d, i }).Where(p => !Precision.AlmostEqualWithAbsoluteError(p.d, RangefinderProperties.MaxRange, p.d - RangefinderProperties.MaxRange, 0.01)).
-                Select(p => RangefinderProperties.BeamToVectorInRobotTransformation(p.d, p.i));
         }
     }
 }
