@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.PhysicalModel;
@@ -46,22 +47,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// </summary>
         private const float Mass = 9f;
 
-        #region State
-
-        /// <summary>
-        /// Left front wheel position
-        /// </summary>
-        private Vector3 _leftDriveWheelPosition;
-
-        /// <summary>
-        /// Right front wheel position
-        /// </summary>
-        private Vector3 _rightDriveWheelPosition;
-
-        /// <summary>
-        /// Caster wheel position
-        /// </summary>
-        private Vector3 _casterWheelPosition;
+        private const float MaxSpeed = 1.5f;
 
         /// <summary>
         /// Distance from ground of chassis
@@ -114,12 +100,12 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <summary>
         /// The current target velocity of the left wheel
         /// </summary>
-        private float _leftTargetVelocity;
+        private float _leftWheelCurrent;
 
         /// <summary>
         /// The current target velocity of the right wheel
         /// </summary>
-        private float _rightTargetVelocity;
+        private float _rightWheelCurrent;
 
         /// <summary>
         /// Gets or sets the right wheel child entity
@@ -130,18 +116,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// Gets or sets the left wheel child entity
         /// </summary>
         public WheelEntity LeftWheel { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the Front wheel physics shape
-        /// </summary>
-        [DataMember, Description("Front wheel physics shape.")]
-        public SphereShape FrontWheelShape { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Rear wheel physics shape
-        /// </summary>
-        [DataMember, Description("rear wheel physics shape.")]
-        public SphereShape RearWheelShape { get; set; }
 
         /// <summary>
         /// Gets or sets the Kinect entity
@@ -172,8 +146,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// Gets or sets the right IR entity
         /// </summary>
         public IREntity FrontRightIr { get; private set; }
-
-        #endregion
 
         /// <summary>
         /// Chassis dimensions
@@ -225,56 +197,18 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         private Vector3 _sensorBoxDimension = new Vector3(0.05f, 0.05f, 0.05f);
 
         /// <summary>
-        /// Left IR position
+        /// Sonars are angled out 30 degrees of center. 
         /// </summary>
-        private Vector3 _leftIrBoxPosition = new Vector3(-0.17f, ChassisSecondDepthOffset + ChassisThickness + SensorBoxHeightOffBase, -0.1f);
-
-        /// <summary>
-        /// Middle IR position
-        /// </summary>
-        private Vector3 _middleIrBoxPosition = new Vector3(0.0f, ChassisSecondDepthOffset + ChassisThickness + SensorBoxHeightOffBase, -0.185f);
-
-        /// <summary>
-        /// Right IR position
-        /// </summary>
-        private Vector3 _rightIrBoxPosition = new Vector3(0.17f, ChassisSecondDepthOffset + ChassisThickness + SensorBoxHeightOffBase, -0.1f);
-
-        /// <summary>
-        /// Left sonar position
-        /// </summary>
-        private Vector3 _leftSonarBoxPosition = new Vector3(-0.09f, ChassisSecondDepthOffset + ChassisThickness + SensorBoxHeightOffBase, -0.175f);
-
-        /// <summary>
-        /// Right sonar position
-        /// </summary>
-        private Vector3 _rightSonarBoxPosition = new Vector3(0.09f, ChassisSecondDepthOffset + ChassisThickness + SensorBoxHeightOffBase, -0.175f);
-
-        /// <summary>
-        /// Sonars are angled out 30 degrees left of center. 
-        /// </summary>
-        private const double LeftSonarAngleOutRadians = 30 / (180 / Math.PI);
-
-        /// <summary>
-        /// Left sonar orientation. 
-        /// </summary>
-        private Quaternion _leftSonarOrientation = Quaternion.FromAxisAngle(0f, 1f, 0f, (float)LeftSonarAngleOutRadians);
-
-        /// <summary>
-        /// Sonars are angled out 30 degrees right of center. 
-        /// </summary>
-        private const double RightSonarAngleOutRadians = -30 / (180 / Math.PI);
-
-        /// <summary>
-        /// Right sonar orientation. 
-        /// </summary>
-        private Quaternion _rightSonarOrientation = Quaternion.FromAxisAngle(0f, 1f, 0f, (float)RightSonarAngleOutRadians);
+        private const double _sonarAngleOutRadians = 30 * Constants.Degree;
 
         /// <summary>
         /// Default constructor, used for creating the entity from an XML description
         /// </summary>
         public ReferencePlatform2011Entity()
         {
-            InitializePhysicalAttributes();
+            MotorTorqueScaling = 2;
+
+            MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
         }
 
         /// <summary>
@@ -297,11 +231,13 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             try
             {
                 InitError = string.Empty;
-                if (FrontWheelShape == null)
+                if (ChildCount == 0)
                     ProgrammaticallyBuildModel(device, physicsEngine);
 
-                State.PhysicsPrimitives.Add(FrontWheelShape);
-                State.PhysicsPrimitives.Add(RearWheelShape);
+                State.PhysicsPrimitives.Add(ConstructCasterWheelShape(
+                    "front wheel", new Vector3(0, _casterWheelRadius, -_chassisDimensions.Z/2)));
+                State.PhysicsPrimitives.Add(ConstructCasterWheelShape(
+                    "rear wheel", new Vector3(0, _casterWheelRadius, _chassisDimensions.Z/2)));
 
                 //Adding batteries (in order to place main weight in the right point) makes MRDS fall in mc lrf test environment
                 //on ref platform removal. Thats why weight is divided between caster wheels.
@@ -309,66 +245,29 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 //    new Vector3(0.25f, 2 * ChassisThickness, 0.15f));
                 //State.PhysicsPrimitives.Add(new BoxShape(batteries) { State = { EnableContactNotifications = false } });
 
-                float accumulatedHeight = _chassisDimensions.Y + ChassisSecondDepthOffset + (_bodyStrutDimension.Y / 2.0f);
-                foreach (Vector3 strutPosition in _bodyStrutPositions)
-                {
-                    var strutDesc = new BoxShapeProperties(
-                        "strut",
-                        0.001f,
-                        new Pose(
-                            new Vector3(
-                                strutPosition.X,
-                                strutPosition.Y + accumulatedHeight,
-                                strutPosition.Z)),
-                        _bodyStrutDimension);
-                    var strutShape = new BoxShape(strutDesc);
-                    State.PhysicsPrimitives.Add(strutShape);
-                }
+                var accumulatedHeight = _chassisDimensions.Y + ChassisSecondDepthOffset + (_bodyStrutDimension.Y / 2.0f);
+
+                State.PhysicsPrimitives.AddRange(_bodyStrutPositions.Select(sp =>
+                    new BoxShape(new BoxShapeProperties("strut", 0.001f,
+                        new Pose(new Vector3(sp.X, sp.Y + accumulatedHeight, sp.Z)),
+                        _bodyStrutDimension))));
+
                 accumulatedHeight += _bodyStrutDimension.Y / 2.0f;
-                var topDesc =
-                    new BoxShapeProperties(
-                        "Top",
-                       0.1f,
-                        new Pose(
-                            new Vector3(
-                                0,
-                                accumulatedHeight, // chassis is off the ground
-                                0.0f)), // minor offset in the z/depth axis
-                       _chassisDimensions);
 
-                var topShape = new BoxShape(topDesc);
-                State.PhysicsPrimitives.Add(topShape);
+                State.PhysicsPrimitives.Add(new BoxShape(new BoxShapeProperties("Top", 0.1f,
+                    new Pose(new Vector3(0, accumulatedHeight, 0.0f)), _chassisDimensions)));
 
-                foreach (Vector3 kinectStrut in _kinectStrutPositions)
-                {
-                    var strutDesc =
-                        new BoxShapeProperties(
-                            "kstrut",
-                            0.001f,
-                            new Pose(
-                                new Vector3(
-                                    kinectStrut.X,
-                                    kinectStrut.Y + accumulatedHeight + (_kinectStrutDimension.Y / 2.0f),
-                                    kinectStrut.Z)),
-                            _kinectStrutDimension);
-                    var strutShape = new BoxShape(strutDesc);
-                    State.PhysicsPrimitives.Add(strutShape);
-                }
+                State.PhysicsPrimitives.AddRange(_kinectStrutPositions.Select(ks => 
+                    new BoxShape(new BoxShapeProperties("kstrut", 0.001f,
+                        new Pose(new Vector3(ks.X, ks.Y + accumulatedHeight + (_kinectStrutDimension.Y/2.0f), ks.Z)),
+                        _kinectStrutDimension))));
 
                 accumulatedHeight += _kinectStrutDimension.Y;
 
-                var kinectPlatformDesc =
-                    new BoxShapeProperties(
-                        "kplat",
-                        0.001f,
-                        new Pose(
-                            new Vector3(
-                                _kinectPlatformPosition.X,
-                                _kinectPlatformPosition.Y + accumulatedHeight + (_kinectPlatformDimension.Y / 2.0f),
-                                _kinectPlatformPosition.Z)),
-                        _kinectPlatformDimension);
-                var kinectPlatformShape = new BoxShape(kinectPlatformDesc);
-                State.PhysicsPrimitives.Add(kinectPlatformShape);
+                State.PhysicsPrimitives.Add(new BoxShape(new BoxShapeProperties("kplat", 0.001f,
+                    new Pose(new Vector3(_kinectPlatformPosition.X,
+                        _kinectPlatformPosition.Y + accumulatedHeight + (_kinectPlatformDimension.Y / 2.0f), _kinectPlatformPosition.Z)),
+                    _kinectPlatformDimension)));
 
                 // Add the various meshes for this platform
                 Meshes.Add(SimulationEngine.ResourceCache.CreateMeshFromFile(device, "LowerDeck.obj"));
@@ -379,14 +278,14 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
                 CreateAndInsertPhysicsEntity(physicsEngine);
 
-                // Set the parent entity for the wheel entities, clear any local rotation
-                // on the wheel shape so that the wheel contact is always in the -Y direction.
-                LeftWheel.Parent = this;
-                LeftWheel.Wheel.State.LocalPose.Orientation = new Quaternion(0, 0, 0, 1);
-                RightWheel.Parent = this;
-                RightWheel.Wheel.State.LocalPose.Orientation = new Quaternion(0, 0, 0, 1);
-                LeftWheel.Initialize(device, physicsEngine);
-                RightWheel.Initialize(device, PhysicsEngine);
+                (LeftWheel = ConstructDriveWheel("left wheel", "Left_Tire.obj",
+                    new Vector3(-(_chassisDimensions.X / 2) + (_driveWheelWidth / 2) - 0.01f, _driveWheelRadius, _frontAxleDepthOffset),
+                    new Vector3(_chassisDimensions.X / 2, -_driveWheelRadius, 0))).
+                    Initialize(device, physicsEngine);
+                (RightWheel = ConstructDriveWheel("right wheel", "Right_Tire.obj",
+                    new Vector3(+(_chassisDimensions.X / 2) - (_driveWheelWidth / 2) + 0.01f, _driveWheelRadius, _frontAxleDepthOffset),
+                    new Vector3(-_chassisDimensions.X / 2, -_driveWheelRadius, 0))).
+                    Initialize(device, physicsEngine);
 
                 base.Initialize(device, physicsEngine);
 
@@ -396,59 +295,11 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             {
                 // clean up
                 if (PhysicsEntity != null)
-                {
                     PhysicsEngine.DeleteEntity(PhysicsEntity);
-                }
 
                 HasBeenInitialized = false;
                 InitError = ex.ToString();
             }
-        }
-
-        /// <summary>
-        /// Sets the various dimensions of our physical components
-        /// </summary>
-        private void InitializePhysicalAttributes()
-        {
-            // reference point for all shapes is the projection of
-            // the center of mass onto the ground plane
-            // (basically the spot under the center of mass, at Y = 0, or ground level)
-            // NOTE: right/left is from the perspective of the robot, looking forward
-            // NOTE: X = width of robot (right to left), Y = height, Z = length
-
-            // rear wheel is also called the caster
-            _casterWheelPosition = new Vector3(
-                0, // center of chassis
-                _casterWheelRadius, // distance from ground
-               _chassisDimensions.Z / 2); // at the rear of the robot
-
-            _rightDriveWheelPosition = new Vector3(
-               +(_chassisDimensions.X / 2) - (_driveWheelWidth / 2) + 0.01f, // left of center
-                _driveWheelRadius, // distance from ground of axle
-                _frontAxleDepthOffset); // distance from center, on the z-axis
-
-            _leftDriveWheelPosition = new Vector3(
-               -(_chassisDimensions.X / 2) + (_driveWheelWidth / 2) - 0.01f, // right of center
-                _driveWheelRadius, // distance from ground of axle
-                _frontAxleDepthOffset); // distance from center, on the z-axis
-
-            MotorTorqueScaling = 20;
-
-            MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
-
-            LeftWheel = ConstructDriveWheel("left wheel", _leftDriveWheelPosition, false);
-            RightWheel = ConstructDriveWheel("roght wheel", _rightDriveWheelPosition, true);
-
-            // Add the wheel meshes separately
-            LeftWheel.EntityState.Assets.Mesh = "Left_Tire.obj";
-            LeftWheel.MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
-            LeftWheel.MeshTranslation = new Vector3(_chassisDimensions.X / 2, -_driveWheelRadius, 0);
-            RightWheel.EntityState.Assets.Mesh = "Right_Tire.obj";
-            RightWheel.MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
-
-            // Override the 180 degree rotation (that the Diff Drive applies) because we have separate wheel meshes
-            RightWheel.MeshRotation = new Vector3(0, 0, 0);
-            RightWheel.MeshTranslation = new Vector3(-_chassisDimensions.X / 2, -_driveWheelRadius, 0);
         }
 
         /// <summary>
@@ -458,54 +309,37 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <param name="physicsEngine">The physics engine</param>
         public void ProgrammaticallyBuildModel(Microsoft.Xna.Framework.Graphics.GraphicsDevice device, PhysicsEngine physicsEngine)
         {
-            FrontWheelShape = ConstructCasterWheelShape("front wheel", new Vector3(0, _casterWheelRadius, -_chassisDimensions.Z / 2));
+            // reference point for all shapes is the projection of
+            // the center of mass onto the ground plane
+            // (basically the spot under the center of mass, at Y = 0, or ground level)
+            // NOTE: right/left is from the perspective of the robot, looking forward
+            // NOTE: X = width of robot (right to left), Y = height, Z = length
 
-            RearWheelShape = ConstructCasterWheelShape("rear wheel", new Vector3(0, _casterWheelRadius, _chassisDimensions.Z / 2));
+            var sensorLevel = ChassisSecondDepthOffset + ChassisThickness + SensorBoxHeightOffBase;
 
-            float accumulatedHeight = _chassisDimensions.Y + ChassisSecondDepthOffset + (_bodyStrutDimension.Y / 2.0f);
+            InsertEntity(FrontLeftIr = new IREntity(new Pose(new Vector3(-0.17f, sensorLevel, -0.1f)))
+                { EntityState = { Name = EntityState.Name + "FrontLeftIR" } });
 
-            accumulatedHeight += _bodyStrutDimension.Y / 2.0f;
+            InsertEntity(FrontRightIr = new IREntity(new Pose(new Vector3(0.17f, sensorLevel, -0.1f)))
+                { EntityState = { Name = EntityState.Name + "FrontRightIR" } });
 
-            FrontLeftIr = new IREntity(new Pose(_leftIrBoxPosition))
-            {
-                EntityState = { Name = EntityState.Name + "FrontLeftIR" }
-            };
-            InsertEntity(FrontLeftIr);
+            InsertEntity(FrontMiddleIr = new IREntity(new Pose(new Vector3(0.0f, sensorLevel, -0.185f)))
+                { EntityState = { Name = EntityState.Name + "FrontMiddleIR" } });
 
-            FrontRightIr = new IREntity(new Pose(_rightIrBoxPosition))
-            {
-                EntityState = { Name = EntityState.Name + "FrontRightIR" }
-            };
-            InsertEntity(FrontRightIr);
+            InsertEntity(LeftSonar = new SonarEntity(new Pose(new Vector3(-0.09f, sensorLevel, -0.175f),
+                Quaternion.FromAxisAngle(0f, 1f, 0f, (float)_sonarAngleOutRadians))) 
+                { EntityState = { Name = EntityState.Name + "LeftSonar" } });
 
-            FrontMiddleIr = new IREntity(new Pose(_middleIrBoxPosition))
-            {
-                EntityState = { Name = EntityState.Name + "FrontMiddleIR" }
-            };
-            InsertEntity(FrontMiddleIr);
+            InsertEntity(RightSonar = new SonarEntity(new Pose(new Vector3(0.09f, sensorLevel, -0.175f),
+                Quaternion.FromAxisAngle(0f, 1f, 0f, -(float)_sonarAngleOutRadians)))
+                { EntityState = { Name = EntityState.Name + "RightSonar" } });
 
-            LeftSonar = new SonarEntity(
-                    new Pose(_leftSonarBoxPosition, _leftSonarOrientation))
-            {
-                EntityState = { Name = EntityState.Name + "LeftSonar" }
-            };
-            InsertEntity(LeftSonar);
-
-            RightSonar = new SonarEntity(
-                    new Pose(
-                        _rightSonarBoxPosition,
-                        _rightSonarOrientation)) { EntityState = { Name = EntityState.Name + "RightSonar" } };
-            InsertEntity(RightSonar);
-
-            accumulatedHeight += _kinectStrutDimension.Y;
-
-            accumulatedHeight += _kinectPlatformDimension.Y;
-
-            Kinect = new KinectEntity(new Vector3(_kinectPlatformPosition.X, accumulatedHeight, _kinectPlatformPosition.Z), EntityState.Name);
-            InsertEntity(Kinect);
+            InsertEntity(Kinect = new KinectEntity(new Vector3(_kinectPlatformPosition.X,
+                        _chassisDimensions.Y + ChassisSecondDepthOffset + (_bodyStrutDimension.Y / 2.0f) + _bodyStrutDimension.Y / 2.0f + _kinectStrutDimension.Y + _kinectPlatformDimension.Y,
+                        _kinectPlatformPosition.Z), EntityState.Name));
         }
 
-        private SphereShape ConstructCasterWheelShape(string name, Vector3 position)
+        SphereShape ConstructCasterWheelShape(string name, Vector3 position)
         {
             // a fixed caster wheel has high friction when moving laterally, but low friction when it moves along the
             // body axis its aligned with. We use anisotropic friction to model this
@@ -519,8 +353,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                     Name = EntityState.Name + name,
                     Material = new MaterialProperties("small friction with anisotropy", 0.5f, 0.5f, 1)
                     {
-                        Advanced =
-                            new MaterialAdvancedProperties
+                        Advanced = new MaterialAdvancedProperties
                             {
                                 AnisotropicDynamicFriction = 0.3f,
                                 AnisotropicStaticFriction = 0.4f,
@@ -531,21 +364,18 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             };
         }
 
-        protected WheelEntity ConstructDriveWheel(string name, Vector3 position, bool rotateMesh)
+        WheelEntity ConstructDriveWheel(string name, string mesh, Vector3 position, Vector3 meshTranslation)
         {
-            var wShape = new WheelShapeProperties(name, _driveWheelMass, _driveWheelRadius)
+            return new WheelEntity(new WheelShapeProperties(name, _driveWheelMass, _driveWheelRadius)
+                    {
+                        InnerRadius = 0.7f * _driveWheelRadius,
+                        LocalPose = new Pose(position)
+                    })
             {
-                InnerRadius = 0.7f*_driveWheelRadius,
-                LocalPose = new Pose(position)
-            };
-
-            // Set this flag on both wheels if you want to use axle speed instead of torque
-            wShape.Flags |= WheelShapeBehavior.OverrideAxleSpeed;
-            return new WheelEntity(wShape)
-            {
-                State = { Name = EntityState.Name + name },
+                State = { Name = EntityState.Name + name, Assets = { Mesh = mesh }, Pose = new Pose(position) },
                 Parent = this,
-                MeshRotation = rotateMesh ? new Vector3(0, 180, 0) : new Vector3(),
+                MeshTranslation = meshTranslation,
+                MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f)
             };
         }
 
@@ -576,13 +406,13 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
             if (IsEnabled)
             {
-                UpdateAxleSpeed(LeftWheel.Wheel, _leftTargetVelocity, (float)update.ElapsedTime);
-                UpdateAxleSpeed(RightWheel.Wheel, _rightTargetVelocity, (float)update.ElapsedTime);
+                LeftWheel.Wheel.MotorTorque = -MotorTorque(_leftWheelCurrent, -LeftWheel.Wheel.AxleSpeed);
+                RightWheel.Wheel.MotorTorque = -MotorTorque(_rightWheelCurrent, -RightWheel.Wheel.AxleSpeed);
             }
             else
             {
-                LeftWheel.Wheel.AxleSpeed = 0;
-                RightWheel.Wheel.AxleSpeed = 0;
+                LeftWheel.Wheel.MotorTorque = 0;
+                RightWheel.Wheel.MotorTorque = 0;
             }
 
             // update entities in fields
@@ -593,12 +423,9 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             base.Update(update);
         }
 
-        void UpdateAxleSpeed(PhysicsWheel wheel, float targetAxleSpeed, float elapsedTime)
+        float MotorTorque(float current, float angVelocity)
         {
-            var axleSpeedDelta = targetAxleSpeed - (-wheel.AxleSpeed);
-            if (Math.Abs(axleSpeedDelta) <= 0.1)
-                return;
-            wheel.AxleSpeed += -WheelAngularAcceleration * elapsedTime * Math.Sign(axleSpeedDelta);
+            return MotorTorqueScaling * (current - _driveWheelRadius / MaxSpeed * angVelocity);
         }
 
         /// <summary>
@@ -628,29 +455,15 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <summary>
         /// Sets motor torque on the active wheels
         /// </summary>
-        /// <param name="leftWheelTorque">The left wheel torque</param>
-        /// <param name="rightWheelTorque">The right wheel torque</param>
-        public void SetMotorTorque(float leftWheelTorque, float rightWheelTorque)
+        /// <param name="leftWheelCurrent">The left wheel torque</param>
+        /// <param name="rightWheelCurrent">The right wheel torque</param>
+        public void SetMotorCurrent(float leftWheelCurrent, float rightWheelCurrent)
         {
             if (LeftWheel == null || RightWheel == null)
                 return;
 
-            _leftTargetVelocity = leftWheelTorque * MotorTorqueScaling;
-            _rightTargetVelocity = rightWheelTorque * MotorTorqueScaling;
-        }
-
-        /// <summary>
-        /// Sets angular velocity on the wheels
-        /// </summary>
-        /// <param name="left">Velocity for left wheel</param>
-        /// <param name="right">Velocity for right wheel</param>
-        public void SetVelocity(float left, float right)
-        {
-            if (LeftWheel == null || RightWheel == null)
-                return;
-
-            _leftTargetVelocity = left / LeftWheel.Wheel.State.Radius;
-            _rightTargetVelocity = right / RightWheel.Wheel.State.Radius;
+            _leftWheelCurrent = leftWheelCurrent;
+            _rightWheelCurrent = rightWheelCurrent;
         }
 
         /// <summary>

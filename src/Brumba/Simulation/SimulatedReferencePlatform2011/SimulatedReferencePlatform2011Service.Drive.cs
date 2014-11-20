@@ -122,7 +122,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             }
 
             // Call simulation entity method for setting wheel torque
-            RpEntity.SetMotorTorque((float)setPower.Body.LeftWheelPower, (float)setPower.Body.RightWheelPower);
+            RpEntity.SetMotorCurrent((float)setPower.Body.LeftWheelPower, (float)setPower.Body.RightWheelPower);
 
             UpdateStateFromSimulation();
             setPower.ResponsePort.Post(DefaultUpdateResponseType.Instance);
@@ -134,18 +134,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
 		public void DriveSetSpeedHandler(Drive.SetDriveSpeed setSpeed)
         {
-			if (FaultIfNotConnected(setSpeed))
-				return;
-
-			if (!EnableCheck(setSpeed.ResponsePort, "SetSpeed")) return;
-
-            RpEntity.SetVelocity((float)setSpeed.Body.LeftWheelSpeed, (float)setSpeed.Body.RightWheelSpeed);
-
-            UpdateStateFromSimulation();
-            setSpeed.ResponsePort.Post(DefaultUpdateResponseType.Instance);
-
-            // send update notification for entire state
-            _subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Submit(_state.DriveState, DsspActions.UpdateRequest));
+            setSpeed.ResponsePort.Post(Fault.FromException(new Exception("DriveDistance is not implemented.")));
+            LogError("DriveDistance is not implemented.");
         }
 
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
@@ -170,7 +160,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 			if (FaultIfNotConnected(estop))
 				return;
 
-            RpEntity.SetMotorTorque(0, 0);
+            RpEntity.SetMotorCurrent(0, 0);
 
             // AllStop disables the drive
             RpEntity.IsEnabled = false;
