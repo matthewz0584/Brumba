@@ -50,19 +50,19 @@ namespace Brumba.McLrfLocalizer.Tests
         [Test]
         public void BeamLikelihood()
         {
-            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 1f, 2),
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), new Vector2(0, 1)),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 0.4f, 2),
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), new Vector2(0, 0.4f)),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 0.2f, 2),
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), new Vector2(0, 0.2f)),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0.2) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 1f, 1),
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), new Vector2(1, 0)),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(0) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
 
-            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), 1f, 0),
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 3 * Constants.PiOver2), new Vector2(0, -1)),
                 Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Constants.Sqrt2 - 0.6) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
         }
 
@@ -70,17 +70,8 @@ namespace Brumba.McLrfLocalizer.Tests
         public void BeamOutOfMap()
         {
             //Если робот вылез за карту - проблема высшего уровня, фильтр не должен быть вызван с такой одометрией
-	        Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 0), 1f, 2),
-				Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Constants.Sqrt2 - 0.6) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
-        }
-
-        [Test]
-        public void BeamEndPointPosition()
-        {
-            Assert.That(_lfmm.BeamEndPointPosition(new Pose(new Vector2(1, 1), Constants.PiOver2), 1.5f, 0).EqualsRelatively(new Vector2(2.5f, 1), 0.001));
-            Assert.That(_lfmm.BeamEndPointPosition(new Pose(new Vector2(1, 1), Constants.PiOver2), 1f, 0).EqualsRelatively(new Vector2(2, 1), 0.001));
-            Assert.That(_lfmm.BeamEndPointPosition(new Pose(new Vector2(1, 1), Constants.PiOver2), 1.5f, 1).EqualsRelatively(new Vector2(1, 2.5f), 0.001));
-            Assert.That(_lfmm.BeamEndPointPosition(new Pose(new Vector2(1, 1), Constants.PiOver2), 1.5f, 2).EqualsRelatively(new Vector2(-0.5f, 1), 0.001));
+            Assert.That(_lfmm.BeamLikelihood(new Pose(new Vector2(1.5f, 1.5f), 0), new Vector2(0, 1)),
+                Is.EqualTo(_lfmm.WeightHit * new Normal(0, _lfmm.SigmaHit).Density(Constants.Sqrt2 - 0.6) + _lfmm.WeightRandom * 1 / _lfmm.RangefinderProperties.MaxRange).Within(1e-5));
         }
 
         [Test]
@@ -91,58 +82,6 @@ namespace Brumba.McLrfLocalizer.Tests
 
             Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(1, 0), new Pose(new Vector2(1, 2), Constants.PiOver2)).EqualsRelatively(new Vector2(1, 3), 0.001));
             Assert.That(LikelihoodFieldMeasurementModel.RobotToMapTransformation(new Vector2(0, 1), new Pose(new Vector2(1, 2), Constants.PiOver2)).EqualsRelatively(new Vector2(0, 2), 0.001));
-        }
-
-        [Test]
-        public void RangefinderPropertiesBeamToVectorInRobotTransformation()
-        {
-            var rfp = new RangefinderProperties
-            {
-                AngularResolution = Constants.PiOver2,
-                AngularRange = Constants.Pi,
-                MaxRange = 2f,
-                OriginPose = new Pose(new Vector2(), Constants.PiOver2)
-            };
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0).EqualsRelatively(new Vector2(1, 0), 0.001));
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1).EqualsRelatively(new Vector2(0, 1), 0.001));
-            Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2).EqualsRelatively(new Vector2(-1, 0), 0.001));
-
-	        rfp.OriginPose = new Pose(new Vector2(1, 2), 0);
-			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0).EqualsRelatively(new Vector2(1, 1), 0.001));
-			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1).EqualsRelatively(new Vector2(2, 2), 0.001));
-			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2).EqualsRelatively(new Vector2(1, 3), 0.001));
-
-			rfp.OriginPose = new Pose(new Vector2(1, 2), Constants.PiOver4);
-			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 0).EqualsRelatively(new Vector2(1 + (float)Constants.Sqrt1Over2, 2 - (float)Constants.Sqrt1Over2), 0.001));
-			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 1).EqualsRelatively(new Vector2(1 + (float)Constants.Sqrt1Over2, 2 + (float)Constants.Sqrt1Over2), 0.001));
-			Assert.That(rfp.BeamToVectorInRobotTransformation(1, 2).EqualsRelatively(new Vector2(1 - (float)Constants.Sqrt1Over2, 2 + (float)Constants.Sqrt1Over2), 0.001));
-        }
-
-        [Test]
-        public void RangefinderPropertiesSparsify()
-        {
-            var srcRp = new RangefinderProperties
-            {
-                MaxRange = 2,
-                OriginPose = new Pose(new Vector2(1, 2), 3),
-                AngularRange = 30,
-                AngularResolution = 4
-            };
-            var sparsifiedRp = srcRp.Sparsify(3);
-
-            Assert.That(sparsifiedRp.MaxRange, Is.EqualTo(srcRp.MaxRange));
-            Assert.That(sparsifiedRp.OriginPose, Is.EqualTo(srcRp.OriginPose));
-            Assert.That(sparsifiedRp.AngularRange, Is.EqualTo(srcRp.AngularRange));
-            Assert.That(sparsifiedRp.AngularResolution, Is.EqualTo(4 * 3));
-            Assert.That(sparsifiedRp.AngularResolution * 2, Is.LessThanOrEqualTo(srcRp.AngularRange));
-            Assert.That(sparsifiedRp.AngularResolution * 3, Is.GreaterThanOrEqualTo(srcRp.AngularRange));
-
-            srcRp.AngularResolution = 3;
-            sparsifiedRp = srcRp.Sparsify(5);
-
-            Assert.That(sparsifiedRp.AngularResolution, Is.EqualTo(3 * 2));
-            Assert.That(sparsifiedRp.AngularResolution * 4, Is.LessThanOrEqualTo(srcRp.AngularRange));
-            Assert.That(sparsifiedRp.AngularResolution * 5, Is.GreaterThanOrEqualTo(srcRp.AngularRange));
         }
 
         [Test]

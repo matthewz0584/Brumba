@@ -6,7 +6,7 @@
     <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
   </Gravity>
   <RenderMode>Full</RenderMode>
-  <FramesPerSecond>60.574543</FramesPerSecond>
+  <FramesPerSecond>31.1616917</FramesPerSecond>
   <Pause>false</Pause>
   <CameraPosition>
     <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-4</X>
@@ -402,21 +402,21 @@
             <physm:Z>1.6</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-1.462146E-08</physm:X>
+            <physm:X>-4.870347E-09</physm:X>
             <physm:Y>0.99999994</physm:Y>
-            <physm:Z>-3.073364E-08</physm:Z>
-            <physm:W>-6.1457E-08</physm:W>
+            <physm:Z>-3.26544942E-08</physm:Z>
+            <physm:W>-6.14869151E-08</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-2.74986633E-07</physm:X>
-          <physm:Y>-3.30557071E-07</physm:Y>
-          <physm:Z>9.73813741E-08</physm:Z>
+          <physm:X>-2.50895937E-07</physm:X>
+          <physm:Y>-3.31849975E-07</physm:Y>
+          <physm:Z>9.96114E-08</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>4.109062E-06</physm:X>
-          <physm:Y>7.672362E-07</physm:Y>
-          <physm:Z>3.82838925E-06</physm:Z>
+          <physm:X>4.101256E-06</physm:X>
+          <physm:Y>8.075559E-07</physm:Y>
+          <physm:Z>3.07211735E-06</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>9.107003</phys:Mass>
@@ -477,183 +477,7 @@
         <physm:Z>0</physm:Z>
       </MeshTranslation>
       <IsEnabled>true</IsEnabled>
-      <MotorTorqueScaling>20</MotorTorqueScaling>
-      <FrontWheelShape>
-        <phys:SphereState>
-          <phys:Name>stupid_waiterFrontWheel</phys:Name>
-          <phys:ShapeId>Sphere</phys:ShapeId>
-          <phys:Dimensions>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </phys:Dimensions>
-          <phys:Radius>0.0377952</phys:Radius>
-          <phys:Material>
-            <phys:Name>small friction with anisotropy</phys:Name>
-            <phys:Restitution>0.5</phys:Restitution>
-            <phys:DynamicFriction>0.5</phys:DynamicFriction>
-            <phys:StaticFriction>1</phys:StaticFriction>
-            <phys:MaterialIndex>3</phys:MaterialIndex>
-            <phys:Advanced>
-              <phys:AnisotropicStaticFriction>0.4</phys:AnisotropicStaticFriction>
-              <phys:AnisotropicDynamicFriction>0.3</phys:AnisotropicDynamicFriction>
-              <phys:AnisotropyDirection>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>1</physm:Z>
-              </phys:AnisotropyDirection>
-              <phys:RestitutionCombineMode>Unspecified</phys:RestitutionCombineMode>
-              <phys:FrictionCombineMode>Unspecified</phys:FrictionCombineMode>
-            </phys:Advanced>
-          </phys:Material>
-          <phys:MassDensity>
-            <phys:Mass>4.5</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </phys:MassDensity>
-          <phys:LocalPose>
-            <physm:Position>
-              <physm:X>0</physm:X>
-              <physm:Y>0.0377952</physm:Y>
-              <physm:Z>-0.1575</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>-1</physm:W>
-            </physm:Orientation>
-          </phys:LocalPose>
-          <phys:TextureFileName />
-          <phys:DiffuseColor>
-            <physm:X>0.5</physm:X>
-            <physm:Y>0.5</physm:Y>
-            <physm:Z>0.5</physm:Z>
-            <physm:W>1</physm:W>
-          </phys:DiffuseColor>
-          <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-        </phys:SphereState>
-      </FrontWheelShape>
-      <RearWheelShape>
-        <phys:SphereState>
-          <phys:Name>stupid_waiterRearWheel</phys:Name>
-          <phys:ShapeId>Sphere</phys:ShapeId>
-          <phys:Dimensions>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </phys:Dimensions>
-          <phys:Radius>0.0377952</phys:Radius>
-          <phys:Material>
-            <phys:Name>small friction with anisotropy</phys:Name>
-            <phys:Restitution>0.5</phys:Restitution>
-            <phys:DynamicFriction>0.5</phys:DynamicFriction>
-            <phys:StaticFriction>1</phys:StaticFriction>
-            <phys:MaterialIndex>4</phys:MaterialIndex>
-            <phys:Advanced>
-              <phys:AnisotropicStaticFriction>0.4</phys:AnisotropicStaticFriction>
-              <phys:AnisotropicDynamicFriction>0.3</phys:AnisotropicDynamicFriction>
-              <phys:AnisotropyDirection>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>1</physm:Z>
-              </phys:AnisotropyDirection>
-              <phys:RestitutionCombineMode>Unspecified</phys:RestitutionCombineMode>
-              <phys:FrictionCombineMode>Unspecified</phys:FrictionCombineMode>
-            </phys:Advanced>
-          </phys:Material>
-          <phys:MassDensity>
-            <phys:Mass>4.5</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </phys:MassDensity>
-          <phys:LocalPose>
-            <physm:Position>
-              <physm:X>0</physm:X>
-              <physm:Y>0.0377952</physm:Y>
-              <physm:Z>0.1575</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>-1</physm:W>
-            </physm:Orientation>
-          </phys:LocalPose>
-          <phys:TextureFileName />
-          <phys:DiffuseColor>
-            <physm:X>0.5</physm:X>
-            <physm:Y>0.5</physm:Y>
-            <physm:Z>0.5</physm:Z>
-            <physm:W>1</physm:W>
-          </phys:DiffuseColor>
-          <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-        </phys:SphereState>
-      </RearWheelShape>
+      <MotorTorqueScaling>2</MotorTorqueScaling>
     </ReferencePlatform2011Entity>
     <LaserRangeFinderExEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/11/simulatedlrf.html">
       <sim:State>
@@ -666,21 +490,21 @@
             <physm:Z>1.8</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-3.60815939E-05</physm:X>
+            <physm:X>-3.85755629E-05</physm:X>
             <physm:Y>1</physm:Y>
-            <physm:Z>-4.676257E-08</physm:Z>
-            <physm:W>-2.36165462E-07</physm:W>
+            <physm:Z>-4.34170282E-08</physm:Z>
+            <physm:W>-9.970638E-08</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-2.63693778E-06</physm:X>
-          <physm:Y>-3.26196066E-08</physm:Y>
-          <physm:Z>1.82618055E-06</physm:Z>
+          <physm:X>-3.066481E-06</physm:X>
+          <physm:Y>-5.79170845E-08</physm:Y>
+          <physm:Z>1.831465E-06</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>3.85958145E-07</physm:X>
-          <physm:Y>-1.32230955E-08</physm:Y>
-          <physm:Z>1.80292482E-05</physm:Z>
+          <physm:X>3.840994E-07</physm:X>
+          <physm:Y>-1.38993794E-08</physm:Y>
+          <physm:Z>2.01137E-05</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.16</phys:Mass>
@@ -868,9 +692,9 @@
             <physm:Z>1.8</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>4.862614E-08</physm:X>
-            <physm:Y>-2.79046446E-07</physm:Y>
-            <physm:Z>-3.527527E-05</physm:Z>
+            <physm:X>4.34187157E-08</physm:X>
+            <physm:Y>-1.43417765E-07</physm:Y>
+            <physm:Z>-3.85755629E-05</physm:Z>
             <physm:W>-1</physm:W>
           </physm:Orientation>
         </phys:OriginPose>
@@ -1429,26 +1253,26 @@
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>3.10000062</physm:X>
+            <physm:X>3.10000086</physm:X>
             <physm:Y>0.557215452</physm:Y>
             <physm:Z>1.44671106</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-3.75887576E-05</physm:X>
+            <physm:X>-4.195426E-05</physm:X>
             <physm:Y>1</physm:Y>
-            <physm:Z>-4.932212E-08</physm:Z>
-            <physm:W>-2.358224E-07</physm:W>
+            <physm:Z>-4.22316262E-08</physm:Z>
+            <physm:W>-1.02621513E-07</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-1.01521446E-05</physm:X>
-          <physm:Y>-8.13437E-08</physm:Y>
-          <physm:Z>1.66101393E-06</physm:Z>
+          <physm:X>-9.284761E-06</physm:X>
+          <physm:Y>1.03820987E-07</physm:Y>
+          <physm:Z>1.97247141E-06</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>-1.8300959E-07</physm:X>
-          <physm:Y>-8.97033647E-09</physm:Y>
-          <physm:Z>1.96443634E-05</physm:Z>
+          <physm:X>3.85978552E-07</physm:X>
+          <physm:Y>-1.2980065E-08</physm:Y>
+          <physm:Z>1.80452516E-05</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.001</phys:Mass>

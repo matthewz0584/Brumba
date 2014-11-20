@@ -71,6 +71,7 @@
     <Compile Include="ParticleFilterTests.cs" />
     <Compile Include="PoseHistogramTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RangeFinderPropertiesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
