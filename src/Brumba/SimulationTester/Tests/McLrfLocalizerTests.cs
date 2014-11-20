@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.Simulation;
-using Brumba.Simulation.EnvironmentBuilder;
 using Brumba.Utils;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;
@@ -19,7 +18,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1, Wip = true)]
+    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
 	public class McLrfLocalizerTests
 	{
 		SimulationTesterService TesterService { get; set; }
@@ -69,7 +68,7 @@ namespace Brumba.SimulationTester.Tests
             subscribeRq.NotificationShutdownPort.Post(new Shutdown());
         }
 
-		//[SimTest(7.1f)]
+		[SimTest(7.1f)]
 		public class Tracking : IStart, ITest
 		{
 			[Fixture]
@@ -103,7 +102,7 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}
 
-		//[SimTest(10.1f)]
+		[SimTest(12.1f)]
 		public class GlobalLocalizationStraightPath : IStart, ITest
 		{
 			[Fixture]
@@ -122,21 +121,21 @@ namespace Brumba.SimulationTester.Tests
             {
                 yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
 
-                yield return To.Exec(Fixture.Wait, 9f);
+                yield return To.Exec(Fixture.Wait, 11f);
 
                 yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0, 0));
             }
 
 			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
-                @return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.2) &&
+                @return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.3) &&
                         MathHelper2.AngleDifference(Fixture.McPose.Bearing, Fixture.SimPose.Bearing).AlmostEqualWithError(0, 0.3));
                 Fixture.LogResults();
                 yield break;
             }
 		}
 
-		[SimTest(10.1f)]
+		[SimTest(11.1f)]
 		public class GlobalLocalizationCurvedPath : IStart, ITest
 		{
 			[Fixture]
@@ -152,7 +151,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
 			{
-				@return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.5) &&
+				@return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.6) &&
                         MathHelper2.AngleDifference(Fixture.McPose.Bearing, Fixture.SimPose.Bearing).AlmostEqualWithError(0, 0.4));
                 Fixture.LogResults();
 				yield break;
@@ -166,11 +165,11 @@ namespace Brumba.SimulationTester.Tests
 				
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.1));
 
-                yield return To.Exec(Fixture.Wait, 1.3f);
+                yield return To.Exec(Fixture.Wait, 3f);
 
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
 
-                yield return To.Exec(Fixture.Wait, 2.8f);
+                yield return To.Exec(Fixture.Wait, 2f);
 
                 //Driving out of map, better not to stop
                 yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0, 0));
