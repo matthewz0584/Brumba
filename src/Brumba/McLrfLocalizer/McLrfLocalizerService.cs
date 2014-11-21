@@ -182,6 +182,9 @@ namespace Brumba.McLrfLocalizer
         [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_genericLocalizerPort")]
         public void OnGet(GenericLocalizer.Get getRq)
         {
+            DC.Contract.Requires(getRq != null);
+            DC.Contract.Requires(getRq.Body != null);
+
             getRq.ResponsePort.Post(new GenericLocalizerState { EstimatedPose = _state.EstimatedPose });
         }
 

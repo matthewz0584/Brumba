@@ -9,6 +9,7 @@ using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Diagnostics;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Xna.Framework;
 using bPose = Brumba.WaiterStupid.Pose;
 using rPose = Microsoft.Robotics.PhysicalModel.Pose;
@@ -21,7 +22,7 @@ using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("dwa_navigator")]
+    [SimTestFixture("dwa_navigator", Wip = true, PhysicsTimeStep = 0.0005f )]
     public class DwaNavigatorTests
     {
         public SimulationTesterService TesterService { get; private set; }
@@ -37,8 +38,42 @@ namespace Brumba.SimulationTester.Tests
             DwaNavigatorPort = testerService.ForwardTo<DwaNavigatorPxy.DwaNavigatorOperations>("dwa_navigator@");
         }
 
-        [SimTest(80)]
+        //[SimTest(80)]
         public class DriveStraight
+        {
+            [Fixture]
+            public DwaNavigatorTests Fixture { get; set; }
+
+            [Prepare]
+            public void PrepareEntities(VisualEntity entity)
+            {
+                entity.State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, -MathHelper.PiOver2);
+            }
+
+            [Start]
+            public IEnumerator<ITask> Start()
+            {
+                //Execs for synchronization, otherwise set power message can arrive before enable message
+                //yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
+                //yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1, 1));
+
+                //yield return Fixture.TesterService.Timeout(10000);
+
+                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(0, 10)));
+            }
+
+            [Test]
+            public IEnumerator<ITask> Test(Action<bool> @return,
+                IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities,
+                double elapsedTime)
+            {
+                @return(true);
+                yield break;
+            }
+        }
+
+        [SimTest(80)]
+        public class DriveStraightAvoidObstacle
         {
             [Fixture]
             public DwaNavigatorTests Fixture { get; set; }
@@ -50,7 +85,7 @@ namespace Brumba.SimulationTester.Tests
                 //yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
                 //yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1, 1));
 
-                yield return Fixture.TesterService.Timeout(10000);
+                //yield return Fixture.TesterService.Timeout(10000);
 
                 yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(10, 0)));
             }

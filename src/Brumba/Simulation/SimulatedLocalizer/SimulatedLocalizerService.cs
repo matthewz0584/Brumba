@@ -70,7 +70,7 @@ namespace Brumba.Simulation.SimulatedLocalizer
 	    private Pose ExtractVelocity()
 	    {
 	        var vLinear = Entity.State.Velocity.SimToMap();
-	        var vAngular = Entity.State.Velocity.SimToMapAngularVelocity();
+	        var vAngular = Entity.State.AngularVelocity.SimToMapAngularVelocity();
             if (vLinear.Length() > _state.MaxVelocity.Linear)
                 LogWarning(string.Format("Linear velocity ({0}) is greater than given maximum ({1})!", vLinear.Length(), _state.MaxVelocity.Linear));
             if (vAngular > _state.MaxVelocity.Angular)

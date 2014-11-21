@@ -85,8 +85,9 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateHamster();
 	        //PopulateRefPlatformSimpleTests();
 			//PopulateMcLrfLocalizerTests();
+            _engineStub.Post(new UpdatePhysicsTimeStep(0.01f));
             PopulateDwaNavigatorTests();
-	        
+            
             base.Start();
 
             //Thread.Sleep(5000);
@@ -98,10 +99,12 @@ namespace Brumba.Simulation.EnvironmentBuilder
         {
             PopulateSimpleEnvironment();
 
-            SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar", new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))));
+            var referencePlatform2011Entity = BuildWaiter1("stupid_waiter", "stupid_waiter_lidar", new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi)));
+            SimulationEngine.GlobalInstancePort.Insert(referencePlatform2011Entity);
             SimulationEngine.GlobalInstancePort.Insert(
                 new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))),
                     new Vector3(0, 0.501f, 5)) {State = {Name = "brick_on_the_way_to_target"}});
+            referencePlatform2011Entity.SetMotorCurrent(1, 1);
         }
 
 	    void PopulateMcLrfLocalizerTests()

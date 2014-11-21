@@ -6,7 +6,7 @@
     <X>0</X>
     <Y>0</Y>
   </Target>
-  <WheelAngularAccelerationMax>5</WheelAngularAccelerationMax>
+  <WheelAngularAccelerationMax>20</WheelAngularAccelerationMax>
   <WheelAngularVelocityMax>20</WheelAngularVelocityMax>
   <WheelRadius>0.0762</WheelRadius>
   <WheelBase>0.3033</WheelBase>
