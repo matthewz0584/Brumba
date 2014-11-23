@@ -59,6 +59,20 @@ namespace Brumba.DwaNavigator
                 velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(
                     new Velocity(diamondCenter.Linear + acc.Linear * Dt, diamondCenter.Angular + acc.Angular * Dt),
                     wheelAcc / (float)WheelAngularAccelerationMax);
+
+                ////var wheelAcc = MotorTorqueScaling * p.ToVec() - (MotorTorqueScaling - pushbackTorque) / MaxSpeed * (WheelRadius * angVelocity);
+                //var wheelAcc = (p.ToVec() / STEPS_NUMBER - 0.99f / 1.5f * new Vector2(
+                //    (float)(diamondCenter.Linear * 2 - diamondCenter.Angular * WheelBase),
+                //    (float)(diamondCenter.Linear * 2 + diamondCenter.Angular * WheelBase)
+                //    ) / 2) * 0.96f * 100;
+                //var qqq = new Vector2(
+                //    (float)(diamondCenter.Linear * 2 - diamondCenter.Angular * WheelBase),
+                //    (float)(diamondCenter.Linear * 2 + diamondCenter.Angular * WheelBase)
+                //    );
+                //var acc = WheelsToRobotKinematics(wheelAcc);
+                //velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(
+                //    new Velocity(diamondCenter.Linear + acc.Linear * Dt, diamondCenter.Angular + acc.Angular * Dt),
+                //    p.ToVec() / STEPS_NUMBER);
             }
             return velocitySpace;
         }

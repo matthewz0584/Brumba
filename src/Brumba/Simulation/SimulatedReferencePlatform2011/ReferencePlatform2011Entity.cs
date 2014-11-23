@@ -7,6 +7,9 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Robotics.Simulation.Physics;
+using Microsoft.Xna.Framework;
+using Quaternion = Microsoft.Robotics.PhysicalModel.Quaternion;
+using Vector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 
 namespace Brumba.Simulation.SimulatedReferencePlatform2011
 {
@@ -206,7 +209,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// </summary>
         public ReferencePlatform2011Entity()
         {
-            MotorTorqueScaling = 1.5f;
+            MotorTorqueScaling = 1f;
 
             MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
         }
@@ -235,9 +238,9 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                     ProgrammaticallyBuildModel(device, physicsEngine);
 
                 State.PhysicsPrimitives.Add(ConstructCasterWheelShape(
-                    "front wheel", new Vector3(0, _casterWheelRadius, -_chassisDimensions.Z/2)));
+                    "front wheel", new Vector3(0, _casterWheelRadius + 0.001f, -_chassisDimensions.Z/2)));
                 State.PhysicsPrimitives.Add(ConstructCasterWheelShape(
-                    "rear wheel", new Vector3(0, _casterWheelRadius, _chassisDimensions.Z/2)));
+                    "rear wheel", new Vector3(0, _casterWheelRadius + 0.001f, _chassisDimensions.Z / 2)));
 
                 //Adding batteries (in order to place main weight in the right point) makes MRDS fall in mc lrf test environment
                 //on ref platform removal. Thats why weight is divided between caster wheels.
@@ -351,15 +354,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 State =
                 {
                     Name = EntityState.Name + name,
-                    Material = new MaterialProperties("small friction with anisotropy", 0.5f, 0.5f, 1)
-                    {
-                        Advanced = new MaterialAdvancedProperties
-                            {
-                                AnisotropicDynamicFriction = 0.3f,
-                                AnisotropicStaticFriction = 0.4f,
-                                AnisotropyDirection = new Vector3(0, 0, 1)
-                            }
-                    }
+                    Material = new MaterialProperties("qq", 0.5f, 0.1f, 0.5f)
                 }
             };
         }
@@ -369,7 +364,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             return new WheelEntity(new WheelShapeProperties(name, _driveWheelMass, _driveWheelRadius)
                     {
                         InnerRadius = 0.7f * _driveWheelRadius,
-                        LocalPose = new Pose(position)
+                        LocalPose = new Pose(position, Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))
                     })
             {
                 State = { Name = EntityState.Name + name, Assets = { Mesh = mesh }, Pose = new Pose(position) },
@@ -413,8 +408,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
             if (IsEnabled)
             {
-                LeftWheel.Wheel.MotorTorque = -MotorTorque(_leftWheelCurrent, -LeftWheel.Wheel.AxleSpeed);
-                RightWheel.Wheel.MotorTorque = -MotorTorque(_rightWheelCurrent, -RightWheel.Wheel.AxleSpeed);
+                LeftWheel.Wheel.MotorTorque = MotorTorque(_leftWheelCurrent, LeftWheel.Wheel.AxleSpeed);
+                RightWheel.Wheel.MotorTorque = MotorTorque(_rightWheelCurrent, RightWheel.Wheel.AxleSpeed);
             }
             else
             {
@@ -422,7 +417,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 RightWheel.Wheel.MotorTorque = 0;
             }
 
-            if (Math.Abs(LeftWheel.Wheel.AxleSpeed + MaxSpeed / _driveWheelRadius) <= 0.1)
+            if (Math.Abs(LeftWheel.Wheel.AxleSpeed - MaxSpeed / _driveWheelRadius) <= 0.1)
                 Console.WriteLine("{0:E2}", update.ApplicationTime - w);
 
             // update entities in fields
@@ -435,9 +430,9 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
         float MotorTorque(float current, float angVelocity)
         {
-            //var pushbackTorque = 0.16f;
-            //return MotorTorqueScaling * current - (MotorTorqueScaling - pushbackTorque) / MaxSpeed * (_driveWheelRadius * angVelocity);
-            return MotorTorqueScaling * (current - angVelocity * _driveWheelRadius / MaxSpeed);
+            var pushbackTorque = 0.01f;
+            return MotorTorqueScaling * current - (MotorTorqueScaling - pushbackTorque) / MaxSpeed * (_driveWheelRadius * angVelocity);
+            return MotorTorqueScaling * current;
         }
 
         /// <summary>
@@ -473,16 +468,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         {
             _leftWheelCurrent = leftWheelCurrent;
             _rightWheelCurrent = rightWheelCurrent;
-        }
-
-        /// <summary>
-        /// Adds a notification port to the list of subscriptions that get notified when the bumper shapes
-        /// collide in the physics world
-        /// </summary>
-        /// <param name="notificationTarget">The target of the notification</param>
-        public void Subscribe(Port<EntityContactNotification> notificationTarget)
-        {
-            PhysicsEntity.SubscribeForContacts(notificationTarget);
         }
     }
 }

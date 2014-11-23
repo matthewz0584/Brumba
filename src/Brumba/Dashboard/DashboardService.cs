@@ -88,7 +88,7 @@ namespace Brumba.Dashboard
 
         public string SimulationVelocity
         {
-            get { return string.Format("Linear: ({0:F2}, {1:F2}), Bearing: {2:F3}", _simulationVelocity.Position.X, _simulationVelocity.Position.Y, _simulationVelocity.Bearing); }
+            get { return string.Format("Linear: ({0:F2}, {1:F2}), Angular: {2:F2}", _simulationVelocity.Position.X, _simulationVelocity.Position.Y, _simulationVelocity.Bearing); }
         }
 
 	    public string OdometryPose
@@ -98,7 +98,7 @@ namespace Brumba.Dashboard
 
         public string OdometryVelocity
         {
-            get { return string.Format("Linear: ({0:F2}, {1:F2}), Angular: {2:F3}", _odometryVelocity.Position.X, _odometryVelocity.Position.Y, _odometryVelocity.Bearing); }
+            get { return string.Format("Linear: ({0:F2}, {1:F2}), Angular: {2:F2}", _odometryVelocity.Position.X, _odometryVelocity.Position.Y, _odometryVelocity.Bearing); }
         }
 
 	    protected override void Start()

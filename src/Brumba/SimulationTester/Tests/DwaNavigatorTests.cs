@@ -38,6 +38,14 @@ namespace Brumba.SimulationTester.Tests
             DwaNavigatorPort = testerService.ForwardTo<DwaNavigatorPxy.DwaNavigatorOperations>("dwa_navigator@");
         }
 
+        private IEnumerator<ITask> Wait(float time)
+        {
+            var subscribeRq = TesterService.Timer.Subscribe(time);
+            yield return To.Exec(subscribeRq.ResponsePort);
+            yield return (subscribeRq.NotificationPort as BrTimerPxy.TimerOperations).P4.Receive();
+            subscribeRq.NotificationShutdownPort.Post(new Shutdown());
+        }
+
         //[SimTest(80)]
         public class DriveStraight
         {
@@ -81,14 +89,19 @@ namespace Brumba.SimulationTester.Tests
             [Start]
             public IEnumerator<ITask> Start()
             {
-                //Execs for synchronization, otherwise set power message can arrive before enable message
-                //yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
-                //yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1, 1));
-
-                //yield return Fixture.TesterService.Timeout(10000);
-
                 yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(10, 0)));
-            }
+                //Fixture.TesterService.SpawnIterator(StraightAndStop);
+			}
+
+            //private IEnumerator<ITask> StraightAndStop()
+            //{
+            //    yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
+            //    yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1, 1));
+
+            //    yield return To.Exec(Fixture.Wait, 5f);
+
+            //    yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(-1, -1));
+            //}
 
             [Test]
             public IEnumerator<ITask> Test(Action<bool> @return,
