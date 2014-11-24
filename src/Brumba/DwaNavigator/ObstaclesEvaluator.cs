@@ -37,7 +37,7 @@ namespace Brumba.DwaNavigator
             if (double.IsPositiveInfinity(dist))
                 return 1;
             if (!IsVelocityAdmissible(v, dist))
-                return 0;
+                return double.NegativeInfinity;
             return 0.5 * dist / ((RangefinderMaxRange + RobotRadius) / 2 * Constants.Pi - RobotRadius);
         }
 

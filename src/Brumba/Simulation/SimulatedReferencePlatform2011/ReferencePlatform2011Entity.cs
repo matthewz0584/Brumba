@@ -209,7 +209,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// </summary>
         public ReferencePlatform2011Entity()
         {
-            MotorTorqueScaling = 1f;
+            MotorTorqueScaling = 2f;
 
             MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
         }
@@ -388,8 +388,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             base.Dispose();
         }
 
-        private bool q;
-        private double w;
         /// <summary>
         /// Updates pose for our entity. We override default implementation
         /// since we control our own rendering when no file mesh is supplied, which means
@@ -398,11 +396,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// <param name="update">The frame update message</param>
         public override void Update(FrameUpdate update)
         {
-            if (!q)
-            {
-                w = update.ApplicationTime;
-                q = true;
-            }
             // update state for us and all the shapes that make up the rigid body
             PhysicsEntity.UpdateState(true);
 
@@ -417,9 +410,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 RightWheel.Wheel.MotorTorque = 0;
             }
 
-            if (Math.Abs(LeftWheel.Wheel.AxleSpeed - MaxSpeed / _driveWheelRadius) <= 0.1)
-                Console.WriteLine("{0:E2}", update.ApplicationTime - w);
-
             // update entities in fields
             LeftWheel.Update(update);
             RightWheel.Update(update);
@@ -432,7 +422,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         {
             var pushbackTorque = 0.01f;
             return MotorTorqueScaling * current - (MotorTorqueScaling - pushbackTorque) / MaxSpeed * (_driveWheelRadius * angVelocity);
-            return MotorTorqueScaling * current;
         }
 
         /// <summary>

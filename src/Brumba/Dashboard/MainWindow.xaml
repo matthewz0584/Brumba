@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="580" 
-             Width="800" Height="600">
+             Width="800" Height="650">
     <Window.Resources>
         <telerik:HeatMapValueGradientColorizer x:Key="colorizer">
             <GradientStop Offset="0" Color="DarkBlue" />
@@ -48,6 +48,8 @@
                     <TextBlock Text="{Binding CurrentVelocity}"/>
                     <TextBlock Text="Current wheels acceleration: "/>
                     <TextBlock Text="{Binding CurrentWheelAcceleration}"/>
+                    <TextBlock Text="Current iteration: "/>
+                    <TextBlock Text="{Binding CurrentDwaIteration}"/>
                 </StackPanel>
             </Grid>
         </GroupBox>

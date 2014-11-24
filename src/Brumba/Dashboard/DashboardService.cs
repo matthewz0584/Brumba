@@ -54,6 +54,7 @@ namespace Brumba.Dashboard
         private WaiterPxy.Pose _simulationVelocity;
         private WaiterPxy.Pose _odometryPose;
         private WaiterPxy.Pose _odometryVelocity;
+	    private int _currentDwaIteration;
 
 	    public DashboardService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
@@ -80,6 +81,11 @@ namespace Brumba.Dashboard
                     _currentVelocityAcceleration.WheelAcceleration.X, _currentVelocityAcceleration.WheelAcceleration.Y);
             }
         }
+
+	    public int CurrentDwaIteration
+	    {
+	        get { return _currentDwaIteration; }
+	    }
 
 	    public string SimulationPose
 	    {
@@ -131,8 +137,9 @@ namespace Brumba.Dashboard
             yield return _dwaNavigator.Get().Receive(ds => dwaState = ds);
 
             DwaVelocitiesEvaluation = DenseMatrix.OfArray(dwaState.VelocititesEvaluation ?? new double[1,1]).IndexedEnumerator().
-                Select(c => new MatrixCell { Row = c.Item1, Col = c.Item2, Value = c.Item3 == -1 ? 0.5 : c.Item3 }).ToList();
+                Select(c => new MatrixCell { Row = c.Item1, Col = c.Item2, Value = c.Item3 <= 0.5 ? 0.5 : c.Item3 }).ToList();
             _currentVelocityAcceleration = dwaState.CurrentVelocityAcceleration;
+            _currentDwaIteration = dwaState.Iteration;
 
             yield return _wpfPort.Invoke(() =>
                     {
@@ -141,10 +148,10 @@ namespace Brumba.Dashboard
                             PropertyChanged(this, new PropertyChangedEventArgs("DwaVelocitiesEvaluation"));
                         }
                         catch (Exception)
-                        {
-                        }
+                        {}
                         PropertyChanged(this, new PropertyChangedEventArgs("CurrentVelocity"));
                         PropertyChanged(this, new PropertyChangedEventArgs("CurrentWheelAcceleration"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("CurrentDwaIteration"));
                     }).Choice(success => {}, LogError);
 
             Activate(Arbiter.Receive(false, TimeoutPort(500), t => _dwaPollingPort.Post(t)));

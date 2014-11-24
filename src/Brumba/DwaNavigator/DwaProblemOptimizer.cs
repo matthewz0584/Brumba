@@ -19,7 +19,7 @@ namespace Brumba.DwaNavigator
     {
         public double Evaluate(Velocity v)
         {
-            DC.Contract.Ensures(DC.Contract.Result<double>().BetweenRL(0, 1));
+            DC.Contract.Ensures(DC.Contract.Result<double>().BetweenRL(0, 1) || double.IsNegativeInfinity(DC.Contract.Result<double>()));
 
             return default(double);
         }
@@ -49,7 +49,8 @@ namespace Brumba.DwaNavigator
         {
             DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>() != null);
             DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item1.WheelAcceleration.BetweenRL(new Vector2(-1), new Vector2(1)));
-            DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item2.IndexedEnumerator().All(c => c.Item3.BetweenRL(-1, 1)));
+            DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item2.IndexedEnumerator().
+                All(c => c.Item3.BetweenRL(-1, 1) || double.IsNegativeInfinity(c.Item3)));
 
             var velocityWheelAcc = VelocitySearchSpaceGenerator.Generate(new Velocity(velocity.Position.Length(), velocity.Bearing));
             var velocitiesEvalsRaw = DenseMatrix.Create(velocityWheelAcc.GetLength(0), velocityWheelAcc.GetLength(1),

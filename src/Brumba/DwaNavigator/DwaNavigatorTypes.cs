@@ -29,6 +29,9 @@ namespace Brumba.DwaNavigator
         public Vector2 Target { get; set; }
 
         [DataMember]
+        public int Iteration { get; set; }
+
+        [DataMember]
         public double WheelAngularAccelerationMax { get; set; }
         
         [DataMember]

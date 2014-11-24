@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
@@ -54,27 +55,30 @@ namespace Brumba.DwaNavigator
             var velocitySpace = new VelocityAcceleration[2 * STEPS_NUMBER + 1, 2 * STEPS_NUMBER + 1];
             foreach (var p in GenerateWheelAccelerationGrid())
             {
-                var wheelAcc = p.ToVec() * (float)(WheelAngularAccelerationMax / STEPS_NUMBER);
-                var acc = WheelsToRobotKinematics(wheelAcc);
-                velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(
-                    new Velocity(diamondCenter.Linear + acc.Linear * Dt, diamondCenter.Angular + acc.Angular * Dt),
-                    wheelAcc / (float)WheelAngularAccelerationMax);
-
-                ////var wheelAcc = MotorTorqueScaling * p.ToVec() - (MotorTorqueScaling - pushbackTorque) / MaxSpeed * (WheelRadius * angVelocity);
-                //var wheelAcc = (p.ToVec() / STEPS_NUMBER - 0.99f / 1.5f * new Vector2(
-                //    (float)(diamondCenter.Linear * 2 - diamondCenter.Angular * WheelBase),
-                //    (float)(diamondCenter.Linear * 2 + diamondCenter.Angular * WheelBase)
-                //    ) / 2) * 0.96f * 100;
-                //var qqq = new Vector2(
-                //    (float)(diamondCenter.Linear * 2 - diamondCenter.Angular * WheelBase),
-                //    (float)(diamondCenter.Linear * 2 + diamondCenter.Angular * WheelBase)
-                //    );
+                //var wheelAcc = p.ToVec() * (float)(WheelAngularAccelerationMax / STEPS_NUMBER);
                 //var acc = WheelsToRobotKinematics(wheelAcc);
                 //velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(
                 //    new Velocity(diamondCenter.Linear + acc.Linear * Dt, diamondCenter.Angular + acc.Angular * Dt),
-                //    p.ToVec() / STEPS_NUMBER);
+                //    wheelAcc / (float)WheelAngularAccelerationMax);
+
+                var mts = 2f;
+                var tFr = 0.01f;
+                var wMax = 1.5f / (float)WheelRadius;
+                var wheelMass = 0.01f;
+                var beta = (mts - tFr) / wMax;
+                var wheelInertiaMoment = wheelMass * WheelRadius * WheelRadius / 2;
+                var expPower = - beta / wheelInertiaMoment * Dt;
+                var wNext = (p.ToVec() / STEPS_NUMBER * mts - new Vector2(tFr)) / beta * (1 - (float)Math.Exp(expPower)) + 
+                                RobotKinematicsToWheels(diamondCenter) * (float)Math.Exp(expPower);
+                var vNext = WheelsToRobotKinematics(wNext);
+                velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(vNext, p.ToVec() / STEPS_NUMBER);
             }
             return velocitySpace;
+        }
+
+        Vector2 RobotKinematicsToWheels(Velocity v)
+        {
+            return new Vector2((float)(v.Linear * 2 - v.Angular * WheelBase), (float)(v.Linear * 2 + v.Angular * WheelBase)) / 2 / (float)WheelRadius;
         }
 
         IEnumerable<Point> GenerateWheelAccelerationGrid()

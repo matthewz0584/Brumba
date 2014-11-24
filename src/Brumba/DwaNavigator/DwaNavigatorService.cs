@@ -99,6 +99,7 @@ namespace Brumba.DwaNavigator
 
                     _state.CurrentVelocityAcceleration = _dwaNavigator.OptimalVelocity;
                     _state.VelocititesEvaluation = _dwaNavigator.VelocitiesEvaluation.ToArray();
+                    _state.Iteration ++;
 
                     _drive.SetDrivePower(_state.CurrentVelocityAcceleration.WheelAcceleration.X,
                         _state.CurrentVelocityAcceleration.WheelAcceleration.Y);
