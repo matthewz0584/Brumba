@@ -56,8 +56,8 @@ namespace Brumba.DwaNavigator
             var velocitiesEvalsRaw = DenseMatrix.Create(velocityWheelAcc.GetLength(0), velocityWheelAcc.GetLength(1),
                                     (row, col) => VelocityIsFeasible(velocityWheelAcc[row, col].Velocity)
                                             ? VelocityEvaluator.Evaluate(velocityWheelAcc[row, col].Velocity) : -1);
-            //var velocitiesEvalsSmoothed = Smooth(velocitiesEvalsRaw);
-            var velocitiesEvalsSmoothed = velocitiesEvalsRaw;
+            var velocitiesEvalsSmoothed = Smooth(velocitiesEvalsRaw);
+            //var velocitiesEvalsSmoothed = velocitiesEvalsRaw;
             var maxRowColVal = velocitiesEvalsSmoothed.IndexedEnumerator().OrderByDescending(rowColVal => rowColVal.Item3).First();
             return Tuple.Create(velocityWheelAcc[maxRowColVal.Item1, maxRowColVal.Item2], velocitiesEvalsSmoothed);
         }

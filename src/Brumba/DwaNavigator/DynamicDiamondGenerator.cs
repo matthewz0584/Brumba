@@ -56,14 +56,15 @@ namespace Brumba.DwaNavigator
             var omegaCurrent = RobotKinematicsToWheels(diamondCenter);
 
             var alpha = 1f;
-            var wMax = 1.5f / (float)WheelRadius;
+            var vMax = 1.5f;
+            var omegaMax = vMax / (float)WheelRadius;
             //var beta = alpha / wMax;
             //var robotRadius = 0.226f;
             var robotMass = 9.1f;
             //var robotInertiaMoment = robotMass * robotRadius * robotRadius;
             var a = alpha / (robotMass * (float)WheelRadius * (float)WheelRadius);
             //var b = alpha * robotRadius * robotRadius / (robotInertiaMoment * (float)WheelRadius * (float)WheelRadius);
-            var c = a / wMax;
+            var c = a / omegaMax;
             //var d = beta * robotRadius * robotRadius / (robotInertiaMoment * (float)WheelRadius * (float)WheelRadius);
 
             var velocitySpace = new VelocityAcceleration[2 * STEPS_NUMBER + 1, 2 * STEPS_NUMBER + 1];
@@ -101,12 +102,19 @@ namespace Brumba.DwaNavigator
                 //velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(vNext, p.ToVec() / STEPS_NUMBER);
 
                 //Simplified diff eq: robot inertia moment equals Mrb*Rrb^2
-                var i = p.ToVec() / STEPS_NUMBER;
-                var exp = (float)Math.Exp(-2 * c * Dt);
-                var omegaL = wMax * i.X * (1 - exp) + omegaCurrent.X * exp;
-                var omegaR = wMax * i.Y * (1 - exp) + omegaCurrent.Y * exp;
+                //var i = p.ToVec() / STEPS_NUMBER;
+                //var exp = (float)Math.Exp(-2 * c * Dt);
+                //var omegaL = omegaMax * i.X * (1 - exp) + omegaCurrent.X * exp;
+                //var omegaR = omegaMax * i.Y * (1 - exp) + omegaCurrent.Y * exp;
 
-                var vNext = WheelsToRobotKinematics(new Vector2(omegaL, omegaR));
+                //var vNext = WheelsToRobotKinematics(new Vector2(omegaL, omegaR));
+                //velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(vNext, p.ToVec() / STEPS_NUMBER);
+
+                //Linear approximation simplified
+                var omegaDotL = 2 * a * p.X / STEPS_NUMBER - 2 * c * omegaCurrent.X;
+                var omegaDotR = 2 * a * p.Y / STEPS_NUMBER - 2 * c * omegaCurrent.Y;
+
+                var vNext = WheelsToRobotKinematics(omegaCurrent + new Vector2(omegaDotL, omegaDotR) * (float)Dt);
                 velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(vNext, p.ToVec() / STEPS_NUMBER);
             }
             return velocitySpace;

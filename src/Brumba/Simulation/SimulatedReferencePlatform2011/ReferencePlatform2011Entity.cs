@@ -209,7 +209,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// </summary>
         public ReferencePlatform2011Entity()
         {
-            MotorTorqueScaling = 2f;
+            MotorTorqueScaling = 1f;
 
             MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
         }
@@ -364,7 +364,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             return new WheelEntity(new WheelShapeProperties(name, _driveWheelMass, _driveWheelRadius)
                     {
                         InnerRadius = 0.7f * _driveWheelRadius,
-                        LocalPose = new Pose(position, Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))
+                        LocalPose = new Pose(position, Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi)),
+                        //Advanced = new ShapeAdvancedProperties{PhysicsCalculationPasses = 16}
                     })
             {
                 State = { Name = EntityState.Name + name, Assets = { Mesh = mesh }, Pose = new Pose(position) },
@@ -421,7 +422,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         float MotorTorque(float current, float angVelocity)
         {
             var pushbackTorque = 0.01f;
-            return MotorTorqueScaling * current - (MotorTorqueScaling - pushbackTorque) / MaxSpeed * (_driveWheelRadius * angVelocity);
+            //return MotorTorqueScaling * current - (MotorTorqueScaling - pushbackTorque) / MaxSpeed * (_driveWheelRadius * angVelocity);
+            return MotorTorqueScaling * current - MotorTorqueScaling / MaxSpeed * (_driveWheelRadius * angVelocity);
         }
 
         /// <summary>

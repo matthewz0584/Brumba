@@ -104,7 +104,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             SimulationEngine.GlobalInstancePort.Insert(
                 new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))),
                     new Vector3(0, 0.501f, 5)) {State = {Name = "brick_on_the_way_to_target"}});
-            referencePlatform2011Entity.SetMotorCurrent(1, 1);
+            referencePlatform2011Entity.SetMotorCurrent(1, 0.8f);
         }
 
 	    void PopulateMcLrfLocalizerTests()
