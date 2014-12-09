@@ -257,5 +257,14 @@ namespace Brumba.Utils
 	    {
 		    return new Vector2(me.X, me.Y);
 	    }
+
+        [Pure]
+        public static float AngleBetween(Vector2 lhs, Vector2 rhs)
+        {
+            Contract.Requires(lhs != new Vector2() && rhs != new Vector2());
+            Contract.Ensures(Contract.Result<float>() >= 0 && Contract.Result<float>() <= MathHelper.Pi);
+
+            return (float)Math.Acos(MathHelper.Clamp(Vector2.Dot(lhs, rhs) / lhs.Length() / rhs.Length(), -1, 1));
+        }
     }
 }

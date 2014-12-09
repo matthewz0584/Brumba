@@ -57,11 +57,11 @@ namespace Brumba.DwaNavigator.Tests
 
             Assert.That(atp.GetAngleToTarget(pose: new Pose(new Vector2(0, 0), 0)), Is.EqualTo(0));
 
-            Assert.That(atp.GetAngleToTarget(new Pose(new Vector2(0, 0), Constants.PiOver2)), Is.EqualTo(Constants.PiOver2));
+            Assert.That(atp.GetAngleToTarget(new Pose(new Vector2(0, 0), Constants.PiOver2)), Is.EqualTo((float)Constants.PiOver2));
 
-            Assert.That(atp.GetAngleToTarget(new Pose(new Vector2(5, 5), 0)), Is.EqualTo(Constants.PiOver4).Within(1e-7));
+            Assert.That(atp.GetAngleToTarget(new Pose(new Vector2(5, 5), 0)), Is.EqualTo((float)Constants.PiOver4));
 
-            Assert.That(atp.GetAngleToTarget(new Pose(new Vector2(5, 5), -Constants.PiOver4)), Is.EqualTo(0).Within(1e-3));
+            Assert.That(atp.GetAngleToTarget(new Pose(new Vector2(5, 5), -Constants.PiOver4)), Is.EqualTo(0));
         }
 
         [Test]

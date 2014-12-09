@@ -46,8 +46,8 @@ namespace Brumba.SimulationTester.Tests
             subscribeRq.NotificationShutdownPort.Post(new Shutdown());
         }
 
-        //[SimTest(80)]
-        public class DriveStraight
+        //[SimTest(10, IsProbabilistic = false)]
+        public class ClearStraightPathToTarget
         {
             [Fixture]
             public DwaNavigatorTests Fixture { get; set; }
@@ -61,19 +61,37 @@ namespace Brumba.SimulationTester.Tests
             [Start]
             public IEnumerator<ITask> Start()
             {
-                //Execs for synchronization, otherwise set power message can arrive before enable message
-                //yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
-                //yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1, 1));
-
-                //yield return Fixture.TesterService.Timeout(10000);
-
-                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(0, 10)));
+                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(0, 5)));
             }
 
             [Test]
-            public IEnumerator<ITask> Test(Action<bool> @return,
-                IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities,
-                double elapsedTime)
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
+            {
+                @return(true);
+                yield break;
+            }
+        }
+
+        //[SimTest(10, IsProbabilistic = false)]
+        public class ClearCurvedPathToTarget
+        {
+            [Fixture]
+            public DwaNavigatorTests Fixture { get; set; }
+
+            [Prepare]
+            public void PrepareEntities(VisualEntity entity)
+            {
+                entity.State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, 0);
+            }
+
+            [Start]
+            public IEnumerator<ITask> Start()
+            {
+                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(0, 5)));
+            }
+
+            [Test]
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 @return(true);
                 yield break;
@@ -90,18 +108,7 @@ namespace Brumba.SimulationTester.Tests
             public IEnumerator<ITask> Start()
             {
                 yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(10, 0)));
-                //Fixture.TesterService.SpawnIterator(StraightAndStop);
 			}
-
-            //private IEnumerator<ITask> StraightAndStop()
-            //{
-            //    yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
-            //    yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1, 1));
-
-            //    yield return To.Exec(Fixture.Wait, 5f);
-
-            //    yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(-1, -1));
-            //}
 
             [Test]
             public IEnumerator<ITask> Test(Action<bool> @return,

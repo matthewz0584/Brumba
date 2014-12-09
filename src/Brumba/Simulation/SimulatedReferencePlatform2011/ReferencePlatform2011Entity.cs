@@ -354,7 +354,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 State =
                 {
                     Name = EntityState.Name + name,
-                    Material = new MaterialProperties("qq", 0.5f, 0.1f, 0.5f)
+                    Material = new MaterialProperties("qq", 0.0f, 0.1f, 0.2f)
                 }
             };
         }
@@ -365,7 +365,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                     {
                         InnerRadius = 0.7f * _driveWheelRadius,
                         LocalPose = new Pose(position, Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi)),
-                        //Advanced = new ShapeAdvancedProperties{PhysicsCalculationPasses = 16}
+                        Suspension = new SpringProperties(2e3f, 0, 0),
+                        SuspensionTravel = 0.01f
                     })
             {
                 State = { Name = EntityState.Name + name, Assets = { Mesh = mesh }, Pose = new Pose(position) },
@@ -375,9 +376,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             };
         }
 
-        /// <summary>
-        /// Special dispose to handle embedded entities
-        /// </summary>
         public override void Dispose()
         {
             if (LeftWheel != null)
@@ -389,12 +387,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             base.Dispose();
         }
 
-        /// <summary>
-        /// Updates pose for our entity. We override default implementation
-        /// since we control our own rendering when no file mesh is supplied, which means
-        /// we dont need world transform updates
-        /// </summary>
-        /// <param name="update">The frame update message</param>
         public override void Update(FrameUpdate update)
         {
             // update state for us and all the shapes that make up the rigid body
@@ -426,12 +418,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             return MotorTorqueScaling * current - MotorTorqueScaling / MaxSpeed * (_driveWheelRadius * angVelocity);
         }
 
-        /// <summary>
-        /// Render entities stored as fields
-        /// </summary>
-        /// <param name="renderMode">The render mode</param>
-        /// <param name="transforms">The transforms</param>
-        /// <param name="currentCamera">The current camera</param>
         public override void Render(RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)
         {
             var entityEffect = LeftWheel.Effect;
@@ -450,11 +436,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             base.Render(renderMode, transforms, currentCamera);
         }
 
-        /// <summary>
-        /// Sets motor torque on the active wheels
-        /// </summary>
-        /// <param name="leftWheelCurrent">The left wheel torque</param>
-        /// <param name="rightWheelCurrent">The right wheel torque</param>
         public void SetMotorCurrent(float leftWheelCurrent, float rightWheelCurrent)
         {
             _leftWheelCurrent = leftWheelCurrent;

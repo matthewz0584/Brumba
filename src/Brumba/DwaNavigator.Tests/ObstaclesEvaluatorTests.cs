@@ -117,7 +117,7 @@ namespace Brumba.DwaNavigator.Tests
             //Rotation on place
             Assert.That(dc.Evaluate(new Velocity(0, 10)), Is.EqualTo(1));
             //Right into the obstacle on high speed
-            Assert.That(dc.Evaluate(new Velocity(10, 0)), Is.EqualTo(0));
+            Assert.That(double.IsNegativeInfinity(dc.Evaluate(new Velocity(10, 0))));
             //Into the obstacle that is on the brink of rangefinder perception and on the longest trajectory
             Assert.That(dc.Evaluate(new Velocity((5d + 1) / 2 / 10, 1d / 10)), Is.EqualTo(0.5).Within(1e-7));
             //Right into the obstacle on not so high speed
