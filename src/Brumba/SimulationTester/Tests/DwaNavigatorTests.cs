@@ -22,7 +22,7 @@ using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("dwa_navigator", Wip = true, PhysicsTimeStep = 0.005f )]
+    [SimTestFixture("dwa_navigator", Wip = true, PhysicsTimeStep = 0.0005f )]
     public class DwaNavigatorTests
     {
         public SimulationTesterService TesterService { get; private set; }

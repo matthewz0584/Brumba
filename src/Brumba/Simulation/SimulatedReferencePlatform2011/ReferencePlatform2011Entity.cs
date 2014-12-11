@@ -361,12 +361,14 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
         WheelEntity ConstructDriveWheel(string name, string mesh, Vector3 position, Vector3 meshTranslation)
         {
-            return new WheelEntity(new WheelShapeProperties(name, _driveWheelMass, _driveWheelRadius)
+            //return new WheelEntity(new WheelShapeProperties(name, _driveWheelMass, _driveWheelRadius)
+            return new WheelEntity(new WheelShapeProperties(name, Mass / 2, _driveWheelRadius)
                     {
                         InnerRadius = 0.7f * _driveWheelRadius,
                         LocalPose = new Pose(position, Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi)),
                         Suspension = new SpringProperties(2e3f, 0, 0),
-                        SuspensionTravel = 0.01f
+                        SuspensionTravel = 0.01f,
+                        //Advanced = new ShapeAdvancedProperties {PhysicsCalculationPasses = 20}
                     })
             {
                 State = { Name = EntityState.Name + name, Assets = { Mesh = mesh }, Pose = new Pose(position) },

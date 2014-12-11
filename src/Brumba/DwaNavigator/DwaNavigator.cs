@@ -46,7 +46,15 @@ namespace Brumba.DwaNavigator
             RangefinderProperties = rangefinderProperties;
             _dt = dt;
 
-            var dynamicDiamondGenerator = new DynamicDiamondGenerator(wheelAngularAccelerationMax, wheelRadius, wheelBase, dt);
+            //_alpha = 1f;
+            //_vMax = 1.5f;
+            //_omegaMax = _vMax / (float)WheelRadius;
+            //_beta = _alpha / _omegaMax;
+            //_robotRadius = 0.226f;
+            //_robotMass = 9.1f;
+            //_robotInertiaMoment = _robotMass * _robotRadius * _robotRadius;
+
+            var dynamicDiamondGenerator = new DiffDriveVelocitySpaceGenerator(9.1, 9.1 * wheelBase / 2 * wheelBase / 2, 1.5, wheelRadius, wheelBase, 1, dt);
             
             AccelerationMax = new Velocity(
                     dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2((float)wheelAngularAccelerationMax, (float)wheelAngularAccelerationMax)).Linear,
@@ -56,7 +64,7 @@ namespace Brumba.DwaNavigator
                     dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2((float)wheelAngularVelocityMax, (float)wheelAngularVelocityMax)).Linear,
                     dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2(-(float)wheelAngularVelocityMax, (float)wheelAngularVelocityMax)).Angular);
 
-            VelocitiesEvaluation = new DenseMatrix(2 * DynamicDiamondGenerator.STEPS_NUMBER + 1);
+            VelocitiesEvaluation = new DenseMatrix(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1);
 
             _compositeEvaluator = new CompositeEvaluator();
             _optimizer = new DwaProblemOptimizer(dynamicDiamondGenerator, _compositeEvaluator, VelocityMax);

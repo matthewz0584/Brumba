@@ -29,19 +29,19 @@ namespace Brumba.DwaNavigator
     {
         readonly double[] _smoothingKernel = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
 
-        public DwaProblemOptimizer(IVelocitySearchSpaceGenerator velocitySearchSpaceGenerator, IVelocityEvaluator velocityEvaluator, Velocity robotVelocityMax)
+        public DwaProblemOptimizer(IVelocitySpaceGenerator velocitySpaceGenerator, IVelocityEvaluator velocityEvaluator, Velocity robotVelocityMax)
         {
-            DC.Contract.Requires(velocitySearchSpaceGenerator != null);
+            DC.Contract.Requires(velocitySpaceGenerator != null);
             DC.Contract.Requires(velocityEvaluator != null);
             DC.Contract.Requires(robotVelocityMax.Linear > 0);
             DC.Contract.Requires(robotVelocityMax.Angular > 0);
 
-            VelocitySearchSpaceGenerator = velocitySearchSpaceGenerator;
+            VelocitySpaceGenerator = velocitySpaceGenerator;
             VelocityEvaluator = velocityEvaluator;
             RobotVelocityMax = robotVelocityMax;
         }
 
-        public IVelocitySearchSpaceGenerator VelocitySearchSpaceGenerator { get; private set; }
+        public IVelocitySpaceGenerator VelocitySpaceGenerator { get; private set; }
         public IVelocityEvaluator VelocityEvaluator { get; private set; }
         public Velocity RobotVelocityMax { get; set; }
 
@@ -52,7 +52,7 @@ namespace Brumba.DwaNavigator
             DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item2.IndexedEnumerator().
                 All(c => c.Item3.BetweenRL(-1, 1) || double.IsNegativeInfinity(c.Item3)));
 
-            var velocityWheelAcc = VelocitySearchSpaceGenerator.Generate(new Velocity(velocity.Position.Length(), velocity.Bearing));
+            var velocityWheelAcc = VelocitySpaceGenerator.Generate(new Velocity(velocity.Position.Length(), velocity.Bearing));
             var velocitiesEvalsRaw = DenseMatrix.Create(velocityWheelAcc.GetLength(0), velocityWheelAcc.GetLength(1),
                                     (row, col) => VelocityIsFeasible(velocityWheelAcc[row, col].Velocity)
                                             ? VelocityEvaluator.Evaluate(velocityWheelAcc[row, col].Velocity) : -1);

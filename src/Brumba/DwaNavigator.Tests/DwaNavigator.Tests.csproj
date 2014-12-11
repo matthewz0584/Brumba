@@ -71,7 +71,7 @@
     <Compile Include="CompositeEvaluatorTests.cs" />
     <Compile Include="DwaNavigatorTests.cs" />
     <Compile Include="DwaProblemOptimizerTests.cs" />
-    <Compile Include="DynamicDiamondGeneratorTests.cs" />
+    <Compile Include="DiffDriveVelocitySpaceGeneratorTests.cs" />
     <Compile Include="MotionModelsTests.cs" />
     <Compile Include="ObstaclesEvaluatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

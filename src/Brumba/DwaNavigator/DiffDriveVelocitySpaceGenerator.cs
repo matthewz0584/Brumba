@@ -8,14 +8,14 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
-    [DC.ContractClassAttribute(typeof(IVelocitySearchSpaceGeneratorContract))]
-    public interface IVelocitySearchSpaceGenerator
+    [DC.ContractClassAttribute(typeof(VelocitySpaceGeneratorContract))]
+    public interface IVelocitySpaceGenerator
     {
         VelocityAcceleration[,] Generate(Velocity center);
     }
 
-    [DC.ContractClassForAttribute(typeof(IVelocitySearchSpaceGenerator))]
-    abstract class IVelocitySearchSpaceGeneratorContract : IVelocitySearchSpaceGenerator
+    [DC.ContractClassForAttribute(typeof(IVelocitySpaceGenerator))]
+    abstract class VelocitySpaceGeneratorContract : IVelocitySpaceGenerator
     {
         public VelocityAcceleration[,] Generate(Velocity center)
         {
@@ -25,27 +25,46 @@ namespace Brumba.DwaNavigator
         }
     }
 
-    public class DynamicDiamondGenerator : IVelocitySearchSpaceGenerator
+    public class DiffDriveVelocitySpaceGenerator : IVelocitySpaceGenerator
     {
+        private readonly double _currentToTorque;
+        private double _vMax;
+        private double _a;
+        private double _b;
+        private double _c;
+        private double _d;
+        private double _wheelVelocityToTorque;
         public const int STEPS_NUMBER = 10;
 
-        public DynamicDiamondGenerator(double wheelAngularAccelerationMax, double wheelRadius, double wheelBase, double dt)
+        //public DiffDriveVelocitySpaceGenerator(double wheelRadius, double wheelBase, double dt)
+        public DiffDriveVelocitySpaceGenerator(
+                double robotMass, double robotInertiaMoment, double velocityMax, 
+                double wheelRadius, double wheelBase, 
+                double currentToTorque, double dt)
         {
-            DC.Contract.Requires(wheelAngularAccelerationMax > 0);
             DC.Contract.Requires(wheelRadius > 0);
             DC.Contract.Requires(wheelBase > 0);
             DC.Contract.Requires(dt > 0);
 
-            WheelAngularAccelerationMax = wheelAngularAccelerationMax;
             WheelRadius = wheelRadius;
             WheelBase = wheelBase;
+
+            _currentToTorque = currentToTorque;
             Dt = dt;
+
+            _wheelVelocityToTorque = currentToTorque / (velocityMax / WheelRadius);
+            var massCoef = 1 / (robotMass * WheelRadius * WheelRadius);
+            var momentCoef = WheelBase / 2 * WheelBase / 2 / (robotInertiaMoment * WheelRadius * WheelRadius);
+            _a = currentToTorque * massCoef;
+            _b = currentToTorque * momentCoef;
+            _c = _wheelVelocityToTorque * massCoef;
+            _d = _wheelVelocityToTorque * momentCoef;
         }
 
-        public double WheelAngularAccelerationMax { get; private set; }
         public double WheelRadius { get; private set; }
         public double WheelBase { get; private set; }
-        public double Dt { get; set; }
+
+        public double Dt { get; private set; }
 
         public VelocityAcceleration[,] Generate(Velocity diamondCenter)
         {
@@ -63,34 +82,24 @@ namespace Brumba.DwaNavigator
 
         public Vector2 PredictWheelVelocities(Vector2 omegaCurrent, Vector2 currents)
         {
-            var alpha = 1f;
-            var vMax = 1.5f;
-            var omegaMax = vMax / (float)WheelRadius;
-            var beta = alpha / omegaMax;
-            var robotRadius = 0.226f;
-            var robotMass = 9.1f;
-            var robotInertiaMoment = robotMass * robotRadius * robotRadius;
-            var a = alpha / (robotMass * (float)WheelRadius * (float)WheelRadius);
-            var b = alpha * robotRadius * robotRadius / (robotInertiaMoment * (float)WheelRadius * (float)WheelRadius);
-            var c = beta * robotRadius * robotRadius / (robotInertiaMoment * (float)WheelRadius * (float)WheelRadius) + beta / (robotMass * (float)WheelRadius * (float)WheelRadius);
-            var d = beta * robotRadius * robotRadius / (robotInertiaMoment * (float)WheelRadius * (float)WheelRadius) - beta / (robotMass * (float)WheelRadius * (float)WheelRadius);
-
             //Linear approx
             var iSum = currents.X + currents.Y;
             var iDiff = currents.X - currents.Y;
-            var omegaDotL = a * iSum + b * iDiff - c * omegaCurrent.X + d * omegaCurrent.Y;
-            var omegaDotR = a * iSum - b * iDiff + d * omegaCurrent.X - c * omegaCurrent.Y;
+            var omegaSum = omegaCurrent.X + omegaCurrent.Y;
+            var omegaDiff = omegaCurrent.X - omegaCurrent.Y;
+            //var omegaDotL = _a * iSum + _b * iDiff - _c * omegaSum - _d * omegaDiff;
+            //var omegaDotR = _a * iSum - _b * iDiff - _c * omegaSum + _d * omegaDiff;
 
-            return omegaCurrent + new Vector2(omegaDotL, omegaDotR) * (float)Dt;
+            //return omegaCurrent + new Vector2((float)omegaDotL, (float)omegaDotR) * (float)Dt;
 
             //Correct diff eq
-            //var c1 = (omegaCurrent.X - omegaCurrent.Y - omegaMax * (p.X - p.Y) / STEPS_NUMBER) / 2;
-            //var c2 = (omegaCurrent.X + omegaCurrent.Y - omegaMax * (p.X + p.Y) / STEPS_NUMBER) / 2;
+            var c1 = (omegaSum - _currentToTorque / _wheelVelocityToTorque * iSum) / 2;
+            var c2 = (omegaDiff - _currentToTorque / _wheelVelocityToTorque * iDiff) / 2;
 
-            //var omegaL = (float)(c1 * Math.Exp(-2 * d * Dt) + c2 * Math.Exp(-2 * c * Dt) + omegaMax * p.X / STEPS_NUMBER);
-            //var omegaR = (float)(-c1 * Math.Exp(-2 * d * Dt) + c2 * Math.Exp(-2 * c * Dt) + omegaMax * p.Y / STEPS_NUMBER);
+            var omegaL = c1 * Math.Exp(-2 * _c * Dt) + c2 * Math.Exp(-2 * _d * Dt) + _currentToTorque / _wheelVelocityToTorque * currents.X;
+            var omegaR = c1 * Math.Exp(-2 * _c * Dt) - c2 * Math.Exp(-2 * _d * Dt) + _currentToTorque / _wheelVelocityToTorque * currents.Y;
 
-            //var vNext = WheelsToRobotKinematics(new Vector2(omegaL, omegaR));
+            return new Vector2((float)omegaL, (float)omegaR);
 
             //Simplified diff eq: robot inertia moment equals Mrb*Rrb^2
             //var i = p.ToVec() / STEPS_NUMBER;
