@@ -18,37 +18,33 @@ namespace Brumba.DwaNavigator
     {
         [DataMember]
         public VelocityAcceleration CurrentVelocityAcceleration { get; set; }
-
         [DataMember]
         public double[,] VelocititesEvaluation { get; set; }
-
-        [DataMember]
-        public Velocity VelocityMax { get; set; }
-
         [DataMember]
         public Vector2 Target { get; set; }
-
         [DataMember]
         public int Iteration { get; set; }
 
         [DataMember]
-        public double WheelAngularAccelerationMax { get; set; }
-        
+        public double RobotMass { get; set; }
         [DataMember]
-        public double WheelAngularVelocityMax { get; set; }
-
+        public double RobotInertiaMoment { get; set; }
         [DataMember]
         public double WheelRadius { get; set; }
-
         [DataMember]
         public double WheelBase { get; set; }
-
         [DataMember]
         public double RobotRadius { get; set; }
-
+        [DataMember]
+        public double VelocityMax { get; set; }
+        [DataMember]
+        public double BreakageDeceleration { get; set; }
+        [DataMember]
+        public double CurrentToTorque { get; set; }
+        [DataMember]
+        public double FrictionTorque { get; set; }
         [DataMember]
         public RangefinderProperties RangefinderProperties { get; set; }
-
         [DataMember]
         public float DeltaT { get; set; }
     }

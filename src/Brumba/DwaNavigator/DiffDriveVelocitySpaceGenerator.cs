@@ -27,32 +27,37 @@ namespace Brumba.DwaNavigator
 
     public class DiffDriveVelocitySpaceGenerator : IVelocitySpaceGenerator
     {
-        private readonly double _currentToTorque;
-        private double _vMax;
-        private double _a;
-        private double _b;
-        private double _c;
-        private double _d;
-        private double _wheelVelocityToTorque;
         public const int STEPS_NUMBER = 10;
+
+        readonly double _a;
+        readonly double _b;
+        readonly double _c;
+        readonly double _d;
+        readonly double _wheelVelocityToTorque;
 
         //public DiffDriveVelocitySpaceGenerator(double wheelRadius, double wheelBase, double dt)
         public DiffDriveVelocitySpaceGenerator(
                 double robotMass, double robotInertiaMoment, double velocityMax, 
                 double wheelRadius, double wheelBase, 
-                double currentToTorque, double dt)
+                double currentToTorque, double frictionTorque, double dt)
         {
+            DC.Contract.Requires(robotMass > 0);
+            DC.Contract.Requires(robotInertiaMoment > 0);
+            DC.Contract.Requires(velocityMax > 0);
             DC.Contract.Requires(wheelRadius > 0);
             DC.Contract.Requires(wheelBase > 0);
+            DC.Contract.Requires(currentToTorque >= 0);
+            DC.Contract.Requires(frictionTorque >= 0);
             DC.Contract.Requires(dt > 0);
 
             WheelRadius = wheelRadius;
             WheelBase = wheelBase;
 
-            _currentToTorque = currentToTorque;
+            CurrentToTorque = currentToTorque;
             Dt = dt;
 
-            _wheelVelocityToTorque = currentToTorque / (velocityMax / WheelRadius);
+            _wheelVelocityToTorque = (currentToTorque - frictionTorque) / (velocityMax / WheelRadius);
+            
             var massCoef = 1 / (robotMass * WheelRadius * WheelRadius);
             var momentCoef = WheelBase / 2 * WheelBase / 2 / (robotInertiaMoment * WheelRadius * WheelRadius);
             _a = currentToTorque * massCoef;
@@ -64,6 +69,7 @@ namespace Brumba.DwaNavigator
         public double WheelRadius { get; private set; }
         public double WheelBase { get; private set; }
 
+        public double CurrentToTorque { get; private set; }
         public double Dt { get; private set; }
 
         public VelocityAcceleration[,] Generate(Velocity diamondCenter)
@@ -74,14 +80,18 @@ namespace Brumba.DwaNavigator
 
             var velocitySpace = new VelocityAcceleration[2 * STEPS_NUMBER + 1, 2 * STEPS_NUMBER + 1];
             foreach (var p in GenerateWheelAccelerationGrid())
+                //Calculate omega values for Dt/2, I hope that it will represent reality closer than value at the end of period
                 velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(
-                        WheelsToRobotKinematics(PredictWheelVelocities(RobotKinematicsToWheels(diamondCenter), p.ToVec() / STEPS_NUMBER)),
+                        WheelsToRobotKinematics(PredictWheelVelocities(RobotKinematicsToWheels(diamondCenter), p.ToVec() / STEPS_NUMBER, Dt / 2)),
                         p.ToVec() / STEPS_NUMBER);
             return velocitySpace;
         }
 
-        public Vector2 PredictWheelVelocities(Vector2 omegaCurrent, Vector2 currents)
+        public Vector2 PredictWheelVelocities(Vector2 omegaCurrent, Vector2 currents, double dt)
         {
+            DC.Contract.Requires(currents.BetweenRL(new Vector2(-1, -1), new Vector2(1, 1)));
+            DC.Contract.Requires(dt >= 0);
+
             //Linear approx
             var iSum = currents.X + currents.Y;
             var iDiff = currents.X - currents.Y;
@@ -93,11 +103,11 @@ namespace Brumba.DwaNavigator
             //return omegaCurrent + new Vector2((float)omegaDotL, (float)omegaDotR) * (float)Dt;
 
             //Correct diff eq
-            var c1 = (omegaSum - _currentToTorque / _wheelVelocityToTorque * iSum) / 2;
-            var c2 = (omegaDiff - _currentToTorque / _wheelVelocityToTorque * iDiff) / 2;
+            var c1 = (omegaSum - CurrentToTorque / _wheelVelocityToTorque * iSum) / 2;
+            var c2 = (omegaDiff - CurrentToTorque / _wheelVelocityToTorque * iDiff) / 2;
 
-            var omegaL = c1 * Math.Exp(-2 * _c * Dt) + c2 * Math.Exp(-2 * _d * Dt) + _currentToTorque / _wheelVelocityToTorque * currents.X;
-            var omegaR = c1 * Math.Exp(-2 * _c * Dt) - c2 * Math.Exp(-2 * _d * Dt) + _currentToTorque / _wheelVelocityToTorque * currents.Y;
+            var omegaL = c1 * Math.Exp(-2 * _c * dt) + c2 * Math.Exp(-2 * _d * dt) + CurrentToTorque / _wheelVelocityToTorque * currents.X;
+            var omegaR = c1 * Math.Exp(-2 * _c * dt) - c2 * Math.Exp(-2 * _d * dt) + CurrentToTorque / _wheelVelocityToTorque * currents.Y;
 
             return new Vector2((float)omegaL, (float)omegaR);
 
@@ -128,6 +138,8 @@ namespace Brumba.DwaNavigator
 
         IEnumerable<Point> GenerateWheelAccelerationGrid()
         {
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Point>>() != null);
+
             return Enumerable.Range(-STEPS_NUMBER, 2 * STEPS_NUMBER + 1).
                 SelectMany(wri => Enumerable.Range(-STEPS_NUMBER, 2 * STEPS_NUMBER + 1).Select(wli => new Point(wli, wri)));
         }

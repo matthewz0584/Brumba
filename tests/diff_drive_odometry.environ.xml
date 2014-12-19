@@ -477,7 +477,7 @@
         <physm:Z>0</physm:Z>
       </MeshTranslation>
       <IsEnabled>true</IsEnabled>
-      <MotorTorqueScaling>20</MotorTorqueScaling>
+      <CurrentToTorque>20</CurrentToTorque>
       <RightWheel>
         <sim:State>
           <sim:Name>RightWheel</sim:Name>

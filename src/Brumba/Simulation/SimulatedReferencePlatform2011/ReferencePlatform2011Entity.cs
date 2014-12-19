@@ -98,7 +98,10 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// Gets or sets the scaling factor to apply to motor torque requests
         /// </summary>
         [DataMember, Description("Scaling factor to apply to motor torgue requests.")]
-        public float MotorTorqueScaling { get; set; }
+        public float CurrentToTorque { get; set; }
+
+        [DataMember]
+        public float FrictionTorque { get; set; }
 
         /// <summary>
         /// The current target velocity of the left wheel
@@ -209,7 +212,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
         /// </summary>
         public ReferencePlatform2011Entity()
         {
-            MotorTorqueScaling = 1f;
+            CurrentToTorque = 1f;
+            FrictionTorque = 0.03f;
 
             MeshScale = new Vector3(0.0254f, 0.0254f, 0.0254f);
         }
@@ -344,9 +348,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
         SphereShape ConstructCasterWheelShape(string name, Vector3 position)
         {
-            // a fixed caster wheel has high friction when moving laterally, but low friction when it moves along the
-            // body axis its aligned with. We use anisotropic friction to model this
-
             //Caster wheels bear the main weight of the robot!! Cause there was no way to place it in special battery shape,
             //read comment in Initialize
             return new SphereShape(new SphereShapeProperties(name, Mass / 2, new Pose(position), _casterWheelRadius))
@@ -354,19 +355,28 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                 State =
                 {
                     Name = EntityState.Name + name,
-                    Material = new MaterialProperties("qq", 0.0f, 0.1f, 0.2f)
+                    Material = new MaterialProperties("qq", 0.0f, 0.0f, 0.0f)
                 }
             };
         }
 
         WheelEntity ConstructDriveWheel(string name, string mesh, Vector3 position, Vector3 meshTranslation)
         {
-            //return new WheelEntity(new WheelShapeProperties(name, _driveWheelMass, _driveWheelRadius)
-            return new WheelEntity(new WheelShapeProperties(name, Mass / 2, _driveWheelRadius)
+            //Simulator simulates wheels entirely nonphysical: axle angular acceleration is proportional to motor torque and
+            //inversly proportional to wheel mass (http://www.ogre3d.org/addonforums/viewtopic.php?f=6&t=7682&start=15).
+            //Nothing more, for example the mass of the system, participates in the calculation.
+            //That's why changing robot mass with given electrical current does not influence the robot acceleration.
+            //And vica versa, wheel mass is not counted as part of a robot mass.
+            //If all the mass of the robot is placed into wheels (and this is the case - ConstructCasterWheelShape), than
+            //Reference platform becomes a peculiar corner case of diff drive platfrom. In this case wheels become independent,
+            //that means that acceleration of each depends only on its velocity and inertia moment. That luckily coincides with
+            //deficient wheel physical model of simulator and allows me to model it with general formula by setting their "mass"
+            //(which is really inertia moment by dimension) accordingly.
+            return new WheelEntity(new WheelShapeProperties(name, Mass / 2 * _driveWheelRadius * _driveWheelRadius, _driveWheelRadius)
                     {
                         InnerRadius = 0.7f * _driveWheelRadius,
                         LocalPose = new Pose(position, Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi)),
-                        Suspension = new SpringProperties(2e3f, 0, 0),
+                        Suspension = new SpringProperties(1e2f, 0, 0),
                         SuspensionTravel = 0.01f,
                         //Advanced = new ShapeAdvancedProperties {PhysicsCalculationPasses = 20}
                     })
@@ -415,9 +425,9 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
         float MotorTorque(float current, float angVelocity)
         {
-            var pushbackTorque = 0.01f;
-            //return MotorTorqueScaling * current - (MotorTorqueScaling - pushbackTorque) / MaxSpeed * (_driveWheelRadius * angVelocity);
-            return MotorTorqueScaling * current - MotorTorqueScaling / MaxSpeed * (_driveWheelRadius * angVelocity);
+            //With increased wheel mass friction torque starts being hard to ignore
+            return CurrentToTorque * current - (CurrentToTorque - FrictionTorque) / MaxSpeed * (_driveWheelRadius * angVelocity);
+            //return CurrentToTorque * current - CurrentToTorque / MaxSpeed * (_driveWheelRadius * angVelocity);
         }
 
         public override void Render(RenderMode renderMode, MatrixTransforms transforms, CameraEntity currentCamera)

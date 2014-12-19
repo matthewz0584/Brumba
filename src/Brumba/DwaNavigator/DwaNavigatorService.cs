@@ -67,8 +67,9 @@ namespace Brumba.DwaNavigator
         {
             _timerFacade = new TimerFacade(this, _state.DeltaT);
 
-            _dwaNavigator = new DwaNavigator(_state.WheelAngularAccelerationMax, _state.WheelAngularVelocityMax,
-                _state.WheelRadius, _state.WheelBase, _state.RobotRadius, _state.RangefinderProperties, _state.DeltaT);
+            _dwaNavigator = new DwaNavigator(_state.RobotMass, _state.RobotInertiaMoment, _state.WheelRadius, _state.WheelBase, _state.RobotRadius,
+                _state.VelocityMax, _state.BreakageDeceleration, _state.CurrentToTorque, _state.FrictionTorque,
+                _state.RangefinderProperties, _state.DeltaT);
 
             _takeEachNthBeam = 1;
 

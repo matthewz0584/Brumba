@@ -9,6 +9,7 @@ using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Diagnostics;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
+using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Xna.Framework;
 using bPose = Brumba.WaiterStupid.Pose;
@@ -22,7 +23,7 @@ using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
 namespace Brumba.SimulationTester.Tests
 {
-    [SimTestFixture("dwa_navigator", Wip = true, PhysicsTimeStep = 0.0005f )]
+    [SimTestFixture("dwa_navigator", Wip = true, PhysicsTimeStep = 0.002f )]
     public class DwaNavigatorTests
     {
         public SimulationTesterService TesterService { get; private set; }
@@ -61,7 +62,7 @@ namespace Brumba.SimulationTester.Tests
             [Start]
             public IEnumerator<ITask> Start()
             {
-                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(0, 5)));
+                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new xVector2(0, 5)));
             }
 
             [Test]
@@ -87,7 +88,7 @@ namespace Brumba.SimulationTester.Tests
             [Start]
             public IEnumerator<ITask> Start()
             {
-                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(0, 5)));
+                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new xVector2(0, 5)));
             }
 
             [Test]
@@ -104,10 +105,16 @@ namespace Brumba.SimulationTester.Tests
             [Fixture]
             public DwaNavigatorTests Fixture { get; set; }
 
+            [Prepare]
+            public void PrepareEntities(VisualEntity entity)
+            {
+                entity.State.Pose.Position = new rVector3(0.3f, 0, 0);
+            }
+
             [Start]
             public IEnumerator<ITask> Start()
             {
-                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new Vector2(10, 0)));
+                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new xVector2(10, 0)));
 			}
 
             [Test]

@@ -137,7 +137,7 @@ namespace Brumba.Dashboard
             yield return _dwaNavigator.Get().Receive(ds => dwaState = ds);
 
             DwaVelocitiesEvaluation = DenseMatrix.OfArray(dwaState.VelocititesEvaluation ?? new double[1,1]).IndexedEnumerator().
-                Select(c => new MatrixCell { Row = c.Item1, Col = c.Item2, Value = c.Item3 <= 0.5 ? 0.5 : c.Item3 }).ToList();
+                Select(c => new MatrixCell { Row = c.Item1, Col = c.Item2, Value = c.Item3 <= -1 ? -1 : c.Item3 }).ToList();
             _currentVelocityAcceleration = dwaState.CurrentVelocityAcceleration;
             _currentDwaIteration = dwaState.Iteration;
 

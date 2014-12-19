@@ -75,17 +75,13 @@ namespace Brumba.DwaNavigator.Tests
             //Turning on place
             Assert.That(new ObstaclesEvaluator(new[] { new Vector2(0, 1.5f) }, 1, 1, 100).
                 DistancesToObstaclesOnCircle(new CircleMotionModel(new Velocity(0, 1))), Is.Empty);
-            //On very small curve radiuses approximating algorithm returns distances smaller than zero
-            //although all distances to obstacles are greater than robot radius. It is fixed explicitly.
-            Assert.That(new ObstaclesEvaluator(new[] { new Vector2(0, 0.6f) }, 0.5, 1, 100).
-                DistancesToObstaclesOnCircle(new CircleMotionModel(new Velocity(0.1, 1))).Single(), Is.GreaterThan(0.5).And.EqualTo(0.5).Within(1e-5));
         }
 
         [Test]
         public void GetDistanceToClosestObstacle()
         {
             //No obstacles ahead, moving on line
-            Assert.That(double.IsPositiveInfinity(new ObstaclesEvaluator(obstacles: new Vector2[0], robotRadius: 1d, linearDecelerationMax: 1d, rangefinderMaxRange: 100d).
+            Assert.That(double.IsPositiveInfinity(new ObstaclesEvaluator(obstacles: new Vector2[0], robotRadius: 1d, breakageDeceleration: 1d, rangefinderMaxRange: 100d).
                 GetDistanceToClosestObstacle(new Velocity(50, 0))));
 
             //One obstacle staright ahead, moving on line
@@ -95,6 +91,19 @@ namespace Brumba.DwaNavigator.Tests
             //Obstacle is exactly on X axis, moving on circle
             Assert.That(new ObstaclesEvaluator(new[] { new Vector2(0, 10) }, 1, 1, 100).
                 GetDistanceToClosestObstacle(new Velocity(50, 10)), Is.EqualTo(Constants.Pi * 5 - 1));
+
+            //Obstacle is exactly on X axis, moving on circle with negative angular velocity
+            Assert.That(new ObstaclesEvaluator(new[] { new Vector2(0, -10) }, 1, 1, 100).
+                GetDistanceToClosestObstacle(new Velocity(50, -10)), Is.EqualTo(Constants.Pi * 5 - 1));
+
+            //On very small curve radiuses approximating algorithm returns distances smaller than zero
+            //although all distances to obstacles are greater than robot radius. It is fixed explicitly.
+            Assert.That(new ObstaclesEvaluator(new[] { new Vector2(0, 0.6f) }, 0.5, 1, 100).
+                GetDistanceToClosestObstacle(new Velocity(0.1, 1)), Is.EqualTo(0));
+
+            //Obstacles near the borders of lane of straight pass could be closer than robot radius, fix for it
+            Assert.That(new ObstaclesEvaluator(new[] { new Vector2(0.99f, 0.99f) }, 1, 1, 100).
+                GetDistanceToClosestObstacle(new Velocity(50, 0)), Is.EqualTo(0));
         }
 
         [Test]
@@ -119,9 +128,9 @@ namespace Brumba.DwaNavigator.Tests
             //Right into the obstacle on high speed
             Assert.That(double.IsNegativeInfinity(dc.Evaluate(new Velocity(10, 0))));
             //Into the obstacle that is on the brink of rangefinder perception and on the longest trajectory
-            Assert.That(dc.Evaluate(new Velocity((5d + 1) / 2 / 10, 1d / 10)), Is.EqualTo(0.5).Within(1e-7));
+            Assert.That(dc.Evaluate(new Velocity((5d + 1) / 2 / 10, 1d / 10)), Is.EqualTo(1).Within(1e-7));
             //Right into the obstacle on not so high speed
-            Assert.That(dc.Evaluate(new Velocity(1, 0)), Is.GreaterThan(0).And.LessThan(0.5));
+            Assert.That(dc.Evaluate(new Velocity(1, 0)), Is.GreaterThan(0).And.LessThan(1));
         }
     }
 }

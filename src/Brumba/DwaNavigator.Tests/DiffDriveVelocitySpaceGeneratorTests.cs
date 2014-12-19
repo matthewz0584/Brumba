@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Brumba.Utils;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
@@ -11,45 +12,74 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void WheelToRobotKinematics()
         {
-            var ddc = new DiffDriveVelocitySpaceGenerator(1.5d, 3d, 0.1d);
+            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1.5d, 3d, 1, 1, 1);
 
-            Assert.That(ddc.WheelsToRobotKinematics(new Vector2(2, 1)), Is.EqualTo(new Velocity(1.5d / 2 * (2 + 1), 1.5d / 3d * (1 - 2))));
+            Assert.That(ddvsg.WheelsToRobotKinematics(new Vector2(2, 1)), Is.EqualTo(new Velocity(1.5d / 2 * (2 + 1), 1.5d / 3d * (1 - 2))));
+        }
+
+        [Test]
+        public void PredictWheelVelocititesParams()
+        {
+            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 10, 2, 1, 1, 0, 1);
+
+            Assert.That(ddvsg.PredictWheelVelocities(new Vector2(1.3f, 1.5f), new Vector2(1, 1), 0), Is.EqualTo(new Vector2(1.3f, 1.5f)));
+            
+            Assert.That(ddvsg.PredictWheelVelocities(new Vector2(1.3f, 1.5f), new Vector2(), 1000).EqualsWithError(new Vector2(), 1e-7));
+
+            Assert.That(ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(1, -1), 1000), Is.EqualTo(new Vector2(10 / 2, -10 / 2)));
+            Assert.That(ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(-1, 1), 1000), Is.EqualTo(new Vector2(-10 / 2, 10 / 2)));
+
+            Assert.That(ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(0.5f, -0.5f), 1000), Is.EqualTo(new Vector2(5f / 2, -5f / 2)));
+            Assert.That(ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(-0.5f, 0.5f), 1000), Is.EqualTo(new Vector2(-5f / 2, 5f / 2)));
+
+            Assert.That(ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(1, -1), 1).X.Between(0, 10 / 2));
+            Assert.That(ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(1, -1), 1).Y.Between(-10 / 2, 0));
+        }
+
+        [Test]
+        public void PredictWheelVelocititesConstants()
+        {
+            Func<DiffDriveVelocitySpaceGenerator, Vector2> pr = ddvsg => ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(1, 1), 1);
+
+            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Greater(
+                        pr(new DiffDriveVelocitySpaceGenerator(10, 1, 1, 1, 1, 1, 0, 1))));
+            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)), Is.EqualTo(
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1))));
+            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Greater(
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1))));
+            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)), Is.EqualTo(
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 10, 1, 0, 1))));
+            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 10, 0, 1)).Greater(
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1))));
+
+            pr = ddvsg => ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(-1, 1), 1);
+
+            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).X, Is.LessThan(
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1)).X));
+            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Y, Is.GreaterThan(
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1)).Y));
+            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).X, Is.GreaterThan(
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 10, 1, 0, 1)).X));
+            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Y, Is.LessThan(
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 10, 1, 0, 1)).Y));
         }
 
         [Test]
         public void Generate()
         {
-            var ddc = new DiffDriveVelocitySpaceGenerator(1.5d, 3d, 0.1);
-            var dd = ddc.Generate(new Velocity(3, 0));
+            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 10, 2, 1, 1, 0, 0.5);
+            var vs = ddvsg.Generate(new Velocity(3, 0));
 
-            var accMax = new Velocity(ddc.WheelsToRobotKinematics(new Vector2(1)).Linear, ddc.WheelsToRobotKinematics(new Vector2(-1, 1)).Angular);
+            Assert.That(vs.GetLength(0), Is.EqualTo(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1));
+            Assert.That(vs.GetLength(1), Is.EqualTo(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1));
 
-            Assert.That(dd.GetLength(0) * dd.GetLength(1), Is.EqualTo((2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1) * (2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1)));
+            Assert.That(vs[0, 0].WheelAcceleration, Is.EqualTo(new Vector2(-1, -1)));
+            Assert.That(vs[0, 1].WheelAcceleration, Is.EqualTo(new Vector2(-1, -0.9f)));
+            Assert.That(vs[1, 0].WheelAcceleration, Is.EqualTo(new Vector2(-0.9f, -1)));
+            Assert.That(vs[2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER, 2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER].WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
 
-            Assert.That(dd.Cast<VelocityAcceleration>().Count(), Is.EqualTo((2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1) * (2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1)));
-            Assert.That(dd.Cast<VelocityAcceleration>().Min(v => v.Velocity.Linear), Is.EqualTo(3 - accMax.Linear * 0.1));
-            Assert.That(dd.Cast<VelocityAcceleration>().Single(p => p.Velocity.Linear == 3 - accMax.Linear * 0.1).Velocity.Angular, Is.EqualTo(0));
-            Assert.That(dd.Cast<VelocityAcceleration>().Single(p => p.Velocity.Linear == 3 - accMax.Linear * 0.1).WheelAcceleration, Is.EqualTo(new Vector2(-1, -1)));
-
-            Assert.That(dd.Cast<VelocityAcceleration>().Max(v => v.Velocity.Linear), Is.EqualTo(3 + accMax.Linear * 0.1));
-            Assert.That(dd.Cast<VelocityAcceleration>().Single(p => p.Velocity.Linear == 3 + accMax.Linear * 0.1).Velocity.Angular, Is.EqualTo(0));
-            Assert.That(dd.Cast<VelocityAcceleration>().Single(p => p.Velocity.Linear == 3 + accMax.Linear * 0.1).WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
-
-            Assert.That(dd.Cast<VelocityAcceleration>().Min(v => v.Velocity.Angular), Is.EqualTo(-accMax.Angular * 0.1));
-            Assert.That(dd.Cast<VelocityAcceleration>().Single(p => p.Velocity.Angular == -accMax.Angular * 0.1).Velocity.Linear, Is.EqualTo(3));
-            Assert.That(dd.Cast<VelocityAcceleration>().Single(p => p.Velocity.Angular == -accMax.Angular * 0.1).WheelAcceleration, Is.EqualTo(new Vector2(1, -1)));
-
-            Assert.That(dd.Cast<VelocityAcceleration>().Max(v => v.Velocity.Angular), Is.EqualTo(accMax.Angular * 0.1));
-            Assert.That(dd.Cast<VelocityAcceleration>().Single(p => p.Velocity.Angular == accMax.Angular * 0.1).Velocity.Linear, Is.EqualTo(3));
-            Assert.That(dd.Cast<VelocityAcceleration>().Single(p => p.Velocity.Angular == accMax.Angular * 0.1).WheelAcceleration, Is.EqualTo(new Vector2(-1, 1)));
-
-            Assert.That(dd.Cast<VelocityAcceleration>().Single(p => p.Velocity.Linear == 3 && p.Velocity.Angular == 0).WheelAcceleration, Is.EqualTo(new Vector2()));
-
-            Assert.That(dd.Cast<VelocityAcceleration>().Count(v => v.Velocity.Linear == 3), Is.EqualTo(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1));
-            Assert.That(dd.Cast<VelocityAcceleration>().Count(v => v.Velocity.Angular == 0), Is.EqualTo(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1));
-
-            Assert.That(dd.Cast<VelocityAcceleration>().Count(v => Math.Abs(v.Velocity.Linear - (3 + accMax.Linear * 0.1 / DiffDriveVelocitySpaceGenerator.STEPS_NUMBER)) < 0.0001), Is.EqualTo(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1 - 2));
-            Assert.That(dd.Cast<VelocityAcceleration>().Count(v => Math.Abs(v.Velocity.Angular - accMax.Angular * 0.1 / DiffDriveVelocitySpaceGenerator.STEPS_NUMBER) < 0.0001), Is.EqualTo(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1 - 2));
+            Assert.That(vs[0, 0].Velocity, Is.EqualTo(
+                    ddvsg.WheelsToRobotKinematics(ddvsg.PredictWheelVelocities(ddvsg.RobotKinematicsToWheels(new Velocity(3, 0)), vs[0, 0].WheelAcceleration, 0.5/2))));
         }
     }
 }

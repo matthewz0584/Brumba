@@ -13,7 +13,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void FindOptimalVelocity()
         {
-            var vwa = new [,]
+            var vwa = new[,]
             {
                 {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(1, 0.2), new Vector2(0.1f, 0.2f)), new VelocityAcceleration()},
                 {new VelocityAcceleration(), new VelocityAcceleration(new Velocity(3, 0.4), new Vector2(0.3f, 0.4f)), new VelocityAcceleration()},
@@ -25,8 +25,8 @@ namespace Brumba.DwaNavigator.Tests
 
             var dwapo = new DwaProblemOptimizer(
                 velocitySpaceGenerator: vssg,
-                velocityEvaluator: Substitute.For<IVelocityEvaluator>(),
-                robotVelocityMax: new Velocity(10, 100));
+                robotVelocityMax: new Velocity(10, 100))
+                { VelocityEvaluator = Substitute.For<IVelocityEvaluator>() };
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
@@ -60,7 +60,7 @@ namespace Brumba.DwaNavigator.Tests
             //Because NSubstitute has error with multidimensional return values, special fake class used
             var vssg = new FakeVelocitySpaceGenerator(vwa);
 
-            var dwapo = new DwaProblemOptimizer(vssg, Substitute.For<IVelocityEvaluator>(), new Velocity(10, 100));
+            var dwapo = new DwaProblemOptimizer(vssg, new Velocity(10, 100)) { VelocityEvaluator = Substitute.For<IVelocityEvaluator>() };
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
@@ -82,7 +82,7 @@ namespace Brumba.DwaNavigator.Tests
             //Because NSubstitute has error with multidimensional return values, special fake class used
             var vssg = new FakeVelocitySpaceGenerator(vwa);
 
-            var dwapo = new DwaProblemOptimizer(vssg, Substitute.For<IVelocityEvaluator>(), new Velocity(10, 100));
+            var dwapo = new DwaProblemOptimizer(vssg, new Velocity(10, 100)) { VelocityEvaluator = Substitute.For<IVelocityEvaluator>() };
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
@@ -105,7 +105,7 @@ namespace Brumba.DwaNavigator.Tests
             //Because NSubstitute has error with multidimensional return values, special fake class used
             var vssg = new FakeVelocitySpaceGenerator(vwa);
 
-            var dwapo = new DwaProblemOptimizer(vssg, Substitute.For<IVelocityEvaluator>(), new Velocity(10, 0.50));
+            var dwapo = new DwaProblemOptimizer(vssg, new Velocity(10, 0.50)) { VelocityEvaluator = Substitute.For<IVelocityEvaluator>() };
 
             dwapo.VelocityEvaluator.Evaluate(Arg.Any<Velocity>()).Returns(ci => ci.Arg<Velocity>().Angular);
 
@@ -121,7 +121,8 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void SmoothMatrix()
         {
-            var dwapo = new DwaProblemOptimizer(Substitute.For<IVelocitySpaceGenerator>(), Substitute.For<IVelocityEvaluator>(), new Velocity(1, 1));
+            var dwapo = new DwaProblemOptimizer(Substitute.For<IVelocitySpaceGenerator>(), new Velocity(1, 1))
+                { VelocityEvaluator = Substitute.For<IVelocityEvaluator>() };
 
             var m = DenseMatrix.OfArray(new double[,]
                 {
@@ -131,7 +132,7 @@ namespace Brumba.DwaNavigator.Tests
                     {0, 0, 0, 0}
                 });
             var smoothedM = dwapo.Smooth(m);
-            
+
             Assert.That(smoothedM[0, 0], Is.EqualTo(1));
             Assert.That(smoothedM[0, 1], Is.EqualTo(2));
             Assert.That(smoothedM[0, 2], Is.EqualTo(3));
@@ -156,7 +157,8 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void SmoothMatrixSkipsNegativeCells()
         {
-            var dwapo = new DwaProblemOptimizer(Substitute.For<IVelocitySpaceGenerator>(), Substitute.For<IVelocityEvaluator>(), new Velocity(1, 1));
+            var dwapo = new DwaProblemOptimizer(Substitute.For<IVelocitySpaceGenerator>(), new Velocity(1, 1))
+                { VelocityEvaluator = Substitute.For<IVelocityEvaluator>() };
 
             var m = DenseMatrix.OfArray(new double[,]
                 {

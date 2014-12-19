@@ -1,6 +1,7 @@
 using System;
 using Brumba.Utils;
 using Brumba.WaiterStupid;
+using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
@@ -28,7 +29,7 @@ namespace Brumba.DwaNavigator
         {
             DC.Contract.Assert(v.Linear >= 0);
 
-            return 1 - GetAngleToTarget(MergeSequentialPoseDeltas(Pose, PredictPoseDelta(v))) / MathHelper.Pi;
+            return 1 - GetAngleToTarget(MergeSequentialPoseDeltas(Pose, PredictPoseDelta(v))) / Constants.Pi;
         }
 
         public Pose PredictPoseDelta(Velocity v)
@@ -42,9 +43,9 @@ namespace Brumba.DwaNavigator
                 ChooseMotionModel(new Velocity(v.Linear, angularVelocity2)).PredictPoseDelta(Dt));
         }
 
-        public float GetAngleToTarget(Pose pose)
+        public double GetAngleToTarget(Pose pose)
         {
-            DC.Contract.Ensures(DC.Contract.Result<float>() >= 0 && DC.Contract.Result<float>() <= MathHelper.Pi);
+            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0 && DC.Contract.Result<double>() <= Constants.Pi);
 
             return MathHelper2.AngleBetween(Target - pose.Position,
                 new Vector2((float) Math.Cos(pose.Bearing), (float) Math.Sin(pose.Bearing)));

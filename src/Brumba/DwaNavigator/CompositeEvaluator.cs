@@ -9,9 +9,6 @@ namespace Brumba.DwaNavigator
     {
         private IDictionary<IVelocityEvaluator, double> _evaluatorWeights;
 
-        public CompositeEvaluator()
-        {}
-
         public CompositeEvaluator(IDictionary<IVelocityEvaluator, double> evaluatorWeights)
         {
             DC.Contract.Requires(evaluatorWeights != null);

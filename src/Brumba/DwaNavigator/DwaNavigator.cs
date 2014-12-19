@@ -11,26 +11,15 @@ namespace Brumba.DwaNavigator
 {
     public class DwaNavigator
     {
-        private readonly double _dt;
-        private readonly double _robotRadius;
-        
-        private readonly CompositeEvaluator _compositeEvaluator;
         private readonly DwaProblemOptimizer _optimizer;
+        private DiffDriveVelocitySpaceGenerator _velocitySpaceGenerator;
 
         public DwaNavigator(
-            double wheelAngularAccelerationMax,
-            double wheelAngularVelocityMax,
-
-            double wheelRadius,
-            double wheelBase,
-            double robotRadius,
-            
-            RangefinderProperties rangefinderProperties,
-            
-            double dt)
+            double robotMass, double robotInertiaMoment, double wheelRadius, double wheelBase, double robotRadius,
+            double velocityMax, double breakageDeceleration, double currentToTorque, double frictionTorque,
+            RangefinderProperties rangefinderProperties, double dt)
         {
-            DC.Contract.Requires(wheelAngularAccelerationMax > 0);
-            DC.Contract.Requires(wheelAngularVelocityMax > 0);
+            DC.Contract.Requires(breakageDeceleration > 0);
             DC.Contract.Requires(wheelRadius > 0);
             DC.Contract.Requires(wheelBase > 0);
             DC.Contract.Requires(robotRadius > 0);
@@ -38,45 +27,33 @@ namespace Brumba.DwaNavigator
             DC.Contract.Requires(rangefinderProperties.AngularRange > 0);
             DC.Contract.Requires(rangefinderProperties.AngularResolution > 0);
             DC.Contract.Requires(dt > 0);
-            DC.Contract.Ensures(AccelerationMax.Linear > 0 && AccelerationMax.Angular > 0);
             DC.Contract.Ensures(VelocityMax.Linear > 0 && VelocityMax.Angular > 0);
             DC.Contract.Ensures(VelocitiesEvaluation != null);
 
-            _robotRadius = robotRadius;
+            RobotRadius = robotRadius;
+            BreakageDeceleration = breakageDeceleration;
             RangefinderProperties = rangefinderProperties;
-            _dt = dt;
+            Dt = dt;
 
-            //_alpha = 1f;
-            //_vMax = 1.5f;
-            //_omegaMax = _vMax / (float)WheelRadius;
-            //_beta = _alpha / _omegaMax;
-            //_robotRadius = 0.226f;
-            //_robotMass = 9.1f;
-            //_robotInertiaMoment = _robotMass * _robotRadius * _robotRadius;
-
-            var dynamicDiamondGenerator = new DiffDriveVelocitySpaceGenerator(9.1, 9.1 * wheelBase / 2 * wheelBase / 2, 1.5, wheelRadius, wheelBase, 1, dt);
+            _velocitySpaceGenerator = new DiffDriveVelocitySpaceGenerator(robotMass, robotInertiaMoment, wheelRadius, wheelBase, velocityMax, currentToTorque, frictionTorque, dt);
             
-            AccelerationMax = new Velocity(
-                    dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2((float)wheelAngularAccelerationMax, (float)wheelAngularAccelerationMax)).Linear,
-                    dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2(-(float)wheelAngularAccelerationMax, (float)wheelAngularAccelerationMax)).Angular);
-
-            VelocityMax = new Velocity(
-                    dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2((float)wheelAngularVelocityMax, (float)wheelAngularVelocityMax)).Linear,
-                    dynamicDiamondGenerator.WheelsToRobotKinematics(new Vector2(-(float)wheelAngularVelocityMax, (float)wheelAngularVelocityMax)).Angular);
-
             VelocitiesEvaluation = new DenseMatrix(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1);
 
-            _compositeEvaluator = new CompositeEvaluator();
-            _optimizer = new DwaProblemOptimizer(dynamicDiamondGenerator, _compositeEvaluator, VelocityMax);
+            VelocityMax = new Velocity(velocityMax,
+                    _velocitySpaceGenerator.WheelsToRobotKinematics(new Vector2(-1, 1) * (float)(velocityMax / wheelRadius)).Angular);
+
+            _optimizer = new DwaProblemOptimizer(_velocitySpaceGenerator, VelocityMax);
         }
 
-        public Velocity AccelerationMax { get; private set; }
+        public double BreakageDeceleration { get; private set; }
+        public double Dt { get; private set; }
+        public double RobotRadius { get; private set; }
+        public RangefinderProperties RangefinderProperties { get; private set; }
+
         public Velocity VelocityMax { get; private set; }
 
         public VelocityAcceleration OptimalVelocity { get; private set; }
         public DenseMatrix VelocitiesEvaluation { get; private set; }
-
-        public RangefinderProperties RangefinderProperties { get; private set; }
 
         public void Update(Pose pose, Pose velocity, Vector2 target, IEnumerable<float> obstacles)
         {
@@ -87,16 +64,24 @@ namespace Brumba.DwaNavigator
             DC.Contract.Ensures(VelocitiesEvaluation != null);
             DC.Contract.Ensures(VelocitiesEvaluation != DC.Contract.OldValue(VelocitiesEvaluation));
 
-            _compositeEvaluator.EvaluatorWeights = new Dictionary<IVelocityEvaluator, double>
+            _optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
             {
-                { new AngleToTargetEvaluator(pose, target, AccelerationMax.Angular, _dt), 0.8 },
-                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles), _robotRadius, AccelerationMax.Linear, RangefinderProperties.MaxRange), 0.1 },
+                { new AngleToTargetEvaluator(pose, target, _velocitySpaceGenerator.WheelsToRobotKinematics(new Vector2(-(float)2.5, (float)2.5)).Angular, Dt), 0.7 },
+                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange), 0.2 },
                 { new SpeedEvaluator(VelocityMax.Linear), 0.1 }
-            };
-            
+            });
+
             var optRes = _optimizer.FindOptimalVelocity(velocity);
             OptimalVelocity = optRes.Item1;
             VelocitiesEvaluation = optRes.Item2;
+
+            //_optimizer.VelocityEvaluator = new ObstaclesEvaluator(
+            //        RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= _robotRadius),
+            //        _robotRadius, BreakageDeceleration, RangefinderProperties.MaxRange);
+
+            //var optRes = _optimizer.FindOptimalVelocity(velocity);
+            //VelocitiesEvaluation = optRes.Item2;
+            //OptimalVelocity = optRes.Item1;
         }
     }
 }
