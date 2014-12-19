@@ -63,7 +63,7 @@ namespace Brumba.DwaNavigator
 
             var neededDeceleration = - angularVelocity/Dt;
             var angularVelocityDecelerated = Math.Abs(neededDeceleration) > MaxAngularAcceleration
-                ? angularVelocity - Math.Sign(angularVelocity) * MaxAngularAcceleration * Dt : 0;
+                ? (angularVelocity - Math.Sign(angularVelocity) * MaxAngularAcceleration * Dt) : 0;
             return angularVelocityDecelerated;
         }
 

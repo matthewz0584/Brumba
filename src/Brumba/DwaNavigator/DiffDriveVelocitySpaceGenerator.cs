@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
-using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
@@ -29,17 +28,15 @@ namespace Brumba.DwaNavigator
     {
         public const int STEPS_NUMBER = 10;
 
-        readonly double _a;
-        readonly double _b;
+        //readonly double _a;
+        //readonly double _b;
         readonly double _c;
         readonly double _d;
         readonly double _wheelVelocityToTorque;
 
-        //public DiffDriveVelocitySpaceGenerator(double wheelRadius, double wheelBase, double dt)
         public DiffDriveVelocitySpaceGenerator(
-                double robotMass, double robotInertiaMoment, double velocityMax, 
-                double wheelRadius, double wheelBase, 
-                double currentToTorque, double frictionTorque, double dt)
+                double robotMass, double robotInertiaMoment, double wheelRadius, double wheelBase,
+                double velocityMax, double currentToTorque, double frictionTorque, double dt)
         {
             DC.Contract.Requires(robotMass > 0);
             DC.Contract.Requires(robotInertiaMoment > 0);
@@ -60,8 +57,8 @@ namespace Brumba.DwaNavigator
             
             var massCoef = 1 / (robotMass * WheelRadius * WheelRadius);
             var momentCoef = WheelBase / 2 * WheelBase / 2 / (robotInertiaMoment * WheelRadius * WheelRadius);
-            _a = currentToTorque * massCoef;
-            _b = currentToTorque * momentCoef;
+            //_a = currentToTorque * massCoef;
+            //_b = currentToTorque * momentCoef;
             _c = _wheelVelocityToTorque * massCoef;
             _d = _wheelVelocityToTorque * momentCoef;
         }

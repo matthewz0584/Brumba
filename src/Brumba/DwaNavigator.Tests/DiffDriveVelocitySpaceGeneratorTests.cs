@@ -12,7 +12,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void WheelToRobotKinematics()
         {
-            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1.5d, 3d, 1, 1, 1);
+            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 1.5d, 3d, 1, 1, 1, 1);
 
             Assert.That(ddvsg.WheelsToRobotKinematics(new Vector2(2, 1)), Is.EqualTo(new Velocity(1.5d / 2 * (2 + 1), 1.5d / 3d * (1 - 2))));
         }
@@ -20,7 +20,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void PredictWheelVelocititesParams()
         {
-            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 10, 2, 1, 1, 0, 1);
+            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 2, 1, 10, 1, 0, 1);
 
             Assert.That(ddvsg.PredictWheelVelocities(new Vector2(1.3f, 1.5f), new Vector2(1, 1), 0), Is.EqualTo(new Vector2(1.3f, 1.5f)));
             
@@ -46,9 +46,9 @@ namespace Brumba.DwaNavigator.Tests
             Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)), Is.EqualTo(
                         pr(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1))));
             Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Greater(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1))));
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 10, 1, 1, 1, 0, 1))));
             Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)), Is.EqualTo(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 10, 1, 0, 1))));
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1))));
             Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 10, 0, 1)).Greater(
                         pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1))));
 
@@ -59,15 +59,15 @@ namespace Brumba.DwaNavigator.Tests
             Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Y, Is.GreaterThan(
                         pr(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1)).Y));
             Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).X, Is.GreaterThan(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 10, 1, 0, 1)).X));
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1)).X));
             Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Y, Is.LessThan(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 10, 1, 0, 1)).Y));
+                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1)).Y));
         }
 
         [Test]
         public void Generate()
         {
-            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 10, 2, 1, 1, 0, 0.5);
+            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 2, 1, 10, 1, 0, 0.5);
             var vs = ddvsg.Generate(new Velocity(3, 0));
 
             Assert.That(vs.GetLength(0), Is.EqualTo(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1));
