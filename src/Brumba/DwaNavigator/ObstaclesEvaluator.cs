@@ -10,23 +10,26 @@ namespace Brumba.DwaNavigator
 {
     public class ObstaclesEvaluator : IVelocityEvaluator
     {
-        public ObstaclesEvaluator(IEnumerable<Vector2> obstacles, double robotRadius, double breakageDeceleration, double rangefinderMaxRange)
+        public ObstaclesEvaluator(IEnumerable<Vector2> obstacles, double robotRadius, double breakageDeceleration, double rangefinderMaxRange, double dt)
         {
             DC.Contract.Requires(robotRadius > 0);
             DC.Contract.Requires(obstacles != null);
             DC.Contract.Requires(obstacles.All(o => o.Length().BetweenR((float)robotRadius, (float)(rangefinderMaxRange + robotRadius))));
             DC.Contract.Requires(breakageDeceleration > 0);
+            DC.Contract.Requires(dt > 0);
 
             Obstacles = obstacles;
             RobotRadius = robotRadius;
             BreakageDeceleration = breakageDeceleration;
             RangefinderMaxRange = rangefinderMaxRange;
+            Dt = dt;
         }
 
         public IEnumerable<Vector2> Obstacles { get; private set; }
         public double RobotRadius { get; private set; }
         public double BreakageDeceleration { get; private set; }
         public double RangefinderMaxRange { get; private set; }
+        public double Dt { get; private set; }
 
         public double Evaluate(Velocity v)
         {
@@ -59,7 +62,8 @@ namespace Brumba.DwaNavigator
             DC.Contract.Requires(velocity.Linear >= 0);
             DC.Contract.Requires(distanceToObstacleOnLane >= 0);
 
-            return velocity.Linear <= Math.Sqrt(2 * distanceToObstacleOnLane * BreakageDeceleration);
+            return velocity.Linear < -Dt * BreakageDeceleration +
+                Math.Sqrt(Dt * Dt * BreakageDeceleration * BreakageDeceleration + 2 * distanceToObstacleOnLane * BreakageDeceleration);
         }
 
         public IEnumerable<double> DistancesToObstaclesOnLine()

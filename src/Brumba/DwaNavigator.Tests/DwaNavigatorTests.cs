@@ -77,24 +77,38 @@ namespace Brumba.DwaNavigator.Tests
         public void WallStraightAhead()
         {
             _dwan = new DwaNavigator(
-                wheelAngularAccelerationMax: 4,
-                wheelAngularVelocityMax: 13, // 1m/s
+                robotMass: 9.1,
+                robotInertiaMoment: 0.209,
                 wheelRadius: 0.076,
                 wheelBase: 0.3,
                 robotRadius: 0.3,
-                rangefinderProperties: new RangefinderProperties { AngularRange = Constants.Grad * 40, AngularResolution = Constants.Grad * 5, MaxRange = 10, OriginPose = new Pose() },
+                velocityMax: 1.5,
+                breakageDeceleration: 1,
+                currentToTorque: 1,
+                frictionTorque: 0.03,
+                rangefinderProperties: new RangefinderProperties
+                {
+                    AngularRange = Constants.Grad * 40, AngularResolution = Constants.Grad * 5, MaxRange = 10, OriginPose = new Pose()
+                },
                 dt: 0.25);
 
             _dwan.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(0.95f, 0), 0),
+                        new Pose(new Vector2(1f, 0), 0),
                         new Vector2(10, 0),
-                        new[] { 1.65f, 1.6f, 1.55f, 1.5f, 1.5f, 1.5f, 1.55f, 8.6f, 1.85f });
+                        new[] { 1.65f, 1.6f, 1.55f, 1.5f, 1.5f, 1.5f, 1.55f, 1.6f, 8.6f });
 
-            //Console.WriteLine(_dwan.VelocitiesEvaluation.ToString(21, 21));
-            //Console.WriteLine(_dwan.OptimalVelocity.WheelAcceleration);
-            //Console.WriteLine(_dwan.OptimalVelocity.Velocity);
-            //Wall is large, evading by the sharpest turn
-            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(-1, 1)));
+            //Wall is large, evading by the sharp turn
+            var wheelAcceleration = _dwan.OptimalVelocity.WheelAcceleration;
+            Assert.That(wheelAcceleration, Is.EqualTo(new Vector2(0.4f, 1)));
+
+            _dwan.Update(new Pose(new Vector2(), 0),
+                        new Pose(new Vector2(1.5f, 0), 0),
+                        new Vector2(10, 0),
+                        new[] { 1.65f, 1.6f, 1.55f, 1.5f, 1.5f, 1.5f, 1.55f, 1.6f, 8.6f });
+
+            //Velocity is even higher, evading by sharper turn
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration.X, Is.LessThan(wheelAcceleration.X));
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration.Y, Is.GreaterThanOrEqualTo(wheelAcceleration.Y));
         }
 
         [Test]
@@ -103,9 +117,10 @@ namespace Brumba.DwaNavigator.Tests
             _dwan.Update(new Pose(new Vector2(), 0),
                         new Pose(new Vector2(), 0),
                         new Vector2(10, 0),
-                        new[] { 10, 0.4f });
+                        new[] { 10, 0.31f });
 
             //Evading obstacle by turning on place
+            Console.WriteLine(_dwan.VelocitiesEvaluation.ToString(7, 7));
             Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(0.2f, -0.2f)).Or.EqualTo(new Vector2(-0.2f, 0.2f)));
 
             _dwan.Update(new Pose(new Vector2(), 0),
@@ -122,7 +137,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void MaxRangesAreFilteredOut()
         {
-            _dwan = new DwaNavigator(4, 13, 0.076, 0.3, 0.3, new RangefinderProperties
+            _dwan = new DwaNavigator(9.1, 0.209, 0.076, 0.3, 0.3, 1.5, 1, 1, 0.03, new RangefinderProperties
                     {
                         AngularRange = Constants.Grad * 40,
                         AngularResolution = Constants.Grad * 5,
@@ -138,7 +153,7 @@ namespace Brumba.DwaNavigator.Tests
             //Wall is large, evading by the sharpest turn
             Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.Not.EqualTo(new Vector2(1, 1)));
 
-            _dwan = new DwaNavigator(4, 13, 0.076, 0.3, 0.3, new RangefinderProperties
+            _dwan = new DwaNavigator(9.1, 0.209, 0.076, 0.3, 0.3, 1.5, 1, 1, 0.03, new RangefinderProperties
                     {
                         AngularRange = Constants.Grad * 40,
                         AngularResolution = Constants.Grad * 5,
@@ -156,8 +171,18 @@ namespace Brumba.DwaNavigator.Tests
             Console.WriteLine(_dwan.OptimalVelocity.Velocity);
             //Wall is large, evading by the sharpest turn
             Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
+        }
 
-            Less than radius are filtered
+        [Test]
+        public void LessThanMinRangesAreFilteredOut()
+        {
+            _dwan.Update(new Pose(new Vector2(), 0),
+                        new Pose(new Vector2(), 0),
+                        new Vector2(10, 0),
+                        new [] {0.1f, 0.1f, 0.1f});
+            Assert.That(_dwan.OptimalVelocity.Velocity.Linear, Is.GreaterThan(0));
+            Assert.That(_dwan.OptimalVelocity.Velocity.Angular, Is.EqualTo(0));
+            Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
         }
     }
 }

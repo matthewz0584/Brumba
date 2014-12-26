@@ -66,8 +66,8 @@ namespace Brumba.DwaNavigator
 
             _optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
             {
-                { new AngleToTargetEvaluator(pose, target, _velocitySpaceGenerator.WheelsToRobotKinematics(new Vector2(-(float)2.5, (float)2.5)).Angular, Dt), 0.7 },
-                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange), 0.2 },
+                { new AngleToTargetEvaluator(pose, target, _velocitySpaceGenerator.WheelsToRobotKinematics(new Vector2(-(float)25, (float)25)).Angular, Dt), 0.7 },
+                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange, Dt), 0.2 },
                 { new SpeedEvaluator(VelocityMax.Linear), 0.1 }
             });
 
