@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:simulationengine="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:3c849aef-4547-4698-951c-6c3c10c5cce5" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/robotics/2006/04/simulationengine.html</dssp:Contract>
+      <dssp:PartnerList />
+      <Name>this:SimulationEngine</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
+</Manifest>
