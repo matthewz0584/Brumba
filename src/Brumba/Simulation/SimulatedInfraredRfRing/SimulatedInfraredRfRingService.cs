@@ -7,7 +7,7 @@ using Microsoft.Dss.ServiceModel.Dssp;
 namespace Brumba.Simulation.SimulatedInfraredRfRing
 {
 	[Contract(Contract.Identifier)]
-    [DisplayName("Simulated Infrared Rangefinder Ring")]
+    [DisplayName("Brumba Simulated Infrared Rangefinder Ring")]
     [Description("no description provided")]
     class SimulatedInfraredRfRingService : SimulatedEntityServiceBase
 	{

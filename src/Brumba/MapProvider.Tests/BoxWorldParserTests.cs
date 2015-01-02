@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Brumba.Simulation;
 using Brumba.Simulation.EnvironmentBuilder;
 using Brumba.Utils;
 using MathNet.Numerics;
@@ -160,13 +161,13 @@ namespace Brumba.MapProvider.Tests
 	    [Test]
 	    public void MapToSim()
 	    {
-		    Assert.That(BoxWorldParser.MapToSim(new xVector2(1, 2), 3), Is.EqualTo(new rVector3(2, 3, 1)));
-			Assert.That(BoxWorldParser.SimToMap(new rVector3(3, 2, 1)), Is.EqualTo(new xVector2(1, 3)));
+		    Assert.That(SimToMapTransformations.MapToSim(new xVector2(1, 2), 3), Is.EqualTo(new rVector3(2, 3, 1)));
+			Assert.That((new rVector3(3, 2, 1)).SimToMap(), Is.EqualTo(new xVector2(1, 3)));
 
-			Assert.That(BoxWorldParser.SimToMap(UIMath.EulerToQuaternion(new Vector3(0, 90, 0))), Is.EqualTo(3 * Constants.PiOver2).Within(1e-5));
-			Assert.That(BoxWorldParser.SimToMap(UIMath.EulerToQuaternion(new Vector3(0, 45, 0))), Is.EqualTo(5 * Constants.PiOver4).Within(1e-5));
+			Assert.That(UIMath.EulerToQuaternion(new Vector3(0, 90, 0)).SimToMap(), Is.EqualTo(3 * Constants.PiOver2).Within(1e-5));
+            Assert.That(UIMath.EulerToQuaternion(new Vector3(0, 45, 0)).SimToMap(), Is.EqualTo(5 * Constants.PiOver4).Within(1e-5));
 
-            Assert.That(BoxWorldParser.SimToMapAngularVelocity(new rVector3(3, 2, 1)), Is.EqualTo(2));
+            Assert.That(new rVector3(3, 2, 1).SimToMap(), Is.EqualTo(2));
 	    }
     }
 }

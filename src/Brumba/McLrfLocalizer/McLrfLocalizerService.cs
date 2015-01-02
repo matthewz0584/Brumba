@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Brumba.DsspUtils;
+using Brumba.GenericLocalizer;
 using Brumba.MapProvider;
 using Brumba.WaiterStupid;
 using Brumba.WaiterStupid.GUI;
@@ -35,6 +36,9 @@ namespace Brumba.McLrfLocalizer
 
         [ServicePort("/McLrfLocalizer", AllowMultipleInstances = true)]
         McLrfLocalizerOperations _mainPort = new McLrfLocalizerOperations();
+
+        [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericLocalizer.Contract.Identifier)]
+        private GenericLocalizerOperations _genericPoseEstimatorPort = new GenericLocalizerOperations();
 
         [Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         OdometryPxy.DiffDriveOdometryOperations _odometryProvider = new OdometryPxy.DiffDriveOdometryOperations();
@@ -76,10 +80,10 @@ namespace Brumba.McLrfLocalizer
             _takeEachNthBeam = (int)Math.Round(sparsifiedRp.AngularResolution / _state.RangeFinderProperties.AngularResolution);
             _localizer = new McLrfLocalizer(map, sparsifiedRp, _state.ParticlesNumber);
 
-			if (IsPoseUnknown(_state.FirstPoseCandidate))
+			if (IsPoseUnknown(_state.EstimatedPose))
 				_localizer.InitPoseUnknown();
 			else
-				_localizer.InitPose(_state.FirstPoseCandidate, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
+				_localizer.InitPose(_state.EstimatedPose, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
 
 		    yield return _odometryProvider.Get().Receive(os => _currentOdometry = (Pose) DssTypeHelper.TransformFromProxy(os.State.Pose));
 
@@ -115,7 +119,7 @@ namespace Brumba.McLrfLocalizer
 						_currentOdometry = newOdometry;
 	                    
 						UpdateState();
-						LogInfo("loc {0} for {1}", _state.FirstPoseCandidate, sw.Elapsed.Milliseconds);
+						LogInfo("loc {0} for {1}", _state.EstimatedPose, sw.Elapsed.Milliseconds);
                     });
 
 			//yield return To.Exec(Draw);
@@ -128,7 +132,7 @@ namespace Brumba.McLrfLocalizer
 			DC.Contract.Requires(queryPoseRq.Body != null);
 			DC.Contract.Requires(queryPoseRq.ResponsePort != null);
 
-			queryPoseRq.ResponsePort.Post(_state.FirstPoseCandidate);
+			queryPoseRq.ResponsePort.Post(_state.EstimatedPose);
 		}
 
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive)]
@@ -175,11 +179,17 @@ namespace Brumba.McLrfLocalizer
             DefaultDropHandler(dropDownRq);
         }
 
+        [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_genericPoseEstimatorPort")]
+        public void OnGet(GenericLocalizer.Get getRq)
+        {
+            getRq.ResponsePort.Post(new GenericLocalizerState { EstimatedPose = _state.EstimatedPose });
+        }
+
 		void UpdateState()
 		{
-			//_state.FirstPoseCandidate = _localizer.GetPoseCandidates().First();
-		    _state.FirstPoseCandidate = _localizer.CalculatePoseMean();
-			SendNotification(_subMgrPort, new InitPose { Body = { Pose = _state.FirstPoseCandidate } });
+			//_state.EstimatedPose = _localizer.GetPoseCandidates().First();
+		    _state.EstimatedPose = _localizer.CalculatePoseMean();
+			SendNotification(_subMgrPort, new InitPose { Body = { Pose = _state.EstimatedPose } });
 		}
 
 		bool IsPoseUnknown(Pose pose)

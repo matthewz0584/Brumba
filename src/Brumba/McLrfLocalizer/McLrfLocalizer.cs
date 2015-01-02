@@ -45,7 +45,7 @@ namespace Brumba.McLrfLocalizer
 			DC.Contract.Ensures(Particles.Any());
             DC.Contract.Ensures(Particles.Count() == ParticlesNumber);
 			DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => Map.Covers(p.Position) && !Map[p.Position]));
-            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
+            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.BetweenL(0, Constants.Pi2)));
 
 			_particleFilter.Init(GenerateRandomPoses(Map).Take(ParticlesNumber));
         }
@@ -57,7 +57,7 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Requires(poseStdDev.Position.GreaterOrEqual(new Vector2()));
             DC.Contract.Requires(poseStdDev.Bearing >= 0);
             DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => Map.Covers(p.Position) && !Map[p.Position]));
-            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
+            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.BetweenL(0, Constants.Pi2)));
 
             _particleFilter.Init(Enumerable.Range(0, int.MaxValue).
                                     Select(i => new Pose(new Vector2((float)Normal.Sample(_random, poseMean.Position.X, poseStdDev.Position.X),
@@ -75,7 +75,7 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Requires(Particles.Any());
             DC.Contract.Ensures(Particles.Count() == ParticlesNumber);
             DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => !Map.Covers(p.Position) || !Map[p.Position]));
-            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.Between(0, Constants.Pi2)));
+            DC.Contract.Ensures(DC.Contract.ForAll(Particles, p => p.Bearing.BetweenL(0, Constants.Pi2)));
 
 			_particleFilter.Update(odometry, scan);
 		}
@@ -84,7 +84,7 @@ namespace Brumba.McLrfLocalizer
         {
             DC.Contract.Requires(Particles != null);
             DC.Contract.Requires(Particles.Any());
-            DC.Contract.Ensures(DC.Contract.Result<Pose>().Bearing.Between(0, Constants.Pi2));
+            DC.Contract.Ensures(DC.Contract.Result<Pose>().Bearing.BetweenL(0, Constants.Pi2));
 
             return new Pose(new Vector2(
                 (float)MomentFor(Particles.Select(v => (double)v.Position.X), statistics => statistics.Mean),
@@ -111,7 +111,7 @@ namespace Brumba.McLrfLocalizer
             DC.Contract.Requires(Particles.Any());
 			DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Pose>>() != null);
             DC.Contract.Ensures(DC.Contract.ForAll(DC.Contract.Result<IEnumerable<Pose>>(),
-                p => Map.Covers(p.Position) && !Map[p.Position] && p.Bearing.Between(0, Constants.Pi2)));
+                p => Map.Covers(p.Position) && !Map[p.Position] && p.Bearing.BetweenL(0, Constants.Pi2)));
 
             var h = new PoseHistogram(Map, THETA_BIN_SIZE);
             h.Build(Particles);

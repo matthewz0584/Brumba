@@ -138,7 +138,7 @@ namespace Brumba.MapProvider
 	    {
             DC.Contract.Requires(Freezed);
 
-	        return position.Between(new Vector2(), SizeInMeters);
+	        return position.BetweenL(new Vector2(), SizeInMeters);
 	    }
 
         [Pure]
@@ -146,7 +146,7 @@ namespace Brumba.MapProvider
         {
             DC.Contract.Requires(Freezed);
 
-            return cell.Between(new Point(), SizeInCells);
+            return cell.BetweenL(new Point(), SizeInCells);
         }
 
         public void Freeze()

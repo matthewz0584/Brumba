@@ -7,8 +7,8 @@
     <ProjectGuid>{66831759-1D1D-45F3-98FD-77723F8CD2F0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brumba.McLrfLocalizer.Tests</RootNamespace>
-    <AssemblyName>Brumba.McLrfLocalizer.Tests</AssemblyName>
+    <RootNamespace>Brumba.DwaNavigator.Tests</RootNamespace>
+    <AssemblyName>Brumba.DwaNavigator.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,9 +48,16 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\..\..\utils\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -60,10 +67,25 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GridCircleFringeGeneratorTests.cs" />
+    <Compile Include="AngleToTargetEvaluatorTests.cs" />
+    <Compile Include="CompositeEvaluatorTests.cs" />
+    <Compile Include="DwaNavigatorTests.cs" />
+    <Compile Include="DwaProblemOptimizerTests.cs" />
+    <Compile Include="DynamicDiamondGeneratorTests.cs" />
+    <Compile Include="MotionModelsTests.cs" />
+    <Compile Include="ObstaclesEvaluatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpeedEvaluatorTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DwaNavigator\DwaNavigator.csproj">
+      <Project>{6293a5da-4179-4b3d-93b5-84239b65c1a7}</Project>
+      <Name>DwaNavigator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
+      <Project>{3D1F586F-6408-49E2-83BC-C80716D1C62D}</Project>
+      <Name>McLrfLocalizer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>

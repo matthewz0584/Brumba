@@ -76,7 +76,7 @@ namespace Brumba.McLrfLocalizer
             get
             {
 				DC.Contract.Requires(Bins != null);
-                DC.Contract.Requires(new Vector3(xBin, yBin, thetaBin).Between(new Vector3(), Size));
+                DC.Contract.Requires(new Vector3(xBin, yBin, thetaBin).BetweenL(new Vector3(), Size));
                 DC.Contract.Ensures(DC.Contract.Result<PoseBin>() != null);
 
                 return _histogram[xBin, yBin, thetaBin];

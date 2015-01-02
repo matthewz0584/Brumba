@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Brumba.DsspUtils;
-using Brumba.Simulation.EnvironmentBuilder;
+using Brumba.Simulation;
 using Brumba.Utils;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;
@@ -19,7 +19,7 @@ using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 
 namespace Brumba.SimulationTester.Tests
 {
-	[SimTestFixture("diff_drive_odometry", Wip = true)]
+	[SimTestFixture("diff_drive_odometry")]
 	public class DiffDriveOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }
@@ -53,9 +53,9 @@ namespace Brumba.SimulationTester.Tests
 			{
                 DiffDriveOdometry.Proxy.DiffDriveOdometryState odometry = null;
                 yield return Fixture.OdometryPort.Get().Receive(os => odometry = os.State);
-                
-	            var simPosition = BoxWorldParser.SimToMap(ExtractPose(simStateEntities).Position);
-                var simVelocity = BoxWorldParser.SimToMap(ExtractVelocity(simStateEntities));
+
+                var simPosition = ExtractPose(simStateEntities).Position.SimToMap();
+                var simVelocity = ExtractVelocity(simStateEntities).SimToMap();
 
                 //Velocity component total differential (left and right wheels ticks are variables) is WheelRadius * RadiansPerTick / deltaT * cos(Bearing) * (deltaTicksL + deltaTicksR)
                 //Which equals 0.13 given test constants and possible offset by 1 tick due to ticks and time delta discretization
@@ -89,7 +89,7 @@ namespace Brumba.SimulationTester.Tests
                 DiffDriveOdometry.Proxy.DiffDriveOdometryState odometry = null;
                 yield return Fixture.OdometryPort.Get().Receive(os => odometry = os.State);
 
-                var simBearing = BoxWorldParser.SimToMap(ExtractPose(simStateEntities).Orientation);
+                var simBearing = ExtractPose(simStateEntities).Orientation.SimToMap();
 
                 var thetaDifference = MathHelper2.AngleDifference(odometry.Pose.Bearing, simBearing);
                 @return(thetaDifference / Math.Abs(odometry.Pose.Bearing) <= 0.02 && odometry.Pose.Position == new Vector2() &&
@@ -124,10 +124,10 @@ namespace Brumba.SimulationTester.Tests
                 DiffDriveOdometry.Proxy.DiffDriveOdometryState odometry = null;
                 yield return Fixture.OdometryPort.Get().Receive(os => odometry = os.State);
 
-	            var simPosition = BoxWorldParser.SimToMap(ExtractPose(simStateEntities).Position);
-                var simVelocity = BoxWorldParser.SimToMap(ExtractVelocity(simStateEntities));
-				var simBearing = BoxWorldParser.SimToMap(ExtractPose(simStateEntities).Orientation);
-                var simAngularVelocity = BoxWorldParser.SimToMapAngularVelocity(ExtractAngularVelocity(simStateEntities));
+                var simPosition = ExtractPose(simStateEntities).Position.SimToMap();
+                var simVelocity = ExtractVelocity(simStateEntities).SimToMap();
+                var simBearing = ExtractPose(simStateEntities).Orientation.SimToMap();
+                var simAngularVelocity = ExtractAngularVelocity(simStateEntities).SimToMapAngularVelocity();
 
 				var thetaDifference = MathHelper2.AngleDifference((float)odometry.Pose.Bearing, (float)simBearing);
                 //1.1 - radius of circle trajectory (1.1 - from sim, 1.06 - theoretical)

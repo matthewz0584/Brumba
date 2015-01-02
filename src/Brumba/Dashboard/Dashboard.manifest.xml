@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:dashboard="http://brumba.ru/contracts/2014/11/dashboard.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:5290f206-3d1e-4fd5-b74b-524a37a4bd2f" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2014/11/dashboard.html</dssp:Contract>
+      <dssp:PartnerList />
+      <Name>this:BrumbaDashboard</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
+</Manifest>

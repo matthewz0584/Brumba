@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.DsspUtils;
+using Brumba.Simulation;
 using Brumba.Simulation.EnvironmentBuilder;
 using Brumba.Utils;
 using MathNet.Numerics;
@@ -45,11 +46,11 @@ namespace Brumba.SimulationTester.Tests
 
 	    IEnumerator<ITask> GetPoses(McLocalizationPxy.InitPose mcPoseMsg)
         {
-            McPose = mcPoseMsg.Body.Pose;
+            McPose = (bPose)DssTypeHelper.TransformFromProxy(mcPoseMsg.Body.Pose);
 
             IEnumerable<VisualEntity> testeeEntitiesPxies = null;
             yield return To.Exec(TesterService.GetTesteeEntityProxies, (Action<IEnumerable<VisualEntity>>)(tep => testeeEntitiesPxies = tep));
-            SimPose = BoxWorldParser.SimToMap((rPose)DssTypeHelper.TransformFromProxy(testeeEntitiesPxies.Single().State.Pose));
+            SimPose = ((rPose)DssTypeHelper.TransformFromProxy(testeeEntitiesPxies.Single().State.Pose)).SimToMap();
 
             TesterService.Activate(Arbiter.ReceiveWithIterator<McLocalizationPxy.InitPose>(false, McLrfLocalizationNotify, GetPoses));
         }
@@ -76,7 +77,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Start()
 			{
-				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new bPose(new Vector2(1.7f, 3.25f), 0)));
+				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new WaiterStupid.Proxy.Pose(new Vector2(1.7f, 3.25f), 0)));
 				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
 				
                 //Localization update takes time (~0.3s), if robot keeps moving mclrf position estimate lags for this time (multiplied by velocity)
@@ -102,7 +103,7 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}
 
-		//[SimTest(10.1f)]
+		[SimTest(10.1f)]
 		public class GlobalLocalizationStraightPath : IStart, ITest
 		{
 			[Fixture]
@@ -135,7 +136,7 @@ namespace Brumba.SimulationTester.Tests
             }
 		}
 
-		//[SimTest(10.1f)]
+		[SimTest(10.1f)]
 		public class GlobalLocalizationCurvedPath : IStart, ITest
 		{
 			[Fixture]
@@ -184,7 +185,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Start()
 			{
-				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new bPose(new Vector2(1.7f, 3.25f), 0)));
+				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new WaiterStupid.Proxy.Pose(new Vector2(1.7f, 3.25f), 0)));
 				yield return To.Exec(Fixture.RefPlatformSimulatedPort.UpdateWheelTicksSigma(new Vector2(5)));
 				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.6, 0.6));

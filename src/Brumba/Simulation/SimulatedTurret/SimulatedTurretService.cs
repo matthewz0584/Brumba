@@ -5,7 +5,7 @@ using Microsoft.Dss.ServiceModel.Dssp;
 namespace Brumba.Simulation.SimulatedTurret
 {
 	[Contract(Contract.Identifier)]
-    [DisplayName("Simulated Turret")]
+    [DisplayName("Brumba Simulated Turret")]
     [Description("no description provided")]
     class SimulatedTurretService : SimulatedEntityServiceBase
 	{

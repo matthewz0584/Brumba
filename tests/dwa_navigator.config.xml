@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DwaNavigatorState xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:d="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns="http://brumba.ru/contracts/2014/11/dwanavigatorservice.html">
+  <CurrentVelocityAcceleration />
+  <VelocityMax />
+  <Target>
+    <X>0</X>
+    <Y>0</Y>
+  </Target>
+  <WheelAngularAccelerationMax>5</WheelAngularAccelerationMax>
+  <WheelAngularVelocityMax>20</WheelAngularVelocityMax>
+  <WheelRadius>0.0762</WheelRadius>
+  <WheelBase>0.3033</WheelBase>
+  <RobotRadius>0.226</RobotRadius>
+  <RangefinderProperties>
+    <AngularResolution xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">0.0062831853071795</AngularResolution>
+    <AngularRange xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">4.1887902047863909</AngularRange>
+    <MaxRange xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">5.6</MaxRange>
+    <OriginPose xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">
+<!--    <AngularResolution>0.1745329251994329</AngularResolution> -->
+      <Position>
+        <X>0.2</X>
+        <Y>0</Y>
+      </Position>
+      <Bearing>0</Bearing>
+    </OriginPose>
+  </RangefinderProperties>
+  <DeltaT>0.25</DeltaT>
+</DwaNavigatorState>

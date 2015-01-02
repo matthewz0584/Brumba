@@ -102,8 +102,8 @@ namespace Brumba.SimulationTester.Tests
 			                         (int)((lrfState.AngularRange / 2 - 90) / lrfState.AngularResolution);
 				return lrfState.DistanceMeasurements.Length == 667 &&
                         lrfState.DistanceMeasurements[minMeasurIndex] == 4500 &&
-                        lrfState.DistanceMeasurements[minMeasurIndex - 5].Between(4500, 4510) &&
-                        lrfState.DistanceMeasurements[minMeasurIndex + 5].Between(4500, 4510) &&
+                        lrfState.DistanceMeasurements[minMeasurIndex - 5].BetweenL(4500, 4510) &&
+                        lrfState.DistanceMeasurements[minMeasurIndex + 5].BetweenL(4500, 4510) &&
                         lrfState.DistanceMeasurements.Take(minMeasurIndex - 50).
                         Concat(lrfState.DistanceMeasurements.Skip(minMeasurIndex + 50)).All(d => d == 5600);
             }

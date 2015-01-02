@@ -163,6 +163,9 @@
     <Compile Include="SimulatedAckermanVehicle\SimulatedAckermanVehicleService.cs" />
     <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingService.cs" />
     <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingTypes.cs" />
+    <Compile Include="SimToMapTransformations.cs" />
+    <Compile Include="SimulatedLocalizer\SimulatedLocalizerService.cs" />
+    <Compile Include="SimulatedLocalizer\SimulatedLocalizerTypes.cs" />
     <Compile Include="SimulatedLrf\LaserRangeFinderExEntity.cs" />
     <Compile Include="SimulatedLrf\SimulatedLrfService.cs" />
     <Compile Include="SimulatedLrf\SimulatedLrfTypes.cs" />
@@ -195,6 +198,14 @@
       <Project>{f84e44c8-5728-4643-96e8-496b508086ae}</Project>
       <Name>AckermanVehicle</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{97C76C15-EED3-45CF-AC3E-E6A5F7445397}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaiterStupid\WaiterStupid.csproj">
+      <Project>{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}</Project>
+      <Name>WaiterStupid</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">
@@ -203,7 +214,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir) " 
+    <PostBuildEvent>"$(MRDS_PATH)\bin\dssproxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(ProjectDir)$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"$(TargetDir) " /e:"$(ProjectDir) " /pc+
 copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
