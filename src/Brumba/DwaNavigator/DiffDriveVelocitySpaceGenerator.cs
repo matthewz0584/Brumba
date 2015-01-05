@@ -26,7 +26,7 @@ namespace Brumba.DwaNavigator
 
     public class DiffDriveVelocitySpaceGenerator : IVelocitySpaceGenerator
     {
-        public const int STEPS_NUMBER = 3;
+        public const int STEPS_NUMBER = 10;
 
         //readonly double _a;
         //readonly double _b;

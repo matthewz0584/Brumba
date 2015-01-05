@@ -1,3 +1,4 @@
+using System;
 using Brumba.Utils;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
@@ -37,6 +38,11 @@ namespace Brumba.WaiterStupid
         public override string ToString()
         {
             return string.Format("{0} {1}", Position, Bearing);
+        }
+
+        public Vector2 Direction()
+        {
+            return new Vector2((float) Math.Cos(Bearing), (float) Math.Sin(Bearing));
         }
 
         public static Pose operator -(Pose lhs, Pose rhs)

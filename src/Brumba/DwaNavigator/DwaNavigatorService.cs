@@ -47,7 +47,7 @@ namespace Brumba.DwaNavigator
         [Partner("DifferentialDrive", Contract = DrivePxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         DrivePxy.DriveOperations _drive = new DrivePxy.DriveOperations();
 
-        DwaNavigator _dwaNavigator;
+        DwaBootstrapper _dwaBootstrapper;
         
         int _takeEachNthBeam;
         TimerFacade _timerFacade;
@@ -67,7 +67,7 @@ namespace Brumba.DwaNavigator
         {
             _timerFacade = new TimerFacade(this, _state.DeltaT);
 
-            _dwaNavigator = new DwaNavigator(_state.RobotMass, _state.RobotInertiaMoment, _state.WheelRadius, _state.WheelBase, _state.RobotRadius,
+            _dwaBootstrapper = new DwaBootstrapper(_state.RobotMass, _state.RobotInertiaMoment, _state.WheelRadius, _state.WheelBase, _state.RobotRadius,
                 _state.VelocityMax, _state.BreakageDeceleration, _state.CurrentToTorque, _state.FrictionTorque,
                 _state.RangefinderProperties, _state.DeltaT);
 
@@ -96,10 +96,10 @@ namespace Brumba.DwaNavigator
                     var pose = (Pose)DssTypeHelper.TransformFromProxy(localizerSt.EstimatedPose);
                     var velocity = (Pose)DssTypeHelper.TransformFromProxy(velocimeterSt.Velocity);
 
-                    _dwaNavigator.Update(pose, velocity, _state.Target, PreprocessLrfMeasurements(lrfScan.DistanceMeasurements));
+                    _dwaBootstrapper.Update(pose, velocity, _state.Target, PreprocessLrfMeasurements(lrfScan.DistanceMeasurements));
 
-                    _state.CurrentVelocityAcceleration = _dwaNavigator.OptimalVelocity;
-                    _state.VelocititesEvaluation = _dwaNavigator.VelocitiesEvaluation.ToArray();
+                    _state.CurrentVelocityAcceleration = _dwaBootstrapper.OptimalVelocity;
+                    _state.VelocititesEvaluation = _dwaBootstrapper.VelocitiesEvaluation.ToArray();
                     _state.Iteration ++;
 
                     _drive.SetDrivePower(_state.CurrentVelocityAcceleration.WheelAcceleration.X,

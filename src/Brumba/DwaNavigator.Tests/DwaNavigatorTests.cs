@@ -11,12 +11,12 @@ namespace Brumba.DwaNavigator.Tests
     [TestFixture]
     public class DwaNavigatorTests
     {
-        private DwaNavigator _dwan;
+        private DwaBootstrapper _dwan;
 
         [SetUp]
         public void SetUp()
         {
-            _dwan = new DwaNavigator(
+            _dwan = new DwaBootstrapper(
                 robotMass: 9.1,
                 robotInertiaMoment: 0.209,
                 wheelRadius: 0.076,
@@ -76,7 +76,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void WallStraightAhead()
         {
-            _dwan = new DwaNavigator(
+            _dwan = new DwaBootstrapper(
                 robotMass: 9.1,
                 robotInertiaMoment: 0.209,
                 wheelRadius: 0.076,
@@ -137,7 +137,7 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void MaxRangesAreFilteredOut()
         {
-            _dwan = new DwaNavigator(9.1, 0.209, 0.076, 0.3, 0.3, 1.5, 1, 1, 0.03, new RangefinderProperties
+            _dwan = new DwaBootstrapper(9.1, 0.209, 0.076, 0.3, 0.3, 1.5, 1, 1, 0.03, new RangefinderProperties
                     {
                         AngularRange = Constants.Grad * 40,
                         AngularResolution = Constants.Grad * 5,
@@ -153,7 +153,7 @@ namespace Brumba.DwaNavigator.Tests
             //Wall is large, evading by the sharpest turn
             Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.Not.EqualTo(new Vector2(1, 1)));
 
-            _dwan = new DwaNavigator(9.1, 0.209, 0.076, 0.3, 0.3, 1.5, 1, 1, 0.03, new RangefinderProperties
+            _dwan = new DwaBootstrapper(9.1, 0.209, 0.076, 0.3, 0.3, 1.5, 1, 1, 0.03, new RangefinderProperties
                     {
                         AngularRange = Constants.Grad * 40,
                         AngularResolution = Constants.Grad * 5,
@@ -183,6 +183,16 @@ namespace Brumba.DwaNavigator.Tests
             Assert.That(_dwan.OptimalVelocity.Velocity.Linear, Is.GreaterThan(0));
             Assert.That(_dwan.OptimalVelocity.Velocity.Angular, Is.EqualTo(0));
             Assert.That(_dwan.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
+        }
+
+        [Test]
+        public void SubjectiveVelocity()
+        {
+            Assert.That(DwaBootstrapper.SubjectiveVelocity(new Pose(new Vector2(), 0), new Pose(new Vector2(1, 0), 5)), Is.EqualTo(new Velocity(1, 5)));
+            Assert.That(DwaBootstrapper.SubjectiveVelocity(new Pose(new Vector2(), 0), new Pose(new Vector2(-1, 0), 5)), Is.EqualTo(new Velocity(-1, 5)));
+            
+            Assert.That(DwaBootstrapper.SubjectiveVelocity(new Pose(new Vector2(), MathHelper.PiOver2), new Pose(new Vector2(1, 0), 5)).Linear, Is.EqualTo(0).Within(1e-7));
+            Assert.That(DwaBootstrapper.SubjectiveVelocity(new Pose(new Vector2(), MathHelper.PiOver2), new Pose(new Vector2(1, 0), 5)).Angular, Is.EqualTo(5));
         }
     }
 }

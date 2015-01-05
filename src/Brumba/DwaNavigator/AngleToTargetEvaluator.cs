@@ -47,8 +47,7 @@ namespace Brumba.DwaNavigator
         {
             DC.Contract.Ensures(DC.Contract.Result<double>() >= 0 && DC.Contract.Result<double>() <= Constants.Pi);
 
-            return MathHelper2.AngleBetween(Target - pose.Position,
-                new Vector2((float) Math.Cos(pose.Bearing), (float) Math.Sin(pose.Bearing)));
+            return MathHelper2.AngleBetween(Target - pose.Position, pose.Direction());
         }
 
         IMotionModel ChooseMotionModel(Velocity v)

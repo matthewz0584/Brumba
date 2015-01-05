@@ -138,7 +138,7 @@
   <ItemGroup>
     <Compile Include="AngleToTargetEvaluator.cs" />
     <Compile Include="CompositeEvaluator.cs" />
-    <Compile Include="DwaNavigator.cs" />
+    <Compile Include="DwaBootstrapper.cs" />
     <Compile Include="DwaNavigatorService.cs" />
     <Compile Include="DwaProblemOptimizer.cs" />
     <Compile Include="DiffDriveVelocitySpaceGenerator.cs" />

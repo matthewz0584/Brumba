@@ -43,7 +43,7 @@ namespace Brumba.DwaNavigator
         public IVelocityEvaluator VelocityEvaluator { get; set; }
         public Velocity RobotVelocityMax { get; private set; }
 
-        public Tuple<VelocityAcceleration, DenseMatrix> FindOptimalVelocity(Pose velocity)
+        public Tuple<VelocityAcceleration, DenseMatrix> FindOptimalVelocity(Velocity velocity)
         {
             DC.Contract.Requires(VelocityEvaluator != null);
             DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>() != null);
@@ -51,7 +51,7 @@ namespace Brumba.DwaNavigator
             DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item2.IndexedEnumerator().
                 All(c => c.Item3.BetweenRL(-1, 1) || double.IsNegativeInfinity(c.Item3)));
 
-            var velocityWheelAcc = VelocitySpaceGenerator.Generate(new Velocity(velocity.Position.Length(), velocity.Bearing));
+            var velocityWheelAcc = VelocitySpaceGenerator.Generate(velocity);
             var velocitiesEvalsRaw = DenseMatrix.Create(velocityWheelAcc.GetLength(0), velocityWheelAcc.GetLength(1),
                                     (row, col) => VelocityIsFeasible(velocityWheelAcc[row, col].Velocity)
                                             ? VelocityEvaluator.Evaluate(velocityWheelAcc[row, col].Velocity) : Double.NegativeInfinity);

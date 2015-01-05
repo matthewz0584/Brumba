@@ -9,12 +9,12 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
-    public class DwaNavigator
+    public class DwaBootstrapper
     {
         private readonly DwaProblemOptimizer _optimizer;
         private DiffDriveVelocitySpaceGenerator _velocitySpaceGenerator;
 
-        public DwaNavigator(
+        public DwaBootstrapper(
             double robotMass, double robotInertiaMoment, double wheelRadius, double wheelBase, double robotRadius,
             double velocityMax, double breakageDeceleration, double currentToTorque, double frictionTorque,
             RangefinderProperties rangefinderProperties, double dt)
@@ -71,7 +71,7 @@ namespace Brumba.DwaNavigator
                 { new SpeedEvaluator(VelocityMax.Linear), 0.1 }
             });
 
-            var optRes = _optimizer.FindOptimalVelocity(velocity);
+            var optRes = _optimizer.FindOptimalVelocity(SubjectiveVelocity(pose, velocity));
             OptimalVelocity = optRes.Item1;
             VelocitiesEvaluation = optRes.Item2;
 
@@ -82,6 +82,11 @@ namespace Brumba.DwaNavigator
             //var optRes = _optimizer.FindOptimalVelocity(velocity);
             //VelocitiesEvaluation = optRes.Item2;
             //OptimalVelocity = optRes.Item1;
+        }
+
+        public static Velocity SubjectiveVelocity(Pose pose, Pose velocity)
+        {
+            return new Velocity(Vector2.Dot(pose.Direction(), velocity.Position), velocity.Bearing);
         }
     }
 }
