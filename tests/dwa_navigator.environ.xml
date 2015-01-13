@@ -1981,9 +1981,9 @@
           <phys:Name>brick_on_the_way_to_target</phys:Name>
           <phys:ShapeId>Box</phys:ShapeId>
           <phys:Dimensions>
-            <physm:X>1</physm:X>
+            <physm:X>0.5</physm:X>
             <physm:Y>1</physm:Y>
-            <physm:Z>1</physm:Z>
+            <physm:Z>0.5</physm:Z>
           </phys:Dimensions>
           <phys:Radius>0</phys:Radius>
           <phys:MassDensity>

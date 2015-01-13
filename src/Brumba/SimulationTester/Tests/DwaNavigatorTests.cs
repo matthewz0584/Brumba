@@ -99,6 +99,33 @@ namespace Brumba.SimulationTester.Tests
             }
         }
 
+        //[SimTest(10, IsProbabilistic = false)]
+        public class QQ
+        {
+            [Fixture]
+            public DwaNavigatorTests Fixture { get; set; }
+
+            [Prepare]
+            public void PrepareEntities(VisualEntity entity)
+            {
+                entity.State.Pose.Position = new rVector3(0.3f, 0, 3.5f);
+                entity.State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, -MathHelper.PiOver2);
+            }
+
+            [Start]
+            public IEnumerator<ITask> Start()
+            {
+                yield return To.Exec(Fixture.DwaNavigatorPort.SetTarget(new xVector2(10, 0)));
+            }
+
+            [Test]
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
+            {
+                @return(true);
+                yield break;
+            }
+        }
+
         [SimTest(80)]
         public class DriveStraightAvoidObstacle
         {
@@ -108,7 +135,7 @@ namespace Brumba.SimulationTester.Tests
             [Prepare]
             public void PrepareEntities(VisualEntity entity)
             {
-                entity.State.Pose.Position = new rVector3(0.3f, 0, 0);
+                entity.State.Pose.Position = new rVector3(0.3f, 0, 2);
             }
 
             [Start]

@@ -65,20 +65,42 @@ namespace Brumba.DwaNavigator
             DC.Contract.Ensures(VelocitiesEvaluation != null);
             DC.Contract.Ensures(VelocitiesEvaluation != DC.Contract.OldValue(VelocitiesEvaluation));
 
-            _optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
+            var obsts = RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius);
+            var p2t = Vector2.Normalize(target - pose.Position);
+            var norm = new Vector2(p2t.Y, -p2t.X);
+            var borderP1 = pose.Position + norm * (float)RobotRadius * 1.5f;
+            var borderP2 = pose.Position - norm * (float)RobotRadius * 1.5f;
+            if (obsts.All(ob => Math.Sign(Vector2.Dot(borderP1 - (pose.Position + ob), norm)) == -Math.Sign(Vector2.Dot(borderP1 - borderP2, norm)) ||
+                              Math.Sign(Vector2.Dot(borderP2 - (pose.Position + ob), norm)) == -Math.Sign(Vector2.Dot(borderP2 - borderP1, norm))))
+
+            //_optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
+            //{
+            //    { new AngleToTargetEvaluator(pose, target, 1000, Dt, _velocitySpaceGenerator), 0.1 },
+            //    { new DistanceToTargetEvaluator(pose, target, Dt, VelocityMax.Linear), 0.6 },
+            //    { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange, Dt), 0.2 },
+            //    { new SpeedEvaluator(VelocityMax.Linear), 0.1 },
+            //    //{ new PersistenceEvaluator(pose, velocity, VelocityMax.Linear, Dt), 0.2 }
+            //});
+                _optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
             {
-                { new AngleToTargetEvaluator(pose, target, 1000, Dt, _velocitySpaceGenerator), 0.8 },
-                //{ new DistanceToTargetEvaluator(pose, target, Dt, VelocityMax.Linear), 0.65 },
-                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius && ob.Length() <= 2), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange, Dt), 0.1 },
+                { new AngleToTargetEvaluator(pose, target, 1000, Dt, _velocitySpaceGenerator), 0.7 },
+                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange, Dt), 0.2 },
                 { new SpeedEvaluator(VelocityMax.Linear), 0.1 },
-                //{ new PersistenceEvaluator(pose, velocity, VelocityMax.Linear, Dt), 0.1 }
+            });
+            else
+                _optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
+            {
+                { new DistanceToTargetEvaluator(pose, target, Dt, VelocityMax.Linear), 0.7 },
+                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange, Dt), 0.2 },
+                { new SpeedEvaluator(VelocityMax.Linear), 0.1 },
             });
 
             var optRes = _optimizer.FindOptimalVelocity(SubjectiveVelocity(pose, velocity));
             OptimalVelocity = optRes.Item1;
             VelocitiesEvaluation = optRes.Item2;
 
-            //_optimizer.VelocityEvaluator = new DistanceToTargetEvaluator(pose, target, Dt, VelocityMax.Linear);
+            //_optimizer.VelocityEvaluator = new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange, Dt);
+            //_optimizer.VelocityEvaluator = new AngleToTargetEvaluator(pose, target, 1000, Dt, _velocitySpaceGenerator);
             //optRes = _optimizer.FindOptimalVelocity(SubjectiveVelocity(pose, velocity));
             //VelocitiesEvaluation = optRes.Item2;
         }

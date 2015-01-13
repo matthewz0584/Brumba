@@ -95,6 +95,9 @@ namespace Brumba.DwaNavigator
                     DC.Contract.Requires(velocimeterSt != null);
                     DC.Contract.Requires(localizerSt != null);
 
+                    if (lrfScan.DistanceMeasurements.Length < 2)
+                        return;
+
                     var pose = (Pose)DssTypeHelper.TransformFromProxy(localizerSt.EstimatedPose);
                     var velocity = (Pose)DssTypeHelper.TransformFromProxy(velocimeterSt.Velocity);
 
