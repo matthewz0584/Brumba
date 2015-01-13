@@ -6,6 +6,7 @@ using Brumba.WaiterStupid;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
+using xMatrix = Microsoft.Xna.Framework.Matrix;
 
 namespace Brumba.DwaNavigator
 {
@@ -66,27 +67,88 @@ namespace Brumba.DwaNavigator
 
             _optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
             {
-                { new AngleToTargetEvaluator(pose, target, _velocitySpaceGenerator.WheelsToRobotKinematics(new Vector2(-(float)25, (float)25)).Angular, Dt), 0.7 },
-                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange, Dt), 0.2 },
-                { new SpeedEvaluator(VelocityMax.Linear), 0.1 }
+                { new AngleToTargetEvaluator(pose, target, 1000, Dt, _velocitySpaceGenerator), 0.8 },
+                //{ new DistanceToTargetEvaluator(pose, target, Dt, VelocityMax.Linear), 0.65 },
+                { new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius && ob.Length() <= 2), RobotRadius, BreakageDeceleration, RangefinderProperties.MaxRange, Dt), 0.1 },
+                { new SpeedEvaluator(VelocityMax.Linear), 0.1 },
+                //{ new PersistenceEvaluator(pose, velocity, VelocityMax.Linear, Dt), 0.1 }
             });
 
             var optRes = _optimizer.FindOptimalVelocity(SubjectiveVelocity(pose, velocity));
             OptimalVelocity = optRes.Item1;
             VelocitiesEvaluation = optRes.Item2;
 
-            //_optimizer.VelocityEvaluator = new ObstaclesEvaluator(
-            //        RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= _robotRadius),
-            //        _robotRadius, BreakageDeceleration, RangefinderProperties.MaxRange);
-
-            //var optRes = _optimizer.FindOptimalVelocity(velocity);
+            //_optimizer.VelocityEvaluator = new DistanceToTargetEvaluator(pose, target, Dt, VelocityMax.Linear);
+            //optRes = _optimizer.FindOptimalVelocity(SubjectiveVelocity(pose, velocity));
             //VelocitiesEvaluation = optRes.Item2;
-            //OptimalVelocity = optRes.Item1;
         }
 
         public static Velocity SubjectiveVelocity(Pose pose, Pose velocity)
         {
             return new Velocity(Vector2.Dot(pose.Direction(), velocity.Position), velocity.Bearing);
+        }
+    }
+
+    class DistanceToTargetEvaluator : IVelocityEvaluator
+    {
+        private readonly Pose _pose;
+        private readonly Vector2 _target;
+        private readonly double _dt;
+        private readonly double _linearVelocityMax;
+
+        public DistanceToTargetEvaluator(Pose pose, Vector2 target, double dt, double linearVelocityMax)
+        {
+            _pose = pose;
+            _target = target;
+            _dt = dt;
+            _linearVelocityMax = linearVelocityMax;
+        }
+
+        public double Evaluate(Velocity v)
+        {
+            var newPosition = MergeSequentialPoseDeltas(_pose, ChooseMotionModel(v).PredictPoseDelta(_dt)).Position;
+            return ((_target - _pose.Position).Length() - (_target - newPosition).Length()) / (2 * _linearVelocityMax * _dt) + 0.5;
+        }
+
+        IMotionModel ChooseMotionModel(Velocity v)
+        {
+            return Math.Abs(v.Angular) < 1e-5 ? (IMotionModel)new LineMotionModel(v.Linear) : new CircleMotionModel(v);
+        }
+
+        static Pose MergeSequentialPoseDeltas(Pose delta1, Pose delta2)
+        {
+            var originTransform = xMatrix.CreateRotationZ((float)delta1.Bearing) * xMatrix.CreateTranslation(new Vector3(delta1.Position, 0));
+            return new Pose(Vector2.Transform(delta2.Position, originTransform), delta1.Bearing + delta2.Bearing);
+        }
+    }
+
+    class PersistenceEvaluator : IVelocityEvaluator
+    {
+        private readonly Pose _pose;
+        private readonly Pose _velocity;
+        private readonly double _velocityMax;
+        private readonly double _dt;
+
+        public PersistenceEvaluator(Pose pose, Pose velocity, double velocityMax, double dt)
+        {
+            _pose = pose;
+            _velocity = velocity;
+            _velocityMax = velocityMax;
+            _dt = dt;
+        }
+
+        public double Evaluate(Velocity v)
+        {
+            var qq = new Pose(new Vector2(), v.Angular * _dt).Direction() * (float)v.Linear;
+            var ww = new Pose(new Vector2(), _velocity.Bearing * _dt).Direction();
+            var originTransform1 = xMatrix.CreateRotationZ((float)_pose.Bearing);
+            var originTransform2 = xMatrix.CreateRotationZ((float)(_velocity.Bearing * _dt));
+            return 1 - (Vector2.Transform(qq, originTransform1) - Vector2.Transform(_velocity.Position, originTransform2)).Length() / 2 / _velocityMax;
+
+            //var qq = new Pose(new Vector2(), v.Angular * _dt).Direction();
+            //var originTransform1 = xMatrix.CreateRotationZ((float)_pose.Bearing);
+            //var originTransform2 = xMatrix.CreateRotationZ((float)(_velocity.Bearing * _dt));
+            //return 1 - (Vector2.Transform(qq, originTransform1) - Vector2.Transform(Vector2.Normalize(_velocity.Position), originTransform2)).Length() / 2;
         }
     }
 }

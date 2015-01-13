@@ -60,6 +60,8 @@ namespace Brumba.DwaNavigator
 
         protected override void Start()
         {
+            _state.VelocititesEvaluation = new double[1, 1];
+
             SpawnIterator(StartIt);
         }
 

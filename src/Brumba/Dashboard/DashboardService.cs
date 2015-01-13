@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Brumba.Utils;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Ccr.Adapters.Wpf;
 using Microsoft.Ccr.Core;
@@ -63,6 +64,7 @@ namespace Brumba.Dashboard
 	    }
 
 	    public IEnumerable<MatrixCell> DwaVelocitiesEvaluation { get; private set; }
+        public IEnumerable<MatrixCell> DwaVelocitiesEvaluationMax { get; private set; }
 
 	    public string CurrentVelocity
 	    {
@@ -136,8 +138,15 @@ namespace Brumba.Dashboard
             DwaNavigatorPxy.DwaNavigatorState dwaState = null;
             yield return _dwaNavigator.Get().Receive(ds => dwaState = ds);
 
-            DwaVelocitiesEvaluation = DenseMatrix.OfArray(dwaState.VelocititesEvaluation ?? new double[1,1]).IndexedEnumerator().
-                Select(c => new MatrixCell { Row = c.Item1, Col = c.Item2, Value = c.Item3 <= -1 ? -1 : c.Item3 }).ToList();
+            DwaVelocitiesEvaluation =
+                DenseMatrix.OfArray(dwaState.VelocititesEvaluation).IndexedEnumerator().
+                    Select(c => new MatrixCell
+                            {
+                                Row = c.Item1 - dwaState.VelocititesEvaluation.GetLength(0) / 2,
+                                Col = c.Item2 - dwaState.VelocititesEvaluation.GetLength(1) / 2,
+                                Value = c.Item3 <= -1 ? -1 : c.Item3
+                            }).ToList();
+            DwaVelocitiesEvaluationMax = DwaVelocitiesEvaluation.OrderByDescending(mc => mc.Value).First().AsCol().ToList();
             _currentVelocityAcceleration = dwaState.CurrentVelocityAcceleration;
             _currentDwaIteration = dwaState.Iteration;
 
@@ -146,6 +155,7 @@ namespace Brumba.Dashboard
                         try
                         {
                             PropertyChanged(this, new PropertyChangedEventArgs("DwaVelocitiesEvaluation"));
+                            PropertyChanged(this, new PropertyChangedEventArgs("DwaVelocitiesEvaluationMax"));
                         }
                         catch (Exception)
                         {}

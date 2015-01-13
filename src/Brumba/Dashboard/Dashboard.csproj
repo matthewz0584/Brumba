@@ -160,6 +160,12 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{97C76C15-EED3-45CF-AC3E-E6A5F7445397}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">
     <ProxyDelaySign>/delaysign+</ProxyDelaySign>

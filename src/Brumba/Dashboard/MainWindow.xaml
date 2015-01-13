@@ -24,7 +24,14 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <telerik:RadHeatMap Grid.Row="0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="300" Height="300">
+                <telerik:RadHeatMap Grid.Row="0" RenderTransformOrigin="0.5,0.5" 
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                                    Width="300" Height="300" 
+                                    ShowToolTips="True"
+                                    SelectionMode="SingleDataItem" SelectedCellBorderThickness="2" SelectedCellBorderColor="LawnGreen">
+                    <telerik:RadHeatMap.ToolTipSettings>
+                        <telerik:HeatMapToolTipSettings InitialShowDelay="0" ToolTipFormat="F5"/>
+                    </telerik:RadHeatMap.ToolTipSettings>
                     <telerik:RadHeatMap.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform/>
@@ -34,7 +41,7 @@
                         </TransformGroup>
                     </telerik:RadHeatMap.RenderTransform>
                     <telerik:RadHeatMap.Definition>
-                        <telerik:CategoricalDefinition ItemsSource="{Binding DwaVelocitiesEvaluation, Mode=OneWay}" 
+                        <telerik:CategoricalDefinition ItemsSource="{Binding DwaVelocitiesEvaluation, Mode=OneWay}" SelectedItems="{Binding DwaVelocitiesEvaluationMax}"
                                         RowGroupMemberPath="Row" 
                                         ColumnGroupMemberPath="Col" 
                                         ValuePath="Value"
