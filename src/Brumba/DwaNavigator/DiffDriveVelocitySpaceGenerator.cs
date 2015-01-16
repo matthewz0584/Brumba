@@ -7,14 +7,14 @@ using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator
 {
-    [DC.ContractClassAttribute(typeof(VelocitySpaceGeneratorContract))]
+    [DC.ContractClassAttribute(typeof(IVelocitySpaceGeneratorContract))]
     public interface IVelocitySpaceGenerator
     {
         VelocityAcceleration[,] Generate(Velocity center);
     }
 
     [DC.ContractClassForAttribute(typeof(IVelocitySpaceGenerator))]
-    abstract class VelocitySpaceGeneratorContract : IVelocitySpaceGenerator
+    abstract class IVelocitySpaceGeneratorContract : IVelocitySpaceGenerator
     {
         public VelocityAcceleration[,] Generate(Velocity center)
         {
@@ -24,7 +24,22 @@ namespace Brumba.DwaNavigator
         }
     }
 
-    public class DiffDriveVelocitySpaceGenerator : IVelocitySpaceGenerator
+    [DC.ContractClassAttribute(typeof(IVelocityPredictorContract))]
+    public interface IVelocityPredictor
+    {
+        Velocity PredictVelocity(Velocity velocityCurrent, Vector2 currents, double dt);
+    }
+
+    [DC.ContractClassForAttribute(typeof(IVelocityPredictor))]
+    abstract class IVelocityPredictorContract : IVelocityPredictor
+    {
+        public Velocity PredictVelocity(Velocity velocityCurrent, Vector2 currents, double dt)
+        {
+            return default(Velocity);
+        }
+    }
+
+    public class DiffDriveVelocitySpaceGenerator : IVelocitySpaceGenerator, IVelocityPredictor
     {
         public const int STEPS_NUMBER = 10;
 
@@ -79,9 +94,14 @@ namespace Brumba.DwaNavigator
             foreach (var p in GenerateWheelAccelerationGrid())
                 //Calculate omega values for Dt/2, I hope that it will represent reality closer than value at the end of period
                 velocitySpace[p.X + STEPS_NUMBER, p.Y + STEPS_NUMBER] = new VelocityAcceleration(
-                        WheelsToRobotKinematics(PredictWheelVelocities(RobotKinematicsToWheels(diamondCenter), p.ToVec() / STEPS_NUMBER, Dt / 2)),
+                        PredictVelocity(diamondCenter, p.ToVec() / STEPS_NUMBER, Dt / 2),
                         p.ToVec() / STEPS_NUMBER);
             return velocitySpace;
+        }
+
+        public Velocity PredictVelocity(Velocity velocityCurrent, Vector2 currents, double dt)
+        {
+            return WheelsToRobotKinematics(PredictWheelVelocities(RobotKinematicsToWheels(velocityCurrent), currents, dt));
         }
 
         public Vector2 PredictWheelVelocities(Vector2 omegaCurrent, Vector2 currents, double dt)

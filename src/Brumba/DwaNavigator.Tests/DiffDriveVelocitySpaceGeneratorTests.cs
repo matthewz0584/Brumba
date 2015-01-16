@@ -39,29 +39,29 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void PredictWheelVelocititesConstants()
         {
-            Func<DiffDriveVelocitySpaceGenerator, Vector2> pr = ddvsg => ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(1, 1), 1);
+            Func<DiffDriveVelocitySpaceGenerator, Vector2> predict = ddvsg => ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(1, 1), 1);
 
-            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Greater(
-                        pr(new DiffDriveVelocitySpaceGenerator(10, 1, 1, 1, 1, 1, 0, 1))));
-            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)), Is.EqualTo(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1))));
-            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Greater(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 10, 1, 1, 1, 0, 1))));
-            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)), Is.EqualTo(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1))));
-            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 10, 0, 1)).Greater(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1))));
+            Assert.That(predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Greater(
+                        predict(new DiffDriveVelocitySpaceGenerator(10, 1, 1, 1, 1, 1, 0, 1))));
+            Assert.That(predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)), Is.EqualTo(
+                        predict(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1))));
+            Assert.That(predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Greater(
+                        predict(new DiffDriveVelocitySpaceGenerator(1, 1, 10, 1, 1, 1, 0, 1))));
+            Assert.That(predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)), Is.EqualTo(
+                        predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1))));
+            Assert.That(predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 10, 0, 1)).Greater(
+                        predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1))));
 
-            pr = ddvsg => ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(-1, 1), 1);
+            predict = ddvsg => ddvsg.PredictWheelVelocities(new Vector2(), new Vector2(-1, 1), 1);
 
-            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).X, Is.LessThan(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1)).X));
-            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Y, Is.GreaterThan(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1)).Y));
-            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).X, Is.GreaterThan(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1)).X));
-            Assert.That(pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Y, Is.LessThan(
-                        pr(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1)).Y));
+            Assert.That(predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).X, Is.LessThan(
+                        predict(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1)).X));
+            Assert.That(predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Y, Is.GreaterThan(
+                        predict(new DiffDriveVelocitySpaceGenerator(1, 10, 1, 1, 1, 1, 0, 1)).Y));
+            Assert.That(predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).X, Is.GreaterThan(
+                        predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1)).X));
+            Assert.That(predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 1, 1, 1, 0, 1)).Y, Is.LessThan(
+                        predict(new DiffDriveVelocitySpaceGenerator(1, 1, 1, 10, 1, 1, 0, 1)).Y));
         }
 
         [Test]

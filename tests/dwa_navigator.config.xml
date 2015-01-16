@@ -22,5 +22,6 @@
       <Bearing>0</Bearing>
     </OriginPose>
   </RangefinderProperties>
+  <LaneWidthCoef>1.5</LaneWidthCoef>
   <DeltaT>0.25</DeltaT>
 </DwaNavigatorState>

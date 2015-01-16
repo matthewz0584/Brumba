@@ -9,8 +9,6 @@ using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using Microsoft.Robotics.Simulation.Engine;
-using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Xna.Framework;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
 using LocalizerPxy = Brumba.GenericLocalizer.Proxy;
@@ -71,7 +69,7 @@ namespace Brumba.DwaNavigator
 
             _dwaBootstrapper = new DwaBootstrapper(_state.RobotMass, _state.RobotInertiaMoment, _state.WheelRadius, _state.WheelBase, _state.RobotRadius,
                 _state.VelocityMax, _state.BreakageDeceleration, _state.CurrentToTorque, _state.FrictionTorque,
-                _state.RangefinderProperties, _state.DeltaT);
+                _state.RangefinderProperties, _state.LaneWidthCoef, _state.DeltaT);
 
             _takeEachNthBeam = 1;
 
@@ -95,7 +93,8 @@ namespace Brumba.DwaNavigator
                     DC.Contract.Requires(velocimeterSt != null);
                     DC.Contract.Requires(localizerSt != null);
 
-                    if (lrfScan.DistanceMeasurements.Length < 2)
+                    //Defective lrf scan
+                    if (_state.Iteration++ < 1)
                         return;
 
                     var pose = (Pose)DssTypeHelper.TransformFromProxy(localizerSt.EstimatedPose);
@@ -105,7 +104,7 @@ namespace Brumba.DwaNavigator
 
                     _state.CurrentVelocityAcceleration = _dwaBootstrapper.OptimalVelocity;
                     _state.VelocititesEvaluation = _dwaBootstrapper.VelocitiesEvaluation.ToArray();
-                    _state.Iteration ++;
+                    //_state.Iteration ++;
 
                     _drive.SetDrivePower(_state.CurrentVelocityAcceleration.WheelAcceleration.X,
                         _state.CurrentVelocityAcceleration.WheelAcceleration.Y);

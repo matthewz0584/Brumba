@@ -143,7 +143,7 @@ namespace Brumba.SimulationTester.Tests
             }
         }
 
-		static rPose ExtractPose(IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities)
+		public static rPose ExtractPose(IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities)
 		{
 			return (rPose)DssTypeHelper.TransformFromProxy(simStateEntities.Single().State.Pose);
 		}

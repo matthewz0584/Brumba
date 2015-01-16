@@ -10,25 +10,25 @@ namespace Brumba.DwaNavigator
 {
     public class ObstaclesEvaluator : IVelocityEvaluator
     {
-        public ObstaclesEvaluator(IEnumerable<Vector2> obstacles, double robotRadius, double breakageDeceleration, double rangefinderMaxRange, double dt)
+        public ObstaclesEvaluator(IEnumerable<Vector2> obstacles, double robotRadius, double breakageDeceleration, double laneWidthCoef, double dt)
         {
             DC.Contract.Requires(robotRadius > 0);
             DC.Contract.Requires(obstacles != null);
-            DC.Contract.Requires(obstacles.All(o => o.Length().BetweenR((float)robotRadius, (float)(rangefinderMaxRange + robotRadius))));
             DC.Contract.Requires(breakageDeceleration > 0);
+            DC.Contract.Requires(laneWidthCoef >= 1);
             DC.Contract.Requires(dt > 0);
 
             Obstacles = obstacles;
             RobotRadius = robotRadius;
             BreakageDeceleration = breakageDeceleration;
-            RangefinderMaxRange = rangefinderMaxRange;
+            LaneWidthCoef = laneWidthCoef;
             Dt = dt;
         }
 
         public IEnumerable<Vector2> Obstacles { get; private set; }
         public double RobotRadius { get; private set; }
         public double BreakageDeceleration { get; private set; }
-        public double RangefinderMaxRange { get; private set; }
+        public double LaneWidthCoef { get; private set; }
         public double Dt { get; private set; }
 
         public double Evaluate(Velocity v)
@@ -40,19 +40,16 @@ namespace Brumba.DwaNavigator
                 return 1;
             if (!IsVelocityAdmissible(v, dist))
                 return double.NegativeInfinity;
-            return dist / ((RangefinderMaxRange + RobotRadius + 1.5 * RobotRadius) * Constants.Pi - RobotRadius);
+            return 1 / (-dist / (4*RobotRadius) - 1) + 1;
         }
 
         public double GetDistanceToClosestObstacle(Velocity v)
         {
             DC.Contract.Requires(v.Linear >= 0);
-            DC.Contract.Ensures(double.IsPositiveInfinity(DC.Contract.Result<double>()) ||
-                DC.Contract.Result<double>().BetweenRL(0, (RangefinderMaxRange + RobotRadius + 1.5 * RobotRadius) * Constants.Pi - RobotRadius));
+            DC.Contract.Ensures(DC.Contract.Result<double>() >= 0);
 
             //Obstacles are in robot coordinates system
-            return (Math.Abs(v.Angular) <= 0.01 ?
-                DistancesToObstaclesOnLine() :
-                DistancesToObstaclesOnCircle(new CircleMotionModel(v))).
+            return (v.IsRectilinear ? DistancesToObstaclesOnLine() : DistancesToObstaclesOnCircle(new CirclularMotionModel(v))).
                 Select(d => d < RobotRadius ? RobotRadius : d).
                 DefaultIfEmpty(double.PositiveInfinity).Min() - RobotRadius;
         }
@@ -69,23 +66,21 @@ namespace Brumba.DwaNavigator
         public IEnumerable<double> DistancesToObstaclesOnLine()
         {
             DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>() != null);
-            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>().All(d => double.IsPositiveInfinity(d) ||
-                d.BetweenRL(0, RangefinderMaxRange + RobotRadius)));
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>().All(d => d > 0));
 
-            return Obstacles.Where(o => o.Y <= 1.5 * RobotRadius && o.Y >= -1.5 * RobotRadius && o.X >= 0).Select(o => (double)o.X);
+            return Obstacles.Where(o => o.Y <= LaneWidthCoef * RobotRadius && o.Y >= -LaneWidthCoef * RobotRadius && o.X >= 0).Select(o => (double)o.X);
         }
 
-        public IEnumerable<double> DistancesToObstaclesOnCircle(CircleMotionModel cmm)
+        public IEnumerable<double> DistancesToObstaclesOnCircle(CirclularMotionModel cmm)
         {
             DC.Contract.Requires(cmm != null);
             DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>() != null);
-            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>().All(d => double.IsPositiveInfinity(d) ||
-                d.BetweenRL(0, (RangefinderMaxRange + RobotRadius + 1.5 * RobotRadius) * Constants.Pi)));
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<double>>().All(d => d >= 0));
 
             return Obstacles.
                 Where(o =>
-                    PointIsInCircle(true, cmm.Center, o, Math.Abs(cmm.Radius) + 1.5 * RobotRadius) &&
-                    ((Math.Abs(cmm.Radius) - 1.5 * RobotRadius) <= 0 || PointIsInCircle(false, cmm.Center, o, Math.Abs(cmm.Radius) - 1.5 * RobotRadius))).
+                    PointIsInCircle(true, cmm.Center, o, Math.Abs(cmm.Radius) + LaneWidthCoef * RobotRadius) &&
+                    ((Math.Abs(cmm.Radius) - LaneWidthCoef * RobotRadius) <= 0 || PointIsInCircle(false, cmm.Center, o, Math.Abs(cmm.Radius) - LaneWidthCoef * RobotRadius))).
                 Select(o =>
                 {
                     var angularDistanceAlongCircle = MathHelper2.AngleBetween(o - cmm.Center, -cmm.Center);

@@ -20,13 +20,13 @@ namespace Brumba.DwaNavigator
         }
     }
 
-    public class CircleMotionModel : IMotionModel
+    public class CirclularMotionModel : IMotionModel
     {
         private readonly Velocity _v;
         private readonly double _radius;
         private readonly Vector2 _center;
 
-        public CircleMotionModel(Velocity v)
+        public CirclularMotionModel(Velocity v)
         {
             DC.Contract.Requires(v.Angular != 0);
             DC.Contract.Ensures(Radius > double.MinValue && Radius < double.MaxValue);
@@ -55,11 +55,11 @@ namespace Brumba.DwaNavigator
         }
     }
 
-    public class LineMotionModel : IMotionModel
+    public class LinearMotionModel : IMotionModel
     {
         private readonly double _linearVelocity;
 
-        public LineMotionModel(double linearVelocity)
+        public LinearMotionModel(double linearVelocity)
         {
             _linearVelocity = linearVelocity;
         }

@@ -46,6 +46,8 @@ namespace Brumba.DwaNavigator
         [DataMember]
         public RangefinderProperties RangefinderProperties { get; set; }
         [DataMember]
+        public double LaneWidthCoef { get; set; }
+        [DataMember]
         public float DeltaT { get; set; }
     }
 

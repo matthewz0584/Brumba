@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
 
@@ -16,6 +17,11 @@ namespace Brumba.DwaNavigator
         public double Linear { get; set; }
         [DataMember]
         public double Angular { get; set; }
+
+        public bool IsRectilinear
+        {
+            get { return Math.Abs(Angular) <= 0.01; }
+        }
 
         public override string ToString()
         {
