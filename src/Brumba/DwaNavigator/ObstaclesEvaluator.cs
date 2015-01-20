@@ -88,6 +88,17 @@ namespace Brumba.DwaNavigator
                 });
         }
 
+        public bool IsStraightPathClear(Vector2 target)
+        {
+            var normal = Vector2.Normalize(Vector2.Transform(target, Matrix.CreateRotationZ(MathHelper.PiOver2)));
+
+            return !Obstacles.Any(ob =>
+                Vector2.Dot(target, ob) >= 0 &&
+                Vector2.Dot(target, ob - target) <= 0 &&
+                Vector2.Dot(normal, ob - normal * (float)RobotRadius) <= 0 &&
+                Vector2.Dot(normal, ob + normal * (float)RobotRadius) >= 0);
+        }
+
         static bool PointIsInCircle(bool inside, Vector2 curveCenter, Vector2 point, double radius)
         {
             DC.Contract.Requires(radius > 0);

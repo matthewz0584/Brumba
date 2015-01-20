@@ -115,25 +115,39 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void IsVelocityAdmissible()
         {
-            var dc = new ObstaclesEvaluator(new Vector2[0], 1, 4, 1, 0.25);
+            var oe = new ObstaclesEvaluator(new Vector2[0], 1, 4, 1, 0.25);
 
-            Assert.That(dc.IsVelocityAdmissible(new Velocity(1, 0), 1));
-            Assert.That(dc.IsVelocityAdmissible(new Velocity(1, 1000), 1));
+            Assert.That(oe.IsVelocityAdmissible(new Velocity(1, 0), 1));
+            Assert.That(oe.IsVelocityAdmissible(new Velocity(1, 1000), 1));
 
-            Assert.That(dc.IsVelocityAdmissible(new Velocity(1, 0), 0.24), Is.False);
-            Assert.That(dc.IsVelocityAdmissible(new Velocity(1, 0), 0.3), Is.False);
+            Assert.That(oe.IsVelocityAdmissible(new Velocity(1, 0), 0.24), Is.False);
+            Assert.That(oe.IsVelocityAdmissible(new Velocity(1, 0), 0.3), Is.False);
         }
 
         [Test]
         public void Evaluate()
         {
-            var dc = new ObstaclesEvaluator(new[] { new Vector2(3, 0), new Vector2(3, 2) }, 1, 0.5, 1, 0.25);
+            var oe = new ObstaclesEvaluator(new[] { new Vector2(3, 0), new Vector2(3, 2) }, 1, 0.5, 1, 0.25);
 
-            Assert.That(dc.Evaluate(new Velocity(0, 10)), Is.EqualTo(1));
-            Assert.That(dc.Evaluate(new Velocity(1, 1)), Is.EqualTo(1));
-            Assert.That(double.IsNegativeInfinity(dc.Evaluate(new Velocity(10, 0))));
-            Assert.That(dc.Evaluate(new Velocity(1, 0)), Is.GreaterThan(0).And.LessThan(1));
-            Assert.That(dc.Evaluate(new Velocity(1, 0.5)), Is.GreaterThan(dc.Evaluate(new Velocity(1, 0))).And.LessThan(1));
+            Assert.That(oe.Evaluate(new Velocity(0, 10)), Is.EqualTo(1));
+            Assert.That(oe.Evaluate(new Velocity(1, 1)), Is.EqualTo(1));
+            Assert.That(double.IsNegativeInfinity(oe.Evaluate(new Velocity(10, 0))));
+            Assert.That(oe.Evaluate(new Velocity(1, 0)), Is.GreaterThan(0).And.LessThan(1));
+            Assert.That(oe.Evaluate(new Velocity(1, 0.5)), Is.GreaterThan(oe.Evaluate(new Velocity(1, 0))).And.LessThan(1));
+        }
+
+        [Test]
+        public void IsStraightPathClear()
+        {
+            var oe = new ObstaclesEvaluator(new[] { new Vector2(5, 2.1f), new Vector2(1.9f, 5)  }, 2, 0.5, 1, 0.25);
+
+            Assert.That(oe.IsStraightPathClear(new Vector2(10, 0)));
+            Assert.That(oe.IsStraightPathClear(new Vector2(10, 1)), Is.False);
+            Assert.That(oe.IsStraightPathClear(new Vector2(0, 10)), Is.False);
+            Assert.That(oe.IsStraightPathClear(new Vector2(-1, 10)));
+
+            Assert.That(oe.IsStraightPathClear(new Vector2(0, -10)));
+            Assert.That(oe.IsStraightPathClear(new Vector2(0, 3)));
         }
     }
 }

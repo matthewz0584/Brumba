@@ -86,6 +86,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DwaNavigator.Tests", "DwaNavigator.Tests\DwaNavigator.Tests.csproj", "{66831759-1D1D-45F3-98FD-77723F8CD2F0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard", "Dashboard\Dashboard.csproj", "{20A6F3F1-9FCA-418B-8807-247ABD555555}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8B767A0E-F966-4B60-BF0C-3B646B6ACA31} = {8B767A0E-F966-4B60-BF0C-3B646B6ACA31}
+		{4372FAD1-D6CE-404D-8738-7A7014B0623A} = {4372FAD1-D6CE-404D-8738-7A7014B0623A}
+		{6293A5DA-4179-4B3D-93B5-84239B65C1A7} = {6293A5DA-4179-4B3D-93B5-84239B65C1A7}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
