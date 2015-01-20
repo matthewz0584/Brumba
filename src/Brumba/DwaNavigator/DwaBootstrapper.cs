@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.DiffDriveOdometry;
 using Brumba.McLrfLocalizer;
 using Brumba.WaiterStupid;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -41,10 +42,10 @@ namespace Brumba.DwaNavigator
 
             _velocitySpaceGenerator = new DiffDriveVelocitySpaceGenerator(robotMass, robotInertiaMoment, wheelRadius, wheelBase, velocityMax, currentToTorque, frictionTorque, dt);
             
-            VelocitiesEvaluation = new DenseMatrix(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1);
-
             _optimizer = new DwaProblemOptimizer(_velocitySpaceGenerator, new Velocity(velocityMax,
                     _velocitySpaceGenerator.WheelsToRobotKinematics(new Vector2(-1, 1) * (float)(velocityMax / wheelRadius)).Angular));
+
+            VelocitiesEvaluation = new DenseMatrix(2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER + 1);
         }
 
         public double RobotRadius { get; private set; }
@@ -67,20 +68,15 @@ namespace Brumba.DwaNavigator
             DC.Contract.Ensures(VelocitiesEvaluation != DC.Contract.OldValue(VelocitiesEvaluation));
 
             var obstaclesEvaluator = new ObstaclesEvaluator(RangefinderProperties.PreprocessMeasurements(obstacles).Where(ob => ob.Length() >= RobotRadius), RobotRadius, BreakageDeceleration, LaneWidthCoef, Dt);
-            if (obstaclesEvaluator.IsStraightPathClear(Vector2.Transform(target - pose.Position, xMatrix.CreateRotationZ(-(float)pose.Bearing))))
-                _optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
+
+            _optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
                 {
-                    { new AngleToTargetEvaluator(pose, target, Dt, _velocitySpaceGenerator), 0.7 },
+                    { obstaclesEvaluator.IsStraightPathClear(Vector2.Transform(target - pose.Position, xMatrix.CreateRotationZ(-(float)pose.Bearing))) ? (IVelocityEvaluator)
+                        new AngleToTargetEvaluator(pose, target, Dt, _velocitySpaceGenerator) :
+                        new DistanceToTargetEvaluator(pose, target, VelocityMax, Dt), 0.7 },
                     { obstaclesEvaluator, 0.2 },
                     { new SpeedEvaluator(VelocityMax), 0.1 },
                 });
-            else
-                _optimizer.VelocityEvaluator = new CompositeEvaluator(new Dictionary<IVelocityEvaluator, double>
-                {
-                    { new DistanceToTargetEvaluator(pose, target, VelocityMax, Dt), 0.7 },
-                    { obstaclesEvaluator, 0.2 },
-                    { new SpeedEvaluator(VelocityMax), 0.1 },
-                }); 
 
             var optRes = _optimizer.FindOptimalVelocity(SubjectiveVelocity(pose, velocity));
             OptimalVelocity = optRes.Item1;

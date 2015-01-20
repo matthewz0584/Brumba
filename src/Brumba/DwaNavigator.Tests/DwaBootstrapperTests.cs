@@ -1,4 +1,5 @@
 using System;
+using Brumba.DiffDriveOdometry;
 using Brumba.McLrfLocalizer;
 using Brumba.Utils;
 using Brumba.WaiterStupid;
@@ -35,18 +36,6 @@ namespace Brumba.DwaNavigator.Tests
                 },
                 laneWidthCoef: 1,
                 dt: 0.25);
-        }
-
-        //[Test]
-        //public void AccelerationMax()
-        //{
-        //    Assert.That(_dwab.AccelerationMax, Is.EqualTo(new Velocity(0.076d / 2 * (4 + 4), 0.076d / 0.3d * (4 + 4))));
-        //}
-
-        [Test]
-        public void VelocityMax()
-        {
-            Assert.That(_dwab.VelocityMax, Is.EqualTo(new Velocity(1.5, 0.076d / 0.3d * (1.5 + 1.5) / 0.076)));
         }
 
         [Test]
@@ -123,7 +112,7 @@ namespace Brumba.DwaNavigator.Tests
 
             //Evading obstacle by turning on place
             Console.WriteLine(_dwab.VelocitiesEvaluation.ToString(7, 7));
-            Assert.That(_dwab.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(0.2f, -0.2f)).Or.EqualTo(new Vector2(-0.2f, 0.2f)));
+            Assert.That(_dwab.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(-0.9f, 1)));
 
             _dwab.Update(new Pose(new Vector2(), 0),
                         new Pose(new Vector2(), 0),
