@@ -48,7 +48,7 @@ namespace Brumba.SimulationTester.Tests
             OdometryPort = testerService.ForwardTo<DiffDriveOdometry.Proxy.DiffDriveOdometryOperations>("odometry@");
 		}
 
-        //[SimTest(8, IsProbabilistic = false)]
+        //[SimTest(8)]
 		public class DriveStraight
 		{
             [Fixture]
@@ -73,8 +73,9 @@ namespace Brumba.SimulationTester.Tests
 
                 //Velocity component total differential (left and right wheels ticks are variables) is WheelRadius * RadiansPerTick / deltaT * (deltaTicksL + deltaTicksR)
                 //Which equals 0.13 given test constants and possible offset by 1 tick due to ticks and time delta discretization
+                //Similar calculation with angular velocity gives 0.38 error for 1 tick
                 @return(simPosition.EqualsRelatively(odometry.Pose.Position, 0.05) && odometry.Pose.Bearing.AlmostEqualWithError(0, 0.2) &&
-                        odometry.Velocity.Linear.AlmostEqualWithAbsoluteError(simVelocity.Length(), simVelocity.Length() - odometry.Velocity.Linear, 0.13) && odometry.Velocity.Angular.AlmostEqualWithError(0, 0.01));
+                        odometry.Velocity.Linear.AlmostEqualWithAbsoluteError(simVelocity.Length(), simVelocity.Length() - odometry.Velocity.Linear, 0.13) && odometry.Velocity.Angular.AlmostEqualWithError(0, 0.38));
 
                 //Fixture.TesterService.LogInfo("From Odometry {0}", odometryPosition);
                 //Fixture.TesterService.LogInfo("From Simulation {0}", simPosition);
@@ -118,7 +119,7 @@ namespace Brumba.SimulationTester.Tests
             }
         }
 
-        [SimTest(14, IsProbabilistic = false)]//Full circle time + correction for acceleration
+        [SimTest(14, IsProbabilistic = false)]
         public class CircleTrajectory
         {
             [Fixture]
