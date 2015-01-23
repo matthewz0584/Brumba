@@ -31,7 +31,7 @@
           <dssp:ServiceName>this:BrumbaSimulatedReferencePlatformRobot</dssp:ServiceName>
         </dssp:Partner>
         <dssp:Partner>
-          <dssp:Contract>http://brumba.ru/contracts/2014/11/genericvelocimeter.html</dssp:Contract>
+          <dssp:Contract>http://brumba.ru/contracts/2014/11/genericfixedwheelvelocimeter.html</dssp:Contract>
           <dssp:PartnerList />
           <dssp:Name>dwanavigatorservice:Velocimeter</dssp:Name>
           <dssp:ServiceName>this:BrumbaSimulatedLocalizer</dssp:ServiceName>
@@ -96,7 +96,7 @@
           <dssp:ServiceName>this:BrumbaSimulatedLocalizer</dssp:ServiceName>
         </dssp:Partner>
         <dssp:Partner>
-          <dssp:Contract>http://brumba.ru/contracts/2014/11/genericvelocimeter.html</dssp:Contract>
+          <dssp:Contract>http://brumba.ru/contracts/2014/11/genericfixedwheelvelocimeter.html</dssp:Contract>
           <dssp:PartnerList />
           <dssp:Name>dashboard:Velocimeter</dssp:Name>
           <dssp:ServiceName>this:BrumbaSimulatedLocalizer</dssp:ServiceName>

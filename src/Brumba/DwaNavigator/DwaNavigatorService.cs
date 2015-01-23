@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Brumba.DsspUtils;
-using Brumba.McLrfLocalizer;
 using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using Microsoft.Xna.Framework;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
 using LocalizerPxy = Brumba.GenericLocalizer.Proxy;
-using VelocimeterPxy = Brumba.GenericVelocimeter.Proxy;
+using VelocimeterPxy = Brumba.GenericFixedWheelVelocimeter.Proxy;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using DC = System.Diagnostics.Contracts;
@@ -34,7 +32,7 @@ namespace Brumba.DwaNavigator
         DwaNavigatorOperations _mainPort = new DwaNavigatorOperations();
 
         [Partner("Velocimeter", Contract = VelocimeterPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        VelocimeterPxy.GenericVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericVelocimeterOperations();
+        VelocimeterPxy.GenericFixedWheelVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericFixedWheelVelocimeterOperations();
 
         [Partner("Localizer", Contract = LocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         LocalizerPxy.GenericLocalizerOperations _localizer = new LocalizerPxy.GenericLocalizerOperations();
@@ -84,7 +82,7 @@ namespace Brumba.DwaNavigator
 
         IEnumerator<ITask> UpdateNavigator(TimeSpan _)
         {
-            yield return JoinedReceive<SickLrfPxy.State, VelocimeterPxy.GenericVelocimeterState, LocalizerPxy.GenericLocalizerState>(
+            yield return JoinedReceive<SickLrfPxy.State, VelocimeterPxy.GenericFixedWheelVelocimeterState, LocalizerPxy.GenericLocalizerState>(
                 false, _lrf.Get(), _velocimeter.Get(), _localizer.Get(),
                 (lrfScan, velocimeterSt, localizerSt) =>
                 {
@@ -98,7 +96,7 @@ namespace Brumba.DwaNavigator
                         return;
 
                     var pose = (Pose)DssTypeHelper.TransformFromProxy(localizerSt.EstimatedPose);
-                    var velocity = (Pose)DssTypeHelper.TransformFromProxy(velocimeterSt.Velocity);
+                    var velocity = (Velocity)DssTypeHelper.TransformFromProxy(velocimeterSt.Velocity);
 
                     _dwaBootstrapper.Update(pose, velocity, _state.Target, PreprocessLrfMeasurements(lrfScan.DistanceMeasurements));
 

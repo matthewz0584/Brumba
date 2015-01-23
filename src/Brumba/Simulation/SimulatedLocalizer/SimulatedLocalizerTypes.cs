@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Brumba.DwaNavigator;
 using Brumba.GenericLocalizer;
-using Brumba.GenericVelocimeter;
+using Brumba.GenericFixedWheelVelocimeter;
 using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -27,7 +27,7 @@ namespace Brumba.Simulation.SimulatedLocalizer
         public GenericLocalizerState Localizer { get; set; }
 
         [DataMember]
-        public GenericVelocimeterState Velocimeter { get; set; }
+        public GenericFixedWheelVelocimeterState FixedWheelVelocimeter { get; set; }
 
         [DataMember]
         public Velocity MaxVelocity { get; set; }

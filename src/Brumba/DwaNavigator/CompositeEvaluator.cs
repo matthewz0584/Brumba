@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using DC = System.Diagnostics.Contracts;
 

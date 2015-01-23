@@ -1,3 +1,4 @@
+using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -14,12 +15,21 @@ namespace Brumba.DiffDriveOdometry
 	[DataContract]
 	public class DiffDriveOdometryServiceState
 	{
-		[DataMember]
-		public DiffDriveOdometryState State { get; set; }
+        [DataMember]
+        public Pose Pose { get; set; }
+        [DataMember]
+        public Velocity Velocity { get; set; }
+        [DataMember]
+        public int LeftTicks { get; set; }
+        [DataMember]
+        public int RightTicks { get; set; }
 
-		[DataMember]
-		public DiffDriveOdometryConstants Constants { get; set; }
-
+        [DataMember]
+        public float WheelRadius { get; set; }
+        [DataMember]
+        public float WheelBase { get; set; }
+        [DataMember]
+        public int TicksPerRotation { get; set; }
         [DataMember]
         public float DeltaT { get; set; }
 	}

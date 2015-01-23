@@ -85,7 +85,7 @@ namespace Brumba.McLrfLocalizer
 			else
 				_localizer.InitPose(_state.EstimatedPose, new Pose(new Vector2(0.3f, 0.3f), 10 * Constants.Degree));
 
-		    yield return _odometryProvider.Get().Receive(os => _currentOdometry = (Pose) DssTypeHelper.TransformFromProxy(os.State.Pose));
+		    yield return _odometryProvider.Get().Receive(os => _currentOdometry = (Pose) DssTypeHelper.TransformFromProxy(os.Pose));
 
 			base.Start();
 
@@ -110,11 +110,10 @@ namespace Brumba.McLrfLocalizer
 						DC.Contract.Requires(lrfScan != null);
 						DC.Contract.Requires(lrfScan.DistanceMeasurements != null);
 						DC.Contract.Requires(odometry != null);
-						DC.Contract.Requires(odometry.State != null);
 
                         var sw = Stopwatch.StartNew();
 
-	                    var newOdometry = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Pose);
+	                    var newOdometry = (Pose)DssTypeHelper.TransformFromProxy(odometry.Pose);
 	                    _localizer.Update(newOdometry - _currentOdometry, PreprocessLrfScan(lrfScan));
 						_currentOdometry = newOdometry;
 	                    

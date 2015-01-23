@@ -1,5 +1,4 @@
 using System;
-using Brumba.DiffDriveOdometry;
 using Brumba.McLrfLocalizer;
 using Brumba.Utils;
 using Brumba.WaiterStupid;
@@ -42,7 +41,7 @@ namespace Brumba.DwaNavigator.Tests
         public void ClearStraightPath()
         {
             _dwab.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(), 0),
+                        new Velocity(), 
                         new Vector2(10, 0),
                         new float[0]);
             Assert.That(_dwab.OptimalVelocity.Velocity.Linear, Is.GreaterThan(0));
@@ -54,7 +53,7 @@ namespace Brumba.DwaNavigator.Tests
         public void ObstacleStraightAhead()
         {
             _dwab.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(), 0),
+                        new Velocity(), 
                         new Vector2(10, 0),
                         new[] { 10, 2.5f });
 
@@ -84,7 +83,7 @@ namespace Brumba.DwaNavigator.Tests
                 dt: 0.25);
 
             _dwab.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(1f, 0), 0),
+                        new Velocity(1f, 0),
                         new Vector2(10, 0),
                         new[] { 1.65f, 1.6f, 1.55f, 1.5f, 1.5f, 1.5f, 1.55f, 1.6f, 8.6f });
 
@@ -93,7 +92,7 @@ namespace Brumba.DwaNavigator.Tests
             Assert.That(wheelAcceleration, Is.EqualTo(new Vector2(0.4f, 1)));
 
             _dwab.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(1.5f, 0), 0),
+                        new Velocity(1.5f, 0),
                         new Vector2(10, 0),
                         new[] { 1.65f, 1.6f, 1.55f, 1.5f, 1.5f, 1.5f, 1.55f, 1.6f, 8.6f });
 
@@ -106,7 +105,7 @@ namespace Brumba.DwaNavigator.Tests
         public void ObstacleStraightAheadOnCloseDistance()
         {
             _dwab.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(), 0),
+                        new Velocity(), 
                         new Vector2(10, 0),
                         new[] { 10, 0.31f });
 
@@ -115,7 +114,7 @@ namespace Brumba.DwaNavigator.Tests
             Assert.That(_dwab.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(-0.9f, 1)));
 
             _dwab.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(), 0),
+                        new Velocity(), 
                         new Vector2(10, 0),
                         new[] { 10, 0.301f });
 
@@ -137,7 +136,7 @@ namespace Brumba.DwaNavigator.Tests
                     }, 1, 0.25);
 
             _dwab.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(0.9f, 0), 0),
+                        new Velocity(0.9f, 0),
                         new Vector2(10, 0),
                         new[] { 10, 10, 10, 10, 10, 10, 10, 10, 10f });
 
@@ -153,7 +152,7 @@ namespace Brumba.DwaNavigator.Tests
                     }, 1, 0.25);
 
             _dwab.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(0.9f, 0), 0),
+                        new Velocity(0.9f, 0),
                         new Vector2(10, 0),
                         new[] { 10, 10, 10, 10, 10, 10, 10, 10, 10f });
 
@@ -168,22 +167,12 @@ namespace Brumba.DwaNavigator.Tests
         public void LessThanMinRangesAreFilteredOut()
         {
             _dwab.Update(new Pose(new Vector2(), 0),
-                        new Pose(new Vector2(), 0),
+                        new Velocity(), 
                         new Vector2(10, 0),
                         new [] {0.1f, 0.1f, 0.1f});
             Assert.That(_dwab.OptimalVelocity.Velocity.Linear, Is.GreaterThan(0));
             Assert.That(_dwab.OptimalVelocity.Velocity.Angular, Is.EqualTo(0));
             Assert.That(_dwab.OptimalVelocity.WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
-        }
-
-        [Test]
-        public void SubjectiveVelocity()
-        {
-            Assert.That(DwaBootstrapper.SubjectiveVelocity(new Pose(new Vector2(), 0), new Pose(new Vector2(1, 0), 5)), Is.EqualTo(new Velocity(1, 5)));
-            Assert.That(DwaBootstrapper.SubjectiveVelocity(new Pose(new Vector2(), 0), new Pose(new Vector2(-1, 0), 5)), Is.EqualTo(new Velocity(-1, 5)));
-            
-            Assert.That(DwaBootstrapper.SubjectiveVelocity(new Pose(new Vector2(), MathHelper.PiOver2), new Pose(new Vector2(1, 0), 5)).Linear, Is.EqualTo(0).Within(1e-7));
-            Assert.That(DwaBootstrapper.SubjectiveVelocity(new Pose(new Vector2(), MathHelper.PiOver2), new Pose(new Vector2(1, 0), 5)).Angular, Is.EqualTo(5));
         }
     }
 }

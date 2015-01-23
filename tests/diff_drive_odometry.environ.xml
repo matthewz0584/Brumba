@@ -6,15 +6,15 @@
     <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
   </Gravity>
   <RenderMode>Full</RenderMode>
-  <FramesPerSecond>60.70966</FramesPerSecond>
+  <FramesPerSecond>32.5065346</FramesPerSecond>
   <Pause>false</Pause>
   <CameraPosition>
-    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-1.65</X>
-    <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">1.63</Y>
-    <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-0.29</Z>
+    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-12</X>
+    <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">9</Y>
+    <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-3</Z>
   </CameraPosition>
   <CameraLookAt>
-    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</X>
+    <X xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">-0</X>
     <Y xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Y>
     <Z xmlns="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html">0</Z>
   </CameraLookAt>
@@ -282,7 +282,7 @@
             </physm:Orientation>
           </phys:MassLocalPose>
         </sim:MassDensity>
-        <sim:Flags>Dynamic</sim:Flags>
+        <sim:Flags>Kinematic</sim:Flags>
       </sim:State>
       <Flags>Ground</Flags>
       <ChildCount>0</ChildCount>
@@ -397,29 +397,29 @@
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
-            <physm:X>1.31967859E-09</physm:X>
-            <physm:Y>-0.00100000016</physm:Y>
-            <physm:Z>-2.988943E-11</physm:Z>
+            <physm:X>0.0112813152</physm:X>
+            <physm:Y>-0.0009984439</physm:Y>
+            <physm:Z>-0.0005961384</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>1.9031793E-08</physm:X>
-            <physm:Y>1</physm:Y>
-            <physm:Z>-1.17970411E-09</physm:Z>
-            <physm:W>-3.91083219E-08</physm:W>
+            <physm:X>3.05327781E-08</physm:X>
+            <physm:Y>0.99999994</physm:Y>
+            <physm:Z>-1.67347E-08</physm:Z>
+            <physm:W>-5.68502223E-08</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>4.39194139E-08</physm:X>
-          <physm:Y>-5.905336E-08</physm:Y>
-          <physm:Z>-1.23114559E-08</physm:Z>
+          <physm:X>-0.0004583933</physm:X>
+          <physm:Y>1.43242107E-06</physm:Y>
+          <physm:Z>-0.0003382173</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>1.921538E-07</physm:X>
-          <physm:Y>-2.54321435E-07</physm:Y>
-          <physm:Z>-1.28791882E-07</physm:Z>
+          <physm:X>0.008811269</physm:X>
+          <physm:Y>-0.0146356421</physm:Y>
+          <physm:Z>-0.02374941</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
-          <phys:Mass>9.009001</phys:Mass>
+          <phys:Mass>9.107003</phys:Mass>
           <phys:InertiaTensor>
             <physm:X>0</physm:X>
             <physm:Y>0</physm:Y>
@@ -428,14 +428,14 @@
           <phys:CenterOfMass>
             <physm:Position>
               <physm:X>0</physm:X>
-              <physm:Y>0.03</physm:Y>
+              <physm:Y>0</physm:Y>
               <physm:Z>0</physm:Z>
             </physm:Position>
             <physm:Orientation>
               <physm:X>0</physm:X>
               <physm:Y>0</physm:Y>
               <physm:Z>0</physm:Z>
-              <physm:W>1</physm:W>
+              <physm:W>0</physm:W>
             </physm:Orientation>
           </phys:CenterOfMass>
           <phys:Density>0</phys:Density>
@@ -477,1680 +477,8 @@
         <physm:Z>0</physm:Z>
       </MeshTranslation>
       <IsEnabled>true</IsEnabled>
-      <CurrentToTorque>20</CurrentToTorque>
-      <RightWheel>
-        <sim:State>
-          <sim:Name>RightWheel</sim:Name>
-          <sim:Assets>
-            <sim:Mesh>Right_Tire.obj</sim:Mesh>
-          </sim:Assets>
-          <sim:Pose>
-            <physm:Position>
-              <physm:X>1.31967859E-09</physm:X>
-              <physm:Y>-0.00100000016</physm:Y>
-              <physm:Z>-2.988943E-11</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>-2.62912514E-09</physm:X>
-              <physm:Y>-4.39272352E-09</physm:Y>
-              <physm:Z>-6.0023293E-09</physm:Z>
-              <physm:W>1</physm:W>
-            </physm:Orientation>
-          </sim:Pose>
-          <sim:Velocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:Velocity>
-          <sim:AngularVelocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:AngularVelocity>
-          <sim:MassDensity>
-            <phys:Mass>0</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </sim:MassDensity>
-          <sim:Flags>Dynamic</sim:Flags>
-        </sim:State>
-        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">TexturesPending</Flags>
-        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
-        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
-        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0.0254</physm:X>
-          <physm:Y>0.0254</physm:Y>
-          <physm:Z>0.0254</physm:Z>
-        </MeshScale>
-        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshRotation>
-        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>-0.1575</physm:X>
-          <physm:Y>-0.0799846</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshTranslation>
-        <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <phys:WheelState>
-            <phys:Name>stupid_waiter/front right wheel</phys:Name>
-            <phys:ShapeId>Wheel</phys:ShapeId>
-            <phys:Dimensions>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:Dimensions>
-            <phys:Radius>0.0799846</phys:Radius>
-            <phys:Material>
-              <phys:Name>default wheel material</phys:Name>
-              <phys:Restitution>0</phys:Restitution>
-              <phys:DynamicFriction>0</phys:DynamicFriction>
-              <phys:StaticFriction>0</phys:StaticFriction>
-              <phys:MaterialIndex>6</phys:MaterialIndex>
-            </phys:Material>
-            <phys:MassDensity>
-              <phys:Mass>0.01</phys:Mass>
-              <phys:InertiaTensor>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </phys:InertiaTensor>
-              <phys:CenterOfMass>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>0</physm:W>
-                </physm:Orientation>
-              </phys:CenterOfMass>
-              <phys:Density>0</phys:Density>
-              <phys:LinearDamping>0</phys:LinearDamping>
-              <phys:AngularDamping>0</phys:AngularDamping>
-              <phys:MassLocalPose>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>1</physm:W>
-                </physm:Orientation>
-              </phys:MassLocalPose>
-            </phys:MassDensity>
-            <phys:LocalPose>
-              <physm:Position>
-                <physm:X>0.151624992</physm:X>
-                <physm:Y>0.0799846</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:LocalPose>
-            <phys:TextureFileName />
-            <phys:DiffuseColor>
-              <physm:X>0.5</physm:X>
-              <physm:Y>0.5</physm:Y>
-              <physm:Z>0.5</physm:Z>
-              <physm:W>1</physm:W>
-            </phys:DiffuseColor>
-            <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-            <phys:InnerRadius>0.055989217</phys:InnerRadius>
-            <phys:SuspensionTravel>0</phys:SuspensionTravel>
-            <phys:Flags>OverrideAxleSpeed</phys:Flags>
-            <phys:AxleSpeed>0</phys:AxleSpeed>
-            <phys:TireLateralForceFunction>
-              <physm:ExtremumSlip>1</physm:ExtremumSlip>
-              <physm:ExtremumValue>0.02</physm:ExtremumValue>
-              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
-              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
-              <physm:StiffnessFactor>1E+09</physm:StiffnessFactor>
-            </phys:TireLateralForceFunction>
-            <phys:TireLongitudalForceFunction>
-              <physm:ExtremumSlip>1</physm:ExtremumSlip>
-              <physm:ExtremumValue>0.02</physm:ExtremumValue>
-              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
-              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
-              <physm:StiffnessFactor>1E+09</physm:StiffnessFactor>
-            </phys:TireLongitudalForceFunction>
-            <phys:BrakeTorque>0</phys:BrakeTorque>
-          </phys:WheelState>
-        </WheelShape>
-        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
-      </RightWheel>
-      <LeftWheel>
-        <sim:State>
-          <sim:Name>LeftWheel</sim:Name>
-          <sim:Assets>
-            <sim:Mesh>Left_Tire.obj</sim:Mesh>
-          </sim:Assets>
-          <sim:Pose>
-            <physm:Position>
-              <physm:X>1.31967859E-09</physm:X>
-              <physm:Y>-0.00100000016</physm:Y>
-              <physm:Z>-2.988943E-11</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>-2.62912514E-09</physm:X>
-              <physm:Y>-4.39272352E-09</physm:Y>
-              <physm:Z>-6.0023293E-09</physm:Z>
-              <physm:W>1</physm:W>
-            </physm:Orientation>
-          </sim:Pose>
-          <sim:Velocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:Velocity>
-          <sim:AngularVelocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:AngularVelocity>
-          <sim:MassDensity>
-            <phys:Mass>0</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </sim:MassDensity>
-          <sim:Flags>Dynamic</sim:Flags>
-        </sim:State>
-        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">TexturesPending</Flags>
-        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
-        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
-        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0.0254</physm:X>
-          <physm:Y>0.0254</physm:Y>
-          <physm:Z>0.0254</physm:Z>
-        </MeshScale>
-        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshRotation>
-        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0.1575</physm:X>
-          <physm:Y>-0.0799846</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshTranslation>
-        <WheelShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <phys:WheelState>
-            <phys:Name>stupid_waiter/front left wheel</phys:Name>
-            <phys:ShapeId>Wheel</phys:ShapeId>
-            <phys:Dimensions>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:Dimensions>
-            <phys:Radius>0.0799846</phys:Radius>
-            <phys:Material>
-              <phys:Name>default wheel material</phys:Name>
-              <phys:Restitution>0</phys:Restitution>
-              <phys:DynamicFriction>0</phys:DynamicFriction>
-              <phys:StaticFriction>0</phys:StaticFriction>
-              <phys:MaterialIndex>5</phys:MaterialIndex>
-            </phys:Material>
-            <phys:MassDensity>
-              <phys:Mass>0.01</phys:Mass>
-              <phys:InertiaTensor>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </phys:InertiaTensor>
-              <phys:CenterOfMass>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>0</physm:W>
-                </physm:Orientation>
-              </phys:CenterOfMass>
-              <phys:Density>0</phys:Density>
-              <phys:LinearDamping>0</phys:LinearDamping>
-              <phys:AngularDamping>0</phys:AngularDamping>
-              <phys:MassLocalPose>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>1</physm:W>
-                </physm:Orientation>
-              </phys:MassLocalPose>
-            </phys:MassDensity>
-            <phys:LocalPose>
-              <physm:Position>
-                <physm:X>-0.151624992</physm:X>
-                <physm:Y>0.0799846</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:LocalPose>
-            <phys:TextureFileName />
-            <phys:DiffuseColor>
-              <physm:X>0.5</physm:X>
-              <physm:Y>0.5</physm:Y>
-              <physm:Z>0.5</physm:Z>
-              <physm:W>1</physm:W>
-            </phys:DiffuseColor>
-            <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-            <phys:InnerRadius>0.055989217</phys:InnerRadius>
-            <phys:SuspensionTravel>0</phys:SuspensionTravel>
-            <phys:Flags>OverrideAxleSpeed</phys:Flags>
-            <phys:AxleSpeed>0</phys:AxleSpeed>
-            <phys:TireLateralForceFunction>
-              <physm:ExtremumSlip>1</physm:ExtremumSlip>
-              <physm:ExtremumValue>0.02</physm:ExtremumValue>
-              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
-              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
-              <physm:StiffnessFactor>1E+09</physm:StiffnessFactor>
-            </phys:TireLateralForceFunction>
-            <phys:TireLongitudalForceFunction>
-              <physm:ExtremumSlip>1</physm:ExtremumSlip>
-              <physm:ExtremumValue>0.02</physm:ExtremumValue>
-              <physm:AsymptoteSlip>2</physm:AsymptoteSlip>
-              <physm:AsymptoteValue>0.01</physm:AsymptoteValue>
-              <physm:StiffnessFactor>1E+09</physm:StiffnessFactor>
-            </phys:TireLongitudalForceFunction>
-            <phys:BrakeTorque>0</phys:BrakeTorque>
-          </phys:WheelState>
-        </WheelShape>
-        <Rotations xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</Rotations>
-      </LeftWheel>
-      <ChassisShape>
-        <phys:BoxState>
-          <phys:Name>Create Body</phys:Name>
-          <phys:ShapeId>Box</phys:ShapeId>
-          <phys:Dimensions>
-            <physm:X>0.315</physm:X>
-            <physm:Y>0.009525</physm:Y>
-            <physm:Z>0.315</physm:Z>
-          </phys:Dimensions>
-          <phys:Radius>0</phys:Radius>
-          <phys:MassDensity>
-            <phys:Mass>9</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </phys:MassDensity>
-          <phys:LocalPose>
-            <physm:Position>
-              <physm:X>0</physm:X>
-              <physm:Y>0.03</physm:Y>
-              <physm:Z>0</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>1</physm:W>
-            </physm:Orientation>
-          </phys:LocalPose>
-          <phys:TextureFileName />
-          <phys:DiffuseColor>
-            <physm:X>0.5</physm:X>
-            <physm:Y>0.5</physm:Y>
-            <physm:Z>0.5</physm:Z>
-            <physm:W>1</physm:W>
-          </phys:DiffuseColor>
-          <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-        </phys:BoxState>
-      </ChassisShape>
-      <CasterWheelShape>
-        <phys:SphereState>
-          <phys:Name>CasterWheel</phys:Name>
-          <phys:ShapeId>Sphere</phys:ShapeId>
-          <phys:Dimensions>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </phys:Dimensions>
-          <phys:Radius>0.0377952</phys:Radius>
-          <phys:Material>
-            <phys:Name>small friction with anisotropy</phys:Name>
-            <phys:Restitution>0.5</phys:Restitution>
-            <phys:DynamicFriction>0.5</phys:DynamicFriction>
-            <phys:StaticFriction>1</phys:StaticFriction>
-            <phys:MaterialIndex>0</phys:MaterialIndex>
-            <phys:Advanced>
-              <phys:AnisotropicStaticFriction>0.4</phys:AnisotropicStaticFriction>
-              <phys:AnisotropicDynamicFriction>0.3</phys:AnisotropicDynamicFriction>
-              <phys:AnisotropyDirection>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>1</physm:Z>
-              </phys:AnisotropyDirection>
-              <phys:RestitutionCombineMode>Unspecified</phys:RestitutionCombineMode>
-              <phys:FrictionCombineMode>Unspecified</phys:FrictionCombineMode>
-            </phys:Advanced>
-          </phys:Material>
-          <phys:MassDensity>
-            <phys:Mass>0.001</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </phys:MassDensity>
-          <phys:LocalPose>
-            <physm:Position>
-              <physm:X>0</physm:X>
-              <physm:Y>0.0377952</physm:Y>
-              <physm:Z>0.1575</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>1</physm:W>
-            </physm:Orientation>
-          </phys:LocalPose>
-          <phys:TextureFileName />
-          <phys:DiffuseColor>
-            <physm:X>0.5</physm:X>
-            <physm:Y>0.5</physm:Y>
-            <physm:Z>0.5</physm:Z>
-            <physm:W>1</physm:W>
-          </phys:DiffuseColor>
-          <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-        </phys:SphereState>
-      </CasterWheelShape>
-      <RotateDegreesAngleThreshold>0.20000000298023224</RotateDegreesAngleThreshold>
-      <FrontWheelShape>
-        <phys:SphereState>
-          <phys:Name>stupid_waiterFrontWheel</phys:Name>
-          <phys:ShapeId>Sphere</phys:ShapeId>
-          <phys:Dimensions>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </phys:Dimensions>
-          <phys:Radius>0.0377952</phys:Radius>
-          <phys:Material>
-            <phys:Name>small friction with anisotropy</phys:Name>
-            <phys:Restitution>0.5</phys:Restitution>
-            <phys:DynamicFriction>0.5</phys:DynamicFriction>
-            <phys:StaticFriction>1</phys:StaticFriction>
-            <phys:MaterialIndex>3</phys:MaterialIndex>
-            <phys:Advanced>
-              <phys:AnisotropicStaticFriction>0.4</phys:AnisotropicStaticFriction>
-              <phys:AnisotropicDynamicFriction>0.3</phys:AnisotropicDynamicFriction>
-              <phys:AnisotropyDirection>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>1</physm:Z>
-              </phys:AnisotropyDirection>
-              <phys:RestitutionCombineMode>Unspecified</phys:RestitutionCombineMode>
-              <phys:FrictionCombineMode>Unspecified</phys:FrictionCombineMode>
-            </phys:Advanced>
-          </phys:Material>
-          <phys:MassDensity>
-            <phys:Mass>0.001</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </phys:MassDensity>
-          <phys:LocalPose>
-            <physm:Position>
-              <physm:X>0</physm:X>
-              <physm:Y>0.0377952</physm:Y>
-              <physm:Z>-0.1575</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>-1</physm:W>
-            </physm:Orientation>
-          </phys:LocalPose>
-          <phys:TextureFileName />
-          <phys:DiffuseColor>
-            <physm:X>0.5</physm:X>
-            <physm:Y>0.5</physm:Y>
-            <physm:Z>0.5</physm:Z>
-            <physm:W>1</physm:W>
-          </phys:DiffuseColor>
-          <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-        </phys:SphereState>
-      </FrontWheelShape>
-      <RearWheelShape>
-        <phys:SphereState>
-          <phys:Name>stupid_waiterRearWheel</phys:Name>
-          <phys:ShapeId>Sphere</phys:ShapeId>
-          <phys:Dimensions>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </phys:Dimensions>
-          <phys:Radius>0.0377952</phys:Radius>
-          <phys:Material>
-            <phys:Name>small friction with anisotropy</phys:Name>
-            <phys:Restitution>0.5</phys:Restitution>
-            <phys:DynamicFriction>0.5</phys:DynamicFriction>
-            <phys:StaticFriction>1</phys:StaticFriction>
-            <phys:MaterialIndex>4</phys:MaterialIndex>
-            <phys:Advanced>
-              <phys:AnisotropicStaticFriction>0.4</phys:AnisotropicStaticFriction>
-              <phys:AnisotropicDynamicFriction>0.3</phys:AnisotropicDynamicFriction>
-              <phys:AnisotropyDirection>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>1</physm:Z>
-              </phys:AnisotropyDirection>
-              <phys:RestitutionCombineMode>Unspecified</phys:RestitutionCombineMode>
-              <phys:FrictionCombineMode>Unspecified</phys:FrictionCombineMode>
-            </phys:Advanced>
-          </phys:Material>
-          <phys:MassDensity>
-            <phys:Mass>0.001</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </phys:MassDensity>
-          <phys:LocalPose>
-            <physm:Position>
-              <physm:X>0</physm:X>
-              <physm:Y>0.0377952</physm:Y>
-              <physm:Z>0.1575</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>-1</physm:W>
-            </physm:Orientation>
-          </phys:LocalPose>
-          <phys:TextureFileName />
-          <phys:DiffuseColor>
-            <physm:X>0.5</physm:X>
-            <physm:Y>0.5</physm:Y>
-            <physm:Z>0.5</physm:Z>
-            <physm:W>1</physm:W>
-          </phys:DiffuseColor>
-          <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-        </phys:SphereState>
-      </RearWheelShape>
-      <Kinect>
-        <sim:State>
-          <sim:Name>stupid_waiterKinectEntity</sim:Name>
-          <sim:Assets>
-            <sim:Mesh>kinectbase.obj</sim:Mesh>
-          </sim:Assets>
-          <sim:Pose>
-            <physm:Position>
-              <physm:X>2.62402921E-07</physm:X>
-              <physm:Y>0.5572158</physm:Y>
-              <physm:Z>0.153289</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>-2.65569744E-09</physm:X>
-              <physm:Y>-1.50218629E-08</physm:Y>
-              <physm:Z>1.2780436E-05</physm:Z>
-              <physm:W>1</physm:W>
-            </physm:Orientation>
-          </sim:Pose>
-          <sim:Velocity>
-            <physm:X>-2.86391668E-07</physm:X>
-            <physm:Y>-1.079698E-08</physm:Y>
-            <physm:Z>-1.42267824E-08</physm:Z>
-          </sim:Velocity>
-          <sim:AngularVelocity>
-            <physm:X>2.2789024E-08</physm:X>
-            <physm:Y>6.09564066E-10</physm:Y>
-            <physm:Z>1.3317989E-06</physm:Z>
-          </sim:AngularVelocity>
-          <sim:MassDensity>
-            <phys:Mass>0.001</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </sim:MassDensity>
-          <sim:Flags>Dynamic</sim:Flags>
-        </sim:State>
-        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">None</Flags>
-        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">2</ChildCount>
-        <ParentJoint xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:State>
-            <physm:Name>stupid_waiterKinectEntity's parent joint</physm:Name>
-            <physm:Connectors>
-              <physm:EntityJointConnector>
-                <physm:JointNormal>
-                  <physm:X>0</physm:X>
-                  <physm:Y>1</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:JointNormal>
-                <physm:JointAxis>
-                  <physm:X>1</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:JointAxis>
-                <physm:JointConnectPoint>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:JointConnectPoint>
-              </physm:EntityJointConnector>
-              <physm:EntityJointConnector>
-                <physm:JointNormal>
-                  <physm:X>0</physm:X>
-                  <physm:Y>1</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:JointNormal>
-                <physm:JointAxis>
-                  <physm:X>1</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:JointAxis>
-                <physm:JointConnectPoint>
-                  <physm:X>0</physm:X>
-                  <physm:Y>-0.5582158</physm:Y>
-                  <physm:Z>-0.153289</physm:Z>
-                </physm:JointConnectPoint>
-              </physm:EntityJointConnector>
-            </physm:Connectors>
-            <physm:MaximumForce>0</physm:MaximumForce>
-            <physm:MaximumTorque>0</physm:MaximumTorque>
-            <physm:EnableCollisions>false</physm:EnableCollisions>
-            <physm:Projection>
-              <physm:ProjectionMode>LinearMinimumDistance</physm:ProjectionMode>
-              <physm:ProjectionDistanceThreshold>1.401298E-45</physm:ProjectionDistanceThreshold>
-              <physm:ProjectionAngleThreshold>1.401298E-45</physm:ProjectionAngleThreshold>
-            </physm:Projection>
-          </physm:State>
-        </ParentJoint>
-        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Global</ReferenceFrame>
-        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0.01</physm:X>
-          <physm:Y>0.01</physm:Y>
-          <physm:Z>0.01</physm:Z>
-        </MeshScale>
-        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>180</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshRotation>
-        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshTranslation>
-        <BoxShape xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <phys:BoxState>
-            <phys:Name>stupid_waiterKinectEntity/KinectBaseBox</phys:Name>
-            <phys:ShapeId>Box</phys:ShapeId>
-            <phys:Dimensions>
-              <physm:X>0.07</physm:X>
-              <physm:Y>0.02</physm:Y>
-              <physm:Z>0.07</physm:Z>
-            </phys:Dimensions>
-            <phys:Radius>0</phys:Radius>
-            <phys:MassDensity>
-              <phys:Mass>0.001</phys:Mass>
-              <phys:InertiaTensor>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </phys:InertiaTensor>
-              <phys:CenterOfMass>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>0</physm:W>
-                </physm:Orientation>
-              </phys:CenterOfMass>
-              <phys:Density>0</phys:Density>
-              <phys:LinearDamping>0</phys:LinearDamping>
-              <phys:AngularDamping>0</phys:AngularDamping>
-              <phys:MassLocalPose>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>1</physm:W>
-                </physm:Orientation>
-              </phys:MassLocalPose>
-            </phys:MassDensity>
-            <phys:LocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0.01</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:LocalPose>
-            <phys:TextureFileName />
-            <phys:DiffuseColor>
-              <physm:X>0.5</physm:X>
-              <physm:Y>0.5</physm:Y>
-              <physm:Z>0.5</physm:Z>
-              <physm:W>1</physm:W>
-            </phys:DiffuseColor>
-            <phys:EnableContactNotifications>false</phys:EnableContactNotifications>
-          </phys:BoxState>
-        </BoxShape>
-        <Dimension xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0.07</physm:X>
-          <physm:Y>0.02</physm:Y>
-          <physm:Z>0.07</physm:Z>
-        </Dimension>
-        <DepthCam xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <sim:State>
-            <sim:Name>stupid_waiterKinectCamera</sim:Name>
-            <sim:Assets>
-              <sim:Mesh>kinectcamera.obj</sim:Mesh>
-            </sim:Assets>
-            <sim:Pose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0.054</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </sim:Pose>
-            <sim:Velocity>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </sim:Velocity>
-            <sim:AngularVelocity>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </sim:AngularVelocity>
-            <sim:MassDensity>
-              <phys:Mass>1</phys:Mass>
-              <phys:InertiaTensor>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </phys:InertiaTensor>
-              <phys:CenterOfMass>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>0</physm:W>
-                </physm:Orientation>
-              </phys:CenterOfMass>
-              <phys:Density>0</phys:Density>
-              <phys:LinearDamping>0</phys:LinearDamping>
-              <phys:AngularDamping>0</phys:AngularDamping>
-              <phys:MassLocalPose>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>1</physm:W>
-                </physm:Orientation>
-              </phys:MassLocalPose>
-            </sim:MassDensity>
-            <sim:Flags>Dynamic</sim:Flags>
-          </sim:State>
-          <Flags>None</Flags>
-          <ChildCount>0</ChildCount>
-          <ReferenceFrame>Local</ReferenceFrame>
-          <MeshScale>
-            <physm:X>0.01</physm:X>
-            <physm:Y>0.01</physm:Y>
-            <physm:Z>0.01</physm:Z>
-          </MeshScale>
-          <MeshRotation>
-            <physm:X>0</physm:X>
-            <physm:Y>180</physm:Y>
-            <physm:Z>0</physm:Z>
-          </MeshRotation>
-          <MeshTranslation>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </MeshTranslation>
-          <IsRealTimeCamera>true</IsRealTimeCamera>
-          <UpdateInterval>30</UpdateInterval>
-          <ShadowDisplay>HideShadows</ShadowDisplay>
-          <CameraModel>AttachedChild</CameraModel>
-          <Near>0.1</Near>
-          <Far>4</Far>
-          <ViewSizeX>320</ViewSizeX>
-          <ViewSizeY>240</ViewSizeY>
-          <ViewAngle>0.75049156</ViewAngle>
-          <IsPhysicsVisible>false</IsPhysicsVisible>
-          <LookAt>
-            <X>0</X>
-            <Y>0</Y>
-            <Z>1</Z>
-          </LookAt>
-          <Location>
-            <X>0</X>
-            <Y>0</Y>
-            <Z>0</Z>
-          </Location>
-          <ShaderFile>DepthEffect80cmto400cm.fx</ShaderFile>
-          <Dimension>
-            <physm:X>0.25</physm:X>
-            <physm:Y>0.045</physm:Y>
-            <physm:Z>0.07</physm:Z>
-          </Dimension>
-        </DepthCam>
-        <WebCam xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <sim:State>
-            <sim:Name>stupid_waiterSimulatedWebcam</sim:Name>
-            <sim:Assets />
-            <sim:Pose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0.054</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </sim:Pose>
-            <sim:Velocity>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </sim:Velocity>
-            <sim:AngularVelocity>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </sim:AngularVelocity>
-            <sim:MassDensity>
-              <phys:Mass>1</phys:Mass>
-              <phys:InertiaTensor>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </phys:InertiaTensor>
-              <phys:CenterOfMass>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>0</physm:W>
-                </physm:Orientation>
-              </phys:CenterOfMass>
-              <phys:Density>0</phys:Density>
-              <phys:LinearDamping>0</phys:LinearDamping>
-              <phys:AngularDamping>0</phys:AngularDamping>
-              <phys:MassLocalPose>
-                <physm:Position>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                </physm:Position>
-                <physm:Orientation>
-                  <physm:X>0</physm:X>
-                  <physm:Y>0</physm:Y>
-                  <physm:Z>0</physm:Z>
-                  <physm:W>1</physm:W>
-                </physm:Orientation>
-              </phys:MassLocalPose>
-            </sim:MassDensity>
-            <sim:Flags>Dynamic</sim:Flags>
-          </sim:State>
-          <Flags>None</Flags>
-          <ChildCount>0</ChildCount>
-          <ReferenceFrame>Local</ReferenceFrame>
-          <MeshScale>
-            <physm:X>1</physm:X>
-            <physm:Y>1</physm:Y>
-            <physm:Z>1</physm:Z>
-          </MeshScale>
-          <MeshRotation>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </MeshRotation>
-          <MeshTranslation>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </MeshTranslation>
-          <IsRealTimeCamera>true</IsRealTimeCamera>
-          <UpdateInterval>30</UpdateInterval>
-          <ShadowDisplay>ShowShadows</ShadowDisplay>
-          <CameraModel>AttachedChild</CameraModel>
-          <Near>0.1</Near>
-          <Far>5000</Far>
-          <ViewSizeX>320</ViewSizeX>
-          <ViewSizeY>240</ViewSizeY>
-          <ViewAngle>0.7504915</ViewAngle>
-          <IsPhysicsVisible>false</IsPhysicsVisible>
-          <LookAt>
-            <X>0</X>
-            <Y>0</Y>
-            <Z>1</Z>
-          </LookAt>
-          <Location>
-            <X>0</X>
-            <Y>0</Y>
-            <Z>0</Z>
-          </Location>
-        </WebCam>
-      </Kinect>
-      <LeftSonar>
-        <sim:State>
-          <sim:Name>stupid_waiterLeftSonar</sim:Name>
-          <sim:Assets />
-          <sim:Pose>
-            <physm:Position>
-              <physm:X>-0.09</physm:X>
-              <physm:Y>0.1373658</physm:Y>
-              <physm:Z>-0.175</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0.258819044</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>0.9659258</physm:W>
-            </physm:Orientation>
-          </sim:Pose>
-          <sim:Velocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:Velocity>
-          <sim:AngularVelocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:AngularVelocity>
-          <sim:MassDensity>
-            <phys:Mass>1</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </sim:MassDensity>
-          <sim:Flags>Dynamic</sim:Flags>
-        </sim:State>
-        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">None</Flags>
-        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
-        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Local</ReferenceFrame>
-        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>1</physm:X>
-          <physm:Y>1</physm:Y>
-          <physm:Z>1</physm:Z>
-        </MeshScale>
-        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshRotation>
-        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshTranslation>
-        <IsRealTimeCamera xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">true</IsRealTimeCamera>
-        <UpdateInterval xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">250</UpdateInterval>
-        <ShadowDisplay xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">HideShadows</ShadowDisplay>
-        <CameraModel xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">AttachedChild</CameraModel>
-        <Near xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</Near>
-        <Far xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">2</Far>
-        <ViewSizeX xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">32</ViewSizeX>
-        <ViewSizeY xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">24</ViewSizeY>
-        <ViewAngle xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.78539</ViewAngle>
-        <IsPhysicsVisible xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">false</IsPhysicsVisible>
-        <LookAt xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>1</Z>
-        </LookAt>
-        <Location xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>0</Z>
-        </Location>
-        <ShaderFile xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">SonarEffect.fx</ShaderFile>
-        <MaximumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">2</MaximumRange>
-        <MinimumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</MinimumRange>
-      </LeftSonar>
-      <RightSonar>
-        <sim:State>
-          <sim:Name>stupid_waiterRightSonar</sim:Name>
-          <sim:Assets />
-          <sim:Pose>
-            <physm:Position>
-              <physm:X>0.09</physm:X>
-              <physm:Y>0.1373658</physm:Y>
-              <physm:Z>-0.175</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>-0</physm:X>
-              <physm:Y>-0.258819044</physm:Y>
-              <physm:Z>-0</physm:Z>
-              <physm:W>0.9659258</physm:W>
-            </physm:Orientation>
-          </sim:Pose>
-          <sim:Velocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:Velocity>
-          <sim:AngularVelocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:AngularVelocity>
-          <sim:MassDensity>
-            <phys:Mass>1</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </sim:MassDensity>
-          <sim:Flags>Dynamic</sim:Flags>
-        </sim:State>
-        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">None</Flags>
-        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
-        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Local</ReferenceFrame>
-        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>1</physm:X>
-          <physm:Y>1</physm:Y>
-          <physm:Z>1</physm:Z>
-        </MeshScale>
-        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshRotation>
-        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshTranslation>
-        <IsRealTimeCamera xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">true</IsRealTimeCamera>
-        <UpdateInterval xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">250</UpdateInterval>
-        <ShadowDisplay xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">HideShadows</ShadowDisplay>
-        <CameraModel xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">AttachedChild</CameraModel>
-        <Near xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</Near>
-        <Far xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">2</Far>
-        <ViewSizeX xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">32</ViewSizeX>
-        <ViewSizeY xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">24</ViewSizeY>
-        <ViewAngle xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.78539</ViewAngle>
-        <IsPhysicsVisible xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">false</IsPhysicsVisible>
-        <LookAt xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>1</Z>
-        </LookAt>
-        <Location xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>0</Z>
-        </Location>
-        <ShaderFile xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">SonarEffect.fx</ShaderFile>
-        <MaximumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">2</MaximumRange>
-        <MinimumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</MinimumRange>
-      </RightSonar>
-      <FrontLeftIr>
-        <sim:State>
-          <sim:Name>stupid_waiterFrontLeftIR</sim:Name>
-          <sim:Assets />
-          <sim:Pose>
-            <physm:Position>
-              <physm:X>-0.17</physm:X>
-              <physm:Y>0.1373658</physm:Y>
-              <physm:Z>-0.1</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>1</physm:W>
-            </physm:Orientation>
-          </sim:Pose>
-          <sim:Velocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:Velocity>
-          <sim:AngularVelocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:AngularVelocity>
-          <sim:MassDensity>
-            <phys:Mass>1</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </sim:MassDensity>
-          <sim:Flags>Dynamic</sim:Flags>
-        </sim:State>
-        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">None</Flags>
-        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
-        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Local</ReferenceFrame>
-        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>1</physm:X>
-          <physm:Y>1</physm:Y>
-          <physm:Z>1</physm:Z>
-        </MeshScale>
-        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshRotation>
-        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshTranslation>
-        <IsRealTimeCamera xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">true</IsRealTimeCamera>
-        <UpdateInterval xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">250</UpdateInterval>
-        <ShadowDisplay xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">HideShadows</ShadowDisplay>
-        <CameraModel xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">AttachedChild</CameraModel>
-        <Near xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</Near>
-        <Far xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.8</Far>
-        <ViewSizeX xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">32</ViewSizeX>
-        <ViewSizeY xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">24</ViewSizeY>
-        <ViewAngle xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.0349</ViewAngle>
-        <IsPhysicsVisible xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">false</IsPhysicsVisible>
-        <LookAt xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>1</Z>
-        </LookAt>
-        <Location xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>0</Z>
-        </Location>
-        <ShaderFile xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">IREffect.fx</ShaderFile>
-        <MaximumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.8</MaximumRange>
-        <MinimumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</MinimumRange>
-      </FrontLeftIr>
-      <FrontMiddleIr>
-        <sim:State>
-          <sim:Name>stupid_waiterFrontMiddleIR</sim:Name>
-          <sim:Assets />
-          <sim:Pose>
-            <physm:Position>
-              <physm:X>0</physm:X>
-              <physm:Y>0.1373658</physm:Y>
-              <physm:Z>-0.185</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>1</physm:W>
-            </physm:Orientation>
-          </sim:Pose>
-          <sim:Velocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:Velocity>
-          <sim:AngularVelocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:AngularVelocity>
-          <sim:MassDensity>
-            <phys:Mass>1</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </sim:MassDensity>
-          <sim:Flags>Dynamic</sim:Flags>
-        </sim:State>
-        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">None</Flags>
-        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
-        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Local</ReferenceFrame>
-        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>1</physm:X>
-          <physm:Y>1</physm:Y>
-          <physm:Z>1</physm:Z>
-        </MeshScale>
-        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshRotation>
-        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshTranslation>
-        <IsRealTimeCamera xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">true</IsRealTimeCamera>
-        <UpdateInterval xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">250</UpdateInterval>
-        <ShadowDisplay xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">HideShadows</ShadowDisplay>
-        <CameraModel xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">AttachedChild</CameraModel>
-        <Near xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</Near>
-        <Far xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.8</Far>
-        <ViewSizeX xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">32</ViewSizeX>
-        <ViewSizeY xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">24</ViewSizeY>
-        <ViewAngle xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.0349</ViewAngle>
-        <IsPhysicsVisible xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">false</IsPhysicsVisible>
-        <LookAt xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>1</Z>
-        </LookAt>
-        <Location xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>0</Z>
-        </Location>
-        <ShaderFile xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">IREffect.fx</ShaderFile>
-        <MaximumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.8</MaximumRange>
-        <MinimumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</MinimumRange>
-      </FrontMiddleIr>
-      <FrontRightIr>
-        <sim:State>
-          <sim:Name>stupid_waiterFrontRightIR</sim:Name>
-          <sim:Assets />
-          <sim:Pose>
-            <physm:Position>
-              <physm:X>0.17</physm:X>
-              <physm:Y>0.1373658</physm:Y>
-              <physm:Z>-0.1</physm:Z>
-            </physm:Position>
-            <physm:Orientation>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-              <physm:W>1</physm:W>
-            </physm:Orientation>
-          </sim:Pose>
-          <sim:Velocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:Velocity>
-          <sim:AngularVelocity>
-            <physm:X>0</physm:X>
-            <physm:Y>0</physm:Y>
-            <physm:Z>0</physm:Z>
-          </sim:AngularVelocity>
-          <sim:MassDensity>
-            <phys:Mass>1</phys:Mass>
-            <phys:InertiaTensor>
-              <physm:X>0</physm:X>
-              <physm:Y>0</physm:Y>
-              <physm:Z>0</physm:Z>
-            </phys:InertiaTensor>
-            <phys:CenterOfMass>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>0</physm:W>
-              </physm:Orientation>
-            </phys:CenterOfMass>
-            <phys:Density>0</phys:Density>
-            <phys:LinearDamping>0</phys:LinearDamping>
-            <phys:AngularDamping>0</phys:AngularDamping>
-            <phys:MassLocalPose>
-              <physm:Position>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-              </physm:Position>
-              <physm:Orientation>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
-                <physm:W>1</physm:W>
-              </physm:Orientation>
-            </phys:MassLocalPose>
-          </sim:MassDensity>
-          <sim:Flags>Dynamic</sim:Flags>
-        </sim:State>
-        <Flags xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">None</Flags>
-        <ChildCount xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0</ChildCount>
-        <ReferenceFrame xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">Local</ReferenceFrame>
-        <MeshScale xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>1</physm:X>
-          <physm:Y>1</physm:Y>
-          <physm:Z>1</physm:Z>
-        </MeshScale>
-        <MeshRotation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshRotation>
-        <MeshTranslation xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <physm:X>0</physm:X>
-          <physm:Y>0</physm:Y>
-          <physm:Z>0</physm:Z>
-        </MeshTranslation>
-        <IsRealTimeCamera xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">true</IsRealTimeCamera>
-        <UpdateInterval xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">250</UpdateInterval>
-        <ShadowDisplay xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">HideShadows</ShadowDisplay>
-        <CameraModel xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">AttachedChild</CameraModel>
-        <Near xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</Near>
-        <Far xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.8</Far>
-        <ViewSizeX xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">32</ViewSizeX>
-        <ViewSizeY xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">24</ViewSizeY>
-        <ViewAngle xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.0349</ViewAngle>
-        <IsPhysicsVisible xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">false</IsPhysicsVisible>
-        <LookAt xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>1</Z>
-        </LookAt>
-        <Location xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">
-          <X>0</X>
-          <Y>0</Y>
-          <Z>0</Z>
-        </Location>
-        <ShaderFile xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">IREffect.fx</ShaderFile>
-        <MaximumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.8</MaximumRange>
-        <MinimumRange xmlns="http://schemas.microsoft.com/robotics/2006/04/simulationengine.html">0.1</MinimumRange>
-      </FrontRightIr>
-      <TimeoutSeconds>30</TimeoutSeconds>
+      <CurrentToTorque>1</CurrentToTorque>
+      <FrictionTorque>0.03</FrictionTorque>
     </ReferencePlatform2011Entity>
     <LaserRangeFinderExEntity xmlns:phys="http://schemas.microsoft.com/robotics/2006/04/simulation/physics.html" xmlns:sim="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:physm="http://schemas.microsoft.com/robotics/2006/07/physicalmodel.html" xmlns="http://brumba.ru/contracts/2013/11/simulatedlrf.html">
       <sim:State>
@@ -2158,26 +486,26 @@
         <sim:Assets />
         <sim:Pose>
           <physm:Position>
-            <physm:X>5.15767852E-06</physm:X>
-            <physm:Y>-0.00100000238</physm:Y>
-            <physm:Z>-2.92680075E-10</physm:Z>
+            <physm:X>-0.0586961061</physm:X>
+            <physm:Y>0.197725043</physm:Y>
+            <physm:Z>0.188103944</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>8.983534E-10</physm:X>
-            <physm:Y>-1.51493555E-08</physm:Y>
-            <physm:Z>1.290185E-05</physm:Z>
-            <physm:W>1</physm:W>
+            <physm:X>-0.000640022</physm:X>
+            <physm:Y>0.984200239</physm:Y>
+            <physm:Z>0.00311256642</physm:Z>
+            <physm:W>0.177012369</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>1.54313454E-07</physm:X>
-          <physm:Y>5.57255468E-08</physm:Y>
-          <physm:Z>9.53524051E-08</physm:Z>
+          <physm:X>-0.0027321463</physm:X>
+          <physm:Y>4.103808E-06</physm:Y>
+          <physm:Z>-0.0011992706</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>4.17371524E-07</physm:X>
-          <physm:Y>-1.3119037E-09</physm:Y>
-          <physm:Z>1.43727777E-06</physm:Z>
+          <physm:X>-0.000119408993</physm:X>
+          <physm:Y>-0.0147587741</physm:Y>
+          <physm:Z>8.05476957E-05</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.16</phys:Mass>
@@ -2231,9 +559,9 @@
                 <physm:Z>0</physm:Z>
               </physm:JointNormal>
               <physm:JointAxis>
-                <physm:X>1</physm:X>
+                <physm:X>-1</physm:X>
                 <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
+                <physm:Z>-8.742278E-08</physm:Z>
               </physm:JointAxis>
               <physm:JointConnectPoint>
                 <physm:X>0</physm:X>
@@ -2248,14 +576,14 @@
                 <physm:Z>0</physm:Z>
               </physm:JointNormal>
               <physm:JointAxis>
-                <physm:X>1</physm:X>
+                <physm:X>-1</physm:X>
                 <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
+                <physm:Z>-8.742278E-08</physm:Z>
               </physm:JointAxis>
               <physm:JointConnectPoint>
-                <physm:X>0</physm:X>
-                <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
+                <physm:X>2.25001279E-16</physm:X>
+                <physm:Y>-0.2</physm:Y>
+                <physm:Z>0.2</physm:Z>
               </physm:JointConnectPoint>
             </physm:EntityJointConnector>
           </physm:Connectors>
@@ -2336,8 +664,8 @@
           <phys:LocalPose>
             <physm:Position>
               <physm:X>0</physm:X>
-              <physm:Y>0.2</physm:Y>
-              <physm:Z>-0.2</physm:Z>
+              <physm:Y>0</physm:Y>
+              <physm:Z>0</physm:Z>
             </physm:Position>
             <physm:Orientation>
               <physm:X>0</physm:X>
@@ -2360,15 +688,15 @@
       <RaycastProperties_FORDB>
         <phys:OriginPose>
           <physm:Position>
-            <physm:X>5.47788659E-09</physm:X>
-            <physm:Y>0.199</physm:Y>
-            <physm:Z>-0.2</physm:Z>
+            <physm:X>-0.05869983</physm:X>
+            <physm:Y>0.197724864</physm:Y>
+            <physm:Z>0.188111708</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-1.27806607E-05</physm:X>
-            <physm:Y>1</physm:Y>
-            <physm:Z>-2.65719269E-09</physm:Z>
-            <physm:W>-2.86628783E-08</physm:W>
+            <physm:X>-0.00311611965</physm:X>
+            <physm:Y>0.1766437</physm:Y>
+            <physm:Z>-0.0006317883</physm:Z>
+            <physm:W>-0.98426646</physm:W>
           </physm:Orientation>
         </phys:OriginPose>
         <phys:StartAngle>-120</phys:StartAngle>
@@ -2926,26 +1254,26 @@
         </sim:Assets>
         <sim:Pose>
           <physm:Position>
-            <physm:X>2.67729234E-07</physm:X>
-            <physm:Y>0.5572158</physm:Y>
-            <physm:Z>0.153289</physm:Z>
+            <physm:X>0.06427401</physm:X>
+            <physm:Y>0.558171332</physm:Y>
+            <physm:Z>-0.140709087</physm:Z>
           </physm:Position>
           <physm:Orientation>
-            <physm:X>-2.44305154E-09</physm:X>
-            <physm:Y>-1.52555089E-08</physm:Y>
-            <physm:Z>1.30617345E-05</physm:Z>
-            <physm:W>1</physm:W>
+            <physm:X>-0.0006515879</physm:X>
+            <physm:Y>0.9837862</physm:Y>
+            <physm:Z>0.003109707</physm:Z>
+            <physm:W>0.179299325</physm:W>
           </physm:Orientation>
         </sim:Pose>
         <sim:Velocity>
-          <physm:X>-2.863927E-07</physm:X>
-          <physm:Y>-1.07969811E-08</physm:Y>
-          <physm:Z>-1.42267611E-08</physm:Z>
+          <physm:X>0.0201032255</physm:X>
+          <physm:Y>-3.96771065E-05</physm:Y>
+          <physm:Z>0.00732576242</physm:Z>
         </sim:Velocity>
         <sim:AngularVelocity>
-          <physm:X>2.2789024E-08</physm:X>
-          <physm:Y>6.33665E-10</physm:Y>
-          <physm:Z>1.33180276E-06</physm:Z>
+          <physm:X>0.0117616411</physm:X>
+          <physm:Y>-0.0162604917</physm:Y>
+          <physm:Z>-0.03162058</physm:Z>
         </sim:AngularVelocity>
         <sim:MassDensity>
           <phys:Mass>0.001</phys:Mass>
@@ -2999,9 +1327,9 @@
                 <physm:Z>0</physm:Z>
               </physm:JointNormal>
               <physm:JointAxis>
-                <physm:X>1</physm:X>
+                <physm:X>-1</physm:X>
                 <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
+                <physm:Z>-8.742278E-08</physm:Z>
               </physm:JointAxis>
               <physm:JointConnectPoint>
                 <physm:X>0</physm:X>
@@ -3016,12 +1344,12 @@
                 <physm:Z>0</physm:Z>
               </physm:JointNormal>
               <physm:JointAxis>
-                <physm:X>1</physm:X>
+                <physm:X>-1</physm:X>
                 <physm:Y>0</physm:Y>
-                <physm:Z>0</physm:Z>
+                <physm:Z>-8.742278E-08</physm:Z>
               </physm:JointAxis>
               <physm:JointConnectPoint>
-                <physm:X>0</physm:X>
+                <physm:X>-6.107478E-17</physm:X>
                 <physm:Y>-0.5582158</physm:Y>
                 <physm:Z>-0.153289</physm:Z>
               </physm:JointConnectPoint>

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Brumba.Utils;
+using Brumba.WaiterStupid;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
@@ -9,14 +10,6 @@ namespace Brumba.DwaNavigator.Tests
     [TestFixture]
     public class DiffDriveVelocitySpaceGeneratorTests
     {
-        [Test]
-        public void WheelToRobotKinematics()
-        {
-            var ddvsg = new DiffDriveVelocitySpaceGenerator(1, 1, 1.5d, 3d, 1, 1, 1, 1);
-
-            Assert.That(ddvsg.WheelsToRobotKinematics(new Vector2(2, 1)), Is.EqualTo(new Velocity(1.5d / 2 * (2 + 1), 1.5d / 3d * (1 - 2))));
-        }
-
         [Test]
         public void PredictWheelVelocititesParams()
         {
@@ -78,8 +71,7 @@ namespace Brumba.DwaNavigator.Tests
             Assert.That(vs[1, 0].WheelAcceleration, Is.EqualTo(new Vector2(-0.9f, -1)));
             Assert.That(vs[2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER, 2 * DiffDriveVelocitySpaceGenerator.STEPS_NUMBER].WheelAcceleration, Is.EqualTo(new Vector2(1, 1)));
 
-            Assert.That(vs[0, 0].Velocity, Is.EqualTo(
-                    ddvsg.WheelsToRobotKinematics(ddvsg.PredictWheelVelocities(ddvsg.RobotKinematicsToWheels(new Velocity(3, 0)), vs[0, 0].WheelAcceleration, 0.5/2))));
+            Assert.That(vs[0, 0].Velocity, Is.EqualTo(ddvsg.PredictVelocity(new Velocity(3, 0), vs[0, 0].WheelAcceleration, 0.5/2)));
         }
     }
 }

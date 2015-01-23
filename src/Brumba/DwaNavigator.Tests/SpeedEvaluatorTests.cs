@@ -1,3 +1,4 @@
+using Brumba.WaiterStupid;
 using NUnit.Framework;
 
 namespace Brumba.DwaNavigator.Tests

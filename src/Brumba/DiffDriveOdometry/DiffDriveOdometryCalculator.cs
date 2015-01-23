@@ -7,75 +7,58 @@ namespace Brumba.DiffDriveOdometry
 {
 	public class DiffDriveOdometryCalculator
 	{
-        [DC.ContractInvariantMethod]
-        void ObjectInvariant()
+        public DiffDriveOdometryCalculator(double wheelRadius, double wheelBase, int ticksPerRotation)
         {
-            DC.Contract.Invariant(Constants.WheelBase > 0);
-            DC.Contract.Invariant(Constants.WheelRadius > 0);
-            DC.Contract.Invariant(Constants.TicksPerRotation > 0);
-            DC.Contract.Invariant(Constants.RadiansPerTick > 0);
+            DC.Contract.Requires(wheelRadius > 0);
+            DC.Contract.Requires(wheelBase > 0);
+            DC.Contract.Requires(ticksPerRotation > 0);
+            DC.Contract.Ensures(RadiansPerTick > 0);
+
+            WheelRadius = wheelRadius;
+            WheelBase = wheelBase;
+            RadiansPerTick = MathHelper.TwoPi / ticksPerRotation;
         }
 
-		public DiffDriveOdometryCalculator(DiffDriveOdometryConstants constants)
-		{
-			Constants = constants;
-		}
+        public double WheelRadius { get; private set; }
+        public double WheelBase { get; private set; }
+        public double RadiansPerTick { get; private set; }
 
-		public DiffDriveOdometryConstants Constants { get; set; }
-
-	    public Pose CalculatePoseDelta(double oldTheta, int leftTicks, int rightTicks)
+        public Pose CalculatePoseDelta(int leftTicksDelta, int rightTicksDelta, double oldTheta)
 	    {
 			DC.Contract.Requires(!double.IsNaN(oldTheta));
 			DC.Contract.Requires(!double.IsInfinity(oldTheta));
 
-            return new Pose(new Vector2((rightTicks + leftTicks) / 2f * (float)Math.Cos(oldTheta), (rightTicks + leftTicks) / 2f * (float)Math.Sin(oldTheta))
-									* Constants.WheelRadius * Constants.RadiansPerTick,
-							   (rightTicks - leftTicks) / Constants.WheelBase * Constants.WheelRadius * Constants.RadiansPerTick);
+            var dist = WheelsToRobotKinematics(new Vector2(leftTicksDelta, rightTicksDelta) * (float)RadiansPerTick);
+            return new Pose((float)dist.Linear * new Vector2((float)Math.Cos(oldTheta), (float)Math.Sin(oldTheta)), dist.Angular);
 	    }
 
-        public DiffDriveOdometryState UpdateOdometry(DiffDriveOdometryState previousDiffDriveOdometry, double deltaT, int leftTicks, int rightTicks)
-        {
-            DC.Contract.Requires(previousDiffDriveOdometry != null);
-            DC.Contract.Requires(!double.IsNaN(previousDiffDriveOdometry.Pose.Bearing));
-            DC.Contract.Requires(!double.IsInfinity(previousDiffDriveOdometry.Pose.Bearing));
-            DC.Contract.Requires(deltaT > 0);
-            DC.Contract.Ensures(DC.Contract.Result<DiffDriveOdometryState>() != null);
-            DC.Contract.Ensures(DC.Contract.Result<DiffDriveOdometryState>().LeftTicks == leftTicks);
-            DC.Contract.Ensures(DC.Contract.Result<DiffDriveOdometryState>().RightTicks == rightTicks);
-
-	        var poseDelta = CalculatePoseDelta(previousDiffDriveOdometry.Pose.Bearing,
-		                                       leftTicks - previousDiffDriveOdometry.LeftTicks,
-		                                       rightTicks - previousDiffDriveOdometry.RightTicks);
-            var velocity = CalculateVelocity(TicksToAngularVelocity(rightTicks - previousDiffDriveOdometry.RightTicks, deltaT),
-                                             TicksToAngularVelocity(leftTicks - previousDiffDriveOdometry.LeftTicks, deltaT),
-                                             previousDiffDriveOdometry.Pose.Bearing);
-            return new DiffDriveOdometryState
-            {
-                LeftTicks = leftTicks,
-                RightTicks = rightTicks,
-                Velocity = velocity,
-                Pose = new Pose(previousDiffDriveOdometry.Pose.Position + poseDelta.Position, previousDiffDriveOdometry.Pose.Bearing + poseDelta.Bearing),
-            };
-        }
-
-        public double TicksToAngularVelocity(int deltaTicks, double deltaT)
+        public Velocity CalculateVelocity(int leftTicksDelta, int rightTicksDelta, double deltaT)
         {
             DC.Contract.Requires(deltaT > 0);
-            DC.Contract.Requires(Constants.TicksPerRotation > 0);
-            DC.Contract.Requires(Constants.RadiansPerTick > 0);
-            DC.Contract.Ensures(Math.Sign(DC.Contract.Result<double>()) == Math.Sign(deltaTicks));
 
-            return deltaTicks / deltaT * Constants.RadiansPerTick;
+            return WheelsToRobotKinematics(new Vector2(leftTicksDelta, rightTicksDelta) * (float)(RadiansPerTick / deltaT));
         }
 
-        public Pose CalculateVelocity(double omegaR, double omegaL, double theta)
+        public Tuple<Pose, Velocity> UpdateOdometry(Pose previousPose, int leftTicksDelta, int rightTicksDelta, double deltaT)
         {
-            DC.Contract.Requires(Constants.WheelRadius > 0);
-            DC.Contract.Requires(Constants.WheelBase > 0);
+            DC.Contract.Requires(!double.IsNaN(previousPose.Bearing));
+            DC.Contract.Requires(!double.IsInfinity(previousPose.Bearing));
+            DC.Contract.Requires(deltaT > 0);
+            DC.Contract.Ensures(DC.Contract.Result<Tuple<Pose, Velocity>>() != null);
 
-            return new Pose(new Vector2((float)(Constants.WheelRadius / 2 * (omegaR + omegaL) * Math.Cos(theta)),
-                                        (float)(Constants.WheelRadius / 2 * (omegaR + omegaL) * Math.Sin(theta))),
-                            Constants.WheelRadius / Constants.WheelBase * (omegaR - omegaL));
+            var poseDelta = CalculatePoseDelta(leftTicksDelta, rightTicksDelta, previousPose.Bearing);
+            var velocity = CalculateVelocity(leftTicksDelta, rightTicksDelta, deltaT);
+            return Tuple.Create(new Pose(previousPose.Position + poseDelta.Position, previousPose.Bearing + poseDelta.Bearing), velocity);
+        }
+
+	    public Velocity WheelsToRobotKinematics(Vector2 wheelsValues)
+        {
+            return new Velocity(WheelRadius / 2 * (wheelsValues.Y + wheelsValues.X), WheelRadius / WheelBase * (wheelsValues.Y - wheelsValues.X));
+        }
+
+        public Vector2 RobotKinematicsToWheels(Velocity v)
+        {
+            return new Vector2((float)(v.Linear * 2 - v.Angular * WheelBase), (float)(v.Linear * 2 + v.Angular * WheelBase)) / 2 / (float)WheelRadius;
         }
 	}
 }

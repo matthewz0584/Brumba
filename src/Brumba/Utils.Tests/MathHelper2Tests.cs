@@ -105,10 +105,10 @@ namespace Brumba.Utils.Tests
         [Test]
         public void AngleBetween()
         {
-            Assert.That(MathHelper2.AngleBetween(new Vector2(1, 0), new Vector2(0, 1)), Is.EqualTo(MathHelper.PiOver2));
-            Assert.That(MathHelper2.AngleBetween(new Vector2(1, 0), new Vector2(-1, 0)), Is.EqualTo(MathHelper.Pi));
+            Assert.That(MathHelper2.AngleBetween(new Vector2(1, 0), new Vector2(0, 1)), Is.EqualTo(Constants.PiOver2));
+            Assert.That(MathHelper2.AngleBetween(new Vector2(1, 0), new Vector2(-1, 0)), Is.EqualTo(Constants.Pi));
             Assert.That(MathHelper2.AngleBetween(new Vector2(1, 0), new Vector2(1, 0)), Is.EqualTo(0));
-            Assert.That(MathHelper2.AngleBetween(new Vector2(1, 1), new Vector2(2, 0)), Is.EqualTo(MathHelper.Pi / 4));
+            Assert.That(MathHelper2.AngleBetween(new Vector2(1, 1), new Vector2(2, 0)), Is.EqualTo(Constants.PiOver4).Within(1e-7));
         }
     }
 }

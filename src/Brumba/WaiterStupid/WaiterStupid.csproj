@@ -136,6 +136,7 @@
     <Compile Include="Pose.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimerFacade.cs" />
+    <Compile Include="Velocity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Gui\GUI.Manifest.xml" />

@@ -4,27 +4,27 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 
-namespace Brumba.GenericVelocimeter
+namespace Brumba.GenericFixedWheelVelocimeter
 {
     public sealed class Contract
     {
         [DataMember]
-        public const string Identifier = "http://brumba.ru/contracts/2014/11/genericvelocimeter.html";
+        public const string Identifier = "http://brumba.ru/contracts/2014/11/genericfixedwheelvelocimeter.html";
     }
 
     [DataContract]
-    public class GenericVelocimeterState
+    public class GenericFixedWheelVelocimeterState
     {
         [DataMember]
-        public Pose Velocity { get; set; }
+        public Velocity Velocity { get; set; }
     }
 
     [ServicePort]
-    public class GenericVelocimeterOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+    public class GenericFixedWheelVelocimeterOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
     {
     }
 
-    public class Get : Get<GetRequestType, PortSet<GenericVelocimeterState, Fault>>
+    public class Get : Get<GetRequestType, PortSet<GenericFixedWheelVelocimeterState, Fault>>
     {
         public Get()
         {
@@ -35,7 +35,7 @@ namespace Brumba.GenericVelocimeter
         {
         }
 
-        public Get(GetRequestType body, PortSet<GenericVelocimeterState, Fault> responsePort)
+        public Get(GetRequestType body, PortSet<GenericFixedWheelVelocimeterState, Fault> responsePort)
             : base(body, responsePort)
         {
         }

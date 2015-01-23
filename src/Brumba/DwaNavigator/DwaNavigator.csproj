@@ -136,9 +136,13 @@
     <Compile Include="ObstaclesEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpeedEvaluator.cs" />
-    <Compile Include="Velocity.cs" />
+    <Compile Include="VelocityAcceleration.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DiffDriveOdometry\DiffDriveOdometry.csproj">
+      <Project>{4372FAD1-D6CE-404D-8738-7A7014B0623A}</Project>
+      <Name>DiffDriveOdometry</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
       <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
       <Name>DsspUtils</Name>

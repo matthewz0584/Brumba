@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.DiffDriveOdometry;
 using Brumba.Utils;
+using Brumba.WaiterStupid;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
@@ -48,6 +50,7 @@ namespace Brumba.DwaNavigator
         readonly double _c;
         readonly double _d;
         readonly double _wheelVelocityToTorque;
+        DiffDriveOdometryCalculator _diffDriveOdometryCalc;
 
         public DiffDriveVelocitySpaceGenerator(
                 double robotMass, double robotInertiaMoment, double wheelRadius, double wheelBase,
@@ -62,24 +65,20 @@ namespace Brumba.DwaNavigator
             DC.Contract.Requires(frictionTorque >= 0);
             DC.Contract.Requires(dt > 0);
 
-            WheelRadius = wheelRadius;
-            WheelBase = wheelBase;
-
             CurrentToTorque = currentToTorque;
             Dt = dt;
 
-            _wheelVelocityToTorque = (currentToTorque - frictionTorque) / (velocityMax / WheelRadius);
-            
-            var massCoef = 1 / (robotMass * WheelRadius * WheelRadius);
-            var momentCoef = WheelBase / 2 * WheelBase / 2 / (robotInertiaMoment * WheelRadius * WheelRadius);
+            _wheelVelocityToTorque = (currentToTorque - frictionTorque) / (velocityMax / wheelRadius);
+
+            var massCoef = 1 / (robotMass * wheelRadius * wheelRadius);
+            var momentCoef = wheelBase / 2 * wheelBase / 2 / (robotInertiaMoment * wheelRadius * wheelRadius);
             //_a = currentToTorque * massCoef;
             //_b = currentToTorque * momentCoef;
             _c = _wheelVelocityToTorque * massCoef;
             _d = _wheelVelocityToTorque * momentCoef;
-        }
 
-        public double WheelRadius { get; private set; }
-        public double WheelBase { get; private set; }
+            _diffDriveOdometryCalc = new DiffDriveOdometryCalculator(wheelRadius, wheelBase, int.MaxValue);
+        }
 
         public double CurrentToTorque { get; private set; }
         public double Dt { get; private set; }
@@ -101,7 +100,8 @@ namespace Brumba.DwaNavigator
 
         public Velocity PredictVelocity(Velocity velocityCurrent, Vector2 currents, double dt)
         {
-            return WheelsToRobotKinematics(PredictWheelVelocities(RobotKinematicsToWheels(velocityCurrent), currents, dt));
+            return _diffDriveOdometryCalc.WheelsToRobotKinematics(PredictWheelVelocities(
+                            _diffDriveOdometryCalc.RobotKinematicsToWheels(velocityCurrent), currents, dt));
         }
 
         public Vector2 PredictWheelVelocities(Vector2 omegaCurrent, Vector2 currents, double dt)
@@ -141,16 +141,6 @@ namespace Brumba.DwaNavigator
             //var omegaDotR = 2 * a * p.Y / STEPS_NUMBER - 2 * c * omegaCurrent.Y;
 
             //var vNext = WheelsToRobotKinematics(omegaCurrent + new Vector2(omegaDotL, omegaDotR) * (float)Dt);
-        }
-
-        public Velocity WheelsToRobotKinematics(Vector2 wheelsValues)
-        {
-            return new Velocity(WheelRadius / 2 * (wheelsValues.Y + wheelsValues.X), WheelRadius / WheelBase * (wheelsValues.Y - wheelsValues.X));
-        }
-
-        public Vector2 RobotKinematicsToWheels(Velocity v)
-        {
-            return new Vector2((float)(v.Linear * 2 - v.Angular * WheelBase), (float)(v.Linear * 2 + v.Angular * WheelBase)) / 2 / (float)WheelRadius;
         }
 
         IEnumerable<Point> GenerateWheelAccelerationGrid()

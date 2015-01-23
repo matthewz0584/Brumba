@@ -12,7 +12,7 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Xna.Framework;
 using DwaNavigatorPxy = Brumba.DwaNavigator.Proxy;
 using LocalizerPxy = Brumba.GenericLocalizer.Proxy;
-using VelocimeterPxy = Brumba.GenericVelocimeter.Proxy;
+using VelocimeterPxy = Brumba.GenericFixedWheelVelocimeter.Proxy;
 using WaiterPxy = Brumba.WaiterStupid.Proxy;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
 
@@ -38,7 +38,7 @@ namespace Brumba.Dashboard
         LocalizerPxy.GenericLocalizerOperations _localizer = new LocalizerPxy.GenericLocalizerOperations();
 
         [Partner("Velocimeter", Contract = VelocimeterPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        VelocimeterPxy.GenericVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericVelocimeterOperations();
+        VelocimeterPxy.GenericFixedWheelVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericFixedWheelVelocimeterOperations();
 
         //[Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         //OdometryPxy.DiffDriveOdometryOperations _odometry = new OdometryPxy.DiffDriveOdometryOperations();
@@ -52,9 +52,9 @@ namespace Brumba.Dashboard
 
 	    private DwaNavigatorPxy.VelocityAcceleration _currentVelocityAcceleration;
 	    private WaiterPxy.Pose _simulationPose;
-        private WaiterPxy.Pose _simulationVelocity;
+        private WaiterPxy.Velocity _simulationVelocity;
         private WaiterPxy.Pose _odometryPose;
-        private WaiterPxy.Pose _odometryVelocity;
+        private WaiterPxy.Velocity _odometryVelocity;
 	    private int _currentDwaIteration;
 
 	    public DashboardService(DsspServiceCreationPort creationPort)
@@ -96,7 +96,7 @@ namespace Brumba.Dashboard
 
         public string SimulationVelocity
         {
-            get { return string.Format("Linear: ({0:F2}, {1:F2}), Angular: {2:F2}", _simulationVelocity.Position.X, _simulationVelocity.Position.Y, _simulationVelocity.Bearing); }
+            get { return string.Format("Linear: {0:F2} [m/s], Angular: {1:F2} [1/s]", _simulationVelocity.Linear, _simulationVelocity.Angular); }
         }
 
 	    public string OdometryPose
@@ -106,7 +106,7 @@ namespace Brumba.Dashboard
 
         public string OdometryVelocity
         {
-            get { return string.Format("Linear: ({0:F2}, {1:F2}), Angular: {2:F2}", _odometryVelocity.Position.X, _odometryVelocity.Position.Y, _odometryVelocity.Bearing); }
+            get { return string.Format("Linear: {0:F2} [m/s], Angular: {1:F2} [1/s]", _odometryVelocity.Linear, _odometryVelocity.Angular); }
         }
 
 	    protected override void Start()
@@ -174,7 +174,7 @@ namespace Brumba.Dashboard
 
             _simulationPose = localizerState.EstimatedPose;
 
-            VelocimeterPxy.GenericVelocimeterState velocimeterState = null;
+            VelocimeterPxy.GenericFixedWheelVelocimeterState velocimeterState = null;
             yield return _velocimeter.Get().Receive(vs => velocimeterState = vs);
 
             _simulationVelocity = velocimeterState.Velocity;
@@ -193,8 +193,8 @@ namespace Brumba.Dashboard
             OdometryPxy.DiffDriveOdometryServiceState odometryState = null;
             //yield return _odometry.Get().Receive(os => odometryState = os);
 
-            _odometryPose = odometryState.State.Pose;
-            _odometryVelocity = odometryState.State.Velocity;
+            _odometryPose = odometryState.Pose;
+            _odometryVelocity = odometryState.Velocity;
 
             yield return _wpfPort.Invoke(() =>
             {
@@ -221,7 +221,7 @@ namespace Brumba.Dashboard
 	        };
             _currentVelocityAcceleration = new DwaNavigatorPxy.VelocityAcceleration
             {
-                Velocity = new DwaNavigatorPxy.Velocity
+                Velocity = new WaiterPxy.Velocity
                 {
                     Linear = 5,
                     Angular = 5.5
@@ -229,9 +229,9 @@ namespace Brumba.Dashboard
                 WheelAcceleration = new Vector2(0.5f, 0.6f)
             };
             _simulationPose = new WaiterPxy.Pose(new Vector2(1, 2), Math.PI);
-            _simulationVelocity = new WaiterPxy.Pose(new Vector2(101, 201), Math.PI);
+            _simulationVelocity = new WaiterPxy.Velocity(101, Math.PI);
             _odometryPose = new WaiterPxy.Pose(new Vector2(10, 20), Math.PI);
-            _odometryVelocity = new WaiterPxy.Pose(new Vector2(100, 200), Math.PI);
+            _odometryVelocity = new WaiterPxy.Velocity(100, Math.PI);
         }
 	}
 

@@ -1,7 +1,6 @@
 using System.ComponentModel;
-using Brumba.DwaNavigator;
 using Brumba.GenericLocalizer;
-using Brumba.GenericVelocimeter;
+using Brumba.GenericFixedWheelVelocimeter;
 using Brumba.Utils;
 using Brumba.WaiterStupid;
 using Microsoft.Dss.Core.Attributes;
@@ -22,8 +21,8 @@ namespace Brumba.Simulation.SimulatedLocalizer
         [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericLocalizer.Contract.Identifier)]
         GenericLocalizerOperations _genericLocalizerPort = new GenericLocalizerOperations();
 
-        [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericVelocimeter.Contract.Identifier)]
-        GenericVelocimeterOperations _genericVelocimeterPort = new GenericVelocimeterOperations();
+        [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericFixedWheelVelocimeter.Contract.Identifier)]
+        GenericFixedWheelVelocimeterOperations _genericFixedWheelVelocimeterPort = new GenericFixedWheelVelocimeterOperations();
 
         [ServicePort("/SimulatedLocalizer", AllowMultipleInstances = true)]
         SimulatedLocalizerOperations _mainPort = new SimulatedLocalizerOperations();
@@ -52,32 +51,30 @@ namespace Brumba.Simulation.SimulatedLocalizer
             get.ResponsePort.Post(_state.Localizer);
         }
 
-        [ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_genericVelocimeterPort")]
-        public void OnGet(GenericVelocimeter.Get get)
+        [ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_genericFixedWheelVelocimeterPort")]
+        public void OnGet(GenericFixedWheelVelocimeter.Get get)
         {
             if (IsConnected)
                 UpdateState();
 
-            get.ResponsePort.Post(_state.Velocimeter);
+            get.ResponsePort.Post(_state.FixedWheelVelocimeter);
         }
 
         void UpdateState()
         {
             _state.Localizer.EstimatedPose = Entity.State.Pose.SimToMap();
-            _state.Velocimeter.Velocity = ExtractVelocity();
+            _state.FixedWheelVelocimeter.Velocity = ExtractVelocity();
         }
 
-	    private Pose ExtractVelocity()
+	    private Velocity ExtractVelocity()
 	    {
-	        var vLinear = Entity.State.Velocity.SimToMap();
+	        var vLinear = Vector2.Dot(Entity.State.Pose.SimToMap().Direction(), Entity.State.Velocity.SimToMap());
 	        var vAngular = Entity.State.AngularVelocity.SimToMapAngularVelocity();
-            if (vLinear.Length() > _state.MaxVelocity.Linear)
-                LogWarning(string.Format("Linear velocity ({0}) is greater than given maximum ({1})!", vLinear.Length(), _state.MaxVelocity.Linear));
+            if (vLinear > _state.MaxVelocity.Linear)
+                LogWarning(string.Format("Linear velocity ({0}) is greater than given maximum ({1})!", vLinear, _state.MaxVelocity.Linear));
             if (vAngular > _state.MaxVelocity.Angular)
                 LogWarning(string.Format("Angular velocity ({0}) is greater than given maximum ({1})!", vAngular, _state.MaxVelocity.Angular));
-	        return new Pose(
-	            vLinear.Length() <= _state.MaxVelocity.Linear ? vLinear : Vector2.Normalize(vLinear) * (float)_state.MaxVelocity.Linear,
-	            vAngular <= _state.MaxVelocity.Angular ? vAngular : _state.MaxVelocity.Angular);
+	        return new Velocity(vLinear, vAngular);
 	    }
 
 	    protected override IConnectable GetState() { return _state; }

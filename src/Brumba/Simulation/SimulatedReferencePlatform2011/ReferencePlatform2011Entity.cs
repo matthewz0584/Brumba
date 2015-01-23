@@ -295,8 +295,6 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
                     Initialize(device, physicsEngine);
 
                 base.Initialize(device, physicsEngine);
-
-                IsEnabled = true;
             }
             catch (Exception ex)
             {
@@ -375,7 +373,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             return new WheelEntity(new WheelShapeProperties(name, Mass / 2 * _driveWheelRadius * _driveWheelRadius, _driveWheelRadius)
                     {
                         InnerRadius = 0.7f * _driveWheelRadius,
-                        LocalPose = new Pose(position, Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi)),
+                        LocalPose = new Pose(position),
                         Suspension = new SpringProperties(1e2f, 0, 0),
                         SuspensionTravel = 0.01f,
                         //Advanced = new ShapeAdvancedProperties {PhysicsCalculationPasses = 20}
@@ -406,13 +404,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
             if (IsEnabled)
             {
-                LeftWheel.Wheel.MotorTorque = MotorTorque(_leftWheelCurrent, LeftWheel.Wheel.AxleSpeed);
-                RightWheel.Wheel.MotorTorque = MotorTorque(_rightWheelCurrent, RightWheel.Wheel.AxleSpeed);
-            }
-            else
-            {
-                LeftWheel.Wheel.MotorTorque = 0;
-                RightWheel.Wheel.MotorTorque = 0;
+                LeftWheel.Wheel.MotorTorque = -MotorTorque(_leftWheelCurrent, -LeftWheel.Wheel.AxleSpeed);
+                RightWheel.Wheel.MotorTorque = -MotorTorque(_rightWheelCurrent, -RightWheel.Wheel.AxleSpeed);
             }
 
             // update entities in fields

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
+using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;

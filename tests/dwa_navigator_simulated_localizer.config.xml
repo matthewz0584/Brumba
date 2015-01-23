@@ -10,15 +10,12 @@
       <Bearing>0</Bearing>
     </EstimatedPose>
   </Localizer>
-  <Velocimeter>
-    <Velocity xmlns="http://brumba.ru/contracts/2014/11/genericvelocimeter.html">
-      <Position>
-        <X>0</X>
-        <Y>0</Y>
-      </Position>
-      <Bearing>0</Bearing>
+  <FixedWheelVelocimeter>
+    <Velocity xmlns="http://brumba.ru/contracts/2014/11/genericfixedwheelvelocimeter.html">
+      <Linear>0</Linear>
+      <Angular>0</Angular>
     </Velocity>
-  </Velocimeter>
+  </FixedWheelVelocimeter>
   <MaxVelocity>
     <Linear xmlns="http://brumba.ru/contracts/2014/11/dwanavigatorservice.html">1.52</Linear>
     <Angular xmlns="http://brumba.ru/contracts/2014/11/dwanavigatorservice.html">10</Angular>
