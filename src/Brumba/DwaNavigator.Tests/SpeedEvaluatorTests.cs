@@ -1,3 +1,4 @@
+using Brumba.Common;
 using NUnit.Framework;
 
 namespace Brumba.DwaNavigator.Tests

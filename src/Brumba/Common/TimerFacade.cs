@@ -7,13 +7,13 @@ using W3C.Soap;
 using timerPxy = Brumba.Entities.Timer.Proxy;
 using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.WaiterStupid
+namespace Brumba.Common
 {
 	public class TimerFacade : IDisposable
 	{
 		readonly DsspServiceExposing _srv;
 
-		[DC.ContractInvariantMethodAttribute]
+		[DC.ContractInvariantMethod]
 	    void ObjectInvariant()
 	    {
 	        DC.Contract.Invariant(Interval > 0);
@@ -38,7 +38,7 @@ namespace Brumba.WaiterStupid
 
 		public IEnumerator<ITask> Set()
 		{
-			var directoryResponcePort = _srv.DirectoryQuery(timerPxy.Contract.Identifier, new TimeSpan(0, 0, 3));
+            var directoryResponcePort = _srv.DirectoryQuery(timerPxy.Contract.Identifier, new TimeSpan(0, 0, 3));
 
 			yield return Arbiter.Choice(
                 _srv.TimeoutPort(1000).Receive(timeout => InternalTimerHandler(DateTime.Now)),
@@ -73,19 +73,19 @@ namespace Brumba.WaiterStupid
                 _simTimerUnsubscribePort.Post(new Shutdown());
         }
 
-		readonly timerPxy.TimerOperations _simTimerNotificationPort = new timerPxy.TimerOperations();
+        readonly timerPxy.TimerOperations _simTimerNotificationPort = new timerPxy.TimerOperations();
         Port<Shutdown> _simTimerUnsubscribePort;
 		void StartSimulatedTimer(ServiceInfoType f)
 		{
             DC.Contract.Requires(f != null);
             DC.Contract.Ensures(_simTimerUnsubscribePort != null);
 
-			var simTimer = _srv.ServiceForwarder<timerPxy.TimerOperations>(new Uri(f.Service));
+            var simTimer = _srv.ServiceForwarder<timerPxy.TimerOperations>(new Uri(f.Service));
 		    _simTimerUnsubscribePort = new Port<Shutdown>();
 		    simTimer.Post(
-		        new timerPxy.Subscribe
+                new timerPxy.Subscribe
 		            {
-		                Body = new timerPxy.SubscribeRequest(Interval),
+                        Body = new timerPxy.SubscribeRequest(Interval),
 		                NotificationPort = _simTimerNotificationPort,
 		                NotificationShutdownPort = _simTimerUnsubscribePort
 		            });
@@ -93,7 +93,7 @@ namespace Brumba.WaiterStupid
 			_srv.Activate(_simTimerNotificationPort.P4.Receive(SimulationTimerHandler));
 		}
 
-	    void SimulationTimerHandler(timerPxy.Update simTimerUpdate)
+        void SimulationTimerHandler(timerPxy.Update simTimerUpdate)
 	    {
             DC.Contract.Requires(simTimerUpdate != null);
             DC.Contract.Requires(simTimerUpdate.Body != null);

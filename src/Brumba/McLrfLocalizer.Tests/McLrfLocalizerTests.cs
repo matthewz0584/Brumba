@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
+using Brumba.Common;
 using Brumba.MapProvider;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using MathNet.Numerics.Statistics;
 using Microsoft.Xna.Framework;

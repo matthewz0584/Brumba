@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.Common;
 using MathNet.Numerics;
 using DC = System.Diagnostics.Contracts;
 
@@ -8,9 +9,6 @@ namespace Brumba.DwaNavigator
     public class CompositeEvaluator : IVelocityEvaluator
     {
         private IDictionary<IVelocityEvaluator, double> _evaluatorWeights;
-
-        public CompositeEvaluator()
-        {}
 
         public CompositeEvaluator(IDictionary<IVelocityEvaluator, double> evaluatorWeights)
         {

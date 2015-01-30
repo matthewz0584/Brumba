@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Brumba.Common;
 using Brumba.DsspUtils;
+using Brumba.GenericFixedWheelVelocimeter;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -26,6 +27,9 @@ namespace Brumba.DiffDriveOdometry
 		[ServicePort("/Odometry", AllowMultipleInstances = true)]
 		DiffDriveOdometryOperations _mainPort = new DiffDriveOdometryOperations();
 
+        [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericFixedWheelVelocimeter.Contract.Identifier)]
+        GenericFixedWheelVelocimeterOperations _genericFixedWheelVelocimeterPort = new GenericFixedWheelVelocimeterOperations();
+
 		[Partner("DifferentialDrive", Contract = Microsoft.Robotics.Services.Drive.Proxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		DriveOperations _diffDrive = new DriveOperations();
 
@@ -47,7 +51,7 @@ namespace Brumba.DiffDriveOdometry
 		IEnumerator<ITask> StartIt()
 		{
 			_timerFacade = new TimerFacade(this, _state.DeltaT);
-			_diffDriveOdometryCalc = new DiffDriveOdometryCalculator(_state.Constants);
+			_diffDriveOdometryCalc = new DiffDriveOdometryCalculator(_state.WheelRadius, _state.WheelBase, _state.TicksPerRotation);
 
 			yield return _diffDrive.Get().Receive(ds =>
 				{
@@ -56,8 +60,8 @@ namespace Brumba.DiffDriveOdometry
                     DC.Contract.Requires(ds.RightWheel != null);
                     DC.Contract.Requires(ds.RightWheel.EncoderState != null);
 
-					_state.State.LeftTicks = ds.LeftWheel.EncoderState.CurrentReading;
-					_state.State.RightTicks = ds.RightWheel.EncoderState.CurrentReading;
+					_state.LeftTicks = ds.LeftWheel.EncoderState.CurrentReading;
+					_state.RightTicks = ds.RightWheel.EncoderState.CurrentReading;
 				});
 
 			base.Start();
@@ -77,11 +81,27 @@ namespace Brumba.DiffDriveOdometry
                 DC.Contract.Requires(ds.LeftWheel.EncoderState != null);
                 DC.Contract.Requires(ds.RightWheel != null);
                 DC.Contract.Requires(ds.RightWheel.EncoderState != null);
+                DC.Contract.Ensures(_state != null);
 
                 //LogInfo("Delta t {0}", dt.TotalSeconds);
                 //LogInfo("Ticks {0}, {1}", ds.LeftWheel.EncoderState.CurrentReading, ds.RightWheel.EncoderState.CurrentReading);
-			    _state.State = _diffDriveOdometryCalc.UpdateOdometry(_state.State, dt.TotalSeconds,
-                    ds.LeftWheel.EncoderState.CurrentReading, ds.RightWheel.EncoderState.CurrentReading);
+			    var leftTicks = ds.LeftWheel.EncoderState.CurrentReading;
+			    var rightTicks = ds.RightWheel.EncoderState.CurrentReading;
+			    var res = _diffDriveOdometryCalc.UpdateOdometry(_state.Pose, leftTicks - _state.LeftTicks,
+                                                    rightTicks - _state.RightTicks, dt.TotalSeconds);
+
+			    _state = new DiffDriveOdometryServiceState
+			    {
+			        DeltaT = _state.DeltaT,
+			        WheelRadius = _state.WheelRadius,
+			        WheelBase = _state.WheelBase,
+			        TicksPerRotation = _state.TicksPerRotation,
+
+			        Pose = res.Item1,
+			        Velocity = res.Item2,
+			        LeftTicks = leftTicks,
+			        RightTicks = rightTicks
+			    };
 			});
 		}
 
@@ -93,6 +113,12 @@ namespace Brumba.DiffDriveOdometry
 
 			_timerFacade.Dispose();
             DefaultDropHandler(dropDownRq);
+        }
+
+        [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_genericFixedWheelVelocimeterPort")]
+        public void OnGet(GenericFixedWheelVelocimeter.Get getRq)
+        {
+            getRq.ResponsePort.Post(new GenericFixedWheelVelocimeterState { Velocity = _state.Velocity });
         }
 	}
 }

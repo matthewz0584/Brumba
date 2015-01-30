@@ -2,18 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Brumba.Common;
 using Brumba.DsspUtils;
-using Brumba.McLrfLocalizer;
-using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
-using Microsoft.Robotics.Simulation.Engine;
-using Microsoft.Robotics.Simulation.Physics;
-using Microsoft.Xna.Framework;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
 using LocalizerPxy = Brumba.GenericLocalizer.Proxy;
+using VelocimeterPxy = Brumba.GenericFixedWheelVelocimeter.Proxy;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using DC = System.Diagnostics.Contracts;
@@ -34,8 +31,8 @@ namespace Brumba.DwaNavigator
         [ServicePort("/DwaNavigator", AllowMultipleInstances = true)]
         DwaNavigatorOperations _mainPort = new DwaNavigatorOperations();
 
-        [Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        OdometryPxy.DiffDriveOdometryOperations _odometryProvider = new OdometryPxy.DiffDriveOdometryOperations();
+        [Partner("Velocimeter", Contract = VelocimeterPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        VelocimeterPxy.GenericFixedWheelVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericFixedWheelVelocimeterOperations();
 
         [Partner("Localizer", Contract = LocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         LocalizerPxy.GenericLocalizerOperations _localizer = new LocalizerPxy.GenericLocalizerOperations();
@@ -46,7 +43,7 @@ namespace Brumba.DwaNavigator
         [Partner("DifferentialDrive", Contract = DrivePxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         DrivePxy.DriveOperations _drive = new DrivePxy.DriveOperations();
 
-        DwaNavigator _dwaNavigator;
+        DwaBootstrapper _dwaBootstrapper;
         
         int _takeEachNthBeam;
         TimerFacade _timerFacade;
@@ -59,6 +56,8 @@ namespace Brumba.DwaNavigator
 
         protected override void Start()
         {
+            _state.VelocititesEvaluation = new double[1, 1];
+
             SpawnIterator(StartIt);
         }
 
@@ -66,8 +65,9 @@ namespace Brumba.DwaNavigator
         {
             _timerFacade = new TimerFacade(this, _state.DeltaT);
 
-            _dwaNavigator = new DwaNavigator(_state.WheelAngularAccelerationMax, _state.WheelAngularVelocityMax,
-                _state.WheelRadius, _state.WheelBase, _state.RobotRadius, _state.RangefinderProperties, _state.DeltaT);
+            _dwaBootstrapper = new DwaBootstrapper(_state.RobotMass, _state.RobotInertiaMoment, _state.WheelRadius, _state.WheelBase, _state.RobotRadius,
+                _state.VelocityMax, _state.BreakageDeceleration, _state.CurrentToTorque, _state.FrictionTorque,
+                _state.RangefinderProperties, _state.LaneWidthCoef, _state.DeltaT);
 
             _takeEachNthBeam = 1;
 
@@ -77,27 +77,32 @@ namespace Brumba.DwaNavigator
                 Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateNavigator))));
 
             yield return To.Exec(() => _timerFacade.Set());
+            _timerFacade.TickPort.Post(new TimeSpan());
         }
 
         IEnumerator<ITask> UpdateNavigator(TimeSpan _)
         {
-            yield return JoinedReceive<SickLrfPxy.State, OdometryPxy.DiffDriveOdometryServiceState, LocalizerPxy.GenericLocalizerState>(
-                false, _lrf.Get(), _odometryProvider.Get(), _localizer.Get(),
-                (lrfScan, odometry, localization) =>
+            yield return JoinedReceive<SickLrfPxy.State, VelocimeterPxy.GenericFixedWheelVelocimeterState, LocalizerPxy.GenericLocalizerState>(
+                false, _lrf.Get(), _velocimeter.Get(), _localizer.Get(),
+                (lrfScan, velocimeterSt, localizerSt) =>
                 {
                     DC.Contract.Requires(lrfScan != null);
                     DC.Contract.Requires(lrfScan.DistanceMeasurements != null);
-                    DC.Contract.Requires(odometry != null);
-                    DC.Contract.Requires(odometry.State != null);
-                    DC.Contract.Requires(localization != null);
+                    DC.Contract.Requires(velocimeterSt != null);
+                    DC.Contract.Requires(localizerSt != null);
 
-                    var pose = (Pose)DssTypeHelper.TransformFromProxy(localization.EstimatedPose);
-                    var velocity = (Pose)DssTypeHelper.TransformFromProxy(odometry.State.Velocity);
+                    //Defective lrf scan
+                    if (_state.Iteration++ < 1)
+                        return;
 
-                    _dwaNavigator.Update(pose, velocity, _state.Target, PreprocessLrfMeasurements(lrfScan.DistanceMeasurements));
+                    var pose = (Pose)DssTypeHelper.TransformFromProxy(localizerSt.EstimatedPose);
+                    var velocity = (Velocity)DssTypeHelper.TransformFromProxy(velocimeterSt.Velocity);
 
-                    _state.CurrentVelocityAcceleration = _dwaNavigator.OptimalVelocity;
-                    _state.VelocititesEvaluation = _dwaNavigator.VelocitiesEvaluation.ToArray();
+                    _dwaBootstrapper.Update(pose, velocity, _state.Target, PreprocessLrfMeasurements(lrfScan.DistanceMeasurements));
+
+                    _state.CurrentVelocityAcceleration = _dwaBootstrapper.OptimalVelocity;
+                    _state.VelocititesEvaluation = _dwaBootstrapper.VelocitiesEvaluation.ToArray();
+                    //_state.Iteration ++;
 
                     _drive.SetDrivePower(_state.CurrentVelocityAcceleration.WheelAcceleration.X,
                         _state.CurrentVelocityAcceleration.WheelAcceleration.Y);

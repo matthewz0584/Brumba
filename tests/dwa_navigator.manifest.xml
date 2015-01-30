@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:dwanavigatorservice="http://brumba.ru/contracts/2014/11/dwanavigatorservice.html" xmlns:simulatedlrf="http://brumba.ru/contracts/2013/11/simulatedlrf.html" xmlns:this="urn:uuid:073670e5-0e22-4a11-ae64-8d240d355a2d" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simulatedlocalizer="http://brumba.ru/contracts/2014/11/simulatedlocalizer.html" xmlns:diffdriveodometryservice="http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:dwanavigatorservice="http://brumba.ru/contracts/2014/11/dwanavigatorservice.html" xmlns:this="urn:uuid:8596d0af-52e9-4dc7-9c4c-fb0d8bd5bde0" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:simulatedlocalizer="http://brumba.ru/contracts/2014/11/simulatedlocalizer.html" xmlns:simulatedlrf="http://brumba.ru/contracts/2013/11/simulatedlrf.html" xmlns:dashboard="http://brumba.ru/contracts/2014/11/dashboard.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2014/11/dwanavigatorservice.html</dssp:Contract>
       <dssp:Service>http://localhost:80/dwa_navigator@</dssp:Service>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Contract>http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html</dssp:Contract>
+          <dssp:Contract>http://brumba.ru/contracts/2014/11/dwanavigatorservice.html</dssp:Contract>
+          <dssp:Service>dwa_navigator.config.xml</dssp:Service>
           <dssp:PartnerList />
-          <dssp:Name>dwanavigatorservice:Odometry</dssp:Name>
-          <dssp:ServiceName>this:BrumbaDifferentialDriveOdometry</dssp:ServiceName>
+          <dssp:Name>dssp:StateService</dssp:Name>
         </dssp:Partner>
         <dssp:Partner>
           <dssp:Contract>http://brumba.ru/contracts/2014/11/genericlocalizer.html</dssp:Contract>
@@ -31,35 +31,23 @@
           <dssp:ServiceName>this:BrumbaSimulatedReferencePlatformRobot</dssp:ServiceName>
         </dssp:Partner>
         <dssp:Partner>
-          <dssp:Contract>http://brumba.ru/contracts/2014/11/dwanavigatorservice.html</dssp:Contract>
-          <dssp:Service>dwa_navigator.config.xml</dssp:Service>
+          <dssp:Contract>http://brumba.ru/contracts/2014/11/genericfixedwheelvelocimeter.html</dssp:Contract>
           <dssp:PartnerList />
-          <dssp:Name>dssp:StateService</dssp:Name>
+          <dssp:Name>dwanavigatorservice:Velocimeter</dssp:Name>
+          <dssp:ServiceName>this:BrumbaSimulatedLocalizer</dssp:ServiceName>
         </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:BrumbaDWANavigator</Name>
     </ServiceRecordType>
     <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html</dssp:Contract>
+      <dssp:Contract>http://brumba.ru/contracts/2014/11/simulatedlocalizer.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
-          <dssp:Contract>http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html</dssp:Contract>
-          <dssp:Service>dwa_navigator_diff_drive_odometry.config.xml</dssp:Service>
+          <dssp:Contract>http://brumba.ru/contracts/2014/11/simulatedlocalizer.html</dssp:Contract>
+          <dssp:Service>dwa_navigator_simulated_localizer.config.xml</dssp:Service>
           <dssp:PartnerList />
           <dssp:Name>dssp:StateService</dssp:Name>
         </dssp:Partner>
-        <dssp:Partner>
-          <dssp:Contract>http://schemas.microsoft.com/robotics/2006/05/drive.html</dssp:Contract>
-          <dssp:PartnerList />
-          <dssp:Name>diffdriveodometryservice:DifferentialDrive</dssp:Name>
-          <dssp:ServiceName>this:BrumbaSimulatedReferencePlatformRobot</dssp:ServiceName>
-        </dssp:Partner>
-      </dssp:PartnerList>
-      <Name>this:BrumbaDifferentialDriveOdometry</Name>
-    </ServiceRecordType>
-    <ServiceRecordType>
-      <dssp:Contract>http://brumba.ru/contracts/2014/11/simulatedlocalizer.html</dssp:Contract>
-      <dssp:PartnerList>
         <dssp:Partner>
           <dssp:Service>http://localhost/stupid_waiter@</dssp:Service>
           <dssp:PartnerList />
@@ -91,6 +79,30 @@
         </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:BrumbaSimulatedReferencePlatformRobot</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2014/11/dashboard.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/11/dwanavigatorservice.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>dashboard:DwaNavigator</dssp:Name>
+          <dssp:ServiceName>this:BrumbaDWANavigator</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/11/genericlocalizer.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>dashboard:Localizer</dssp:Name>
+          <dssp:ServiceName>this:BrumbaSimulatedLocalizer</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/11/genericfixedwheelvelocimeter.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>dashboard:Velocimeter</dssp:Name>
+          <dssp:ServiceName>this:BrumbaSimulatedLocalizer</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:BrumbaDashboard</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

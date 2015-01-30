@@ -123,6 +123,14 @@ namespace Brumba.Utils
         }
 
         [Pure]
+        public static bool Between(this float me, float lower, float upper)
+        {
+            Contract.Requires(upper > lower);
+
+            return me > lower && upper > me;
+        }
+
+        [Pure]
         public static bool BetweenL(this float me, float lower, float upper)
         {
             Contract.Requires(upper > lower);
@@ -187,6 +195,15 @@ namespace Brumba.Utils
         }
 
         [Pure]
+        public static bool Between(this Vector2 me, Vector2 lower, Vector2 upper)
+        {
+            Contract.Requires(upper.X > lower.X);
+            Contract.Requires(upper.Y > lower.Y);
+
+            return me.X.Between(lower.X, upper.X) && me.Y.Between(lower.Y, upper.Y);
+        }
+
+        [Pure]
         public static bool BetweenL(this Vector2 me, Vector2 lower, Vector2 upper)
         {
             Contract.Requires(upper.X > lower.X);
@@ -235,6 +252,12 @@ namespace Brumba.Utils
             return me.X >= notMe.X && me.Y >= notMe.Y;
         }
 
+        [Pure]
+        public static bool Greater(this Vector2 me, Vector2 notMe)
+        {
+            return me.X > notMe.X && me.Y > notMe.Y;
+        }
+
         public static Vector2 ExtractVector2(this Vector3 v)
         {
             return new Vector2(v.X, v.Y);
@@ -257,5 +280,14 @@ namespace Brumba.Utils
 	    {
 		    return new Vector2(me.X, me.Y);
 	    }
+
+        [Pure]
+        public static double AngleBetween(Vector2 lhs, Vector2 rhs)
+        {
+            Contract.Requires(lhs != new Vector2() && rhs != new Vector2());
+            Contract.Ensures(Contract.Result<double>() >= 0 && Contract.Result<double>() <= MathHelper.Pi);
+
+            return Math.Acos(MathHelper.Clamp(Vector2.Dot(lhs, rhs) / lhs.Length() / rhs.Length(), -1, 1));
+        }
     }
 }

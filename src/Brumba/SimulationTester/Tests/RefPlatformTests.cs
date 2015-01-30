@@ -28,8 +28,8 @@ namespace Brumba.SimulationTester.Tests
             SickLrfPort = testerService.ForwardTo<SickLrfPxy.SickLRFOperations>("stupid_waiter_lidar/sicklrf");
         }
 
-        //Max speed = 1,6 m/s, distance 2 meters, plus correction for accelerating from 0 to set speed 
-        [SimTest(1.5f, IsProbabilistic = false)]
+        //Max speed = 1,5 m/s, distance 2 meters, plus correction for accelerating from 0 to set speed 
+        [SimTest(1.6f, IsProbabilistic = false)]
         public class DriveForwardTest
         {
             [Fixture]
@@ -52,7 +52,7 @@ namespace Brumba.SimulationTester.Tests
 			}
         }
 
-		[SimTest(1)]
+        [SimTest(1, IsProbabilistic = false)]
 		public class LrfTest
 		{
             Port<SickLrfPxy.Replace> _lrfNotify = new Port<SickLrfPxy.Replace>();
@@ -94,12 +94,11 @@ namespace Brumba.SimulationTester.Tests
 				if (lrfState.DistanceMeasurements == null)
 					return false;
 
-                //0th measurement is on the right side of the robot, the brick is out of lrf's range on its side,
-                //on the left side the brick is in range, it's exactly on robot axis, so the minimal distance is 4500 at 90 degrees to the left
-                // _       .              _
-                //[_]------R--------     [_]
-			    var minMeasurIndex = lrfState.DistanceMeasurements.Length -
-			                         (int)((lrfState.AngularRange / 2 - 90) / lrfState.AngularResolution);
+                //0th measurement is on the right side of the robot, the brick is is in range, it's exactly on robot axis,
+                //so the minimal distance is 4500 at 90 degrees to the left. On the left side the brick is out of lrf's range.
+                // _          .       _
+                //[_]   ------R------[_]
+			    var minMeasurIndex = (int)((lrfState.AngularRange / 2 - 90) / lrfState.AngularResolution);
 				return lrfState.DistanceMeasurements.Length == 667 &&
                         lrfState.DistanceMeasurements[minMeasurIndex] == 4500 &&
                         lrfState.DistanceMeasurements[minMeasurIndex - 5].BetweenL(4500, 4510) &&

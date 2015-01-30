@@ -94,107 +94,15 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
 		public void DriveDistanceHandler(Drive.DriveDistance driveDistance)
         {
-			if (FaultIfNotConnected(driveDistance))
-				return;
-
-            if (!EnableCheck(driveDistance.ResponsePort, "DriveDistance")) return;
-
-            if ((driveDistance.Body.Power > 1.0f) || (driveDistance.Body.Power < -1.0f))
-            {
-                // invalid drive power
-                driveDistance.ResponsePort.Post(Fault.FromException(new Exception("Invalid Power parameter.")));
-                LogError("Invalid Power parameter in DriveDistanceHandler."); 
-                return;
-            }
-
-            _state.DriveState.DriveDistanceStage = driveDistance.Body.DriveDistanceStage;
-			if (driveDistance.Body.DriveDistanceStage == Drive.DriveStage.InitialRequest)
-            {
-                var entityResponse = new Port<OperationResult>();
-                Activate(
-                    Arbiter.Receive(
-                        false,
-                        entityResponse,
-                        result =>
-                            {
-                                // post a message to ourselves indicating that the drive distance has completed
-								var req = new Drive.DriveDistanceRequest(0, 0);
-                                switch (result)
-                                {
-                                    case OperationResult.Error:
-										req.DriveDistanceStage = Drive.DriveStage.Canceled;
-                                        break;
-                                    case OperationResult.Canceled:
-										req.DriveDistanceStage = Drive.DriveStage.Canceled;
-                                        break;
-                                    case OperationResult.Completed:
-										req.DriveDistanceStage = Drive.DriveStage.Completed;
-                                        break;
-                                }
-
-								_drivePort.Post(new Drive.DriveDistance(req));
-                            }));
-
-                RpEntity.DriveDistance((float)driveDistance.Body.Distance, (float)driveDistance.Body.Power, entityResponse);
-
-				var req2 = new Drive.DriveDistanceRequest(0, 0) { DriveDistanceStage = Drive.DriveStage.Started };
-				_drivePort.Post(new Drive.DriveDistance(req2));
-            }
-            else
-            {
-                SendNotification(_subMgrPort, driveDistance);
-            }
-
-            driveDistance.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+            driveDistance.ResponsePort.Post(Fault.FromException(new Exception("DriveDistance is not implemented.")));
+            LogError("DriveDistance is not implemented.");
         }
 
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
 	    public void DriveRotateHandler(Drive.RotateDegrees rotate)
         {
-			if (FaultIfNotConnected(rotate))
-				return;
-
-			if (!EnableCheck(rotate.ResponsePort, "RotateDegrees")) return;
-
-            _state.DriveState.RotateDegreesStage = rotate.Body.RotateDegreesStage;
-			if (rotate.Body.RotateDegreesStage == Drive.DriveStage.InitialRequest)
-            {
-                var entityResponse = new Port<OperationResult>();
-                Activate(
-                    Arbiter.Receive(
-                        false,
-                        entityResponse,
-                        result =>
-                            {
-                                // post a message to ourselves indicating that the drive distance has completed
-								var req = new Drive.RotateDegreesRequest(0, 0);
-                                switch (result)
-                                {
-                                    case OperationResult.Error:
-										req.RotateDegreesStage = Drive.DriveStage.Canceled;
-                                        break;
-                                    case OperationResult.Canceled:
-										req.RotateDegreesStage = Drive.DriveStage.Canceled;
-                                        break;
-                                    case OperationResult.Completed:
-										req.RotateDegreesStage = Drive.DriveStage.Completed;
-                                        break;
-                                }
-
-								_drivePort.Post(new Drive.RotateDegrees(req));
-                            }));
-
-                RpEntity.RotateDegrees((float)rotate.Body.Degrees, (float)rotate.Body.Power, entityResponse);
-
-				var req2 = new Drive.RotateDegreesRequest(0, 0) { RotateDegreesStage = Drive.DriveStage.Started };
-				_drivePort.Post(new Drive.RotateDegrees(req2));
-            }
-            else
-            {
-                SendNotification(_subMgrPort, rotate);
-            }
-
-            rotate.ResponsePort.Post(DefaultUpdateResponseType.Instance);
+            rotate.ResponsePort.Post(Fault.FromException(new Exception("DriveRotate is not implemented.")));
+            LogError("DriveRotate is not implemented.");
         }
 
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
@@ -205,8 +113,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
 			if (!EnableCheck(setPower.ResponsePort, "SetPower")) return;
 
-            if ((setPower.Body.LeftWheelPower > 1.0f) || (setPower.Body.LeftWheelPower < -1.0f) ||
-                (setPower.Body.RightWheelPower > 1.0f) || (setPower.Body.RightWheelPower < -1.0f))
+            if (Math.Abs(setPower.Body.LeftWheelPower) > 1.0f || Math.Abs(setPower.Body.RightWheelPower) > 1.0f)
             {
                 // invalid drive power
                 setPower.ResponsePort.Post(Fault.FromException(new Exception("Invalid Power parameter.")));
@@ -215,7 +122,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
             }
 
             // Call simulation entity method for setting wheel torque
-            RpEntity.SetMotorTorque((float)setPower.Body.LeftWheelPower, (float)setPower.Body.RightWheelPower);
+            RpEntity.SetMotorCurrent((float)setPower.Body.LeftWheelPower, (float)setPower.Body.RightWheelPower);
 
             UpdateStateFromSimulation();
             setPower.ResponsePort.Post(DefaultUpdateResponseType.Instance);
@@ -227,18 +134,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 		[ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_drivePort")]
 		public void DriveSetSpeedHandler(Drive.SetDriveSpeed setSpeed)
         {
-			if (FaultIfNotConnected(setSpeed))
-				return;
-
-			if (!EnableCheck(setSpeed.ResponsePort, "SetSpeed")) return;
-
-            RpEntity.SetVelocity((float)setSpeed.Body.LeftWheelSpeed, (float)setSpeed.Body.RightWheelSpeed);
-
-            UpdateStateFromSimulation();
-            setSpeed.ResponsePort.Post(DefaultUpdateResponseType.Instance);
-
-            // send update notification for entire state
-            _subMgrPort.Post(new Microsoft.Dss.Services.SubscriptionManager.Submit(_state.DriveState, DsspActions.UpdateRequest));
+            setSpeed.ResponsePort.Post(Fault.FromException(new Exception("DriveDistance is not implemented.")));
+            LogError("DriveDistance is not implemented.");
         }
 
 		[ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_drivePort")]
@@ -263,8 +160,7 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 			if (FaultIfNotConnected(estop))
 				return;
 
-            RpEntity.SetMotorTorque(0, 0);
-            RpEntity.SetVelocity(0);
+            RpEntity.SetMotorCurrent(0, 0);
 
             // AllStop disables the drive
             RpEntity.IsEnabled = false;

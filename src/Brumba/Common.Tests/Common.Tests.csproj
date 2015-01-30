@@ -7,8 +7,8 @@
     <ProjectGuid>{C5474478-2624-4481-9771-C5C85389B69A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brumba.WaiterStupid.Tests</RootNamespace>
-    <AssemblyName>Brumba.WaiterStupid.Tests</AssemblyName>
+    <RootNamespace>Brumba.Common.Tests</RootNamespace>
+    <AssemblyName>Brumba.Common.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -80,17 +80,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MapProvider\MapProvider.csproj">
-      <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
-      <Name>MapProvider</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WaiterStupid\WaiterStupid.csproj">
-      <Project>{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}</Project>
-      <Name>WaiterStupid</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

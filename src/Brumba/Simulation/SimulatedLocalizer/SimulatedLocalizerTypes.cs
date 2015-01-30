@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using Brumba.Common;
+using Brumba.GenericFixedWheelVelocimeter;
 using Brumba.GenericLocalizer;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
@@ -14,11 +16,20 @@ namespace Brumba.Simulation.SimulatedLocalizer
 	}
 	
 	[DataContract]
-	public class SimulatedLocalizerState : GenericLocalizerState, IConnectable
+	public class SimulatedLocalizerState : IConnectable
 	{
         [DataMember]
         [Description("If there is any simulation entity under control of this service")]
         public bool IsConnected { get; set; }
+
+        [DataMember]
+        public GenericLocalizerState Localizer { get; set; }
+
+        [DataMember]
+        public GenericFixedWheelVelocimeterState FixedWheelVelocimeter { get; set; }
+
+        [DataMember]
+        public Velocity MaxVelocity { get; set; }
 	}
 	
 	[ServicePort]

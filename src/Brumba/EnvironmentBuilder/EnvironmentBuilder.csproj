@@ -100,6 +100,9 @@
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PhysicsEngine">
+      <HintPath>..\..\..\..\bin\PhysicsEngine.dll</HintPath>
+    </Reference>
     <Reference Include="RoboticsCommon">
       <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
@@ -156,9 +159,9 @@
       <Project>{97C76C15-EED3-45CF-AC3E-E6A5F7445397}</Project>
       <Name>Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WaiterStupid\WaiterStupid.csproj">
+    <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>WaiterStupid</Name>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />

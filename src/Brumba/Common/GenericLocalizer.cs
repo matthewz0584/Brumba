@@ -1,4 +1,4 @@
-using Brumba.WaiterStupid;
+using Brumba.Common;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
@@ -40,26 +40,4 @@ namespace Brumba.GenericLocalizer
         {
         }
     }
-
-	[DataContract]
-	public class SubscribeRequest : SubscribeRequestType
-	{
-	}
-
-	public class Subscribe : Subscribe<SubscribeRequest, PortSet<SubscribeResponseType, Fault>>
-	{
-		public Subscribe()
-		{
-		}
-
-		public Subscribe(SubscribeRequest body)
-			: base(body)
-		{
-		}
-
-		public Subscribe(SubscribeRequest body, PortSet<SubscribeResponseType, Fault> responsePort)
-			: base(body, responsePort)
-		{
-		}
-	}
 }

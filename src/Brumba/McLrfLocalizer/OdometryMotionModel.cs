@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
+using Brumba.Common;
 using Brumba.MapProvider;
-using Brumba.WaiterStupid;
 using DC = System.Diagnostics.Contracts;
 using Brumba.Utils;
 using MathNet.Numerics;

@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using Brumba.Common;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using DC = System.Diagnostics.Contracts;
 using Microsoft.Dss.Core.Attributes;
@@ -24,8 +26,7 @@ namespace Brumba.McLrfLocalizer
 
         public Vector2 BeamToVectorInRobotTransformation(float zi, int i)
         {
-            DC.Contract.Requires(zi >= 0);
-            DC.Contract.Requires(zi <= MaxRange);
+            DC.Contract.Requires(zi.BetweenRL(0, (float)MaxRange));
             DC.Contract.Requires(i >= 0);
             DC.Contract.Requires(i < AngularRange / AngularResolution + 1);
             DC.Contract.Requires(OriginPose.Bearing.BetweenL(0, Constants.Pi2));
@@ -47,6 +48,16 @@ namespace Brumba.McLrfLocalizer
                 AngularRange = AngularRange,
                 AngularResolution = AngularResolution * Math.Floor(AngularRange / AngularResolution / (beams - 1))
             };
+        }
+
+        public IEnumerable<Vector2> PreprocessMeasurements(IEnumerable<float> scan)
+        {
+            DC.Contract.Ensures(DC.Contract.Result<IEnumerable<Vector2>>() != null);
+
+            var thi = this;
+            return scan.Select((zi, i) => new {zi, i}).
+                Where(p => !Precision.AlmostEqualWithAbsoluteError(p.zi, thi.MaxRange, p.zi - thi.MaxRange, 0.001)).
+                Select(p => thi.BeamToVectorInRobotTransformation(p.zi, p.i));
         }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
+using Brumba.Common;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
@@ -19,7 +19,7 @@ namespace Brumba.DwaNavigator
     {
         public double Evaluate(Velocity v)
         {
-            DC.Contract.Ensures(DC.Contract.Result<double>().BetweenRL(0, 1));
+            DC.Contract.Ensures(DC.Contract.Result<double>().BetweenRL(0, 1) || double.IsNegativeInfinity(DC.Contract.Result<double>()));
 
             return default(double);
         }
@@ -29,33 +29,34 @@ namespace Brumba.DwaNavigator
     {
         readonly double[] _smoothingKernel = { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
 
-        public DwaProblemOptimizer(IVelocitySearchSpaceGenerator velocitySearchSpaceGenerator, IVelocityEvaluator velocityEvaluator, Velocity robotVelocityMax)
+        public DwaProblemOptimizer(IVelocitySpaceGenerator velocitySpaceGenerator, Velocity robotVelocityMax)
         {
-            DC.Contract.Requires(velocitySearchSpaceGenerator != null);
-            DC.Contract.Requires(velocityEvaluator != null);
+            DC.Contract.Requires(velocitySpaceGenerator != null);
             DC.Contract.Requires(robotVelocityMax.Linear > 0);
             DC.Contract.Requires(robotVelocityMax.Angular > 0);
 
-            VelocitySearchSpaceGenerator = velocitySearchSpaceGenerator;
-            VelocityEvaluator = velocityEvaluator;
+            VelocitySpaceGenerator = velocitySpaceGenerator;
             RobotVelocityMax = robotVelocityMax;
         }
 
-        public IVelocitySearchSpaceGenerator VelocitySearchSpaceGenerator { get; private set; }
-        public IVelocityEvaluator VelocityEvaluator { get; private set; }
-        public Velocity RobotVelocityMax { get; set; }
+        public IVelocitySpaceGenerator VelocitySpaceGenerator { get; private set; }
+        public IVelocityEvaluator VelocityEvaluator { get; set; }
+        public Velocity RobotVelocityMax { get; private set; }
 
-        public Tuple<VelocityAcceleration, DenseMatrix> FindOptimalVelocity(Pose velocity)
+        public Tuple<VelocityAcceleration, DenseMatrix> FindOptimalVelocity(Velocity velocity)
         {
+            DC.Contract.Requires(VelocityEvaluator != null);
             DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>() != null);
             DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item1.WheelAcceleration.BetweenRL(new Vector2(-1), new Vector2(1)));
-            DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item2.IndexedEnumerator().All(c => c.Item3.BetweenRL(-1, 1)));
+            DC.Contract.Ensures(DC.Contract.Result<Tuple<VelocityAcceleration, DenseMatrix>>().Item2.IndexedEnumerator().
+                All(c => c.Item3.BetweenRL(-1, 1) || double.IsNegativeInfinity(c.Item3)));
 
-            var velocityWheelAcc = VelocitySearchSpaceGenerator.Generate(new Velocity(velocity.Position.Length(), velocity.Bearing));
+            var velocityWheelAcc = VelocitySpaceGenerator.Generate(velocity);
             var velocitiesEvalsRaw = DenseMatrix.Create(velocityWheelAcc.GetLength(0), velocityWheelAcc.GetLength(1),
                                     (row, col) => VelocityIsFeasible(velocityWheelAcc[row, col].Velocity)
-                                            ? VelocityEvaluator.Evaluate(velocityWheelAcc[row, col].Velocity) : -1);
+                                            ? VelocityEvaluator.Evaluate(velocityWheelAcc[row, col].Velocity) : Double.NegativeInfinity);
             var velocitiesEvalsSmoothed = Smooth(velocitiesEvalsRaw);
+            //var velocitiesEvalsSmoothed = velocitiesEvalsRaw;
             var maxRowColVal = velocitiesEvalsSmoothed.IndexedEnumerator().OrderByDescending(rowColVal => rowColVal.Item3).First();
             return Tuple.Create(velocityWheelAcc[maxRowColVal.Item1, maxRowColVal.Item2], velocitiesEvalsSmoothed);
         }

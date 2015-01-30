@@ -82,6 +82,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.AckermanVehicle.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Brumba.Common.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6116ea904cc50a06, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.Common.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="Brumba.DiffDriveOdometry.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.DiffDriveOdometry.Proxy.dll</HintPath>
@@ -110,10 +114,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
     </Reference>
-    <Reference Include="Brumba.WaiterStupid.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0ce07cd0550d91c4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\Brumba.WaiterStupid.Proxy.dll</HintPath>
-    </Reference>
     <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
@@ -141,6 +141,7 @@
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="PhysicsEngine, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86" />
     <Reference Include="RoboticsCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\RoboticsCommon.dll</HintPath>
@@ -247,9 +248,9 @@
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WaiterStupid\WaiterStupid.csproj">
+    <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>WaiterStupid</Name>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

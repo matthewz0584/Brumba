@@ -79,6 +79,25 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Brumba.Common.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.Common.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.DiffDriveOdometry.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.DiffDriveOdometry.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.DwaNavigator.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.DwaNavigator.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.MapProvider.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.MapProvider.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.McLrfLocalizer.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6116ea904cc50a06, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.McLrfLocalizer.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Ccr.Adapters.Wpf, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Ccr.Adapters.Wpf\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Ccr.Adapters.Wpf.dll</HintPath>
@@ -87,6 +106,7 @@
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="mscorlib">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
@@ -110,7 +130,6 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml">
       <SpecificVersion>False</SpecificVersion>
@@ -146,6 +165,24 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MapProvider\MapProvider.csproj">
+      <Project>{2D37BDFC-A8F0-4356-ABCF-487A4A350038}</Project>
+      <Name>MapProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
+      <Project>{3D1F586F-6408-49E2-83BC-C80716D1C62D}</Project>
+      <Name>McLrfLocalizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{97C76C15-EED3-45CF-AC3E-E6A5F7445397}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">

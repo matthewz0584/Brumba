@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--This file was created with the Microsoft Visual Programming Language.-->
-<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:simulatedlrf="http://brumba.ru/contracts/2013/11/simulatedlrf.html" xmlns:this="urn:uuid:bba6670d-0275-4799-854e-ebff26a13b40" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:mclrflocalizerservice="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html" xmlns:diffdriveodometryservice="http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html" xmlns:mapproviderservice="http://brumba.ru/contracts/2014/03/mapproviderservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+<Manifest xmlns:simulatedreferenceplatform2011="http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html" xmlns:simulatedlrf="http://brumba.ru/contracts/2013/11/simulatedlrf.html" xmlns:this="urn:uuid:de6562ee-97f1-48f7-b4e3-ae1296150cb5" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:simulation="http://schemas.microsoft.com/robotics/2006/04/simulation.html" xmlns:mclrflocalizerservice="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html" xmlns:dashboard="http://brumba.ru/contracts/2014/11/dashboard.html" xmlns:simulatedlocalizer="http://brumba.ru/contracts/2014/11/simulatedlocalizer.html" xmlns:diffdriveodometryservice="http://brumba.ru/contracts/2013/11/diffdriveodometryservice.html" xmlns:mapproviderservice="http://brumba.ru/contracts/2014/03/mapproviderservice.html" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
   <CreateServiceList>
     <ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2013/11/simulatedreferenceplatform2011.html</dssp:Contract>
@@ -88,6 +88,24 @@
         </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:BrumbaMapProvider</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://brumba.ru/contracts/2014/11/dashboard.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>dashboard:McLrfLocalizer</dssp:Name>
+          <dssp:ServiceName>this:BrumbaMonteCarloLocalizer</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://brumba.ru/contracts/2014/03/mapproviderservice.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>dashboard:Map</dssp:Name>
+          <dssp:ServiceName>this:BrumbaMapProvider</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:BrumbaDashboard</Name>
     </ServiceRecordType>
   </CreateServiceList>
 </Manifest>

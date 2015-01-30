@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SimulatedLocalizerState xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:d="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns="http://brumba.ru/contracts/2014/11/simulatedlocalizer.html">
+  <IsConnected>false</IsConnected>
+  <Localizer>
+    <EstimatedPose xmlns="http://brumba.ru/contracts/2014/11/genericlocalizer.html">
+      <Position>
+        <X>0</X>
+        <Y>0</Y>
+      </Position>
+      <Bearing>0</Bearing>
+    </EstimatedPose>
+  </Localizer>
+  <FixedWheelVelocimeter>
+    <Velocity xmlns="http://brumba.ru/contracts/2014/11/genericfixedwheelvelocimeter.html">
+      <Linear>0</Linear>
+      <Angular>0</Angular>
+    </Velocity>
+  </FixedWheelVelocimeter>
+  <MaxVelocity>
+    <Linear xmlns="http://brumba.ru/contracts/2014/11/dwanavigatorservice.html">1.52</Linear>
+    <Angular xmlns="http://brumba.ru/contracts/2014/11/dwanavigatorservice.html">10</Angular>
+  </MaxVelocity>
+</SimulatedLocalizerState>

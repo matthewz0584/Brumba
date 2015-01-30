@@ -35,7 +35,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
     [Contract(Contract.Identifier)]
     [DisplayName("EnvironmentBuilder")]
     [Description("EnvironmentBuilder service (no description provided)")]
-    class EnvironmentBuilderService : DsspServiceBase
+    public class EnvironmentBuilderService : DsspServiceBase
 	{
 #pragma warning disable 0649
 		[ServiceState]
@@ -52,6 +52,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
         public EnvironmentBuilderService(DsspServiceCreationPort creationPort)
             : base(creationPort)
         {
+            PhysicsEngine.TraceLevel = 5;
         }
 
         //TurretEntity _turret;
@@ -84,8 +85,9 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateHamster();
 	        //PopulateRefPlatformSimpleTests();
 			//PopulateMcLrfLocalizerTests();
+            //_engineStub.Post(new UpdatePhysicsTimeStep(0.01f));
             //PopulateDwaNavigatorTests();
-	        
+            
             base.Start();
 
             //Thread.Sleep(5000);
@@ -97,39 +99,42 @@ namespace Brumba.Simulation.EnvironmentBuilder
         {
             PopulateSimpleEnvironment();
 
-            SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar"));
+            var referencePlatform2011Entity = BuildWaiter1("stupid_waiter", "stupid_waiter_lidar", new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi)));
+            SimulationEngine.GlobalInstancePort.Insert(referencePlatform2011Entity);
             SimulationEngine.GlobalInstancePort.Insert(
                 new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))),
                     new Vector3(0, 0.501f, 5)) {State = {Name = "brick_on_the_way_to_target"}});
+            referencePlatform2011Entity.SetMotorCurrent(0.5f, 1f);
         }
 
 	    void PopulateMcLrfLocalizerTests()
 	    {
 			PopulateSimpleEnvironment();
 
-            SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar"));
+            SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar", new Pose(new Vector3(3.1f, 0f, 1.6f), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))));
 		    _mainPort.P3.Post(new BuildBoxWorld {ResponsePort = new PortSet<DefaultSubmitResponseType, Fault>()});
+
+            var view = new CameraView { EyePosition = new Vector3(-4, 5, 5), LookAtPoint = new Vector3(2.5f, 0.5f, 5) };
+            SimulationEngine.GlobalInstancePort.Update(view);
 	    }
 
 	    private void PopulateRefPlatformSimpleTests()
 	    {
 			PopulateSimpleEnvironment();
 
-            SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar"));
-			SimulationEngine.GlobalInstancePort.Insert(new TimerEntity("timer"));
+            SimulationEngine.GlobalInstancePort.Insert(BuildWaiter1("stupid_waiter", "stupid_waiter_lidar", new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))));
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(8, 0.501f, 0)) { State = { Name = "golden_brick_out_of_range" } });
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(-5f, 0.501f, 0)) { State = { Name = "golden_brick_in_range" } });
 	    }
 
-        private static ReferencePlatform2011Entity BuildWaiter1(string waiterName, string lidarName)
+        public static ReferencePlatform2011Entity BuildWaiter1(string waiterName, string lidarName, Pose pose)
         {
-            var refPlatform = new ReferencePlatform2011Entity {State = {Name = waiterName, Pose = new Pose(new Vector3(), Quaternion.FromAxisAngle(0, 1, 0, MathHelper.Pi))}};
+            var refPlatform = new ReferencePlatform2011Entity {State = {Name = waiterName, Pose = pose}};
             var lidar = new LaserRangeFinderExEntity
                 {
-                    State = { Name = lidarName },
-                    LaserBox = new BoxShape(new BoxShapeProperties(0.16f, new Pose(new Vector3(0, 0.2f, -0.2f)),
-                                                                   new Vector3(0.04f, 0.07f, 0.04f))),
-                    RaycastProperties = new RaycastProperties
+                    State = { Name = lidarName, Pose = new Pose(new Vector3(0, 0.2f, -0.2f)) },
+                    LaserBox = new BoxShape(new BoxShapeProperties(0.16f, new Pose(), new Vector3(0.04f, 0.07f, 0.04f))),
+                    RaycastProperties_FORDB = new RaycastProperties
                         {
                             StartAngle = -120,
                             EndAngle = +120,
@@ -360,11 +365,8 @@ namespace Brumba.Simulation.EnvironmentBuilder
             SimulationEngine.GlobalInstancePort.Insert(sav);
         }
 
-        void PopulateSimpleEnvironment()
+        public static void PopulateSimpleEnvironment()
         {
-            var view = new CameraView { EyePosition = new Vector3(-1.65f, 1.63f, -0.29f), LookAtPoint = new Vector3(0, 0, 0) };
-            SimulationEngine.GlobalInstancePort.Update(view);
-
             var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
             SimulationEngine.GlobalInstancePort.Insert(sky);
 
@@ -372,12 +374,15 @@ namespace Brumba.Simulation.EnvironmentBuilder
             {
                 Type = LightSourceEntityType.Directional,
                 Color = new Vector4(0.8f, 0.8f, 0.8f, 1),
-                Direction = new Vector3(0.5f, -.75f, 0.5f)
+                Direction = new Vector3(0.5f, -.75f, 0.5f),
+                State = {Name = "Sun"}
             };
-            sun.State.Name = "Sun";
             SimulationEngine.GlobalInstancePort.Insert(sun);
 
-            var ground = new HeightFieldEntity("Ground", "WoodFloor.dds", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
+            var ground = new HeightFieldEntity("Ground", "WoodFloor.dds", new MaterialProperties("ground", 0f, 0.5f, 0.5f))
+            {
+                State = { Flags = EntitySimulationModifiers.Kinematic }
+            };
             SimulationEngine.GlobalInstancePort.Insert(ground);
             //var ground = new TerrainEntity("terrain.bmp", "", new MaterialProperties("ground", 0f, 0.5f, 0.5f));
             //SimulationEngine.GlobalInstancePort.Insert(ground);
