@@ -36,20 +36,20 @@ namespace Brumba.Dashboard
 		[ServicePort("/DashboardService", AllowMultipleInstances = true)]
 		DashboardOperations _mainPort = new DashboardOperations();
 
-        [Partner("DwaNavigator", Contract = DwaNavigatorPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        DwaNavigatorPxy.DwaNavigatorOperations _dwaNavigator = new DwaNavigatorPxy.DwaNavigatorOperations();
+        //[Partner("DwaNavigator", Contract = DwaNavigatorPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        //DwaNavigatorPxy.DwaNavigatorOperations _dwaNavigator = new DwaNavigatorPxy.DwaNavigatorOperations();
 
-        //[Partner("McLrfLocalizer", Contract = McLrfLocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        //McLrfLocalizerPxy.McLrfLocalizerOperations _mcLrfLocalizer = new McLrfLocalizerPxy.McLrfLocalizerOperations();
+        [Partner("McLrfLocalizer", Contract = McLrfLocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        McLrfLocalizerPxy.McLrfLocalizerOperations _mcLrfLocalizer = new McLrfLocalizerPxy.McLrfLocalizerOperations();
 
-        //[Partner("Map", Contract = MapProviderPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        //MapProviderPxy.MapProviderOperations _mapProvider = new MapProviderPxy.MapProviderOperations();
+        [Partner("Map", Contract = MapProviderPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        MapProviderPxy.MapProviderOperations _mapProvider = new MapProviderPxy.MapProviderOperations();
 
-        [Partner("Localizer", Contract = LocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        LocalizerPxy.GenericLocalizerOperations _localizer = new LocalizerPxy.GenericLocalizerOperations();
+        //[Partner("Localizer", Contract = LocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        //LocalizerPxy.GenericLocalizerOperations _localizer = new LocalizerPxy.GenericLocalizerOperations();
 
-        [Partner("Velocimeter", Contract = VelocimeterPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        VelocimeterPxy.GenericFixedWheelVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericFixedWheelVelocimeterOperations();
+        //[Partner("Velocimeter", Contract = VelocimeterPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        //VelocimeterPxy.GenericFixedWheelVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericFixedWheelVelocimeterOperations();
 
         //[Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         //OdometryPxy.DiffDriveOdometryOperations _odometry = new OdometryPxy.DiffDriveOdometryOperations();
@@ -57,17 +57,21 @@ namespace Brumba.Dashboard
 	    readonly Port<DateTime> _dwaPollingPort = new Port<DateTime>();
         readonly Port<DateTime> _simulationPollingPort = new Port<DateTime>();
         readonly Port<DateTime> _odometryPollingPort = new Port<DateTime>();
-        //readonly Port<DateTime> _mcLrfPollingPort = new Port<DateTime>();
+        readonly Port<DateTime> _mcLrfPolingPort = new Port<DateTime>();
 	    
         WpfServicePort _wpfPort;
         MainWindow _mainWindow;
 
-	    private DwaNavigatorPxy.VelocityAcceleration _currentVelocityAcceleration;
-	    private CommonPxy.Pose _simulationPose;
-        private CommonPxy.Velocity _simulationVelocity;
-        private CommonPxy.Pose _odometryPose;
-        private CommonPxy.Velocity _odometryVelocity;
-	    private int _currentDwaIteration;
+	    DwaNavigatorPxy.VelocityAcceleration _currentVelocityAcceleration;
+	    CommonPxy.Pose _simulationPose;
+        CommonPxy.Velocity _simulationVelocity;
+        CommonPxy.Pose _odometryPose;
+        CommonPxy.Velocity _odometryVelocity;
+        CommonPxy.Pose _mcLrfLocalizerPose;
+	    int _dwaIteration;
+
+	    OccupancyGrid _map;
+	    PoseHistogram _poseHistogram;
 
 	    public DashboardService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
@@ -78,8 +82,8 @@ namespace Brumba.Dashboard
 	    public IEnumerable<MatrixCell> DwaVelocitiesEvaluation { get; private set; }
         public IEnumerable<MatrixCell> DwaVelocitiesEvaluationMax { get; private set; }
 
-        //public IEnumerable<MatrixCell> McLrfParticlesHistogram { get; private set; }
-        //public IEnumerable<MatrixCell> McLrfParticlesHistogramMax { get; private set; }
+        public IEnumerable<MatrixCell> McLrfParticlesHistogram { get; private set; }
+        public IEnumerable<MatrixCell> McLrfParticlesHistogramMax { get; private set; }
 
 	    public string CurrentVelocity
 	    {
@@ -99,9 +103,9 @@ namespace Brumba.Dashboard
             }
         }
 
-	    public int CurrentDwaIteration
+	    public int DwaIteration
 	    {
-	        get { return _currentDwaIteration; }
+	        get { return _dwaIteration; }
 	    }
 
 	    public string SimulationPose
@@ -124,36 +128,46 @@ namespace Brumba.Dashboard
             get { return string.Format("Linear: {0:F2} [m/s], Angular: {1:F2} [1/s]", _odometryVelocity.Linear, _odometryVelocity.Angular); }
         }
 
+        public string McLrfLocalizerPose
+        {
+            get { return string.Format("Position: ({0:F2}, {1:F2}), Bearing: {2:F2}", _mcLrfLocalizerPose.Position.X, _mcLrfLocalizerPose.Position.Y, _mcLrfLocalizerPose.Bearing); }
+        }
+
 	    protected override void Start()
 		{
 		    _wpfPort = WpfAdapter.Create(TaskQueue);
-            SpawnIterator(StartGui);
+            SpawnIterator(StartIt);
 			base.Start();
 		}
 
-        IEnumerator<ITask> StartGui()
+        IEnumerator<ITask> StartIt()
         {
-            yield return _wpfPort.RunWindow(() => new MainWindow(this)).Choice(
-                w => _mainWindow = w as MainWindow, LogError);
+            yield return _mapProvider.Get().Receive(s => _map = (OccupancyGrid)DssTypeHelper.TransformFromProxy(s.Map));
+            _map.Freeze();
+
+            _poseHistogram = new PoseHistogram(_map, Math.PI / 18);
 
             MainPortInterleave.CombineWith(new Interleave(
                 new ExclusiveReceiverGroup(),
                 new ConcurrentReceiverGroup(
                     Arbiter.ReceiveWithIterator(true, _dwaPollingPort, UpdateDwaVelocitiesEvaluation),
                     Arbiter.ReceiveWithIterator(true, _simulationPollingPort, UpdateSimulation),
-                    Arbiter.ReceiveWithIterator(true, _odometryPollingPort, UpdateOdometry)//,
-                    //Arbiter.ReceiveWithIterator(true, _mcLrfPollingPort, UpdateMcLocalization)
+                    Arbiter.ReceiveWithIterator(true, _odometryPollingPort, UpdateOdometry),
+                    Arbiter.ReceiveWithIterator(true, _mcLrfPolingPort, UpdateMcLocalization)
                     )));
-            _dwaPollingPort.Post(DateTime.Now);
-            _simulationPollingPort.Post(DateTime.Now);
+            //_dwaPollingPort.Post(DateTime.Now);
+            //_simulationPollingPort.Post(DateTime.Now);
             //_odometryPollingPort.Post(DateTime.Now);
-            //_mcLrfPollingPort.Post(DateTime.Now);
+            _mcLrfPolingPort.Post(DateTime.Now);
+
+            yield return _wpfPort.RunWindow(() => new MainWindow(this)).Choice(
+                w => _mainWindow = w as MainWindow, LogError);
         }
 
         IEnumerator<ITask> UpdateDwaVelocitiesEvaluation(DateTime dateTime)
         {
             DwaNavigatorPxy.DwaNavigatorState dwaState = null;
-            yield return _dwaNavigator.Get().Receive(ds => dwaState = ds);
+            //yield return _dwaNavigator.Get().Receive(ds => dwaState = ds);
 
             DwaVelocitiesEvaluation =
                 DenseMatrix.OfArray(dwaState.VelocititesEvaluation).IndexedEnumerator().
@@ -165,7 +179,7 @@ namespace Brumba.Dashboard
                             }).ToList();
             DwaVelocitiesEvaluationMax = DwaVelocitiesEvaluation.OrderByDescending(mc => mc.Value).First().AsCol().ToList();
             _currentVelocityAcceleration = dwaState.CurrentVelocityAcceleration;
-            _currentDwaIteration = dwaState.Iteration;
+            _dwaIteration = dwaState.Iteration;
 
             yield return _wpfPort.Invoke(() =>
                     {
@@ -178,53 +192,53 @@ namespace Brumba.Dashboard
                         {}
                         PropertyChanged(this, new PropertyChangedEventArgs("CurrentVelocity"));
                         PropertyChanged(this, new PropertyChangedEventArgs("CurrentWheelAcceleration"));
-                        PropertyChanged(this, new PropertyChangedEventArgs("CurrentDwaIteration"));
+                        PropertyChanged(this, new PropertyChangedEventArgs("DwaIteration"));
                     }).Choice(success => {}, LogError);
 
             Activate(Arbiter.Receive(false, TimeoutPort(500), t => _dwaPollingPort.Post(t)));
         }
 
-        //IEnumerator<ITask> UpdateMcLocalization(DateTime dateTime)
-        //{
-        //    McLrfLocalizerPxy.McLrfLocalizerState mcLrfState = null;
-        //    yield return _mcLrfLocalizer.Get().Receive(ds => mcLrfState = ds);
-        //    OccupancyGrid map = null;
-        //    yield return _mapProvider.Get().Receive(s => map = (OccupancyGrid) DssTypeHelper.TransformFromProxy(s.Map));
+        IEnumerator<ITask> UpdateMcLocalization(DateTime dateTime)
+        {
+            McLrfLocalizerPxy.McLrfLocalizerState mcLrfState = null;
+            yield return _mcLrfLocalizer.Get().Receive(ds => mcLrfState = ds);
 
-        //    var h = new PoseHistogram(map,  Math.PI / 18);
-        //    h.Build(mcLrfState.Particles.Select(px => (Pose)DssTypeHelper.TransformFromProxy(px)));
-        //    var hist = h.ToXyMarginal();
+            _poseHistogram.Build(mcLrfState.Particles.Select(px => (Pose)DssTypeHelper.TransformFromProxy(px)));
+            var hist = _poseHistogram.ToXyMarginal();
 
-        //    var cells = new List<MatrixCell>();
-        //    for (var y = 0; y < hist.GetLength(0); ++y)
-        //        for (var x = 0; x < hist.GetLength(1); ++x)
-        //            cells.Add(new MatrixCell { Row = y, Col = x, Value = map[x, y] ? -1 : hist[x, y]});
-        //    McLrfParticlesHistogram = cells;
-        //    McLrfParticlesHistogramMax = McLrfParticlesHistogram.OrderByDescending(mc => mc.Value).First().AsCol().ToList();
+            var cells = new List<MatrixCell>();
+            for (var y = 0; y < _map.SizeInCells.Y; ++y)
+                for (var x = 0; x < _map.SizeInCells.X; ++x)
+                    cells.Add(new MatrixCell { Row = y, Col = x, Value = _map[x, y] ? -1 : hist[x, y] });
 
-        //    yield return _wpfPort.Invoke(() =>
-        //    {
-        //        try
-        //        {
-        //            PropertyChanged(this, new PropertyChangedEventArgs("McLrfParticlesHistogram"));
-        //            PropertyChanged(this, new PropertyChangedEventArgs("McLrfParticlesHistogramMax"));
-        //        }
-        //        catch (Exception)
-        //        { }
-        //    }).Choice(success => { }, LogError);
+            McLrfParticlesHistogram = cells;
+            McLrfParticlesHistogramMax = McLrfParticlesHistogram.OrderByDescending(mc => mc.Value).First().AsCol().ToList();
+            _mcLrfLocalizerPose = mcLrfState.EstimatedPose;
 
-        //    Activate(Arbiter.Receive(false, TimeoutPort(1000), t => _mcLrfPollingPort.Post(t)));
-        //}
+            yield return _wpfPort.Invoke(() =>
+            {
+                try
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("McLrfParticlesHistogram"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("McLrfParticlesHistogramMax"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("McLrfLocalizerPose"));
+                }
+                catch (Exception)
+                { }
+            }).Choice(success => { }, LogError);
+
+            Activate(Arbiter.Receive(false, TimeoutPort(1000), t => _mcLrfPolingPort.Post(t)));
+        }
 
         IEnumerator<ITask> UpdateSimulation(DateTime dateTime)
         {
             LocalizerPxy.GenericLocalizerState localizerState = null;
-            yield return _localizer.Get().Receive(ls => localizerState = ls);
+            //yield return _localizer.Get().Receive(ls => localizerState = ls);
 
             _simulationPose = localizerState.EstimatedPose;
 
             VelocimeterPxy.GenericFixedWheelVelocimeterState velocimeterState = null;
-            yield return _velocimeter.Get().Receive(vs => velocimeterState = vs);
+            //yield return _velocimeter.Get().Receive(vs => velocimeterState = vs);
 
             _simulationVelocity = velocimeterState.Velocity;
 
@@ -268,6 +282,10 @@ namespace Brumba.Dashboard
 	            new MatrixCell {Row = 2, Col = 1, Value = 0},
 	            new MatrixCell {Row = 2, Col = 2, Value = 1}
 	        };
+            DwaVelocitiesEvaluationMax = new List<MatrixCell>
+	        {
+	            new MatrixCell {Row = 0, Col = 0, Value = 1},
+	        };
             _currentVelocityAcceleration = new DwaNavigatorPxy.VelocityAcceleration
             {
                 Velocity = new CommonPxy.Velocity
@@ -278,9 +296,27 @@ namespace Brumba.Dashboard
                 WheelAcceleration = new Vector2(0.5f, 0.6f)
             };
             _simulationPose = new CommonPxy.Pose(new Vector2(1, 2), Math.PI);
-            _simulationVelocity = new CommonPxy.Velocity(101, Math.PI);
+            _simulationVelocity = new CommonPxy.Velocity(3, Math.PI);
             _odometryPose = new CommonPxy.Pose(new Vector2(10, 20), Math.PI);
-            _odometryVelocity = new CommonPxy.Velocity(100, Math.PI);
+            _odometryVelocity = new CommonPxy.Velocity(30, Math.PI);
+            _mcLrfLocalizerPose = new CommonPxy.Pose(new Vector2(100, 200), Math.PI);
+
+            McLrfParticlesHistogram = new List<MatrixCell>
+            {
+	            new MatrixCell {Row = 0, Col = 0, Value = -1},
+	            new MatrixCell {Row = 0, Col = 1, Value = -1},
+	            new MatrixCell {Row = 0, Col = 2, Value = -1},
+	            new MatrixCell {Row = 1, Col = 0, Value = -1},
+	            new MatrixCell {Row = 1, Col = 1, Value = 100},
+	            new MatrixCell {Row = 1, Col = 2, Value = -1},
+	            new MatrixCell {Row = 2, Col = 0, Value = -1},
+	            new MatrixCell {Row = 2, Col = 1, Value = -1},
+	            new MatrixCell {Row = 2, Col = 2, Value = -1}
+	        };
+            McLrfParticlesHistogramMax = new List<MatrixCell>
+            {
+	            new MatrixCell {Row = 1, Col = 1, Value = 100},
+	        };
         }
 	}
 

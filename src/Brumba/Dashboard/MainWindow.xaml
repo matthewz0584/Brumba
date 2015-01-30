@@ -6,12 +6,6 @@
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="580" 
              Width="800" Height="650">
-    <Window.Resources>
-        <telerik:HeatMapValueGradientColorizer x:Key="colorizer">
-            <GradientStop Offset="0" Color="DarkBlue" />
-            <GradientStop Offset="1" Color="DarkOrange" />
-        </telerik:HeatMapValueGradientColorizer>
-    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="450"/>
@@ -44,8 +38,13 @@
                         <telerik:CategoricalDefinition ItemsSource="{Binding DwaVelocitiesEvaluation, Mode=OneWay}" SelectedItems="{Binding DwaVelocitiesEvaluationMax}"
                                         RowGroupMemberPath="Row" 
                                         ColumnGroupMemberPath="Col" 
-                                        ValuePath="Value"
-                                        Colorizer="{StaticResource colorizer}">
+                                        ValuePath="Value">
+                            <telerik:CategoricalDefinition.Colorizer>
+                                <telerik:HeatMapValueGradientColorizer>
+                                    <GradientStop Offset="0" Color="DarkBlue" />
+                                    <GradientStop Offset="1" Color="DarkOrange" />
+                                </telerik:HeatMapValueGradientColorizer>
+                            </telerik:CategoricalDefinition.Colorizer>
                         </telerik:CategoricalDefinition>
                     </telerik:RadHeatMap.Definition>
                 </telerik:RadHeatMap>
@@ -56,11 +55,53 @@
                     <TextBlock Text="Current wheels acceleration: "/>
                     <TextBlock Text="{Binding CurrentWheelAcceleration}"/>
                     <TextBlock Text="Current iteration: "/>
-                    <TextBlock Text="{Binding CurrentDwaIteration}"/>
+                    <TextBlock Text="{Binding DwaIteration}"/>
                 </StackPanel>
             </Grid>
         </GroupBox>
         <StackPanel Grid.Row="0" Grid.Column="1">
+            <GroupBox Header="Localization">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="450"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <telerik:RadHeatMap Grid.Row="0" 
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                                    ShowToolTips="True"
+                                    SelectionMode="SingleDataItem" SelectedCellBorderThickness="2" SelectedCellBorderColor="LawnGreen" IsEnabled="False">
+                        <telerik:RadHeatMap.RowHeaderSettings>
+                            <telerik:HeatMapRowHeaderSettings LabelInterval="1000"/>
+                        </telerik:RadHeatMap.RowHeaderSettings>
+                        <telerik:RadHeatMap.ColumnHeaderSettings>
+                            <telerik:HeatMapColumnHeaderSettings LabelInterval="1000"/>
+                        </telerik:RadHeatMap.ColumnHeaderSettings>
+                        <telerik:RadHeatMap.ToolTipSettings>
+                            <telerik:HeatMapToolTipSettings InitialShowDelay="0" ToolTipFormat="F5"/>
+                        </telerik:RadHeatMap.ToolTipSettings>
+                        <telerik:RadHeatMap.Definition>
+                            <telerik:CategoricalDefinition ItemsSource="{Binding McLrfParticlesHistogram, Mode=OneWay}" SelectedItems="{Binding McLrfParticlesHistogramMax}"
+                                        RowGroupMemberPath="Row" 
+                                        ColumnGroupMemberPath="Col" 
+                                        ValuePath="Value">
+                                <telerik:CategoricalDefinition.Colorizer>
+                                    <telerik:HeatMapValueGradientColorizer IsAbsolute="True">
+                                        <GradientStop Offset="-1" Color="Black" />
+                                        <GradientStop Offset="0" Color="White" />
+                                        <GradientStop Offset="50" Color="Firebrick" />
+                                    </telerik:HeatMapValueGradientColorizer>
+                                </telerik:CategoricalDefinition.Colorizer>
+                            </telerik:CategoricalDefinition>
+                        </telerik:RadHeatMap.Definition>
+                    </telerik:RadHeatMap>
+
+                    <StackPanel Grid.Row="1">
+                        <TextBlock Text="Pose: "/>
+                        <TextBlock Text="{Binding McLrfLocalizerPose}"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
             <GroupBox Header="Odometry">
                 <StackPanel>
                     <TextBlock Text="Pose: "/>

@@ -35,7 +35,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
     [Contract(Contract.Identifier)]
     [DisplayName("EnvironmentBuilder")]
     [Description("EnvironmentBuilder service (no description provided)")]
-    class EnvironmentBuilderService : DsspServiceBase
+    public class EnvironmentBuilderService : DsspServiceBase
 	{
 #pragma warning disable 0649
 		[ServiceState]
@@ -85,8 +85,8 @@ namespace Brumba.Simulation.EnvironmentBuilder
             //PopulateHamster();
 	        //PopulateRefPlatformSimpleTests();
 			//PopulateMcLrfLocalizerTests();
-            _engineStub.Post(new UpdatePhysicsTimeStep(0.01f));
-            PopulateDwaNavigatorTests();
+            //_engineStub.Post(new UpdatePhysicsTimeStep(0.01f));
+            //PopulateDwaNavigatorTests();
             
             base.Start();
 
@@ -127,7 +127,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1.0f, new Pose(), new Vector3(1, 1, 1))), new Vector3(-5f, 0.501f, 0)) { State = { Name = "golden_brick_in_range" } });
 	    }
 
-        private static ReferencePlatform2011Entity BuildWaiter1(string waiterName, string lidarName, Pose pose)
+        public static ReferencePlatform2011Entity BuildWaiter1(string waiterName, string lidarName, Pose pose)
         {
             var refPlatform = new ReferencePlatform2011Entity {State = {Name = waiterName, Pose = pose}};
             var lidar = new LaserRangeFinderExEntity
@@ -365,7 +365,7 @@ namespace Brumba.Simulation.EnvironmentBuilder
             SimulationEngine.GlobalInstancePort.Insert(sav);
         }
 
-        void PopulateSimpleEnvironment()
+        public static void PopulateSimpleEnvironment()
         {
             var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
             SimulationEngine.GlobalInstancePort.Insert(sky);

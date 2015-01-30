@@ -174,7 +174,7 @@ namespace Brumba.SimulationTester.Tests
         }
 	}
 
-    [CategoryNamespace("http://brumba.ru/contracts/2012/11/simulationtester.html/waiterstupidodometrytests")]
+    [CategoryNamespace("http://brumba.ru/contracts/2012/11/simulationtester.html/odometrytests")]
     public enum LogCategory
     {
         [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]

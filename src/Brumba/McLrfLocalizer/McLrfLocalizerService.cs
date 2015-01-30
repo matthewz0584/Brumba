@@ -7,7 +7,6 @@ using Brumba.Common;
 using Brumba.DsspUtils;
 using Brumba.GenericLocalizer;
 using Brumba.MapProvider;
-using Brumba.WaiterStupid.GUI;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Ccr.Core;
@@ -93,12 +92,6 @@ namespace Brumba.McLrfLocalizer
 					Arbiter.ReceiveWithIterator(true, _timerFacade.TickPort, UpdateLocalizer))));
 
             yield return To.Exec(() => _timerFacade.Set());
-
-			//************************************
-            //_mv.InitOnServiceStart(TaskQueue);
-            //_mv.InitVisual("qq", System.Windows.Media.Colors.White, System.Windows.Media.Colors.Black);
-            //yield return To.Exec(() => _mv.StartGui());
-            //yield return To.Exec(Draw);
         }
 
 		IEnumerator<ITask> UpdateLocalizer(TimeSpan dt)
@@ -120,8 +113,6 @@ namespace Brumba.McLrfLocalizer
 						UpdateState();
 						LogInfo("loc {0} for {1}", _state.EstimatedPose, sw.Elapsed.Milliseconds);
                     });
-
-			//yield return To.Exec(Draw);
 		}
 
 	    [ServiceHandler(ServiceHandlerBehavior.Concurrent)]
@@ -191,7 +182,7 @@ namespace Brumba.McLrfLocalizer
 		{
 			//_state.EstimatedPose = _localizer.GetPoseCandidates().First();
 		    _state.EstimatedPose = _localizer.CalculatePoseMean();
-		    //_state.Particles = _localizer.Particles.ToArray();
+		    _state.Particles = _localizer.Particles.ToArray();
 
 			SendNotification(_subMgrPort, new InitPose { Body = { Pose = _state.EstimatedPose } });
 		}
@@ -208,24 +199,5 @@ namespace Brumba.McLrfLocalizer
 
             return lrfScan.DistanceMeasurements.Where((d, i) => i % _takeEachNthBeam == 0).Select(d => d / 1000f).Take(_state.BeamsNumber);
         }
-
-		MatrixVizualizerServiceHelper _mv = new MatrixVizualizerServiceHelper();
-		IEnumerator<ITask> Draw()
-		{
-			var h = new PoseHistogram(_localizer.Map, McLrfLocalizer.THETA_BIN_SIZE);
-			h.Build(_localizer.Particles);
-			var p = new DenseMatrix((int)h.Size.Y, (int)h.Size.X);
-			var m = new DenseMatrix((int)h.Size.Y, (int)h.Size.X);
-			var xyM = h.ToXyMarginal();
-			for (var row = 0; row < (int)h.Size.Y; ++row)
-				for (var col = 0; col < (int)h.Size.X; ++col)
-				{
-					p[(int)h.Size.Y - row - 1, col] = xyM[col, row];
-					m[(int)h.Size.Y - row - 1, col] = _localizer.Map[col, row] ? 1 : 0;
-				}
-
-			yield return To.Exec(() => _mv.ShowMatrix(p));
-			yield return To.Exec(() => _mv.ShowMatrix2(m));
-		}
     }
 }
