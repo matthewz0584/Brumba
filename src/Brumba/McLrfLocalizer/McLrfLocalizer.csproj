@@ -87,14 +87,14 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Brumba.Common.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.Common.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="Brumba.DiffDriveOdometry.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.DiffDriveOdometry.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="Brumba.MapProvider.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.MapProvider.Proxy.dll</HintPath>
-    </Reference>
-    <Reference Include="Brumba.WaiterStupid.Proxy">
-      <HintPath>..\..\..\..\bin\Brumba.WaiterStupid.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -165,9 +165,9 @@
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WaiterStupid\WaiterStupid.csproj">
+    <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>WaiterStupid</Name>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

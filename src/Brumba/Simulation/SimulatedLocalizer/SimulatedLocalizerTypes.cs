@@ -1,8 +1,7 @@
 using System.ComponentModel;
-using Brumba.DwaNavigator;
-using Brumba.GenericLocalizer;
+using Brumba.Common;
 using Brumba.GenericFixedWheelVelocimeter;
-using Brumba.WaiterStupid;
+using Brumba.GenericLocalizer;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;

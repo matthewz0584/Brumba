@@ -1,5 +1,5 @@
 using System.Linq;
-using Brumba.WaiterStupid;
+using Brumba.Common;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Xna.Framework;
 using NSubstitute;

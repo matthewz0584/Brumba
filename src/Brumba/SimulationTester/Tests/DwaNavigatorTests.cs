@@ -6,7 +6,7 @@ using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Xna.Framework;
-using bPose = Brumba.WaiterStupid.Pose;
+using bPose = Brumba.Common.Pose;
 using rPose = Microsoft.Robotics.PhysicalModel.Pose;
 using xVector2 = Microsoft.Xna.Framework.Vector2;
 using xVector3 = Microsoft.Xna.Framework.Vector3;

@@ -86,9 +86,9 @@
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WaiterStupid\WaiterStupid.csproj">
+    <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>WaiterStupid</Name>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

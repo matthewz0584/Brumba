@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
+using Brumba.Common;
 using Brumba.MapProvider;
-using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;

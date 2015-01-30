@@ -11,7 +11,7 @@ using Microsoft.Robotics.Simulation.Engine.Proxy;
 using RefPlPxy = Brumba.Simulation.SimulatedReferencePlatform2011.Proxy;
 using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using McLocalizationPxy = Brumba.McLrfLocalizer.Proxy;
-using bPose = Brumba.WaiterStupid.Pose;
+using bPose = Brumba.Common.Pose;
 using rPose = Microsoft.Robotics.PhysicalModel.Pose;
 using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
@@ -76,7 +76,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Start()
 			{
-				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new WaiterStupid.Proxy.Pose(new Vector2(1.7f, 3.25f), 0)));
+				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new Common.Proxy.Pose(new Vector2(1.7f, 3.25f), 0)));
 				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
 				
                 //Localization update takes time (~0.3s), if robot keeps moving mclrf position estimate lags for this time (multiplied by velocity)
@@ -184,7 +184,7 @@ namespace Brumba.SimulationTester.Tests
 
 			public IEnumerator<ITask> Start()
 			{
-				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new WaiterStupid.Proxy.Pose(new Vector2(1.7f, 3.25f), 0)));
+				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new Common.Proxy.Pose(new Vector2(1.7f, 3.25f), 0)));
 				yield return To.Exec(Fixture.RefPlatformSimulatedPort.UpdateWheelTicksSigma(new Vector2(5)));
 				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.6, 0.6));

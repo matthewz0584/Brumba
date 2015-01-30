@@ -7,8 +7,8 @@
     <ProjectGuid>{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brumba.WaiterStupid</RootNamespace>
-    <AssemblyName>Brumba.WaiterStupid</AssemblyName>
+    <RootNamespace>Brumba.Common</RootNamespace>
+    <AssemblyName>Brumba.Common</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

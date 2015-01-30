@@ -3,7 +3,7 @@ using Brumba.Utils;
 using Microsoft.Dss.Core.Attributes;
 using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.WaiterStupid
+namespace Brumba.Common
 {
     [DataContract]
     public struct Velocity : IFreezable

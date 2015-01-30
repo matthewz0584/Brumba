@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Brumba.Common;
+using Brumba.MapProvider;
+using Brumba.McLrfLocalizer;
 using Brumba.Utils;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Ccr.Adapters.Wpf;
@@ -11,10 +14,12 @@ using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Xna.Framework;
 using DwaNavigatorPxy = Brumba.DwaNavigator.Proxy;
+using McLrfLocalizerPxy = Brumba.McLrfLocalizer.Proxy;
 using LocalizerPxy = Brumba.GenericLocalizer.Proxy;
 using VelocimeterPxy = Brumba.GenericFixedWheelVelocimeter.Proxy;
-using WaiterPxy = Brumba.WaiterStupid.Proxy;
+using CommonPxy = Brumba.Common.Proxy;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
+using MapProviderPxy = Brumba.MapProvider.Proxy;
 
 namespace Brumba.Dashboard
 {
@@ -34,6 +39,12 @@ namespace Brumba.Dashboard
         [Partner("DwaNavigator", Contract = DwaNavigatorPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         DwaNavigatorPxy.DwaNavigatorOperations _dwaNavigator = new DwaNavigatorPxy.DwaNavigatorOperations();
 
+        //[Partner("McLrfLocalizer", Contract = McLrfLocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        //McLrfLocalizerPxy.McLrfLocalizerOperations _mcLrfLocalizer = new McLrfLocalizerPxy.McLrfLocalizerOperations();
+
+        //[Partner("Map", Contract = MapProviderPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        //MapProviderPxy.MapProviderOperations _mapProvider = new MapProviderPxy.MapProviderOperations();
+
         [Partner("Localizer", Contract = LocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         LocalizerPxy.GenericLocalizerOperations _localizer = new LocalizerPxy.GenericLocalizerOperations();
 
@@ -46,15 +57,16 @@ namespace Brumba.Dashboard
 	    readonly Port<DateTime> _dwaPollingPort = new Port<DateTime>();
         readonly Port<DateTime> _simulationPollingPort = new Port<DateTime>();
         readonly Port<DateTime> _odometryPollingPort = new Port<DateTime>();
+        //readonly Port<DateTime> _mcLrfPollingPort = new Port<DateTime>();
 	    
         WpfServicePort _wpfPort;
         MainWindow _mainWindow;
 
 	    private DwaNavigatorPxy.VelocityAcceleration _currentVelocityAcceleration;
-	    private WaiterPxy.Pose _simulationPose;
-        private WaiterPxy.Velocity _simulationVelocity;
-        private WaiterPxy.Pose _odometryPose;
-        private WaiterPxy.Velocity _odometryVelocity;
+	    private CommonPxy.Pose _simulationPose;
+        private CommonPxy.Velocity _simulationVelocity;
+        private CommonPxy.Pose _odometryPose;
+        private CommonPxy.Velocity _odometryVelocity;
 	    private int _currentDwaIteration;
 
 	    public DashboardService(DsspServiceCreationPort creationPort)
@@ -65,6 +77,9 @@ namespace Brumba.Dashboard
 
 	    public IEnumerable<MatrixCell> DwaVelocitiesEvaluation { get; private set; }
         public IEnumerable<MatrixCell> DwaVelocitiesEvaluationMax { get; private set; }
+
+        //public IEnumerable<MatrixCell> McLrfParticlesHistogram { get; private set; }
+        //public IEnumerable<MatrixCell> McLrfParticlesHistogramMax { get; private set; }
 
 	    public string CurrentVelocity
 	    {
@@ -126,11 +141,13 @@ namespace Brumba.Dashboard
                 new ConcurrentReceiverGroup(
                     Arbiter.ReceiveWithIterator(true, _dwaPollingPort, UpdateDwaVelocitiesEvaluation),
                     Arbiter.ReceiveWithIterator(true, _simulationPollingPort, UpdateSimulation),
-                    Arbiter.ReceiveWithIterator(true, _odometryPollingPort, UpdateOdometry)
+                    Arbiter.ReceiveWithIterator(true, _odometryPollingPort, UpdateOdometry)//,
+                    //Arbiter.ReceiveWithIterator(true, _mcLrfPollingPort, UpdateMcLocalization)
                     )));
             _dwaPollingPort.Post(DateTime.Now);
             _simulationPollingPort.Post(DateTime.Now);
             //_odometryPollingPort.Post(DateTime.Now);
+            //_mcLrfPollingPort.Post(DateTime.Now);
         }
 
         IEnumerator<ITask> UpdateDwaVelocitiesEvaluation(DateTime dateTime)
@@ -166,6 +183,38 @@ namespace Brumba.Dashboard
 
             Activate(Arbiter.Receive(false, TimeoutPort(500), t => _dwaPollingPort.Post(t)));
         }
+
+        //IEnumerator<ITask> UpdateMcLocalization(DateTime dateTime)
+        //{
+        //    McLrfLocalizerPxy.McLrfLocalizerState mcLrfState = null;
+        //    yield return _mcLrfLocalizer.Get().Receive(ds => mcLrfState = ds);
+        //    OccupancyGrid map = null;
+        //    yield return _mapProvider.Get().Receive(s => map = (OccupancyGrid) DssTypeHelper.TransformFromProxy(s.Map));
+
+        //    var h = new PoseHistogram(map,  Math.PI / 18);
+        //    h.Build(mcLrfState.Particles.Select(px => (Pose)DssTypeHelper.TransformFromProxy(px)));
+        //    var hist = h.ToXyMarginal();
+
+        //    var cells = new List<MatrixCell>();
+        //    for (var y = 0; y < hist.GetLength(0); ++y)
+        //        for (var x = 0; x < hist.GetLength(1); ++x)
+        //            cells.Add(new MatrixCell { Row = y, Col = x, Value = map[x, y] ? -1 : hist[x, y]});
+        //    McLrfParticlesHistogram = cells;
+        //    McLrfParticlesHistogramMax = McLrfParticlesHistogram.OrderByDescending(mc => mc.Value).First().AsCol().ToList();
+
+        //    yield return _wpfPort.Invoke(() =>
+        //    {
+        //        try
+        //        {
+        //            PropertyChanged(this, new PropertyChangedEventArgs("McLrfParticlesHistogram"));
+        //            PropertyChanged(this, new PropertyChangedEventArgs("McLrfParticlesHistogramMax"));
+        //        }
+        //        catch (Exception)
+        //        { }
+        //    }).Choice(success => { }, LogError);
+
+        //    Activate(Arbiter.Receive(false, TimeoutPort(1000), t => _mcLrfPollingPort.Post(t)));
+        //}
 
         IEnumerator<ITask> UpdateSimulation(DateTime dateTime)
         {
@@ -221,17 +270,17 @@ namespace Brumba.Dashboard
 	        };
             _currentVelocityAcceleration = new DwaNavigatorPxy.VelocityAcceleration
             {
-                Velocity = new WaiterPxy.Velocity
+                Velocity = new CommonPxy.Velocity
                 {
                     Linear = 5,
                     Angular = 5.5
                 },
                 WheelAcceleration = new Vector2(0.5f, 0.6f)
             };
-            _simulationPose = new WaiterPxy.Pose(new Vector2(1, 2), Math.PI);
-            _simulationVelocity = new WaiterPxy.Velocity(101, Math.PI);
-            _odometryPose = new WaiterPxy.Pose(new Vector2(10, 20), Math.PI);
-            _odometryVelocity = new WaiterPxy.Velocity(100, Math.PI);
+            _simulationPose = new CommonPxy.Pose(new Vector2(1, 2), Math.PI);
+            _simulationVelocity = new CommonPxy.Velocity(101, Math.PI);
+            _odometryPose = new CommonPxy.Pose(new Vector2(10, 20), Math.PI);
+            _odometryVelocity = new CommonPxy.Velocity(100, Math.PI);
         }
 	}
 
@@ -242,5 +291,3 @@ namespace Brumba.Dashboard
         public double Value { get; set; }
     }
 }
-
-

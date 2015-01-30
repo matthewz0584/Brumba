@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Brumba.Common;
 using Brumba.DsspUtils;
 using Brumba.GenericFixedWheelVelocimeter;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;

@@ -1,8 +1,8 @@
 using System.ComponentModel;
-using Brumba.GenericLocalizer;
+using Brumba.Common;
 using Brumba.GenericFixedWheelVelocimeter;
+using Brumba.GenericLocalizer;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Xna.Framework;

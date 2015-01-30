@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.Common;
 using Brumba.MapProvider;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using MathNet.Numerics.Statistics;

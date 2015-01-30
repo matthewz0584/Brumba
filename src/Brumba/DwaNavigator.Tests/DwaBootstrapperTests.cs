@@ -1,7 +1,7 @@
 using System;
+using Brumba.Common;
 using Brumba.McLrfLocalizer;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using Brumba.Common;
 using Brumba.DsspUtils;
 using Brumba.GenericLocalizer;
 using Brumba.MapProvider;
-using Brumba.WaiterStupid;
 using Brumba.WaiterStupid.GUI;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
@@ -191,6 +191,8 @@ namespace Brumba.McLrfLocalizer
 		{
 			//_state.EstimatedPose = _localizer.GetPoseCandidates().First();
 		    _state.EstimatedPose = _localizer.CalculatePoseMean();
+		    //_state.Particles = _localizer.Particles.ToArray();
+
 			SendNotification(_subMgrPort, new InitPose { Body = { Pose = _state.EstimatedPose } });
 		}
 

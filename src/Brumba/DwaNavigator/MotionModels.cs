@@ -1,4 +1,4 @@
-using Brumba.WaiterStupid;
+using Brumba.Common;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 

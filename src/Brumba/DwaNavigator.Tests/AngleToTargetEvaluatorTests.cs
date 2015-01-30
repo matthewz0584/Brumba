@@ -1,5 +1,4 @@
-using Brumba.Utils;
-using Brumba.WaiterStupid;
+using Brumba.Common;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using NSubstitute;

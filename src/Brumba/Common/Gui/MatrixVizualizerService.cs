@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Media;
+using Brumba.Common;
 using Brumba.DsspUtils;
 using MathNet.Numerics.LinearAlgebra.Double;
 using Microsoft.Ccr.Adapters.Wpf;

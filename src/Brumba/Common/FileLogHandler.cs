@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using Microsoft.Dss.Diagnostics;
 
-namespace Brumba.WaiterStupid
+namespace Brumba.Common
 {
 /*	public class FileLogHandler : IDiagnosticLogHandler, IDisposable
 	{

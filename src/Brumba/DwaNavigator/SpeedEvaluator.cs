@@ -1,5 +1,5 @@
+using Brumba.Common;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.DwaNavigator

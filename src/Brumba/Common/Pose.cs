@@ -4,7 +4,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.WaiterStupid
+namespace Brumba.Common
 {
 	[DataContract]
     public struct Pose : IFreezable

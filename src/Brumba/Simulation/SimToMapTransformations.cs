@@ -5,7 +5,7 @@ using rQuaternion = Microsoft.Robotics.PhysicalModel.Quaternion;
 using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using rPose = Microsoft.Robotics.PhysicalModel.Pose;
 using xVector2 = Microsoft.Xna.Framework.Vector2;
-using bPose = Brumba.WaiterStupid.Pose;
+using bPose = Brumba.Common.Pose;
 
 namespace Brumba.Simulation
 {

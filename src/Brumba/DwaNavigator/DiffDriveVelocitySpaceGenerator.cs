@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.Common;
 using Brumba.DiffDriveOdometry;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 

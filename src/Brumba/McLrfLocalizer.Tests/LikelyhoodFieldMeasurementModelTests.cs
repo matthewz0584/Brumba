@@ -1,7 +1,7 @@
 using System;
+using Brumba.Common;
 using Brumba.MapProvider;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using MathNet.Numerics;
 using MathNet.Numerics.Distributions;
 using Microsoft.Xna.Framework;

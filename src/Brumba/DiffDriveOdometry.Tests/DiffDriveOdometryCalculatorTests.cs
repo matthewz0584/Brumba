@@ -1,6 +1,6 @@
 ﻿using System;
+using Brumba.Common;
 using Brumba.Utils;
-using Brumba.WaiterStupid;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 

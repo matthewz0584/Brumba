@@ -13,7 +13,7 @@ using W3C.Soap;
 using RefPlPxy = Brumba.Simulation.SimulatedReferencePlatform2011.Proxy;
 using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using McLocalizationPxy = Brumba.McLrfLocalizer.Proxy;
-using bPose = Brumba.WaiterStupid.Pose;
+using bPose = Brumba.Common.Pose;
 using rPose = Microsoft.Robotics.PhysicalModel.Pose;
 using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 using Vector2 = Microsoft.Xna.Framework.Vector2;

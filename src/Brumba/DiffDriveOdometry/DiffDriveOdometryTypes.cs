@@ -1,4 +1,4 @@
-using Brumba.WaiterStupid;
+using Brumba.Common;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
