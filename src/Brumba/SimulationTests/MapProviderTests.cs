@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Brumba.MapProvider;
+using Brumba.SimulationTester;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
 using Microsoft.Xna.Framework;
 using MapPxy = Brumba.MapProvider.Proxy;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
 	[SimTestFixture("map_provider")]
 	public class MapProviderTests

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
+using Brumba.SimulationTester;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Ccr.Core;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
     [SimTestFixture("turret")]
     public class TurretTests

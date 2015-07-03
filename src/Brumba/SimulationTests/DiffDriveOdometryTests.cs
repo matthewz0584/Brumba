@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.Simulation;
+using Brumba.SimulationTester;
 using Brumba.Simulation.EnvironmentBuilder;
 using Brumba.Utils;
 using MathNet.Numerics;
@@ -22,9 +23,9 @@ using rVector2 = Microsoft.Robotics.PhysicalModel.Vector2;
 using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using rQuaternion = Microsoft.Robotics.PhysicalModel.Quaternion;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
-    [SimTestFixture("diff_drive_odometry", Wip = true)]
+    [SimTestFixture("diff_drive_odometry")]
 	public class DiffDriveOdometryTests
 	{
 		public SimulationTesterService TesterService { get; private set; }

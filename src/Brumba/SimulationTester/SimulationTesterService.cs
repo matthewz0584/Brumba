@@ -35,10 +35,9 @@ namespace Brumba.SimulationTester
 
 		public const int TRIES_NUMBER = 100;
 		public const float SUCCESS_THRESHOLD = 0.79f;
-        public const string TESTS_PATH = "brumba/tests";
 	    public const string RESET_SYMBOL = "@";
 
-		[InitialStatePartner(Optional = true)]
+		[InitialStatePartner(Optional = false)]
 		SimulationTesterState _state = null;
 		
 		[ServicePort("/SimulationTester", AllowMultipleInstances = true)]
@@ -100,10 +99,7 @@ namespace Brumba.SimulationTester
 
 			base.Start();
 
-			if (_state == null)
-				_state = new SimulationTesterState();
-
-		    var simTestFixturesInfoes = new FixtureInfoCreator().CollectFixtures(Assembly.GetExecutingAssembly(), false);
+            var simTestFixturesInfoes = new FixtureInfoCreator().CollectFixtures(Assembly.LoadFrom(_state.TestsAssembly), false);
 
             SpawnIterator(
                 simTestFixturesInfoes.Any(fi => fi.Wip) ? simTestFixturesInfoes.Where(fi => fi.Wip).ToList() : simTestFixturesInfoes,
@@ -265,7 +261,7 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_manifestLoader.Insert(new InsertRequest
                 {
                     Manifest = new UriBuilder(ServiceInfo.HttpServiceAlias.Scheme, ServiceInfo.HttpServiceAlias.Host, ServiceInfo.HttpServiceAlias.Port,
-                                              String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, manifest, MANIFEST_EXTENSION)).ToString()
+                                              String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, _state.TestsDirectory, manifest, MANIFEST_EXTENSION)).ToString()
                 }));
         }
 
@@ -329,7 +325,7 @@ namespace Brumba.SimulationTester
             yield return TimeoutPort(100).Receive();
 
             var get = new DsspDefaultGet();
-            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, TESTS_PATH, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
+            ServiceForwarder<MountServiceOperations>(String.Format(@"{0}/{1}/{2}.{3}", ServicePaths.MountPoint, _state.TestsDirectory, environmentXmlFile, ENVIRONMENT_EXTENSION)).Post(get);
             yield return get.ResponsePort.Choice(LogError, success => simState = (MrsPxy.SimulationState)success);
 
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);

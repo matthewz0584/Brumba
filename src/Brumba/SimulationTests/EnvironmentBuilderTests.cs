@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.Utils;
+using Brumba.SimulationTester;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -12,7 +13,7 @@ using SingleShapeEntity = Microsoft.Robotics.Simulation.Engine.Proxy.SingleShape
 using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 using EnvBuilderPxy = Brumba.Simulation.EnvironmentBuilder.Proxy;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
     [SimTestFixture("environment_builder")]
 	public class EnvironmentBuilderTests

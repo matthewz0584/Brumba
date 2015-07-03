@@ -14,6 +14,10 @@ namespace Brumba.SimulationTester
 	[DataContract]
 	public class SimulationTesterState
 	{
+        [DataMember]
+        public string TestsAssembly { get; set; }
+        [DataMember]
+        public string TestsDirectory { get; set; }
 		[DataMember]
 		public bool ToRender { get; set; }
 		[DataMember]

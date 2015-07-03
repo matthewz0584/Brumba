@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Brumba.Utils;
+using Brumba.SimulationTester;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
     [SimTestFixture("infrared_rf_ring")]
     public class InfraredRfRingTests

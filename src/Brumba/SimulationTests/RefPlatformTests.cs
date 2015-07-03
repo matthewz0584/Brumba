@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.Utils;
+using Brumba.SimulationTester;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.PhysicalModel;
@@ -11,7 +12,7 @@ using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
     [SimTestFixture("ref_platform")]
     public class RefPlatformTests

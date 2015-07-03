@@ -4,6 +4,7 @@ using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.MapProvider;
 using Brumba.Utils;
+using Brumba.SimulationTester;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -20,7 +21,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 using MapPxy = Brumba.MapProvider.Proxy;
 using PathPxy = Brumba.PathPlanner.Proxy;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
     [SimTestFixture("path_planner")]
 	public class PathPlannerTests

@@ -4,6 +4,7 @@ using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.Simulation;
 using Brumba.Utils;
+using Brumba.SimulationTester;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -16,7 +17,7 @@ using rPose = Microsoft.Robotics.PhysicalModel.Pose;
 using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
     [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
 	public class McLrfLocalizerTests

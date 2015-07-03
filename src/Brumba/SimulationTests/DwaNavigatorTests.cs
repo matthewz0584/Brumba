@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Brumba.DsspUtils;
 using Brumba.Simulation;
+using Brumba.SimulationTester;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.Simulation.Engine;
@@ -15,7 +16,7 @@ using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using DwaNavigatorPxy = Brumba.DwaNavigator.Proxy;
 using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
     [SimTestFixture("dwa_navigator", PhysicsTimeStep = 0.005f )]
     public class DwaNavigatorTests

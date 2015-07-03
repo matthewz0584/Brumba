@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.DsspUtils;
+using Brumba.SimulationTester;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.PhysicalModel;
@@ -9,7 +10,7 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Physics;
 using VisualEntity = Microsoft.Robotics.Simulation.Engine.VisualEntity;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTests
 {
     [SimTestFixture("ackerman_vehicle_ex_on_terrain03")]
     public class AckermanVehicleExTests

@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EB31787C-74FB-4DF8-9F0C-BA656971C021}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Brumba.SimulationTests</RootNamespace>
+    <AssemblyName>Brumba.SimulationTests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Brumba.AckermanVehicle.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.AckermanVehicle.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Common.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.Common.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.DiffDriveOdometry.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.DiffDriveOdometry.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.DwaNavigator.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.DwaNavigator.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.EnvironmentBuilder.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.EnvironmentBuilder.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.MapProvider.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.MapProvider.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.McLrfLocalizer.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.McLrfLocalizer.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.PathPlanner.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.PathPlanner.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Simulation.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\..\..\..\bin\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Ccr.Core, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Ccr.Core\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Ccr.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dss.Base, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Base\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dss.Diagnostics, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Diagnostics\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Runtime\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Microsoft.Xna.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="RoboticsCommon">
+      <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="RoboticsCommon.proxy">
+      <HintPath>..\..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="SickLRF.Y2005.M12.proxy">
+      <HintPath>..\..\..\..\bin\SickLRF.Y2005.M12.proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="SimulationCommon">
+      <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="SimulationCommon.proxy">
+      <HintPath>..\..\..\..\bin\SimulationCommon.proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="SimulationEngine">
+      <HintPath>..\..\..\..\bin\SimulationEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SimulationEngine.proxy">
+      <HintPath>..\..\..\..\bin\SimulationEngine.proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AckermanVehicleExTests.cs" />
+    <Compile Include="DiffDriveOdometryTests.cs" />
+    <Compile Include="DwaNavigatorTests.cs" />
+    <Compile Include="EnvironmentBuilderTests.cs" />
+    <Compile Include="InfraredRfRingTests.cs" />
+    <Compile Include="MapProviderTests.cs" />
+    <Compile Include="McLrfLocalizerTests.cs" />
+    <Compile Include="PathPlannerTests.cs" />
+    <Compile Include="RefPlatformTests.cs" />
+    <Compile Include="TurretTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
+      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
+      <Name>DsspUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EnvironmentBuilder\EnvironmentBuilder.csproj">
+      <Project>{bf9957ab-2a19-4904-b423-bd0a09d0eb01}</Project>
+      <Name>EnvironmentBuilder</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MapProvider\MapProvider.csproj">
+      <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
+      <Name>MapProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimulationTester\SimulationTester.csproj">
+      <Project>{105800af-f412-413d-8d51-a417e39b6960}</Project>
+      <Name>SimulationTester</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simulation\Simulation.csproj">
+      <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>
+      <Name>Simulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
