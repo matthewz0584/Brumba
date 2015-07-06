@@ -17,7 +17,7 @@
     </Velocity>
   </FixedWheelVelocimeter>
   <MaxVelocity>
-    <Linear xmlns="http://brumba.ru/contracts/2014/11/dwanavigatorservice.html">1.52</Linear>
-    <Angular xmlns="http://brumba.ru/contracts/2014/11/dwanavigatorservice.html">10</Angular>
+    <Linear>1.52</Linear>
+    <Angular>10</Angular>
   </MaxVelocity>
 </SimulatedLocalizerState>

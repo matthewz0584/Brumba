@@ -18,7 +18,7 @@ using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
 namespace Brumba.SimulationTests
 {
-    [SimTestFixture("dwa_navigator", PhysicsTimeStep = 0.005f )]
+    [SimTestFixture("dwa_navigator", PhysicsTimeStep = 0.005f)]
     public class DwaNavigatorTests
     {
         public DwaNavigatorPxy.DwaNavigatorOperations DwaNavigatorPort { get; set; }
@@ -29,7 +29,7 @@ namespace Brumba.SimulationTests
             DwaNavigatorPort = testerService.ForwardTo<DwaNavigatorPxy.DwaNavigatorOperations>("dwa_navigator@");
         }
 
-        //[SimTest(6.1f, IsProbabilistic = false)]
+        [SimTest(6.1f, IsProbabilistic = false)]
         public class ClearStraightPathToTarget
         {
             [Fixture]
@@ -56,7 +56,7 @@ namespace Brumba.SimulationTests
             }
         }
 
-        //[SimTest(6.1f, IsProbabilistic = false)]
+        [SimTest(6.1f, IsProbabilistic = false)]
         public class ClearCurvedPathToTarget
         {
             [Fixture]
@@ -110,7 +110,7 @@ namespace Brumba.SimulationTests
             }
         }
 
-        //[SimTest(7, IsProbabilistic = false)]
+        [SimTest(7, IsProbabilistic = false)]
         public class AvoidingObstacleCurvedPath
         {
             [Fixture]

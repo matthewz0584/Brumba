@@ -57,7 +57,7 @@ namespace Brumba.Dashboard
 	    readonly Port<DateTime> _dwaPollingPort = new Port<DateTime>();
         readonly Port<DateTime> _simulationPollingPort = new Port<DateTime>();
         readonly Port<DateTime> _odometryPollingPort = new Port<DateTime>();
-        readonly Port<DateTime> _mcLrfPolingPort = new Port<DateTime>();
+        readonly Port<DateTime> _mcLrfPollingPort = new Port<DateTime>();
 	    
         WpfServicePort _wpfPort;
         MainWindow _mainWindow;
@@ -153,12 +153,12 @@ namespace Brumba.Dashboard
                     Arbiter.ReceiveWithIterator(true, _dwaPollingPort, UpdateDwaVelocitiesEvaluation),
                     Arbiter.ReceiveWithIterator(true, _simulationPollingPort, UpdateSimulation),
                     Arbiter.ReceiveWithIterator(true, _odometryPollingPort, UpdateOdometry),
-                    Arbiter.ReceiveWithIterator(true, _mcLrfPolingPort, UpdateMcLocalization)
+                    Arbiter.ReceiveWithIterator(true, _mcLrfPollingPort, UpdateMcLocalization)
                     )));
             //_dwaPollingPort.Post(DateTime.Now);
             //_simulationPollingPort.Post(DateTime.Now);
             //_odometryPollingPort.Post(DateTime.Now);
-            _mcLrfPolingPort.Post(DateTime.Now);
+            _mcLrfPollingPort.Post(DateTime.Now);
 
             yield return _wpfPort.RunWindow(() => new MainWindow(this)).Choice(
                 w => _mainWindow = w as MainWindow, LogError);
@@ -203,6 +203,12 @@ namespace Brumba.Dashboard
             McLrfLocalizerPxy.McLrfLocalizerState mcLrfState = null;
             yield return _mcLrfLocalizer.Get().Receive(ds => mcLrfState = ds);
 
+            if (mcLrfState.Particles == null)
+            {
+                Activate(Arbiter.Receive(false, TimeoutPort(1000), t => _mcLrfPollingPort.Post(t)));
+                yield break;
+            }
+
             _poseHistogram.Build(mcLrfState.Particles.Select(px => (Pose)DssTypeHelper.TransformFromProxy(px)));
             var hist = _poseHistogram.ToXyMarginal();
 
@@ -227,7 +233,7 @@ namespace Brumba.Dashboard
                 { }
             }).Choice(success => { }, LogError);
 
-            Activate(Arbiter.Receive(false, TimeoutPort(1000), t => _mcLrfPolingPort.Post(t)));
+            Activate(Arbiter.Receive(false, TimeoutPort(1000), t => _mcLrfPollingPort.Post(t)));
         }
 
         IEnumerator<ITask> UpdateSimulation(DateTime dateTime)

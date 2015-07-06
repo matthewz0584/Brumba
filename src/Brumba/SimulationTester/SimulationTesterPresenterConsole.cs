@@ -8,7 +8,7 @@ namespace Brumba.SimulationTester
         public void Setup(SimulationTesterService tester)
 		{
 			tester.OnFixtureStarted += fi => Console.WriteLine("Fixture {0}", fi.Object.GetType().Name);
-			tester.OnTestStarted += t => Console.Write("{0,20} ", t.Name);
+			tester.OnTestStarted += t => Console.Write("{0,40} ", t.Name);
 			tester.OnTestEnded += OnTestEnded;
 			tester.OnTestTryEnded += OnTestTryEnded;
 			tester.OnStarted += () => Console.WriteLine();

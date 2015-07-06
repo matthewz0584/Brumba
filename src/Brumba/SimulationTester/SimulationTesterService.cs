@@ -315,7 +315,8 @@ namespace Brumba.SimulationTester
             IEnumerable<Mrse.VisualEntity> entities = null;
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
 
-            foreach (var entity in entities.Where(e => e.State.Name != "MainCamera").Where(e => resetFilter(e) || e.State.Name == "timer"))
+            //foreach (var entity in entities.Where(e => e.State.Name != "MainCamera").Where(e => resetFilter(e) || e.State.Name == "timer"))
+            if (entities.Any(e => e.State.Name == "MainCamera"))
                 Mrse.SimulationEngine.GlobalInstance.RefreshEntity(entities.Single(e => e.State.Name == "MainCamera"));
             
             foreach (var entity in entities.Where(e => resetFilter(e) || e.State.Name == "timer" || e.State.Name == "MainCamera"))

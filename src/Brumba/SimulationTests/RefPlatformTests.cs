@@ -62,11 +62,6 @@ namespace Brumba.SimulationTests
             [Fixture]
             public RefPlatformTests Fixture { get; set; }
 
-		    [Prepare]
-            public void PrepareEntities(Microsoft.Robotics.Simulation.Engine.VisualEntity entity)
-		    {
-		    }
-
 		    [Start]
             public IEnumerator<ITask> Start()
 			{

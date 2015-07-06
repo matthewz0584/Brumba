@@ -80,7 +80,7 @@
       </dssp:PartnerList>
       <Name>this:BrumbaSimulatedReferencePlatformRobot</Name>
     </ServiceRecordType>
-    <ServiceRecordType>
+    <!--<ServiceRecordType>
       <dssp:Contract>http://brumba.ru/contracts/2014/11/dashboard.html</dssp:Contract>
       <dssp:PartnerList>
         <dssp:Partner>
@@ -103,6 +103,6 @@
         </dssp:Partner>
       </dssp:PartnerList>
       <Name>this:BrumbaDashboard</Name>
-    </ServiceRecordType>
+    </ServiceRecordType>-->
   </CreateServiceList>
 </Manifest>

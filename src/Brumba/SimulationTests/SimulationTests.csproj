@@ -172,6 +172,110 @@
       <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\..\tests\ackerman_vehicle.environ.xml">
+      <Link>Environments\ackerman_vehicle.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\ackerman_vehicle.Manifest.xml">
+      <Link>Manifests\ackerman_vehicle.Manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\ackerman_vehicle_ex_on_terrain03.environ.xml">
+      <Link>Environments\ackerman_vehicle_ex_on_terrain03.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\ackerman_vehicle_ex_on_terrain03.Manifest.xml">
+      <Link>Manifests\ackerman_vehicle_ex_on_terrain03.Manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\diff_drive_odometry.config.xml">
+      <Link>Manifests\diff_drive_odometry.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\diff_drive_odometry.environ.xml">
+      <Link>Environments\diff_drive_odometry.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\diff_drive_odometry.manifest.xml">
+      <Link>Manifests\diff_drive_odometry.manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\dwa_navigator.config.xml">
+      <Link>Manifests\dwa_navigator.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\dwa_navigator.environ.xml">
+      <Link>Environments\dwa_navigator.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\dwa_navigator.manifest.xml">
+      <Link>Manifests\dwa_navigator.manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\dwa_navigator_simulated_localizer.config.xml">
+      <Link>Manifests\dwa_navigator_simulated_localizer.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\environment_builder.config.xml">
+      <Link>Manifests\environment_builder.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\environment_builder.environ.xml">
+      <Link>Environments\environment_builder.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\environment_builder.manifest.xml">
+      <Link>Manifests\environment_builder.manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\infrared_rf_ring.environ.xml">
+      <Link>Environments\infrared_rf_ring.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\infrared_rf_ring.Manifest.xml">
+      <Link>Manifests\infrared_rf_ring.Manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\map_provider.config.xml">
+      <Link>Manifests\map_provider.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\map_provider.environ.xml">
+      <Link>Environments\map_provider.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\map_provider.manifest.xml">
+      <Link>Manifests\map_provider.manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\mc_lrf_localizer.config.xml">
+      <Link>Manifests\mc_lrf_localizer.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\mc_lrf_localizer.environ.xml">
+      <Link>Environments\mc_lrf_localizer.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\mc_lrf_localizer.manifest.xml">
+      <Link>Manifests\mc_lrf_localizer.manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\mc_lrf_localizer_diff_drive_odometry.config.xml">
+      <Link>Manifests\mc_lrf_localizer_diff_drive_odometry.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\mc_lrf_localizer_map_provider.config.xml">
+      <Link>Manifests\mc_lrf_localizer_map_provider.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\path_planner.config.xml">
+      <Link>Manifests\path_planner.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\path_planner.environ.xml">
+      <Link>Environments\path_planner.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\path_planner.manifest.xml">
+      <Link>Manifests\path_planner.manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\path_planner_map_provider.config.xml">
+      <Link>Manifests\path_planner_map_provider.config.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\red_and_blue_boxes.bmp">
+      <Link>Manifests\red_and_blue_boxes.bmp</Link>
+    </Content>
+    <Content Include="..\..\..\tests\ref_platform.environ.xml">
+      <Link>Environments\ref_platform.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\ref_platform.manifest.xml">
+      <Link>Manifests\ref_platform.manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\simple_house.bmp">
+      <Link>Manifests\simple_house.bmp</Link>
+    </Content>
+    <Content Include="..\..\..\tests\turret.environ.xml">
+      <Link>Environments\turret.environ.xml</Link>
+    </Content>
+    <Content Include="..\..\..\tests\turret.Manifest.xml">
+      <Link>Manifests\turret.Manifest.xml</Link>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>

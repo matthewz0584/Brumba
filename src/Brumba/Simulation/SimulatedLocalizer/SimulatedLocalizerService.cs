@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using Brumba.Common;
 using Brumba.GenericFixedWheelVelocimeter;
@@ -70,9 +71,9 @@ namespace Brumba.Simulation.SimulatedLocalizer
 	    {
 	        var vLinear = Vector2.Dot(Entity.State.Pose.SimToMap().Direction(), Entity.State.Velocity.SimToMap());
 	        var vAngular = Entity.State.AngularVelocity.SimToMapAngularVelocity();
-            if (vLinear > _state.MaxVelocity.Linear)
+            if (Math.Abs(vLinear) > _state.MaxVelocity.Linear)
                 LogWarning(string.Format("Linear velocity ({0}) is greater than given maximum ({1})!", vLinear, _state.MaxVelocity.Linear));
-            if (vAngular > _state.MaxVelocity.Angular)
+            if (Math.Abs(vAngular) > _state.MaxVelocity.Angular)
                 LogWarning(string.Format("Angular velocity ({0}) is greater than given maximum ({1})!", vAngular, _state.MaxVelocity.Angular));
 	        return new Velocity(vLinear, vAngular);
 	    }
