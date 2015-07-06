@@ -48,14 +48,26 @@ namespace Brumba.SimulationTester.Tests
         }
 
         [NUnit.Framework.Test]
+        public void CreateFixtureInfoInterfaceSetup()
+        {
+            var fi = new FixtureInfoCreator().CreateFixtureInfo(typeof(InterfaceSetupFixture));
+
+            Assert.That(fi.SetUp, Is.Not.Null);
+
+            var testerSvc = new SimulationTesterService();
+            fi.SetUp(testerSvc);
+            Assert.That((fi.Object as InterfaceSetupFixture).TesterService, Is.SameAs(testerSvc));
+        }
+
+        [NUnit.Framework.Test]
         public void CreateTestInfoFromAttributes()
         {
-            var sf = new TestFixture();
-            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithAttributes), sf);
+            var tf = new TestFixture();
+            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithAttributes), tf);
 
             Assert.That(ti.Name, Is.EqualTo("TestWithAttributes"));
             Assert.That(ti.Object, Is.Not.Null);
-            Assert.That((ti.Object as TestFixture.TestWithAttributes).Fixture, Is.SameAs(sf));
+            Assert.That((ti.Object as TestFixture.TestWithAttributes).Fixture, Is.SameAs(tf));
             Assert.That(ti.EstimatedTime, Is.EqualTo(2.5f));
             Assert.That(ti.IsProbabilistic);
             
@@ -120,8 +132,10 @@ namespace Brumba.SimulationTester.Tests
         [NUnit.Framework.Test]
         public void CreateTestInfoFromInterfaces()
         {
-            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithIfaces), null);
+            var tf = new TestFixture();
+            var ti = new FixtureInfoCreator().CreateTestInfo(typeof(TestFixture.TestWithIfaces), tf);
 
+            Assert.That((ti.Object as TestFixture.TestWithIfaces).Fixture, Is.SameAs(tf));
             Assert.That(ti.Prepare, Is.Not.Null);
             Assert.That(ti.Start, Is.Not.Null);
             Assert.That(ti.Test, Is.Not.Null);
@@ -139,9 +153,8 @@ namespace Brumba.SimulationTester.Tests
         {
             var fixtures = new FixtureInfoCreator().CollectFixtures(Assembly.GetAssembly(typeof(FixtureInfoCreaterTests)), true);
 
-            Assert.That(fixtures.Count(), Is.EqualTo(2));
-            Assert.That(fixtures.Single(f => f.Wip).Name, Is.EqualTo("wip_fixture"));
-            Assert.That(fixtures.Single(f => !f.Wip).Name, Is.EqualTo("fixture_name"));
+            Assert.That(fixtures.Count(), Is.EqualTo(3));
+            Assert.That(fixtures.Select(fi => fi.Name), Is.EquivalentTo(new[] { "wip_fixture", "fixture_name", "interface_setup_fixture" }));
         }
 
 		[NUnit.Framework.Test]
@@ -257,9 +270,11 @@ namespace Brumba.SimulationTester.Tests
         }
 
         [SimTest(2.5f)]
-        public class TestWithIfaces : IPrepare, IStart, ITest
+        public class TestWithIfaces : IFixture<TestFixture>, IPrepare, IStart, ITest
         {
             public string _log = "";
+
+            public TestFixture Fixture { get; set; }
             
             public void Prepare(Mrse.VisualEntity entity)
             {
@@ -318,4 +333,15 @@ namespace Brumba.SimulationTester.Tests
 			}
 		}		
 	}
+
+    [SimTestFixture("interface_setup_fixture")]
+    public class InterfaceSetupFixture : ISetUp
+    {
+        public SimulationTesterService TesterService { get; private set; }
+
+        public void SetUp(SimulationTesterService testerService)
+        {
+            TesterService = testerService;
+        }
+    }
 }

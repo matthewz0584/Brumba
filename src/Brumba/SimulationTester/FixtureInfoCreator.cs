@@ -45,8 +45,12 @@ namespace Brumba.SimulationTester
 
             var setupMethod = fixtureType.GetMethods().SingleOrDefault(mi => mi.GetCustomAttributes(false).Any(a => a is SetUpAttribute));
             if (setupMethod != null)
-                fixtureInfo.SetUp = sf =>
-                    setupMethod.Invoke(fixtureInfo.Object, new object[] { sf });
+            {
+                CheckMethodInfo(setupMethod, typeof(ISetUp).GetMethods().Single(), fixtureInfo.Name, typeof(SetUpAttribute).Name);
+                fixtureInfo.SetUp = sf => setupMethod.Invoke(fixtureInfo.Object, new object[] {sf});
+            }
+            else if (fixtureInfo.Object is ISetUp)
+                fixtureInfo.SetUp= (fixtureInfo.Object as ISetUp).SetUp;
 
             var testsToCreate = fixtureType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
                                            .Where(t => t.GetCustomAttributes(false).Any(a => a is SimTestAttribute));
@@ -69,7 +73,14 @@ namespace Brumba.SimulationTester
 
 	        var fixtureProperty = testType.GetProperties().SingleOrDefault(mi => mi.GetCustomAttributes(false).Any(a => a is FixtureAttribute));
             if (fixtureProperty != null)
+            {
                 fixtureProperty.SetValue(sti.Object, fixtureObject, null);
+            }
+            else if (testType.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof (IFixture<>)))
+            {
+                testType.GetInterfaces().Single(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof (IFixture<>)).
+                    GetProperties().Single().SetValue(sti.Object, fixtureObject, null);
+            }
 
             var prepareEntitiesMethod = testType.GetMethods().SingleOrDefault(mi => mi.GetCustomAttributes(false).Any(a => a is PrepareAttribute));
 			if (prepareEntitiesMethod != null)
