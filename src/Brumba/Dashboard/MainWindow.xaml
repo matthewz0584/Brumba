@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="580" 
-             Width="800" Height="650">
+             Width="800" Height="750">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="450"/>

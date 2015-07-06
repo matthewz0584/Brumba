@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Brumba.Common;
+using Brumba.DsspUtils;
 using Brumba.MapProvider;
 using Brumba.McLrfLocalizer;
 using Brumba.Utils;
@@ -15,11 +16,11 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Xna.Framework;
 using DwaNavigatorPxy = Brumba.DwaNavigator.Proxy;
 using McLrfLocalizerPxy = Brumba.McLrfLocalizer.Proxy;
-using LocalizerPxy = Brumba.GenericLocalizer.Proxy;
-using VelocimeterPxy = Brumba.GenericFixedWheelVelocimeter.Proxy;
+using SimLocalizerPxy = Brumba.Simulation.SimulatedLocalizer.Proxy;
 using CommonPxy = Brumba.Common.Proxy;
 using OdometryPxy = Brumba.DiffDriveOdometry.Proxy;
 using MapProviderPxy = Brumba.MapProvider.Proxy;
+using W3C.Soap;
 
 namespace Brumba.Dashboard
 {
@@ -37,25 +38,23 @@ namespace Brumba.Dashboard
 		DashboardOperations _mainPort = new DashboardOperations();
 
         //[Partner("DwaNavigator", Contract = DwaNavigatorPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        //DwaNavigatorPxy.DwaNavigatorOperations _dwaNavigator = new DwaNavigatorPxy.DwaNavigatorOperations();
+        DwaNavigatorPxy.DwaNavigatorOperations _dwaNavigator = new DwaNavigatorPxy.DwaNavigatorOperations();
 
-        [Partner("McLrfLocalizer", Contract = McLrfLocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        //[Partner("McLrfLocalizer", Contract = McLrfLocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         McLrfLocalizerPxy.McLrfLocalizerOperations _mcLrfLocalizer = new McLrfLocalizerPxy.McLrfLocalizerOperations();
 
-        [Partner("Map", Contract = MapProviderPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        //[Partner("Map", Contract = MapProviderPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
         MapProviderPxy.MapProviderOperations _mapProvider = new MapProviderPxy.MapProviderOperations();
 
-        //[Partner("Localizer", Contract = LocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        //LocalizerPxy.GenericLocalizerOperations _localizer = new LocalizerPxy.GenericLocalizerOperations();
-
-        //[Partner("Velocimeter", Contract = VelocimeterPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        //VelocimeterPxy.GenericFixedWheelVelocimeterOperations _velocimeter = new VelocimeterPxy.GenericFixedWheelVelocimeterOperations();
+        //[Partner("SimulatedLocalizer", Contract = SimLocalizerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        SimLocalizerPxy.SimulatedLocalizerOperations _simLocalizer = new SimLocalizerPxy.SimulatedLocalizerOperations();
 
         //[Partner("Odometry", Contract = OdometryPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
-        //OdometryPxy.DiffDriveOdometryOperations _odometry = new OdometryPxy.DiffDriveOdometryOperations();
+        OdometryPxy.DiffDriveOdometryOperations _odometry = new OdometryPxy.DiffDriveOdometryOperations();
 
-	    readonly Port<DateTime> _dwaPollingPort = new Port<DateTime>();
-        readonly Port<DateTime> _simulationPollingPort = new Port<DateTime>();
+        readonly Port<DateTime> _mapProviderPollingPort = new Port<DateTime>();
+        readonly Port<DateTime> _dwaPollingPort = new Port<DateTime>();
+        readonly Port<DateTime> _simLocalizerPollingPort = new Port<DateTime>();
         readonly Port<DateTime> _odometryPollingPort = new Port<DateTime>();
         readonly Port<DateTime> _mcLrfPollingPort = new Port<DateTime>();
 	    
@@ -142,32 +141,50 @@ namespace Brumba.Dashboard
 
         IEnumerator<ITask> StartIt()
         {
-            yield return _mapProvider.Get().Receive(s => _map = (OccupancyGrid)DssTypeHelper.TransformFromProxy(s.Map));
-            _map.Freeze();
+            var mclFoundPort = new Port<DateTime>();
 
-            _poseHistogram = new PoseHistogram(_map, Math.PI / 18);
+            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+                MapProviderPxy.Contract.Identifier, (MapProviderPxy.MapProviderOperations p) => _mapProvider = p, _mapProviderPollingPort));
+            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+                McLrfLocalizerPxy.Contract.Identifier, (McLrfLocalizerPxy.McLrfLocalizerOperations p) => _mcLrfLocalizer = p, mclFoundPort));
+            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+                DwaNavigatorPxy.Contract.Identifier, (DwaNavigatorPxy.DwaNavigatorOperations p) => _dwaNavigator = p, _dwaPollingPort));
+            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+                SimLocalizerPxy.Contract.Identifier, (SimLocalizerPxy.SimulatedLocalizerOperations p) => _simLocalizer = p, _simLocalizerPollingPort));
+            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+                OdometryPxy.Contract.Identifier, (OdometryPxy.DiffDriveOdometryOperations p) => _odometry = p, _odometryPollingPort));
+
+            Activate(Arbiter.JoinedReceive(false, mclFoundPort, _mapReadyPort, (_, __) => _mcLrfPollingPort.Post(DateTime.Now)));
 
             MainPortInterleave.CombineWith(new Interleave(
                 new ExclusiveReceiverGroup(),
                 new ConcurrentReceiverGroup(
+                    Arbiter.ReceiveWithIterator(true, _mapProviderPollingPort, UpdateMap),
                     Arbiter.ReceiveWithIterator(true, _dwaPollingPort, UpdateDwaVelocitiesEvaluation),
-                    Arbiter.ReceiveWithIterator(true, _simulationPollingPort, UpdateSimulation),
+                    Arbiter.ReceiveWithIterator(true, _simLocalizerPollingPort, UpdateSimulation),
                     Arbiter.ReceiveWithIterator(true, _odometryPollingPort, UpdateOdometry),
                     Arbiter.ReceiveWithIterator(true, _mcLrfPollingPort, UpdateMcLocalization)
                     )));
-            //_dwaPollingPort.Post(DateTime.Now);
-            //_simulationPollingPort.Post(DateTime.Now);
-            //_odometryPollingPort.Post(DateTime.Now);
-            _mcLrfPollingPort.Post(DateTime.Now);
 
             yield return _wpfPort.RunWindow(() => new MainWindow(this)).Choice(
                 w => _mainWindow = w as MainWindow, LogError);
         }
 
+        readonly Port<DateTime> _mapReadyPort = new Port<DateTime>();
+        IEnumerator<ITask> UpdateMap(DateTime dateTime)
+        {
+            yield return _mapProvider.Get().Receive(s => _map = (OccupancyGrid)DssTypeHelper.TransformFromProxy(s.Map));
+            _map.Freeze();
+
+            _poseHistogram = new PoseHistogram(_map, Math.PI / 18);
+
+            _mapReadyPort.Post(DateTime.Now);
+        }
+
         IEnumerator<ITask> UpdateDwaVelocitiesEvaluation(DateTime dateTime)
         {
             DwaNavigatorPxy.DwaNavigatorState dwaState = null;
-            //yield return _dwaNavigator.Get().Receive(ds => dwaState = ds);
+            yield return _dwaNavigator.Get().Receive(ds => dwaState = ds);
 
             DwaVelocitiesEvaluation =
                 DenseMatrix.OfArray(dwaState.VelocititesEvaluation).IndexedEnumerator().
@@ -238,15 +255,11 @@ namespace Brumba.Dashboard
 
         IEnumerator<ITask> UpdateSimulation(DateTime dateTime)
         {
-            LocalizerPxy.GenericLocalizerState localizerState = null;
-            //yield return _localizer.Get().Receive(ls => localizerState = ls);
+            SimLocalizerPxy.SimulatedLocalizerState localizerState = null;
+            yield return _simLocalizer.Get().Receive(ls => localizerState = ls);
 
-            _simulationPose = localizerState.EstimatedPose;
-
-            VelocimeterPxy.GenericFixedWheelVelocimeterState velocimeterState = null;
-            //yield return _velocimeter.Get().Receive(vs => velocimeterState = vs);
-
-            _simulationVelocity = velocimeterState.Velocity;
+            _simulationPose = localizerState.Localizer.EstimatedPose;
+            _simulationVelocity = localizerState.FixedWheelVelocimeter.Velocity;
 
             yield return _wpfPort.Invoke(() =>
             {
@@ -254,13 +267,13 @@ namespace Brumba.Dashboard
                 PropertyChanged(this, new PropertyChangedEventArgs("SimulationVelocity"));
             }).Choice(success => { }, LogError);
 
-            Activate(Arbiter.Receive(false, TimeoutPort(100), t => _simulationPollingPort.Post(t)));
+            Activate(Arbiter.Receive(false, TimeoutPort(100), t => _simLocalizerPollingPort.Post(t)));
         }
 
         IEnumerator<ITask> UpdateOdometry(DateTime dateTime)
         {
             OdometryPxy.DiffDriveOdometryServiceState odometryState = null;
-            //yield return _odometry.Get().Receive(os => odometryState = os);
+            yield return _odometry.Get().Receive(os => odometryState = os);
 
             _odometryPose = odometryState.Pose;
             _odometryVelocity = odometryState.Velocity;
@@ -324,6 +337,33 @@ namespace Brumba.Dashboard
 	            new MatrixCell {Row = 1, Col = 1, Value = 100},
 	        };
         }
+
+	    IEnumerator<ITask> FindPartnerSetAndSignalPolling<T>(string identifier, Action<T> setPartner, Port<DateTime> partnerPollingPort) where T : class, IPortSet, new()
+	    {
+            var directoryResponcePort = DirectoryQuery(identifier, new TimeSpan(0, 0, 2));
+
+            T partner = null;
+            yield return Arbiter.Choice(
+                TimeoutPort(2000).Receive(timeout => partner = null),
+                directoryResponcePort.Receive((Fault fault) => partner = null),
+                directoryResponcePort.Receive(serviceInfo => partner = ServiceForwarder<T>(new Uri(serviceInfo.Service))));
+
+            if (partner == null)
+                yield break;
+
+	        setPartner(partner);
+            partnerPollingPort.Post(DateTime.Now);
+	    }
+
+        //IEnumerator<ITask> FindPartner<T>(Action<T> @return, string identifier) where T : class, IPortSet, new()
+        //{
+        //    var directoryResponcePort = DirectoryQuery(identifier, new TimeSpan(0, 0, 2));
+
+        //    yield return Arbiter.Choice(
+        //        TimeoutPort(2000).Receive(timeout => @return(null)),
+        //        directoryResponcePort.Receive((Fault fault) => @return(null)),
+        //        directoryResponcePort.Receive(serviceInfo => @return(ServiceForwarder<T>(new Uri(serviceInfo.Service)))));
+        //}
 	}
 
     public struct MatrixCell
