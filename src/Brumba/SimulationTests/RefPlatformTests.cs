@@ -30,7 +30,7 @@ namespace Brumba.SimulationTests
         }
 
         //Max speed = 1,5 m/s, distance 2 meters, plus correction for accelerating from 0 to set speed 
-        [SimTest(1.6f, IsProbabilistic = false)]
+        [SimTest(1.7f, IsProbabilistic = false)]
         public class DriveForwardTest
         {
             [Fixture]
@@ -96,9 +96,9 @@ namespace Brumba.SimulationTests
                 //[_]   ------R------[_]
 			    var minMeasurIndex = (int)((lrfState.AngularRange / 2 - 90) / lrfState.AngularResolution);
 				return lrfState.DistanceMeasurements.Length == 667 &&
-                        lrfState.DistanceMeasurements[minMeasurIndex] == 4500 &&
-                        lrfState.DistanceMeasurements[minMeasurIndex - 5].BetweenL(4500, 4510) &&
-                        lrfState.DistanceMeasurements[minMeasurIndex + 5].BetweenL(4500, 4510) &&
+                        lrfState.DistanceMeasurements[minMeasurIndex].BetweenL(4499, 4501) &&
+                        lrfState.DistanceMeasurements[minMeasurIndex - 5].BetweenL(4499, 4510) &&
+                        lrfState.DistanceMeasurements[minMeasurIndex + 5].BetweenL(4499, 4510) &&
                         lrfState.DistanceMeasurements.Take(minMeasurIndex - 50).
                         Concat(lrfState.DistanceMeasurements.Skip(minMeasurIndex + 50)).All(d => d == 5600);
             }

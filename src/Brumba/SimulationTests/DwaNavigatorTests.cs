@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Brumba.DsspUtils;
 using Brumba.Simulation;
 using Brumba.SimulationTester;
@@ -18,7 +19,7 @@ using BrTimerPxy = Brumba.Entities.Timer.Proxy;
 
 namespace Brumba.SimulationTests
 {
-    [SimTestFixture("dwa_navigator", PhysicsTimeStep = 0.005f)]
+    [SimTestFixture("dwa_navigator", PhysicsTimeStep = 0.005f/*, Wip = true*/)]
     public class DwaNavigatorTests
     {
         public DwaNavigatorPxy.DwaNavigatorOperations DwaNavigatorPort { get; set; }
@@ -36,9 +37,9 @@ namespace Brumba.SimulationTests
             public DwaNavigatorTests Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(VisualEntity entity)
+            public void PrepareEntities(IEnumerable<VisualEntity> entities)
             {
-                entity.State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, -MathHelper.PiOver2);
+                entities.Single().State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, -MathHelper.PiOver2);
             }
 
             [Start]
@@ -51,7 +52,7 @@ namespace Brumba.SimulationTests
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 var simPosition = DiffDriveOdometryTests.ExtractPose(simStateEntities).Position.SimToMap();
-                @return((new xVector2(0, 5) - simPosition).Length().AlmostEqualWithError(0, 0.1));
+                @return((new xVector2(0, 5) - simPosition).Length().AlmostEqualWithError(0, 0.2));
                 yield break;
             }
         }
@@ -63,9 +64,9 @@ namespace Brumba.SimulationTests
             public DwaNavigatorTests Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(VisualEntity entity)
+            public void PrepareEntities(IEnumerable<VisualEntity> entities)
             {
-                entity.State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, 0);
+                entities.Single().State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, 0);
             }
 
             [Start]
@@ -78,7 +79,7 @@ namespace Brumba.SimulationTests
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 var simPosition = DiffDriveOdometryTests.ExtractPose(simStateEntities).Position.SimToMap();
-                @return((new xVector2(0, 5) - simPosition).Length().AlmostEqualWithError(0, 0.1));
+                @return((new xVector2(0, 5) - simPosition).Length().AlmostEqualWithError(0, 0.2));
                 yield break;
             }
         }
@@ -90,9 +91,9 @@ namespace Brumba.SimulationTests
             public DwaNavigatorTests Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(VisualEntity entity)
+            public void PrepareEntities(IEnumerable<VisualEntity> entities)
             {
-                entity.State.Pose.Position = new rVector3(0, 0, 2);
+                entities.Single().State.Pose.Position = new rVector3(0, 0, 2);
             }
 
             [Start]
@@ -105,22 +106,22 @@ namespace Brumba.SimulationTests
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 var simPosition = DiffDriveOdometryTests.ExtractPose(simStateEntities).Position.SimToMap();
-                @return((new xVector2(8, 0) - simPosition).Length().AlmostEqualWithError(0, 0.1));
+                @return((new xVector2(8, 0) - simPosition).Length().AlmostEqualWithError(0, 0.2));
                 yield break;
             }
         }
 
-        [SimTest(7, IsProbabilistic = false)]
+        [SimTest(8, IsProbabilistic = false)]
         public class AvoidingObstacleCurvedPath
         {
             [Fixture]
             public DwaNavigatorTests Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(VisualEntity entity)
+            public void PrepareEntities(IEnumerable<VisualEntity> entities)
             {
-                entity.State.Pose.Position = new rVector3(0.3f, 0, 3.5f);
-                entity.State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, -MathHelper.PiOver2);
+                entities.Single().State.Pose.Position = new rVector3(0.3f, 0, 3.5f);
+                entities.Single().State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, -MathHelper.PiOver2);
             }
 
             [Start]
@@ -133,7 +134,7 @@ namespace Brumba.SimulationTests
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 var simPosition = DiffDriveOdometryTests.ExtractPose(simStateEntities).Position.SimToMap();
-                @return((new xVector2(8, 0) - simPosition).Length().AlmostEqualWithError(0, 0.1));
+                @return((new xVector2(8, 0) - simPosition).Length().AlmostEqualWithError(0, 0.2));
                 yield break;
             }
         }
@@ -145,10 +146,10 @@ namespace Brumba.SimulationTests
             public DwaNavigatorTests Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(VisualEntity entity)
+            public void PrepareEntities(IEnumerable<VisualEntity> entities)
             {
-                entity.State.Pose.Position = new rVector3(0, 0, -3.5f);
-                entity.State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, 0);
+                entities.Single().State.Pose.Position = new rVector3(0, 0, -3.5f);
+                entities.Single().State.Pose.Orientation = Microsoft.Robotics.PhysicalModel.Quaternion.FromAxisAngle(0, 1, 0, 0);
             }
 
             [Start]
@@ -161,7 +162,7 @@ namespace Brumba.SimulationTests
             public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity> simStateEntities, double elapsedTime)
             {
                 var simPosition = DiffDriveOdometryTests.ExtractPose(simStateEntities).Position.SimToMap();
-                @return((new xVector2(-5, 2) - simPosition).Length().AlmostEqualWithError(0, 0.1));
+                @return((new xVector2(-5, 2) - simPosition).Length().AlmostEqualWithError(0, 0.2));
                 yield break;
             }
         }

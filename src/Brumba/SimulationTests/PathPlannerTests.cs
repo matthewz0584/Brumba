@@ -44,7 +44,7 @@ namespace Brumba.SimulationTests
             [Fixture]
             public PathPlannerTests Fixture { get; set; }
 
-            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities,
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities,
                 double elapsedTime)
             {
                 var initGoalRsp = Fixture.PathPlannerPort.InitGoal(new Vector2(5.6f, 1.5f));
@@ -66,7 +66,7 @@ namespace Brumba.SimulationTests
             [Fixture]
             public PathPlannerTests Fixture { get; set; }
 
-            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities,
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities,
                 double elapsedTime)
             {
                 yield return To.Exec(Fixture.PathPlannerPort.InitStartAndGoal(new Vector2(0.15f, 3.45f), new Vector2(5.45f, 1.45f)));
@@ -105,7 +105,7 @@ namespace Brumba.SimulationTests
             [Fixture]
             public PathPlannerTests Fixture { get; set; }
 
-            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities,
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities,
                 double elapsedTime)
             {
                 OccupancyGrid inflatedMap = null;

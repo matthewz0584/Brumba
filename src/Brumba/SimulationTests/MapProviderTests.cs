@@ -27,7 +27,7 @@ namespace Brumba.SimulationTests
 			[Fixture]
             public MapProviderTests Fixture { get; set; }
 
-			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities, double elapsedTime)
 			{
                 yield return Fixture.MapProviderPort.Get().Choice(
                     mps => @return(CheckOccupancyGrid((OccupancyGrid)DssTypeHelper.TransformFromProxy(mps.Map))),

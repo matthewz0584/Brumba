@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Brumba.Common;
-using Brumba.DsspUtils;
 using Brumba.MapProvider;
 using Brumba.McLrfLocalizer;
 using Brumba.Utils;
@@ -135,13 +134,16 @@ namespace Brumba.Dashboard
 	    protected override void Start()
 		{
 		    _wpfPort = WpfAdapter.Create(TaskQueue);
-            SpawnIterator(StartIt);
 			base.Start();
+            SpawnIterator(StartIt);
 		}
 
         IEnumerator<ITask> StartIt()
         {
             var mclFoundPort = new Port<DateTime>();
+            var exceptionPort = new Port<Exception>();
+
+            Dispatcher.AddCausality(new Causality("StartIt", exceptionPort));
 
             SpawnIterator(() => FindPartnerSetAndSignalPolling(
                 MapProviderPxy.Contract.Identifier, (MapProviderPxy.MapProviderOperations p) => _mapProvider = p, _mapProviderPollingPort));
@@ -163,8 +165,15 @@ namespace Brumba.Dashboard
                     Arbiter.ReceiveWithIterator(true, _dwaPollingPort, UpdateDwaVelocitiesEvaluation),
                     Arbiter.ReceiveWithIterator(true, _simLocalizerPollingPort, UpdateSimulation),
                     Arbiter.ReceiveWithIterator(true, _odometryPollingPort, UpdateOdometry),
-                    Arbiter.ReceiveWithIterator(true, _mcLrfPollingPort, UpdateMcLocalization)
+                    Arbiter.ReceiveWithIterator(true, _mcLrfPollingPort, UpdateMcLocalization),
+                    Arbiter.Receive(true, exceptionPort, Console.WriteLine)
                     )));
+            //Problem: service can not be dropped if wpf window has been closed before (and it could easily be by user).
+            //If so _wpfPort ceases to process messages, polling handlers' receivers wait on them forever,
+            //and, since these handlers are called from inside of ConcurrentGroup, TearDownGroup with Drop handler could not be started.
+            //Adding timeout to _wpfPort.Invoke choice fixes the problem, but it is soo clumsy.
+            //Similar problem could appear in general in different contexts:
+            //service whose ConcurrentGroup level handler has hanged could not be dropped.
 
             yield return _wpfPort.RunWindow(() => new MainWindow(this)).Choice(
                 w => _mainWindow = w as MainWindow, LogError);

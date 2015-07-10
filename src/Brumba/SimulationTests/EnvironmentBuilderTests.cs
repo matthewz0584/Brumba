@@ -37,9 +37,9 @@ namespace Brumba.SimulationTests
 				yield return Fixture.EnvironmentBuilderPort.BuildBoxWorld().Receive((DefaultSubmitResponseType success) => { });
 			}
 
-			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities, double elapsedTime)
 			{
-				var boxes = simStateEntities.Where(e => e is SingleShapeEntity && (e as SingleShapeEntity).BoxShape != null).Cast<SingleShapeEntity>();
+				var boxes = simEntities.Where(e => e is SingleShapeEntity && (e as SingleShapeEntity).BoxShape != null).Cast<SingleShapeEntity>();
 				var box1 = boxes.Any(b =>
 					EqualsWithin(new Mrpm.Vector4(0, 0, 1, 1), b.BoxShape.BoxState.DiffuseColor, 0.01f) &&
 					EqualsWithin(new Mrpm.Vector3(1.3f, 4, 0.7f), b.BoxShape.BoxState.Dimensions, 0.01f) &&

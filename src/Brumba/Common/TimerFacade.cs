@@ -43,7 +43,7 @@ namespace Brumba.Common
 			yield return Arbiter.Choice(
                 _srv.TimeoutPort(1000).Receive(timeout => InternalTimerHandler(DateTime.Now)),
                 directoryResponcePort.Receive((Fault fault) => InternalTimerHandler(DateTime.Now)),
-				directoryResponcePort.Receive(serviceInfo => StartSimulatedTimer(serviceInfo)));
+				directoryResponcePort.Receive(serviceInfo => StartExternalTimer(serviceInfo)));
 		}
 
         //ToDo:!!!Not tested at all!!! Test or remove
@@ -75,7 +75,7 @@ namespace Brumba.Common
 
         readonly timerPxy.TimerOperations _simTimerNotificationPort = new timerPxy.TimerOperations();
         Port<Shutdown> _simTimerUnsubscribePort;
-		void StartSimulatedTimer(ServiceInfoType f)
+		void StartExternalTimer(ServiceInfoType f)
 		{
             DC.Contract.Requires(f != null);
             DC.Contract.Ensures(_simTimerUnsubscribePort != null);
@@ -90,18 +90,20 @@ namespace Brumba.Common
 		                NotificationShutdownPort = _simTimerUnsubscribePort
 		            });
 
-			_srv.Activate(_simTimerNotificationPort.P4.Receive(SimulationTimerHandler));
+			_srv.Activate(_simTimerNotificationPort.P4.Receive(ExternalTimerHandler));
 		}
 
-        void SimulationTimerHandler(timerPxy.Update simTimerUpdate)
+        void ExternalTimerHandler(timerPxy.Update simTimerUpdate)
 	    {
             DC.Contract.Requires(simTimerUpdate != null);
             DC.Contract.Requires(simTimerUpdate.Body != null);
 
+            DC.Contract.Assert(simTimerUpdate.Body.Delta > 0);
+
             if (_disposed)
                 return;
 	        TickPort.Post(IntervalToSpan(simTimerUpdate.Body.Delta));
-            _srv.Activate(_simTimerNotificationPort.P4.Receive(SimulationTimerHandler));
+            _srv.Activate(_simTimerNotificationPort.P4.Receive(ExternalTimerHandler));
 	    }
 
 	    DateTime _lastDate;

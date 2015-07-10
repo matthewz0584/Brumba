@@ -34,9 +34,9 @@ namespace Brumba.SimulationTests
             public AckermanVehicleExTests Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(VisualEntity entity)
+            public void PrepareEntities(IEnumerable<VisualEntity> entities)
             {
-                entity.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
+                entities.Single().State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
             }
 
             [Start]
@@ -61,9 +61,9 @@ namespace Brumba.SimulationTests
             public AckermanVehicleExTests Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(VisualEntity entity)
+            public void PrepareEntities(IEnumerable<VisualEntity> entities)
             {
-                entity.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
+                entities.Single().State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
             }
 
             [Start]
@@ -90,9 +90,9 @@ namespace Brumba.SimulationTests
             public AckermanVehicleExTests Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(VisualEntity entity)
+            public void PrepareEntities(IEnumerable<VisualEntity> entities)
             {
-                entity.State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
+                entities.Single().State.Pose.Orientation = Quaternion.FromAxisAngle(0, 1, 0, (float)(2 * Math.PI * RandomG.NextDouble()));
             }
 
             [Start]

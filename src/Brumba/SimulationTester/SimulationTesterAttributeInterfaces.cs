@@ -18,7 +18,7 @@ namespace Brumba.SimulationTester
 
     public interface IPrepare
     {
-        void Prepare(Mrse.VisualEntity entity);
+        void Prepare(IEnumerable<Mrse.VisualEntity> simEntities);
     }
 
     public interface IStart
@@ -28,7 +28,7 @@ namespace Brumba.SimulationTester
 
     public interface ITest
     {
-        IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<MrsePxy.VisualEntity> simStateEntities, double elapsedTime);
+        IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<MrsePxy.VisualEntity> simEntities, double elapsedTime);
     }
 }
 

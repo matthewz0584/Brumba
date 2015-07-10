@@ -18,7 +18,7 @@ namespace Brumba.SimulationTester
 
 		public bool TestAllEntities { get; set; }
 
-        public Action<Mrse.VisualEntity> Prepare { get; set; }
+        public Action<IEnumerable<Mrse.VisualEntity>> Prepare { get; set; }
 
         public Func<IEnumerator<ITask>> Start { get; set; }
 

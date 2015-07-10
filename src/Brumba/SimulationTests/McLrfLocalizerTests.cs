@@ -19,7 +19,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Brumba.SimulationTests
 {
-    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
+    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1/*, Wip = true*/)]
 	public class McLrfLocalizerTests
 	{
 		SimulationTesterService TesterService { get; set; }
@@ -94,7 +94,7 @@ namespace Brumba.SimulationTests
 		        yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0, 0));
 		    }
 
-		    public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+		    public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities, double elapsedTime)
 			{
                 @return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.2) &&
                         MathHelper2.AngleDifference(Fixture.McPose.Bearing, Fixture.SimPose.Bearing).AlmostEqualWithError(0, 0.05));
@@ -127,7 +127,7 @@ namespace Brumba.SimulationTests
                 yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0, 0));
             }
 
-			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities, double elapsedTime)
 			{
                 @return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.3) &&
                         MathHelper2.AngleDifference(Fixture.McPose.Bearing, Fixture.SimPose.Bearing).AlmostEqualWithError(0, 0.3));
@@ -150,7 +150,7 @@ namespace Brumba.SimulationTests
 				Fixture.TesterService.SpawnIterator(StraightRightStraightControls);
 			}
 
-			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities, double elapsedTime)
 			{
 				@return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.6) &&
                         MathHelper2.AngleDifference(Fixture.McPose.Bearing, Fixture.SimPose.Bearing).AlmostEqualWithError(0, 0.4));
@@ -191,7 +191,7 @@ namespace Brumba.SimulationTests
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.6, 0.6));
 			}
 
-			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simStateEntities, double elapsedTime)
+			public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities, double elapsedTime)
 			{
                 @return(Fixture.McPose.Position.EqualsRelatively(Fixture.SimPose.Position, 0.1) &&
                         MathHelper2.AngleDifference(Fixture.McPose.Bearing, Fixture.SimPose.Bearing).AlmostEqualWithError(0, 0.1));

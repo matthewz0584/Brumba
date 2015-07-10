@@ -144,7 +144,7 @@ namespace Brumba.SimulationTester
 			yield return To.Exec(SetUpSimulator, testFixtureInfo);
 
             //Restore static objects
-            yield return To.Exec(RestoreEnvironment, testFixtureInfo.Name, (Func<Mrse.VisualEntity, bool>)(ve => true), (Action<Mrse.VisualEntity>)null);
+            yield return To.Exec(RestoreEnvironment, testFixtureInfo.Name, (Func<Mrse.VisualEntity, bool>)(ve => true), (Action<IEnumerable<Mrse.VisualEntity>>)null);
             LogInfo(SimulationTesterLogCategory.FixtureStaticEnvironmentRestored, testFixtureInfo.Name);
 
             foreach (var testInfo in testFixtureInfo.TestInfos)
@@ -305,7 +305,7 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_simEngine.Replace(_initialSimState));
         }
 
-        IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<Mrse.VisualEntity, bool> resetFilter, Action<Mrse.VisualEntity> prepareEntityForReset)
+        IEnumerator<ITask> RestoreEnvironment(string environmentXmlFile, Func<Mrse.VisualEntity, bool> resetFilter, Action<IEnumerable<Mrse.VisualEntity>> prepareEntities)
         {
             yield return To.Exec(PauseSimulator, true);
 
@@ -316,8 +316,8 @@ namespace Brumba.SimulationTester
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
 
             //foreach (var entity in entities.Where(e => e.State.Name != "MainCamera").Where(e => resetFilter(e) || e.State.Name == "timer"))
-            if (entities.Any(e => e.State.Name == "MainCamera"))
-                Mrse.SimulationEngine.GlobalInstance.RefreshEntity(entities.Single(e => e.State.Name == "MainCamera"));
+            //if (entities.Any(e => e.State.Name == "MainCamera"))
+                //Mrse.SimulationEngine.GlobalInstance.RefreshEntity(entities.Single(e => e.State.Name == "MainCamera"));
             
             foreach (var entity in entities.Where(e => resetFilter(e) || e.State.Name == "timer" || e.State.Name == "MainCamera"))
                 yield return To.Exec(DeleteEntity(entity));
@@ -331,12 +331,11 @@ namespace Brumba.SimulationTester
 
             yield return To.Exec(_entityDeserializer.DeserializeTopLevelEntities, (IEnumerable<Mrse.VisualEntity> es) => entities = es, simState.SerializedEntities);
 
-            foreach (var entity in entities.Where(e => e.State.Name != "MainCamera").Where(resetFilter))
-			{
-				if (prepareEntityForReset != null)
-					prepareEntityForReset(entity);
-				yield return To.Exec(InsertEntity(entity));
-			}
+            var entitiesToReinsert = entities.Where(e => resetFilter(e) && e.State.Name != "MainCamera");
+            if (prepareEntities != null)
+                prepareEntities(entitiesToReinsert);
+            foreach (var entity in entitiesToReinsert)
+                yield return To.Exec(InsertEntity(entity));
 
             yield return To.Exec(InsertEntity(new TimerEntity("timer")));
 

@@ -49,7 +49,7 @@ namespace Brumba.SimulationTests
             OdometryPort = testerService.ForwardTo<DiffDriveOdometry.Proxy.DiffDriveOdometryOperations>("odometry@");
 		}
 
-        //[SimTest(8)]
+        [SimTest(8, IsProbabilistic = false)]
 		public class DriveStraight
 		{
             [Fixture]
@@ -84,7 +84,7 @@ namespace Brumba.SimulationTests
 			}
 		}
 
-        //[SimTest(4 * 2, IsProbabilistic = false)]
+        [SimTest(4 * 2, IsProbabilistic = false)]
         public class RotateOnPlace
         {
             [Fixture]

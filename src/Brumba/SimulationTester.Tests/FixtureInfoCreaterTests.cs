@@ -75,7 +75,7 @@ namespace Brumba.SimulationTester.Tests
             Assert.That(ti.Start, Is.Not.Null);
             Assert.That(ti.Test, Is.Not.Null);
 
-            ti.Prepare(new Mrse.VisualEntity {State = {Name = "entity_name"}});
+            ti.Prepare(new [] {new Mrse.VisualEntity {State = {Name = "entity_name"}}});
             Assert.That((ti.Object as TestFixture.TestWithAttributes)._log, Is.EqualTo("prepared entity_name"));
             ti.Start().MoveNext();
             Assert.That((ti.Object as TestFixture.TestWithAttributes)._log, Is.EqualTo("started"));
@@ -140,7 +140,7 @@ namespace Brumba.SimulationTester.Tests
             Assert.That(ti.Start, Is.Not.Null);
             Assert.That(ti.Test, Is.Not.Null);
 
-            ti.Prepare(new Mrse.VisualEntity());
+            ti.Prepare(new [] {new Mrse.VisualEntity()});
             Assert.That((ti.Object as TestFixture.TestWithIfaces)._log, Is.EqualTo("prepared"));
             ti.Start().MoveNext();
             Assert.That((ti.Object as TestFixture.TestWithIfaces)._log, Is.EqualTo("started"));
@@ -206,9 +206,9 @@ namespace Brumba.SimulationTester.Tests
             public TestFixture Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(Mrse.VisualEntity entity)
+            public void PrepareEntities(IEnumerable<Mrse.VisualEntity> entities)
             {
-                _log = "prepared " + entity.State.Name;
+                _log = "prepared " + entities.Single().State.Name;
             }
 
             [Start]
@@ -246,7 +246,7 @@ namespace Brumba.SimulationTester.Tests
             public TestFixture Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(Mrse.VisualEntity entity)
+            public void PrepareEntities(IEnumerable<Mrse.VisualEntity> entities)
             {
             }
         }
@@ -258,7 +258,7 @@ namespace Brumba.SimulationTester.Tests
             public TestFixture Fixture { get; set; }
 
             [Prepare]
-            public void PrepareEntities(Mrse.VisualEntity entity)
+            public void PrepareEntities(IEnumerable<Mrse.VisualEntity> entities)
             {
             }
 
@@ -276,7 +276,7 @@ namespace Brumba.SimulationTester.Tests
 
             public TestFixture Fixture { get; set; }
             
-            public void Prepare(Mrse.VisualEntity entity)
+            public void Prepare(IEnumerable<Mrse.VisualEntity> simEntities)
             {
                 _log = "prepared";
             }
@@ -287,7 +287,7 @@ namespace Brumba.SimulationTester.Tests
                 yield break;
             }
 
-            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<MrsePxy.VisualEntity> simStateEntities, double elapsedTime)
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<MrsePxy.VisualEntity> simEntities, double elapsedTime)
             {
                 _log = "tested";
                 yield break;
@@ -307,7 +307,7 @@ namespace Brumba.SimulationTester.Tests
 		public class TestWithWrongPreparePrototype
 		{
 			[Prepare]
-			public string Prepare(Mrse.VisualEntity entity)
+			public string Prepare(IEnumerable<Mrse.VisualEntity> entities)
 			{
 				return "";
 			}
