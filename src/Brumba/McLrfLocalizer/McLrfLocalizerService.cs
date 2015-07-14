@@ -169,6 +169,12 @@ namespace Brumba.McLrfLocalizer
             DefaultDropHandler(dropDownRq);
         }
 
+        [ServiceHandler(ServiceHandlerBehavior.Teardown, PortFieldName = "_genericLocalizerPort")]
+        public void OnDropDownAlt(DsspDefaultDrop dropDownRq)
+        {
+            OnDropDown(dropDownRq);
+        }
+
         [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_genericLocalizerPort")]
         public void OnGet(GenericLocalizer.Get getRq)
         {
