@@ -115,6 +115,12 @@ namespace Brumba.DiffDriveOdometry
             DefaultDropHandler(dropDownRq);
         }
 
+        [ServiceHandler(ServiceHandlerBehavior.Teardown, PortFieldName = "_genericFixedWheelVelocimeterPort")]
+        public void OnDropDownAlt(DsspDefaultDrop dropDownRq)
+        {
+            OnDropDown(dropDownRq);
+        }
+
         [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_genericFixedWheelVelocimeterPort")]
         public void OnGet(GenericFixedWheelVelocimeter.Get getRq)
         {
