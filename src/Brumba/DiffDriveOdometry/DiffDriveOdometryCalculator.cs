@@ -23,19 +23,16 @@ namespace Brumba.DiffDriveOdometry
         public double WheelBase { get; private set; }
         public double RadiansPerTick { get; private set; }
 
-        public Pose CalculatePoseDelta(int leftTicksDelta, int rightTicksDelta, double oldTheta)
+        public Pose CalculatePoseDelta(int leftTicksDelta, int rightTicksDelta)
 	    {
-			DC.Contract.Requires(!double.IsNaN(oldTheta));
-			DC.Contract.Requires(!double.IsInfinity(oldTheta));
-
             var dist = WheelsToRobotKinematics(new Vector2(leftTicksDelta, rightTicksDelta) * (float)RadiansPerTick);
-            return new Pose((float)dist.Linear * new Vector2((float)Math.Cos(oldTheta), (float)Math.Sin(oldTheta)), dist.Angular);
+
+            return (leftTicksDelta == rightTicksDelta ? (IMotionModel)new LinearMotionModel(dist.Linear) : new CirclularMotionModel(dist)).PredictPoseDeltaAsForDistance();
 	    }
 
         public Velocity CalculateVelocity(int leftTicksDelta, int rightTicksDelta, double deltaT)
         {
             DC.Contract.Requires(deltaT > 0);
-
             return WheelsToRobotKinematics(new Vector2(leftTicksDelta, rightTicksDelta) * (float)(RadiansPerTick / deltaT));
         }
 
@@ -46,9 +43,8 @@ namespace Brumba.DiffDriveOdometry
             DC.Contract.Requires(deltaT > 0);
             DC.Contract.Ensures(DC.Contract.Result<Tuple<Pose, Velocity>>() != null);
 
-            var poseDelta = CalculatePoseDelta(leftTicksDelta, rightTicksDelta, previousPose.Bearing);
-            var velocity = CalculateVelocity(leftTicksDelta, rightTicksDelta, deltaT);
-            return Tuple.Create(new Pose(previousPose.Position + poseDelta.Position, previousPose.Bearing + poseDelta.Bearing), velocity);
+            return Tuple.Create(MergeSequentialPoseDeltas(previousPose, CalculatePoseDelta(leftTicksDelta, rightTicksDelta)),
+                CalculateVelocity(leftTicksDelta, rightTicksDelta, deltaT));
         }
 
 	    public Velocity WheelsToRobotKinematics(Vector2 wheelsValues)
@@ -59,6 +55,12 @@ namespace Brumba.DiffDriveOdometry
         public Vector2 RobotKinematicsToWheels(Velocity v)
         {
             return new Vector2((float)(v.Linear * 2 - v.Angular * WheelBase), (float)(v.Linear * 2 + v.Angular * WheelBase)) / 2 / (float)WheelRadius;
+        }
+
+        public static Pose MergeSequentialPoseDeltas(Pose delta1, Pose delta2)
+        {
+            var originTransform = Matrix.CreateRotationZ((float)delta1.Bearing) * Matrix.CreateTranslation(new Vector3(delta1.Position, 0));
+            return new Pose(Vector2.Transform(delta2.Position, originTransform), delta1.Bearing + delta2.Bearing);
         }
 	}
 }

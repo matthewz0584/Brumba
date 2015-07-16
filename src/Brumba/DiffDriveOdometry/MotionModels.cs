@@ -2,20 +2,27 @@ using Brumba.Common;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.DwaNavigator
+namespace Brumba.DiffDriveOdometry
 {
     [DC.ContractClassAttribute(typeof(IMotionModelContract))]
     public interface IMotionModel
     {
-        Pose PredictPoseDelta(double dt);
+        Pose PredictPoseDeltaAsForVelocity(double dt);
+
+        Pose PredictPoseDeltaAsForDistance();
     }
 
     [DC.ContractClassForAttribute(typeof(IMotionModel))]
     abstract class IMotionModelContract : IMotionModel
     {
-        public Pose PredictPoseDelta(double dt)
+        public Pose PredictPoseDeltaAsForVelocity(double dt)
         {
             DC.Contract.Requires(dt > 0);
+            return default(Pose);
+        }
+
+        public Pose PredictPoseDeltaAsForDistance()
+        {
             return default(Pose);
         }
     }
@@ -37,11 +44,19 @@ namespace Brumba.DwaNavigator
             _center = new Vector2(0, (float)_radius);
         }
 
-        public Pose PredictPoseDelta(double dt)
+        public Pose PredictPoseDeltaAsForVelocity(double dt)
         {
-            return new Pose(
-                Center + Vector2.Transform(-Center, Matrix.CreateRotationZ((float)(_v.Angular * dt))),
-                _v.Angular * dt);
+            return PredictPoseDelta(_v.Angular * dt);
+        }
+
+        public Pose PredictPoseDeltaAsForDistance()
+        {
+            return PredictPoseDelta(_v.Angular);
+        }
+
+        Pose PredictPoseDelta(double angle)
+        {
+            return new Pose(Center + Vector2.Transform(-Center, Matrix.CreateRotationZ((float)angle)), angle);
         }
 
         public Vector2 Center
@@ -64,11 +79,23 @@ namespace Brumba.DwaNavigator
             _linearVelocity = linearVelocity;
         }
 
-        public Pose PredictPoseDelta(double dt)
+        public Pose PredictPoseDeltaAsForVelocity(double dt)
         {
             DC.Contract.Ensures(DC.Contract.Result<Pose>().Position.Y == 0 && DC.Contract.Result<Pose>().Bearing == 0);
 
-            return new Pose(new Vector2((float)(_linearVelocity * dt), 0), 0);
+            return PredictPoseDelta((_linearVelocity * dt));
+        }
+
+        public Pose PredictPoseDeltaAsForDistance()
+        {
+            DC.Contract.Ensures(DC.Contract.Result<Pose>().Position.Y == 0 && DC.Contract.Result<Pose>().Bearing == 0);
+
+            return PredictPoseDelta(_linearVelocity);
+        }
+
+        Pose PredictPoseDelta(double dist)
+        {
+            return new Pose(new Vector2((float)dist, 0), 0);
         }
     }
 }

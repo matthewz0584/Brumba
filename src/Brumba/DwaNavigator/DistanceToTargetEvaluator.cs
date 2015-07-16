@@ -1,5 +1,6 @@
 using System;
 using Brumba.Common;
+using Brumba.DiffDriveOdometry;
 using Microsoft.Xna.Framework;
 using DC = System.Diagnostics.Contracts;
 
@@ -20,7 +21,7 @@ namespace Brumba.DwaNavigator
 
         public Pose PredictNextPose(Velocity v)
         {
-            return MergeSequentialPoseDeltas(Pose, ChooseMotionModel(v).PredictPoseDelta(Dt));
+            return DiffDriveOdometryCalculator.MergeSequentialPoseDeltas(Pose, ChooseMotionModel(v).PredictPoseDeltaAsForVelocity(Dt));
         }
 
         public static IMotionModel ChooseMotionModel(Velocity v)
@@ -28,12 +29,6 @@ namespace Brumba.DwaNavigator
             DC.Contract.Ensures(DC.Contract.Result<IMotionModel>() != null);
 
             return v.IsRectilinear ? (IMotionModel)new LinearMotionModel(v.Linear) : new CirclularMotionModel(v);
-        }
-
-        public static Pose MergeSequentialPoseDeltas(Pose delta1, Pose delta2)
-        {
-            var originTransform = Matrix.CreateRotationZ((float)delta1.Bearing) * Matrix.CreateTranslation(new Vector3(delta1.Position, 0));
-            return new Pose(Vector2.Transform(delta2.Position, originTransform), delta1.Bearing + delta2.Bearing);
         }
     }
 

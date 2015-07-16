@@ -1,4 +1,5 @@
 using Brumba.Common;
+using Brumba.DiffDriveOdometry;
 using Brumba.Utils;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;
@@ -9,21 +10,6 @@ namespace Brumba.DwaNavigator.Tests
     [TestFixture]
     public class DistanceToTargetEvaluatorTests
     {
-        [Test]
-        public void MergeSequentialPoseDeltas()
-        {
-            Assert.That(NextPoseEvaluator.MergeSequentialPoseDeltas(new Pose(new Vector2(1, 2), 0), new Pose(new Vector2(2, -3), 0)),
-                Is.EqualTo(new Pose(new Vector2(3, -1), 0)));
-
-            Assert.That(NextPoseEvaluator.MergeSequentialPoseDeltas(new Pose(new Vector2(), Constants.PiOver4), new Pose(new Vector2(), -Constants.Pi / 8)),
-                Is.EqualTo(new Pose(new Vector2(), Constants.Pi / 8)));
-
-            Assert.That(NextPoseEvaluator.MergeSequentialPoseDeltas(new Pose(new Vector2(1, 2), Constants.PiOver2), new Pose(new Vector2(2, 0), -Constants.PiOver4)).Position.
-                EqualsWithError(new Vector2(1, 4), 1e-7));
-            Assert.That(NextPoseEvaluator.MergeSequentialPoseDeltas(new Pose(new Vector2(1, 2), Constants.PiOver2), new Pose(new Vector2(2, 0), -Constants.PiOver4)).Bearing,
-                Is.EqualTo(Constants.PiOver4));
-        }
-
         [Test]
         public void ChooseMotionModel()
         {

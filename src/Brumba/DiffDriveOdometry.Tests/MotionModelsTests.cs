@@ -4,7 +4,7 @@ using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;
 
-namespace Brumba.DwaNavigator.Tests
+namespace Brumba.DiffDriveOdometry.Tests
 {
     [TestFixture]
     public class MotionModelsTests
@@ -12,18 +12,18 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void CircleMotionModelPredictPoseDelta()
         {
-            Assert.That(new CirclularMotionModel(new Velocity(2, Constants.PiOver2 / 0.1)).PredictPoseDelta(dt: 0.1),
+            Assert.That(new CirclularMotionModel(new Velocity(2, Constants.PiOver2 / 0.1)).PredictPoseDeltaAsForVelocity(dt: 0.1),
                 Is.EqualTo(new Pose(new Vector2((float)(2 / (Constants.PiOver2 / 0.1)), (float)(2 / (Constants.PiOver2 / 0.1))), Constants.PiOver2)));
 
-            var pp = new CirclularMotionModel(new Velocity(2, Constants.PiOver2 / 0.1)).PredictPoseDelta(0.5);
+            var pp = new CirclularMotionModel(new Velocity(2, Constants.PiOver2 / 0.1)).PredictPoseDeltaAsForVelocity(0.5);
             Assert.That(pp.Position.EqualsWithError(
                 new Vector2((float) (2/(Constants.PiOver2/0.1)), (float) (2/(Constants.PiOver2/0.1))), 1e-7));
             Assert.That(pp.Bearing, Is.EqualTo(5 * Constants.PiOver2));
 
-            Assert.That(new CirclularMotionModel(new Velocity(2, -Constants.PiOver2 / 0.1)).PredictPoseDelta(0.1),
+            Assert.That(new CirclularMotionModel(new Velocity(2, -Constants.PiOver2 / 0.1)).PredictPoseDeltaAsForVelocity(0.1),
                 Is.EqualTo(new Pose(new Vector2((float)(2 / (Constants.PiOver2 / 0.1)), (float)(2 / (-Constants.PiOver2 / 0.1))), -Constants.PiOver2)));
 
-            Assert.That(new CirclularMotionModel(new Velocity(0, Constants.PiOver2 / 0.1)).PredictPoseDelta(0.1),
+            Assert.That(new CirclularMotionModel(new Velocity(0, Constants.PiOver2 / 0.1)).PredictPoseDeltaAsForVelocity(0.1),
                 Is.EqualTo(new Pose(new Vector2(), Constants.PiOver2)));
         }
 
@@ -46,11 +46,11 @@ namespace Brumba.DwaNavigator.Tests
         [Test]
         public void LineMotionModel()
         {
-            Assert.That(new LinearMotionModel(2).PredictPoseDelta(dt: 0.1), Is.EqualTo(new Pose(new Vector2((float)(2 * 0.1), 0), 0)));
+            Assert.That(new LinearMotionModel(2).PredictPoseDeltaAsForVelocity(dt: 0.1), Is.EqualTo(new Pose(new Vector2((float)(2 * 0.1), 0), 0)));
 
-            Assert.That(new LinearMotionModel(-2).PredictPoseDelta(0.1), Is.EqualTo(new Pose(new Vector2((float)(-2 * 0.1), 0), 0)));
+            Assert.That(new LinearMotionModel(-2).PredictPoseDeltaAsForVelocity(0.1), Is.EqualTo(new Pose(new Vector2((float)(-2 * 0.1), 0), 0)));
             
-            Assert.That(new LinearMotionModel(0).PredictPoseDelta(0.1), Is.EqualTo(new Pose(new Vector2(), 0)));
+            Assert.That(new LinearMotionModel(0).PredictPoseDeltaAsForVelocity(0.1), Is.EqualTo(new Pose(new Vector2(), 0)));
         }
     }
 }

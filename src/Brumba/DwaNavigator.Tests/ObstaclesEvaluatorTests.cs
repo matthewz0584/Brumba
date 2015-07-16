@@ -1,5 +1,6 @@
 using System.Linq;
 using Brumba.Common;
+using Brumba.DiffDriveOdometry;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;
 using NUnit.Framework;

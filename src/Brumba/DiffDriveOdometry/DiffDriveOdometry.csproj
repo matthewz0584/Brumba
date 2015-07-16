@@ -114,6 +114,7 @@
     <Compile Include="DiffDriveOdometryCalculator.cs" />
     <Compile Include="DiffDriveOdometryService.cs" />
     <Compile Include="DiffDriveOdometryTypes.cs" />
+    <Compile Include="MotionModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

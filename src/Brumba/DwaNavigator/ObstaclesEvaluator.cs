@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.Common;
+using Brumba.DiffDriveOdometry;
 using Brumba.Utils;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;

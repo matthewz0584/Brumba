@@ -1,5 +1,6 @@
 using System;
 using Brumba.Common;
+using Brumba.DiffDriveOdometry;
 using Brumba.Utils;
 using MathNet.Numerics;
 using Microsoft.Xna.Framework;
@@ -26,7 +27,8 @@ namespace Brumba.DwaNavigator
         {
             DC.Contract.Assert(v.Linear >= 0);
 
-            return 1 - GetAngleToTarget(MergeSequentialPoseDeltas(PredictNextPose(v), ChooseMotionModel(CalculateVelocityAfterAngularDeceleration(v)).PredictPoseDelta(Dt))) / Constants.Pi;
+            return 1 - GetAngleToTarget(DiffDriveOdometryCalculator.MergeSequentialPoseDeltas(PredictNextPose(v), ChooseMotionModel(CalculateVelocityAfterAngularDeceleration(v)).
+                            PredictPoseDeltaAsForVelocity(Dt))) / Constants.Pi;
         }
 
         public double GetAngleToTarget(Pose pose)
