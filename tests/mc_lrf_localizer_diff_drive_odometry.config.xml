@@ -11,6 +11,6 @@
 	<RightTicks>0</RightTicks>
 	<TicksPerRotation>36</TicksPerRotation>
 	<WheelRadius>0.0762</WheelRadius>
-	<WheelBase>0.3468</WheelBase>
+	<WheelBase>0.30325</WheelBase>
 	<DeltaT>0.1</DeltaT>
 </DiffDriveOdometryServiceState>

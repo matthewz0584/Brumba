@@ -70,12 +70,13 @@ namespace Brumba.SimulationTests
                 yield return Fixture.OdometryPort.Get().Receive(os => odometry = os);
 
                 var simPosition = ExtractPose(simStateEntities).Position.SimToMap();
+                var simBearing = ExtractPose(simStateEntities).Orientation.SimToMap();
                 var simVelocity = ExtractVelocity(simStateEntities).SimToMap();
 
                 //Velocity component total differential (left and right wheels ticks are variables) is WheelRadius * RadiansPerTick / deltaT * (deltaTicksL + deltaTicksR)
                 //Which equals 0.13 given test constants and possible offset by 1 tick due to ticks and time delta discretization
                 //Similar calculation with angular velocity gives 0.38 error for 1 tick
-                @return(simPosition.EqualsRelatively(odometry.Pose.Position, 0.05) && odometry.Pose.Bearing.AlmostEqualWithError(0, 0.2) &&
+                @return(simPosition.EqualsRelatively(odometry.Pose.Position, 0.1) && odometry.Pose.Bearing.ToPositiveAngle().AlmostEqualWithError(simBearing, 0.05) &&
                         odometry.Velocity.Linear.AlmostEqualWithAbsoluteError(simVelocity.Length(), simVelocity.Length() - odometry.Velocity.Linear, 0.13) && odometry.Velocity.Angular.AlmostEqualWithError(0, 0.38));
 
                 //Fixture.TesterService.LogInfo("From Odometry {0}", odometryPosition);
@@ -120,7 +121,7 @@ namespace Brumba.SimulationTests
             }
         }
 
-        [SimTest(14, IsProbabilistic = false)]
+        [SimTest(15, IsProbabilistic = false)]
         public class CircleTrajectory
         {
             [Fixture]
@@ -145,9 +146,8 @@ namespace Brumba.SimulationTests
                 var simBearing = ExtractPose(simStateEntities).Orientation.SimToMap();
                 var simAngularVelocity = ExtractAngularVelocity(simStateEntities).SimToMapAngularVelocity();
 
-				var thetaDifference = MathHelper2.AngleDifference((float)odometry.Pose.Bearing, (float)simBearing);
                 //1.4 - experimental radius of circle trajectory
-                @return(thetaDifference / Math.Abs(odometry.Pose.Bearing) <= 0.05 && (odometry.Pose.Position - simPosition).Length() / (MathHelper.TwoPi * 1.4) <= 0.05 &&
+                @return(simPosition.EqualsRelatively(odometry.Pose.Position, 0.1) && odometry.Pose.Bearing.ToPositiveAngle().AlmostEqualWithError(simBearing, 0.05) &&
                 //Angular velocity hits almost always to correct value, i.e. no errors due to discretization occures
                 //Linear velocity could have error in both coordinates, so absolute error is 0.18 = (0.13^2 + 0.13^2)^0.5
                         odometry.Velocity.Linear.AlmostEqualWithError(simVelocity.Length(), 0.18) && odometry.Velocity.Angular.AlmostEqualWithAbsoluteError(simAngularVelocity, odometry.Velocity.Angular- simAngularVelocity, 0.1));
