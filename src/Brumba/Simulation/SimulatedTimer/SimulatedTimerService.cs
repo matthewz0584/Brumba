@@ -53,12 +53,12 @@ namespace Brumba.Simulation.SimulatedTimer
         {
             base.Start();
 
-            MainPortInterleave.CombineWith(
-                new Interleave(
-                    new ExclusiveReceiverGroup(),
-                    new ConcurrentReceiverGroup(
-                        Arbiter.Receive(true, _multiTimerUpdatePort, tick => _multiTimer.Update(tick.Dt, tick.T)))
-                        ));
+            //Multitimer ticks really frequently. In case of too many subscribers (for example, if some services don't unsubscribe) processing of one tick
+            //could take time greater than between ticks period, then _multiTimer.Update will screw up (it is not thread safe). That's why handler is
+            //placed into exclusive section: to synchronize ticks. It would be ideal to drop all messages but last present in port on each receive.
+            MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(
+                        Arbiter.Receive(true, _multiTimerUpdatePort, tick => _multiTimer.Update(tick.Dt, tick.T))),
+                    new ConcurrentReceiverGroup()));
         }
 
         protected override void OnInsertEntity()
@@ -78,11 +78,9 @@ namespace Brumba.Simulation.SimulatedTimer
             //In simulation tester environment every service with timer subscription will be dead for sure by the moment of environment restoration. So there should be no alive subscriptions for it.
             //Synchronize multitimer subscriptions with subscription manager subscriptions. To save resources.
             //POSSIBLE PROBLEM - asynchronous call, no guarantee that it will be executed to the end by the moment of next OnInsertEntity - but it's very unlikely
-            MainPortInterleave.CombineWith(new Interleave(
-                    new ExclusiveReceiverGroup(
+            MainPortInterleave.CombineWith(new Interleave(new ExclusiveReceiverGroup(
                         subscrMgrGetResponse.Receive(subMgrState => _multiTimer.Reset(subMgrState.Subscription.Select(st => st.Subscriber).ToArray()))),
-                    new ConcurrentReceiverGroup()
-                        ));
+                    new ConcurrentReceiverGroup()));
         }
 
         [ServiceHandler(ServiceHandlerBehavior.Concurrent)]

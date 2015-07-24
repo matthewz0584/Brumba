@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.Simulation.SimulatedTimer
 {
@@ -42,6 +43,7 @@ namespace Brumba.Simulation.SimulatedTimer
 
             foreach (var subscr in _subscriberStates.Where(subscr => subscr.ElapsedTime > subscr.Interval))
             {
+                DC.Contract.Assert(subscr.ElapsedTime > 0);
                 Tick(subscr.Name, subscr.ElapsedTime, t);
                 subscr.ElapsedTime = 0;
             }

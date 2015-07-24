@@ -19,7 +19,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Brumba.SimulationTests
 {
-    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1/*, Wip = true*/)]
+    [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
 	public class McLrfLocalizerTests
 	{
 		SimulationTesterService TesterService { get; set; }
@@ -162,15 +162,15 @@ namespace Brumba.SimulationTests
 			{
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
 
-                yield return To.Exec(Fixture.Wait, 5f);
+                yield return To.Exec(Fixture.Wait, 4.7f);
 				
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.1));
 
-                yield return To.Exec(Fixture.Wait, 3f);
+                yield return To.Exec(Fixture.Wait, 1.15f);
 
 				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
 
-                yield return To.Exec(Fixture.Wait, 2f);
+                yield return To.Exec(Fixture.Wait, 4f);
 
                 //Driving out of map, better not to stop
                 yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0, 0));
