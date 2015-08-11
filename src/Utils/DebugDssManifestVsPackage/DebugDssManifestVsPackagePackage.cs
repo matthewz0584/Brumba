@@ -51,21 +51,18 @@ namespace Brumba.DebugDssManifestVsPackage
             var menuCommandID = new CommandID(GuidList.guidDebugDssManifestVsPackageCmdSet, (int)PkgCmdIDList.cmdidMyCommand);
             var menuItem = new OleMenuCommand((_, __) => DebugManifest(), menuCommandID);
             menuItem.BeforeQueryStatus += MenuItemOnBeforeQueryStatus;
-            (GetService(typeof(IMenuCommandService)) as OleMenuCommandService).AddCommand( menuItem );
+            (GetService(typeof(IMenuCommandService)) as OleMenuCommandService).AddCommand(menuItem);
         }
 
         private void MenuItemOnBeforeQueryStatus(object sender, EventArgs eventArgs)
         {            
-            var qq = (_ide.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Object as UIHierarchy).SelectedItems as UIHierarchyItem[];
+            var selectedItems = (_ide.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Object as UIHierarchy).SelectedItems as UIHierarchyItem[];
 
-            (sender as OleMenuCommand).Visible = qq.Length == 1 && qq[0].Name.ToLower().EndsWith(MANIFEST_EXTENSION);
+            var itemIsManifest = selectedItems.Length == 1 && selectedItems[0].Name.ToLower().EndsWith(MANIFEST_EXTENSION);
+            (sender as OleMenuCommand).Visible = itemIsManifest;
 
-            if (qq.Length == 1 && qq[0].Name.ToLower().EndsWith(MANIFEST_EXTENSION))
-            {
-                var item = qq[0];
-                var projItem = item.Object as ProjectItem;
-                _selectedManifest = projItem.Properties.Item("FullPath").Value as string;
-            }
+            if (itemIsManifest)           
+                _selectedManifest = (selectedItems[0].Object as ProjectItem).Properties.Item("FullPath").Value as string;
         }
 
         private void DebugManifest()
