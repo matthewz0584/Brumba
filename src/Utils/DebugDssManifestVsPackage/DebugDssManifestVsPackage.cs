@@ -30,7 +30,7 @@ namespace Brumba.DebugDssManifestVsPackage
     //Guid VSConstants.UICONTEXT_SolutionExists
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     [Guid(GuidList.guidDebugDssManifestVsPackagePkgString)]
-    public sealed class DebugDssManifestVsPackagePackage : Package
+    public sealed class DebugDssManifestVsPackage : Package
     {
         const string MANIFEST_EXTENSION = ".manifest.xml";
         const string DSS_HOST_PATH = @"C:\MRDS4\bin\DssHost32.exe";
