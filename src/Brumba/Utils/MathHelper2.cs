@@ -19,9 +19,10 @@ namespace Brumba.Utils
 	        var angleRem = angle % Constants.Pi2;
             if (angleRem > 0)
                 return angleRem;
+            var positiveAngle = angleRem + Constants.Pi2;
             //(angleRem + Constants.Pi2) >= Constants.Pi2 can't be true arithmetically
             //but due to precision errors it can be even simply greater, take it into account
-            return (angleRem + Constants.Pi2) >= Constants.Pi2 ? 0 : (angleRem + Constants.Pi2);
+            return positiveAngle >= Constants.Pi2 ? 0 : positiveAngle;
         }
 
 		public static float ToPositiveAngle(this float angle)
@@ -33,7 +34,11 @@ namespace Brumba.Utils
             var angleRem = angle % MathHelper.TwoPi;
             if (angleRem > 0)
                 return angleRem;
-            return (angleRem + MathHelper.TwoPi) >= MathHelper.TwoPi ? 0 : (angleRem + MathHelper.TwoPi);
+            //Variable extracted because some version of CodeContracts during postprocessing screwed up
+            //the gist of the next check (messing with conversions to double)
+            //DO NOT INLINE!!!
+		    var positiveAngle = angleRem + MathHelper.TwoPi;
+		    return positiveAngle >= MathHelper.TwoPi ? 0 : positiveAngle;
 		}
 
         public static double ToMinAbsValueAngle(this double angle)

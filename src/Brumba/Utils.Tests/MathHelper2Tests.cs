@@ -19,6 +19,7 @@ namespace Brumba.Utils.Tests
             Assert.That((-double.Epsilon).ToPositiveAngle(), Is.EqualTo(0));
             Assert.That((-100 * double.Epsilon).ToPositiveAngle(), Is.EqualTo(0));
 			Assert.That(double.Epsilon.ToPositiveAngle(), Is.EqualTo(double.Epsilon));
+            Assert.DoesNotThrow(() => (-0.0000000521540642f).ToPositiveAngle());
         }
 
         [Test]

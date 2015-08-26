@@ -70,9 +70,8 @@ namespace Brumba.SimulationTests
         }
 
 		[SimTest(7.1f)]
-		public class Tracking : IStart, ITest
+		public class Tracking : IStart, ITest, IFixture<McLrfLocalizerTests>
 		{
-			[Fixture]
 			public McLrfLocalizerTests Fixture { get; set; }
 
 			public IEnumerator<ITask> Start()
@@ -104,16 +103,14 @@ namespace Brumba.SimulationTests
 		}
 
 		[SimTest(12.1f)]
-		public class GlobalLocalizationStraightPath : IStart, ITest
+        public class GlobalLocalizationStraightPath : IStart, ITest, IFixture<McLrfLocalizerTests>
 		{
-			[Fixture]
 			public McLrfLocalizerTests Fixture { get; set; }
 
 			public IEnumerator<ITask> Start()
 			{
 				yield return To.Exec(Fixture.McLrfLocalizationPort.InitPoseUnknown());
 				yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
-				yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
 
                 Fixture.TesterService.SpawnIterator(StraightAndStop);
 			}
@@ -137,9 +134,8 @@ namespace Brumba.SimulationTests
 		}
 
 		[SimTest(11.1f)]
-		public class GlobalLocalizationCurvedPath : IStart, ITest
+        public class GlobalLocalizationCurvedPath : IStart, ITest, IFixture<McLrfLocalizerTests>
 		{
-			[Fixture]
 			public McLrfLocalizerTests Fixture { get; set; }
 
             public IEnumerator<ITask> Start()
@@ -178,9 +174,8 @@ namespace Brumba.SimulationTests
 		}
 
 		//[SimTest(7)]
-		public class TrackingWithFailingOdometry : IStart, ITest
+        public class TrackingWithFailingOdometry : IStart, ITest, IFixture<McLrfLocalizerTests>
 		{
-			[Fixture]
 			public McLrfLocalizerTests Fixture { get; set; }
 
 			public IEnumerator<ITask> Start()

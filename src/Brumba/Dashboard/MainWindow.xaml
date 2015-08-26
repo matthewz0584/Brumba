@@ -89,7 +89,7 @@
                                     <telerik:HeatMapValueGradientColorizer IsAbsolute="True">
                                         <GradientStop Offset="-1" Color="Black" />
                                         <GradientStop Offset="0" Color="White" />
-                                        <GradientStop Offset="50" Color="Firebrick" />
+                                        <GradientStop Offset="25" Color="Firebrick" />
                                     </telerik:HeatMapValueGradientColorizer>
                                 </telerik:CategoricalDefinition.Colorizer>
                             </telerik:CategoricalDefinition>
