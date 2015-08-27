@@ -87,12 +87,51 @@ namespace Brumba.Simulation.EnvironmentBuilder
 			//PopulateMcLrfLocalizerTests();
             //_engineStub.Post(new UpdatePhysicsTimeStep(0.01f));
             //PopulateDwaNavigatorTests();
+            //PopulateBrumbaHeader();
             
             base.Start();
 
             //Thread.Sleep(5000);
             //_tPort.SetBaseAngle((float) Math.PI/4);
             //_turret.BaseAngle = (float)Math.PI / 4;
+        }
+
+        void PopulateBrumbaHeader()
+        {
+            var terrain = new TerrainEntity(@"terrain03.bmp", "terrain_tex.jpg", new MaterialProperties("ground", 0, 0.5f, 1.0f))
+            {
+                State = { Name = "Terrain", Assets = { Effect = "Terrain.fx" } },
+            };
+            SimulationEngine.GlobalInstancePort.Insert(terrain);
+
+            var view = new CameraView { EyePosition = new Vector3(-12, 9, 6), LookAtPoint = new Vector3(0, 0, 6) };
+            SimulationEngine.GlobalInstancePort.Update(view);
+
+            var sky = new SkyDomeEntity("skydome.dds", "sky_diff.dds");
+            SimulationEngine.GlobalInstancePort.Insert(sky);
+
+            var sun = new LightSourceEntity
+            {
+                State = { Name = "Sun" },
+                Type = LightSourceEntityType.Directional,
+                Color = new Vector4(0.8f, 0.8f, 0.8f, 1),
+                Direction = new Vector3(0.5f, -.75f, 0.5f)
+            };
+            SimulationEngine.GlobalInstancePort.Insert(sun);
+
+            var hamster = new HamsterBuilder().Build();
+            hamster.State.Pose = new Pose(new Vector3(5, 0.1f, 5));
+            SimulationEngine.GlobalInstancePort.Insert(hamster);
+
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 1.5f)) { State = { Name = "wall1" } });
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(1.31f, 0.21f, 1f)) { State = { Name = "wall2" } });
+            SimulationEngine.GlobalInstancePort.Insert(new SingleShapeEntity(new BoxShape(new BoxShapeProperties(1, new Pose(), new Vector3(0.2f, 0.2f, 0.2f))), new Vector3(0, 0.21f, 0.5f)) { State = { Name = "wall3" } });
+
+            var sav1 = new AckermanVehicleExEntity("susp1", new Vector3(0, 0.2f, 0), AckermanVehicles.Suspended4x4);
+            SimulationEngine.GlobalInstancePort.Insert(sav1);
+
+            var sav2 = new AckermanVehicleExEntity("susp2", new Vector3(1, 0.2f, 0), AckermanVehicles.Suspended4x4);
+            SimulationEngine.GlobalInstancePort.Insert(sav2);
         }
 
         void PopulateDwaNavigatorTests()
