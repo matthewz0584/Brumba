@@ -241,7 +241,7 @@ namespace Brumba.Dashboard
             var cells = new List<MatrixCell>();
             for (var y = 0; y < _map.SizeInCells.Y; ++y)
                 for (var x = 0; x < _map.SizeInCells.X; ++x)
-                    cells.Add(new MatrixCell { Row = y, Col = x, Value = _map[x, y] ? -1 : hist[x, y] });
+                    cells.Add(new MatrixCell { Row = y, Col = x, Value = _map[x, _map.SizeInCells.Y - y - 1] ? -1 : hist[x, _map.SizeInCells.Y - y - 1] });
 
             McLrfParticlesHistogram = cells;
             McLrfParticlesHistogramMax = McLrfParticlesHistogram.OrderByDescending(mc => mc.Value).First().AsCol().ToList();

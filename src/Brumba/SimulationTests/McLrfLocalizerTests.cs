@@ -102,6 +102,46 @@ namespace Brumba.SimulationTests
 			}
 		}
 
+        [SimTest(11.1f)]
+        public class TrackingCurvedPath : IStart, ITest, IFixture<McLrfLocalizerTests>
+        {
+            public McLrfLocalizerTests Fixture { get; set; }
+
+            public IEnumerator<ITask> Start()
+            {
+                yield return To.Exec(Fixture.McLrfLocalizationPort.InitPose(new Common.Proxy.Pose(new Vector2(1.7f, 3.25f), 0)));
+                yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
+
+                Fixture.TesterService.SpawnIterator(StraightRightStraightControls);
+            }
+
+            IEnumerator<ITask> StraightRightStraightControls()
+            {
+                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
+
+                yield return To.Exec(Fixture.Wait, 4.7f);
+
+                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.1));
+
+                yield return To.Exec(Fixture.Wait, 1.15f);
+
+                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.4));
+
+                yield return To.Exec(Fixture.Wait, 2f);
+
+                //Driving out of map, better not to stop
+                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0, 0));
+            }
+
+            public IEnumerator<ITask> Test(Action<bool> @return, IEnumerable<VisualEntity> simEntities, double elapsedTime)
+            {
+                @return((Fixture.McPose.Position - Fixture.SimPose.Position).Length().AlmostEqualWithError(0, 0.6) &&
+                        MathHelper2.AngleDifference(Fixture.McPose.Bearing, Fixture.SimPose.Bearing).AlmostEqualWithError(0, 0.4));
+                Fixture.LogResults();
+                yield break;
+            }
+        }
+
 		[SimTest(12.1f)]
         public class GlobalLocalizationStraightPath : IStart, ITest, IFixture<McLrfLocalizerTests>
 		{
