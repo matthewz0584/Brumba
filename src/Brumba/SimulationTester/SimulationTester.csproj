@@ -148,13 +148,13 @@
     <Compile Include="SimulationTesterLogCategory.cs" />
     <Compile Include="SimulationTestInfo.cs" />
     <Compile Include="SimulationTesterPresenterConsole.cs" />
-    <Compile Include="SimulationTesterAttributeInterfaces.cs" />
+    <Compile Include="SimulationTestAttributesInterfaces.cs" />
     <Compile Include="SimulationTestFixtureInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimulationTesterService.cs" />
     <Compile Include="SimulationTesterTypes.cs" />
     <AppDesigner Include="Properties" />
-    <Compile Include="SimulationTesterAttributes.cs" />
+    <Compile Include="SimulationTestAttributes.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
