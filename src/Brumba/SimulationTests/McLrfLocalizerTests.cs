@@ -70,7 +70,7 @@ namespace Brumba.SimulationTests
         }
 
 		[SimTest(7.1f)]
-		public class Tracking : IStart, ITest, IFixture<McLrfLocalizerTests>
+		public class TrackingStraightPath : IStart, ITest, IFixture<McLrfLocalizerTests>
 		{
 			public McLrfLocalizerTests Fixture { get; set; }
 

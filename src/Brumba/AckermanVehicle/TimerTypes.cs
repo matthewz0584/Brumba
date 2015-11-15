@@ -25,7 +25,7 @@ namespace Brumba.Entities.Timer
     }
 
     [ServicePort]
-    public class TimerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Subscribe, Update, Pause>
+    public class TimerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Subscribe, Update>
     {
     }
 
@@ -87,16 +87,5 @@ namespace Brumba.Entities.Timer
         {
             Body = state;
         }
-    }
-    
-    [DataContract]
-    public class PauseRequest
-    {
-        [DataMember, DataMemberConstructor]
-        public bool Pause { get; set; }
-    }
-
-    public class Pause : Update<PauseRequest, PortSet<DefaultUpdateResponseType, Fault>>
-    {
     }
 }

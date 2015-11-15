@@ -22,6 +22,7 @@ using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
 using BrTimerPxy = Brumba.Entities.Timer.Proxy;
+using SimTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
 
 namespace Brumba.SimulationTester
 {
@@ -48,6 +49,9 @@ namespace Brumba.SimulationTester
 
         [Partner("Timer", Contract = BrTimerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		BrTimerPxy.TimerOperations _timer = new BrTimerPxy.TimerOperations();
+
+        [Partner("SimTimer", Contract = SimTimerPxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
+        SimTimerPxy.SimulatedTimerOperations _simTimer = new SimTimerPxy.SimulatedTimerOperations();
 
 		[Partner("Manifest loader", Contract = Microsoft.Dss.Services.ManifestLoaderClient.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.UseExisting)]
 		ManifestLoaderClientPort _manifestLoader = new ManifestLoaderClientPort();
@@ -296,7 +300,7 @@ namespace Brumba.SimulationTester
         IEnumerator<ITask> PauseExecution(bool pause)
         {
             yield return To.Exec(PauseSimulator, pause);
-            yield return To.Exec(Timer.Pause(pause));
+            yield return To.Exec(_simTimer.Pause(pause));
         }
 
         IEnumerator<ITask> PauseSimulator(bool pause)

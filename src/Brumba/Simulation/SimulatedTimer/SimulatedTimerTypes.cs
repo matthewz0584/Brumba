@@ -22,7 +22,7 @@ namespace Brumba.Simulation.SimulatedTimer
     }
 
     [ServicePort]
-    public class SimulatedTimerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+    public class SimulatedTimerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get, Pause>
     {
     }
 
@@ -41,5 +41,16 @@ namespace Brumba.Simulation.SimulatedTimer
             : base(body, responsePort)
         {
         }
+    }
+
+    [DataContract]
+    public class PauseRequest
+    {
+        [DataMember, DataMemberConstructor]
+        public bool Pause { get; set; }
+    }
+
+    public class Pause : Update<PauseRequest, PortSet<DefaultUpdateResponseType, Fault>>
+    {
     }
 }

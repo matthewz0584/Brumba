@@ -238,6 +238,7 @@
     </Content>
     <Content Include="..\..\..\tests\mc_lrf_localizer.manifest.xml">
       <Link>Manifests\mc_lrf_localizer.manifest.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="..\..\..\tests\mc_lrf_localizer_diff_drive_odometry.config.xml">
       <Link>Manifests\mc_lrf_localizer_diff_drive_odometry.config.xml</Link>

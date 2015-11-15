@@ -91,6 +91,16 @@ namespace Brumba.Simulation.SimulatedTimer
             DefaultGetHandler(getRequest);
         }
 
+        [ServiceHandler(ServiceHandlerBehavior.Exclusive)]
+        public void OnPause(Pause pauseRq)
+        {
+            if (FaultIfNotConnected(pauseRq))
+                return;
+
+            TimerEntity.Paused = pauseRq.Body.Pause;
+            pauseRq.ResponsePort.Post(new DefaultUpdateResponseType());
+        }
+
         [ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_timerPort")]
         public void OnGet(Entities.Timer.Get getRequest)
         {
@@ -105,16 +115,6 @@ namespace Brumba.Simulation.SimulatedTimer
             yield return SubscribeHelper(_subMgrPort, subscribeRq.Body, subscribeRq.ResponsePort).Choice(
                 success => _multiTimer.Subscribe(subscribeRq.Body.Subscriber, subscribeRq.Body.Interval),
                 LogError);
-        }
-
-        [ServiceHandler(ServiceHandlerBehavior.Exclusive, PortFieldName = "_timerPort")]
-        public void OnPause(Pause pauseRq)
-        {
-            if (FaultIfNotConnected(pauseRq))
-                return;
-
-            TimerEntity.Paused = pauseRq.Body.Pause;
-            pauseRq.ResponsePort.Post(new DefaultUpdateResponseType());
         }
 
 		protected override IConnectable GetState() { return _state; }
