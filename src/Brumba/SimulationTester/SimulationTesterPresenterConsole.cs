@@ -1,17 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Brumba.SimulationTester
 {
 	class SimulationTesterPresenterConsole
 	{
+        Stopwatch _sw = new Stopwatch(); 
+
         public void Setup(SimulationTesterService tester)
 		{
 			tester.OnFixtureStarted += fi => Console.WriteLine("Fixture {0}", fi.Object.GetType().Name);
 			tester.OnTestStarted += t => Console.Write("{0,40} ", t.Name);
 			tester.OnTestEnded += OnTestEnded;
 			tester.OnTestTryEnded += OnTestTryEnded;
-			tester.OnStarted += () => Console.WriteLine();
+			tester.OnStarted += () =>
+			{
+			    Console.WriteLine();
+                _sw.Start();
+			};
 			tester.OnEnded += OnEnded;
 		}
 
@@ -32,6 +39,8 @@ namespace Brumba.SimulationTester
 			Console.WriteLine("Total tests {0}:", testResults.Count);
 			foreach (var tr in testResults)
                 WriteTestResult(tr.Key, tr.Value);
+            Console.WriteLine();
+            Console.WriteLine("Time elapsed: {0}", _sw.Elapsed);
 		}
 
         private static void WriteTestResult(SimulationTestInfo ti, float r)

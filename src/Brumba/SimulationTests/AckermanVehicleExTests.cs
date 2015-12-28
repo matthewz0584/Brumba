@@ -83,7 +83,7 @@ namespace Brumba.SimulationTests
             }
         }
 
-        [SimTest(4)]
+        [SimTest(4,  IsProbabilistic = false)]
         public class VehicleAnglesTest
         {
             [Fixture]
