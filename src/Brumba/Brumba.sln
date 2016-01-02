@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulationTester", "SimulationTester\SimulationTester.csproj", "{105800AF-F412-413D-8D51-A417E39B6960}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -83,6 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard", "Dashboard\Dash
 		{8B767A0E-F966-4B60-BF0C-3B646B6ACA31} = {8B767A0E-F966-4B60-BF0C-3B646B6ACA31}
 		{4372FAD1-D6CE-404D-8738-7A7014B0623A} = {4372FAD1-D6CE-404D-8738-7A7014B0623A}
 		{6293A5DA-4179-4B3D-93B5-84239B65C1A7} = {6293A5DA-4179-4B3D-93B5-84239B65C1A7}
+		{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F} = {D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Tests", "Common.Tests\Common.Tests.csproj", "{C5474478-2624-4481-9771-C5C85389B69A}"

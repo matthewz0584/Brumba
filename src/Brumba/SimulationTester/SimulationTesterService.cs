@@ -248,7 +248,7 @@ namespace Brumba.SimulationTester
             }
 
             LogInfo(SimulationTesterLogCategory.TestFinished, fixtureInfo.Name, testInfo.Name, (float)successful / i);
-            @return(_state.FastCheck ? 1 : (float)successful / i);
+            @return((float)successful / i);
         }
 
 		IEnumerator<ITask> SetUpSimulator(SimulationTestFixtureInfo testFixtureInfo)
