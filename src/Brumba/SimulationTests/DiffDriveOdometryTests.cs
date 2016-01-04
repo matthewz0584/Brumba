@@ -133,7 +133,7 @@ namespace Brumba.SimulationTests
             {
                 //Execs for synchronization, otherwise set power message can arrive before enable message
                 yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
-                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.6, 0.3));
+                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.6, 0.4));
             }
 
             [Test]
@@ -148,7 +148,7 @@ namespace Brumba.SimulationTests
                 var simAngularVelocity = ExtractAngularVelocity(simStateEntities).SimToMapAngularVelocity();
 
                 //1.4 - experimental radius of circle trajectory
-                @return(simPosition.EqualsRelatively(odometry.Pose.Position, 0.12) && odometry.Pose.Bearing.ToPositiveAngle().AlmostEqualWithError(simBearing, 0.05) &&
+                @return(simPosition.EqualsWithError(odometry.Pose.Position, 0.1) && odometry.Pose.Bearing.ToPositiveAngle().AlmostEqualWithError(simBearing, 0.05) &&
                 //Linear velocity could have error in both coordinates, so absolute error is 0.18 = (0.13^2 + 0.13^2)^0.5
                         odometry.Velocity.Linear.AlmostEqualWithError(simVelocity.Length(), 0.18) && odometry.Velocity.Angular.AlmostEqualWithAbsoluteError(simAngularVelocity, odometry.Velocity.Angular - simAngularVelocity, 0.45));
 
@@ -156,6 +156,12 @@ namespace Brumba.SimulationTests
                 //Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, (simVelocity - odometry.Velocity.Position).Length(), 0, "linear velocity");
                 //Fixture.TesterService.LogInfo(LogCategory.ActualAndExpectedValues, odometry.Velocity.Position, simVelocity, "linear velocity");
                 //Fixture.TesterService.LogInfo(LogCategory.ActualAndExpectedValues, odometry.Velocity.Bearing, simAngularVelocity, "angular velocity");
+
+                //var ww = simPosition.EqualsWithError(odometry.Pose.Position, 0.1) &&
+                //         odometry.Pose.Bearing.ToPositiveAngle().AlmostEqualWithError(simBearing, 0.05) &&
+                //         odometry.Velocity.Linear.AlmostEqualWithError(simVelocity.Length(), 0.18) &&
+                //         odometry.Velocity.Angular.AlmostEqualWithAbsoluteError(simAngularVelocity, odometry.Velocity.Angular - simAngularVelocity, 0.45);
+                //var ee = ww;
             }
         }
 
