@@ -145,15 +145,15 @@ namespace Brumba.Dashboard
 
             Dispatcher.AddCausality(new Causality("StartIt", exceptionPort));
 
-            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+            SpawnIterator(() => FindPartner_StoreAndSignalPolling(
                 MapProviderPxy.Contract.Identifier, (MapProviderPxy.MapProviderOperations p) => _mapProvider = p, _mapProviderPollingPort));
-            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+            SpawnIterator(() => FindPartner_StoreAndSignalPolling(
                 McLrfLocalizerPxy.Contract.Identifier, (McLrfLocalizerPxy.McLrfLocalizerOperations p) => _mcLrfLocalizer = p, mclFoundPort));
-            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+            SpawnIterator(() => FindPartner_StoreAndSignalPolling(
                 DwaNavigatorPxy.Contract.Identifier, (DwaNavigatorPxy.DwaNavigatorOperations p) => _dwaNavigator = p, _dwaPollingPort));
-            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+            SpawnIterator(() => FindPartner_StoreAndSignalPolling(
                 SimLocalizerPxy.Contract.Identifier, (SimLocalizerPxy.SimulatedLocalizerOperations p) => _simLocalizer = p, _simLocalizerPollingPort));
-            SpawnIterator(() => FindPartnerSetAndSignalPolling(
+            SpawnIterator(() => FindPartner_StoreAndSignalPolling(
                 OdometryPxy.Contract.Identifier, (OdometryPxy.DiffDriveOdometryOperations p) => _odometry = p, _odometryPollingPort));
 
             Activate(Arbiter.JoinedReceive(false, mclFoundPort, _mapReadyPort, (_, __) => _mcLrfPollingPort.Post(DateTime.Now)));
@@ -347,7 +347,7 @@ namespace Brumba.Dashboard
 	        };
         }
 
-	    IEnumerator<ITask> FindPartnerSetAndSignalPolling<T>(string identifier, Action<T> setPartner, Port<DateTime> partnerPollingPort) where T : class, IPortSet, new()
+	    IEnumerator<ITask> FindPartner_StoreAndSignalPolling<T>(string identifier, Action<T> setPartner, Port<DateTime> partnerPollingPort) where T : class, IPortSet, new()
 	    {
             var directoryResponcePort = DirectoryQuery(identifier, new TimeSpan(0, 0, 2));
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Principal;
 using Brumba.DsspUtils;
 using Brumba.Simulation;
 using Brumba.SimulationTester;
@@ -132,7 +133,7 @@ namespace Brumba.SimulationTests
             {
                 //Execs for synchronization, otherwise set power message can arrive before enable message
                 yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
-                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.4, 0.3));
+                yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(0.6, 0.3));
             }
 
             [Test]
@@ -147,10 +148,9 @@ namespace Brumba.SimulationTests
                 var simAngularVelocity = ExtractAngularVelocity(simStateEntities).SimToMapAngularVelocity();
 
                 //1.4 - experimental radius of circle trajectory
-                @return(simPosition.EqualsRelatively(odometry.Pose.Position, 0.1) && odometry.Pose.Bearing.ToPositiveAngle().AlmostEqualWithError(simBearing, 0.05) &&
-                //Angular velocity hits almost always to correct value, i.e. no errors due to discretization occures
+                @return(simPosition.EqualsRelatively(odometry.Pose.Position, 0.12) && odometry.Pose.Bearing.ToPositiveAngle().AlmostEqualWithError(simBearing, 0.05) &&
                 //Linear velocity could have error in both coordinates, so absolute error is 0.18 = (0.13^2 + 0.13^2)^0.5
-                        odometry.Velocity.Linear.AlmostEqualWithError(simVelocity.Length(), 0.18) && odometry.Velocity.Angular.AlmostEqualWithAbsoluteError(simAngularVelocity, odometry.Velocity.Angular - simAngularVelocity, 0.1));
+                        odometry.Velocity.Linear.AlmostEqualWithError(simVelocity.Length(), 0.18) && odometry.Velocity.Angular.AlmostEqualWithAbsoluteError(simAngularVelocity, odometry.Velocity.Angular - simAngularVelocity, 0.45));
 
                 //Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, thetaDifference / Math.Abs(odometry.Pose.Bearing), (odometry.Pose.Position - simPosition).Length() / (MathHelper.TwoPi * 1.1), "position");
                 //Fixture.TesterService.LogInfo(LogCategory.ActualToExpectedRatio, (simVelocity - odometry.Velocity.Position).Length(), 0, "linear velocity");
