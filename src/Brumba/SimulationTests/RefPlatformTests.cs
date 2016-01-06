@@ -39,6 +39,8 @@ namespace Brumba.SimulationTests
 	        [Start]
             public IEnumerator<ITask> Start()
             {
+                //Workaround for the case, when Entity service has not yet connected to reinserted entity
+                yield return Fixture.TesterService.Timeout(500);
                 //Execs for synchronization, otherwise set power message can arrive before enable message
                 yield return To.Exec(Fixture.RefPlDrivePort.EnableDrive(true));
                 yield return To.Exec(Fixture.RefPlDrivePort.SetDrivePower(1.0, 1.0));

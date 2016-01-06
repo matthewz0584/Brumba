@@ -11,10 +11,10 @@
   <FrictionTorque>0.03</FrictionTorque>
   <RangefinderProperties>
     <AngularResolution xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">0.0062831853071795</AngularResolution>
+    <!--<AngularResolution xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">0.1745329251994329</AngularResolution>-->
     <AngularRange xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">4.1887902047863909</AngularRange>
     <MaxRange xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">5.6</MaxRange>
     <OriginPose xmlns="http://brumba.ru/contracts/2014/03/mclrflocalizerservice.html">
-<!--    <AngularResolution>0.1745329251994329</AngularResolution> -->
       <Position>
         <X>0.2</X>
         <Y>0</Y>
