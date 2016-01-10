@@ -99,8 +99,8 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Brumba.AckermanVehicle.Proxy">
-      <HintPath>..\..\..\..\bin\Brumba.AckermanVehicle.Proxy.dll</HintPath>
+    <Reference Include="Brumba.DsspUtils.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.DsspUtils.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics">
       <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>

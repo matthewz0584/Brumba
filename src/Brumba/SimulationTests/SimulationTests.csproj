@@ -58,6 +58,9 @@
     <Reference Include="Brumba.DiffDriveOdometry.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.DiffDriveOdometry.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Brumba.DsspUtils.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.DsspUtils.Proxy.dll</HintPath>
+    </Reference>
     <Reference Include="Brumba.DwaNavigator.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.DwaNavigator.Proxy.dll</HintPath>
     </Reference>
