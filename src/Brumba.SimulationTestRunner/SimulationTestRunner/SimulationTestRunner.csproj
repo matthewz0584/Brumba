@@ -169,16 +169,15 @@
     <Compile Include="SimulationTestAttributes.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Starters\simulationtester_fastcheck.config.xml" />
-    <Content Include="Starters\simulationTester_fastcheck.manifest.xml">
-      <SubType>Designer</SubType>
+    <Content Include="..\..\..\utils\TestRunnerStarters\simulationTester_fastcheck.manifest.xml">
+      <Link>Starters\simulationTester_fastcheck.manifest.xml</Link>
     </Content>
-    <Content Include="Starters\simulationtester_nonvisual.config.xml" />
-    <Content Include="Starters\SimulationTester_nonvisual.manifest.xml">
-      <SubType>Designer</SubType>
+    <Content Include="..\..\..\utils\TestRunnerStarters\SimulationTester_nonvisual.manifest.xml">
+      <Link>Starters\SimulationTester_nonvisual.manifest.xml</Link>
     </Content>
-    <Content Include="Starters\simulationtester_visual.config.xml" />
-    <Content Include="Starters\SimulationTester_visual.manifest.xml" />
+    <Content Include="..\..\..\utils\TestRunnerStarters\SimulationTester_visual.manifest.xml">
+      <Link>Starters\SimulationTester_visual.manifest.xml</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">

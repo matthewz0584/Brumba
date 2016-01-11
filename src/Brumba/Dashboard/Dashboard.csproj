@@ -123,6 +123,10 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Brumba.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42845b81308dc266, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Brumba.Common.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.Common.Proxy.dll</HintPath>
     </Reference>
@@ -141,6 +145,10 @@
     </Reference>
     <Reference Include="Brumba.Simulation.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Utils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42845b81308dc266, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.Utils.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics">
       <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
@@ -214,10 +222,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2D37BDFC-A8F0-4356-ABCF-487A4A350038}</Project>
       <Name>MapProvider</Name>
@@ -225,10 +229,6 @@
     <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
       <Project>{3D1F586F-6408-49E2-83BC-C80716D1C62D}</Project>
       <Name>McLrfLocalizer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{97C76C15-EED3-45CF-AC3E-E6A5F7445397}</Project>
-      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />

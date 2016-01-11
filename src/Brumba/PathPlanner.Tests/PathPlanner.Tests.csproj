@@ -49,6 +49,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Brumba.Common">
+      <HintPath>..\..\..\..\bin\Brumba.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Utils">
+      <HintPath>..\..\..\..\bin\Brumba.Utils.dll</HintPath>
+    </Reference>
     <Reference Include="MathNet.Numerics, Version=2.6.1.30, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
@@ -87,10 +93,6 @@
     <Compile Include="TouringRomaniaProblem.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2D37BDFC-A8F0-4356-ABCF-487A4A350038}</Project>
       <Name>MapProvider</Name>
@@ -102,10 +104,6 @@
     <ProjectReference Include="..\PathPlanner\PathPlanner.csproj">
       <Project>{aceb8750-11c1-40ff-b01a-2a4d58d7aea1}</Project>
       <Name>PathPlanner</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{97C76C15-EED3-45CF-AC3E-E6A5F7445397}</Project>
-      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

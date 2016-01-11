@@ -52,6 +52,9 @@
     <Reference Include="Brumba.AckermanVehicle.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.AckermanVehicle.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Brumba.Common">
+      <HintPath>..\..\..\..\bin\Brumba.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Brumba.Common.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.Common.Proxy.dll</HintPath>
     </Reference>
@@ -76,11 +79,17 @@
     <Reference Include="Brumba.PathPlanner.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.PathPlanner.Proxy.dll</HintPath>
     </Reference>
+    <Reference Include="Brumba.Simulation.Common">
+      <HintPath>..\..\..\..\bin\Brumba.Simulation.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Brumba.Simulation.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="Brumba.SimulationTestRunner">
       <HintPath>..\..\..\..\bin\Brumba.SimulationTestRunner.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Utils">
+      <HintPath>..\..\..\..\bin\Brumba.Utils.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics">
       <HintPath>..\..\..\..\bin\MathNet.Numerics.dll</HintPath>
@@ -149,10 +158,6 @@
     <Compile Include="TurretTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EnvironmentBuilder\EnvironmentBuilder.csproj">
       <Project>{bf9957ab-2a19-4904-b423-bd0a09d0eb01}</Project>
       <Name>EnvironmentBuilder</Name>
@@ -161,17 +166,9 @@
       <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
       <Name>MapProvider</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Simulation.Common\Simulation.Common.csproj">
-      <Project>{2b85f51d-c023-41b1-be02-bd99d67e7225}</Project>
-      <Name>Simulation.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Simulation\Simulation.csproj">
       <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>
       <Name>Simulation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
-      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -278,7 +275,17 @@
     <Content Include="..\..\..\tests\turret.Manifest.xml">
       <Link>Manifests\turret.Manifest.xml</Link>
     </Content>
+    <Content Include="..\..\..\utils\TestRunnerStarters\simulationTester_fastcheck.manifest.xml">
+      <Link>Starters\simulationTester_fastcheck.manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\utils\TestRunnerStarters\SimulationTester_nonvisual.manifest.xml">
+      <Link>Starters\SimulationTester_nonvisual.manifest.xml</Link>
+    </Content>
+    <Content Include="..\..\..\utils\TestRunnerStarters\SimulationTester_visual.manifest.xml">
+      <Link>Starters\SimulationTester_visual.manifest.xml</Link>
+    </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)$(TargetName).*" "$(MRDS_PATH)\bin" /Y</PostBuildEvent>

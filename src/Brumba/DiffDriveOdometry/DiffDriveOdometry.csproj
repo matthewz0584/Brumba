@@ -87,6 +87,12 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Brumba.Common">
+      <HintPath>..\..\..\..\bin\Brumba.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Utils">
+      <HintPath>..\..\..\..\bin\Brumba.Utils.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Ccr.Core, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Ccr.Core\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Ccr.Core.dll</HintPath>
@@ -116,16 +122,6 @@
     <Compile Include="DiffDriveOdometryTypes.cs" />
     <Compile Include="MotionModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Utils\Utils.csproj">
-      <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
-      <Name>Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="DiffDriveOdometry.Manifest.xml" />
