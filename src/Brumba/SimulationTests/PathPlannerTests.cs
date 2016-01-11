@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.Common;
 using Brumba.MapProvider;
+using Brumba.SimulationTestRunner;
 using Brumba.Utils;
-using Brumba.SimulationTester;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -26,12 +26,12 @@ namespace Brumba.SimulationTests
     [SimTestFixture("path_planner")]
 	public class PathPlannerTests
 	{
-        public SimulationTesterService HostService { get; private set; }
+        public SimulationTestRunnerService HostService { get; private set; }
         public PathPxy.PathPlannerOperations PathPlannerPort { get; set; }
         public MapPxy.MapProviderOperations MapProviderPort { get; set; }
 
 	    [SetUp]
-		public void SetUp(SimulationTesterService hostService)
+        public void SetUp(SimulationTestRunnerService hostService)
 		{
 	        HostService = hostService;
 	        PathPlannerPort = hostService.ForwardTo<PathPxy.PathPlannerOperations>("path_planner");

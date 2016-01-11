@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.SimulationTestRunner;
 using Brumba.Utils;
-using Brumba.SimulationTester;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -21,7 +21,7 @@ namespace Brumba.SimulationTests
 		EnvBuilderPxy.EnvironmentBuilderOperations EnvironmentBuilderPort { get; set; }
 
 		[SetUp]
-		public void SetUp(SimulationTesterService hostService)
+        public void SetUp(SimulationTestRunnerService hostService)
 		{
 			EnvironmentBuilderPort = hostService.ForwardTo<EnvBuilderPxy.EnvironmentBuilderOperations>("environment_builder");
 		}

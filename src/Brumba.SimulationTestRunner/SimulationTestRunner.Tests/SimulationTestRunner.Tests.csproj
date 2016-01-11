@@ -7,8 +7,8 @@
     <ProjectGuid>{53675094-FF97-481F-87BC-31C085D6809C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brumba.SimulationTester.Tests</RootNamespace>
-    <AssemblyName>Brumba.SimulationTester.Tests</AssemblyName>
+    <RootNamespace>Brumba.SimulationTestRunner.Tests</RootNamespace>
+    <AssemblyName>Brumba.SimulationTestRunner.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,6 +48,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Brumba.Common">
+      <HintPath>..\..\..\..\bin\Brumba.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Simulation.Common">
+      <HintPath>..\..\..\..\bin\Brumba.Simulation.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Ccr.Core, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Dss.Base, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -81,21 +87,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Simulation.Common\Simulation.Common.csproj">
-      <Project>{2b85f51d-c023-41b1-be02-bd99d67e7225}</Project>
-      <Name>Simulation.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SimulationTester\SimulationTester.csproj">
+    <ProjectReference Include="..\SimulationTestRunner\SimulationTestRunner.csproj">
       <Project>{105800af-f412-413d-8d51-a417e39b6960}</Project>
-      <Name>SimulationTester</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Simulation\Simulation.csproj">
-      <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>
-      <Name>Simulation</Name>
+      <Name>SimulationTestRunner</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

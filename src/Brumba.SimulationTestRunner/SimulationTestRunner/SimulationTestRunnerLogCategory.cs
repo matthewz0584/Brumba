@@ -1,10 +1,10 @@
 using System.Diagnostics;
 using Microsoft.Dss.Diagnostics;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
     [CategoryNamespace("http://brumba.ru/contracts/2012/11/simulationtester.html")]
-    public enum SimulationTesterLogCategory
+    public enum SimulationTestRunnerLogCategory
     {
         [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]
         [CategoryArgument(0, "Fixture")]

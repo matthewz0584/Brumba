@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.Common;
+using Brumba.SimulationTestRunner;
 using Brumba.Utils;
-using Brumba.SimulationTester;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -20,7 +20,7 @@ namespace Brumba.SimulationTests
         public AckermanVehicle.Proxy.AckermanVehicleOperations VehiclePort { get; set; }
 
         [SetUp]
-		public void SetUp(SimulationTesterService testerService)
+        public void SetUp(SimulationTestRunnerService testerService)
         {
             VehiclePort = testerService.ForwardTo<AckermanVehicle.Proxy.AckermanVehicleOperations>("testee_veh_service/genericackermanvehicle");
         }

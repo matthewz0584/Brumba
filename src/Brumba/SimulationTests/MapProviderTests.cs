@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Brumba.MapProvider;
-using Brumba.SimulationTester;
+using Brumba.SimulationTestRunner;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
@@ -16,7 +16,7 @@ namespace Brumba.SimulationTests
 	    public MapPxy.MapProviderOperations MapProviderPort { get; set; }
 
 	    [SetUp]
-		public void SetUp(SimulationTesterService hostService)
+        public void SetUp(SimulationTestRunnerService hostService)
 		{
 		    MapProviderPort = hostService.ForwardTo<MapPxy.MapProviderOperations>("map_provider");
 		}

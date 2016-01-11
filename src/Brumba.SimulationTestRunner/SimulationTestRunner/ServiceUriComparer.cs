@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
     class ServiceUriComparer : IEqualityComparer<Uri>
     {

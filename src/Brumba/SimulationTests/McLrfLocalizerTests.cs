@@ -4,8 +4,8 @@ using System.Linq;
 using Brumba.Common;
 using Brumba.Simulation;
 using Brumba.Simulation.Common;
+using Brumba.SimulationTestRunner;
 using Brumba.Utils;
-using Brumba.SimulationTester;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
@@ -23,7 +23,7 @@ namespace Brumba.SimulationTests
     [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
 	public class McLrfLocalizerTests
 	{
-		SimulationTesterService TesterService { get; set; }
+        SimulationTestRunnerService TesterService { get; set; }
 		DrivePxy.DriveOperations RefPlDrivePort { get; set; }
 		RefPlPxy.ReferencePlatform2011Operations RefPlatformSimulatedPort { get; set; }
 		McLocalizationPxy.McLrfLocalizerOperations McLrfLocalizationPort { get; set; }
@@ -33,7 +33,7 @@ namespace Brumba.SimulationTests
 	    public bPose SimPose { get; set; }
 
 	    [SetUp]
-		public void SetUp(SimulationTesterService testerService)
+        public void SetUp(SimulationTestRunnerService testerService)
 		{
 			TesterService = testerService;
 			RefPlDrivePort = testerService.ForwardTo<DrivePxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");

@@ -8,7 +8,7 @@ using NUnit.Framework;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTestRunner.Tests
 {
     [TestFixture]
     public class FixtureInfoCreaterTests
@@ -32,7 +32,7 @@ namespace Brumba.SimulationTester.Tests
             Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestFixture.TestWithFixtureAndPrepareAndStartAtt).Name));
             Assert.That(fi.TestInfos.Any(ti => ti.Name == typeof(TestFixture.TestWithIfaces).Name));
             
-            var testerSvc = new SimulationTesterService();
+            var testerSvc = new SimulationTestRunnerService();
             fi.SetUp(testerSvc);
             Assert.That((fi.Object as TestFixture).TesterService, Is.SameAs(testerSvc));
 
@@ -54,7 +54,7 @@ namespace Brumba.SimulationTester.Tests
 
             Assert.That(fi.SetUp, Is.Not.Null);
 
-            var testerSvc = new SimulationTesterService();
+            var testerSvc = new SimulationTestRunnerService();
             fi.SetUp(testerSvc);
             Assert.That((fi.Object as InterfaceSetupFixture).TesterService, Is.SameAs(testerSvc));
         }
@@ -189,10 +189,10 @@ namespace Brumba.SimulationTester.Tests
 	[SimTestFixture("fixture_name", PhysicsTimeStep = 0.001f)]
     public class TestFixture
     {
-        public SimulationTesterService TesterService { get; private set; }
+        public SimulationTestRunnerService TesterService { get; private set; }
 
         [SetUp]
-        public void SetUp(SimulationTesterService testerService)
+        public void SetUp(SimulationTestRunnerService testerService)
         {
             TesterService = testerService;
         }
@@ -337,9 +337,9 @@ namespace Brumba.SimulationTester.Tests
     [SimTestFixture("interface_setup_fixture")]
     public class InterfaceSetupFixture : ISetUp
     {
-        public SimulationTesterService TesterService { get; private set; }
+        public SimulationTestRunnerService TesterService { get; private set; }
 
-        public void SetUp(SimulationTesterService testerService)
+        public void SetUp(SimulationTestRunnerService testerService)
         {
             TesterService = testerService;
         }

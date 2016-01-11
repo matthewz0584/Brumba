@@ -24,12 +24,12 @@ using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
 using BrTimerPxy = Brumba.GenericTimer.Proxy;
 using SimTimerPxy = Brumba.Simulation.Common.SimulatedTimer.Proxy;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
     [Contract(Contract.Identifier)]
 	[DisplayName("Simulation Tester")]
 	[Description("Simulation Tester service (no description provided)")]
-	public class SimulationTesterService : DsspServiceExposing
+	public class SimulationTestRunnerService : DsspServiceExposing
 	{
         public const string MANIFEST_EXTENSION = "manifest.xml";
         public const string ENVIRONMENT_EXTENSION = "environ.xml";
@@ -39,10 +39,10 @@ namespace Brumba.SimulationTester
 	    public const string RESET_SYMBOL = "@";
 
 		[InitialStatePartner(Optional = false)]
-		SimulationTesterState _state = null;
+		SimulationTestRunnerState _state = null;
 		
-		[ServicePort("/SimulationTester", AllowMultipleInstances = true)]
-		SimulationTesterOperations _mainPort = new SimulationTesterOperations();
+		[ServicePort("/SimulationTestRunner", AllowMultipleInstances = true)]
+		SimulationTestRunnerOperations _mainPort = new SimulationTestRunnerOperations();
 
         [Partner("SimEngine", Contract = MrsePxy.Contract.Identifier, CreationPolicy = PartnerCreationPolicy.CreateAlways)]
         MrsePxy.SimulationEnginePort _simEngine = new MrsePxy.SimulationEnginePort();
@@ -69,12 +69,12 @@ namespace Brumba.SimulationTester
         public event Action<SimulationTestInfo, float> OnTestEnded = delegate { };
         public event Action<SimulationTestInfo, bool> OnTestTryEnded = delegate { };
 
-        public SimulationTesterService()
+        public SimulationTestRunnerService()
             : base((ServiceEnvironment)null)
         {
         }
 		
-		public SimulationTesterService(DsspServiceCreationPort creationPort)
+		public SimulationTestRunnerService(DsspServiceCreationPort creationPort)
 			: base(creationPort)
 		{
             _entityDeserializer = new EntityDeserializer(SerializerPort, LogError);
@@ -99,7 +99,7 @@ namespace Brumba.SimulationTester
 		
 		protected override void Start()
 		{
-			new SimulationTesterPresenterConsole().Setup(this);
+			new SimulationTestRunnerPresenterConsole().Setup(this);
 
 			base.Start();
 
@@ -142,14 +142,14 @@ namespace Brumba.SimulationTester
 
         IEnumerator<ITask> RunFixture(SimulationTestFixtureInfo testFixtureInfo, IEnumerable<Uri> servicesBeforeStart)
         {
-            LogInfo(SimulationTesterLogCategory.FixtureStarted, testFixtureInfo.Name);
+            LogInfo(SimulationTestRunnerLogCategory.FixtureStarted, testFixtureInfo.Name);
             OnFixtureStarted(testFixtureInfo);
 
 			yield return To.Exec(SetUpSimulator, testFixtureInfo);
 
             //Restore static objects
             yield return To.Exec(RestoreEnvironment, testFixtureInfo.Name, (Func<Mrse.VisualEntity, bool>)(ve => true), (Action<IEnumerable<Mrse.VisualEntity>>)null);
-            LogInfo(SimulationTesterLogCategory.FixtureStaticEnvironmentRestored, testFixtureInfo.Name);
+            LogInfo(SimulationTestRunnerLogCategory.FixtureStaticEnvironmentRestored, testFixtureInfo.Name);
 
             foreach (var testInfo in testFixtureInfo.TestInfos)
             {
@@ -163,13 +163,13 @@ namespace Brumba.SimulationTester
             }
 
 			yield return To.Exec(DropServices, (Func<Uri, bool>)(uri => !servicesBeforeStart.Contains(uri)));
-            LogInfo(SimulationTesterLogCategory.FixtureServicesDropped, testFixtureInfo.Name);
-            LogInfo(SimulationTesterLogCategory.FixtureFinished, testFixtureInfo.Name);
+            LogInfo(SimulationTestRunnerLogCategory.FixtureServicesDropped, testFixtureInfo.Name);
+            LogInfo(SimulationTestRunnerLogCategory.FixtureFinished, testFixtureInfo.Name);
         }
 
         IEnumerator<ITask> RunTest(Action<float> @return, SimulationTestFixtureInfo fixtureInfo, SimulationTestInfo testInfo)
         {
-            LogInfo(SimulationTesterLogCategory.TestStarted, fixtureInfo.Name, testInfo.Name);
+            LogInfo(SimulationTestRunnerLogCategory.TestStarted, fixtureInfo.Name, testInfo.Name);
         	int successful = 0, i;
 			for (i = 0; i < (testInfo.IsProbabilistic ? TRIES_NUMBER : 1); ++i)
             {
@@ -178,7 +178,7 @@ namespace Brumba.SimulationTester
 
                 //Restore only those entities that need it (@ in name)
                 yield return To.Exec(RestoreEnvironment, fixtureInfo.Name, (Func<Mrse.VisualEntity, bool>)(ve => ve.State.Name.Contains(RESET_SYMBOL)), testInfo.Prepare);
-                LogInfo(SimulationTesterLogCategory.TestEnvironmentRestored, fixtureInfo.Name, testInfo.Name, i);
+                LogInfo(SimulationTestRunnerLogCategory.TestEnvironmentRestored, fixtureInfo.Name, testInfo.Name, i);
 
                 //Pause, now we can set up for starting fixture and timer
                 //PauseExecution pauses physics engine (simulation does not advance), pauses simulation timer (no tick events, so all services dependent from it pause),
@@ -190,20 +190,20 @@ namespace Brumba.SimulationTester
 
                 //Restart services from fixture manifest
                 yield return To.Exec(StartManifest, fixtureInfo.Name);
-                LogInfo(SimulationTesterLogCategory.TestManifestRestarted, fixtureInfo.Name, testInfo.Name, i);
+                LogInfo(SimulationTestRunnerLogCategory.TestManifestRestarted, fixtureInfo.Name, testInfo.Name, i);
 
                 //Reconnect to necessary services
                 if (fixtureInfo.SetUp != null)
                 {
                     fixtureInfo.SetUp(this);
-                    LogInfo(SimulationTesterLogCategory.TestFixtureSetUp, fixtureInfo.Name, testInfo.Name, i);
+                    LogInfo(SimulationTestRunnerLogCategory.TestFixtureSetUp, fixtureInfo.Name, testInfo.Name, i);
                 }
 
                 //Start test (it is not really started: physics simulation is paused)
                 if (testInfo.Start != null)
                 {
                     yield return To.Exec(testInfo.Start);
-                    LogInfo(SimulationTesterLogCategory.TestTryStarted, fixtureInfo.Name, testInfo.Name, i);
+                    LogInfo(SimulationTestRunnerLogCategory.TestTryStarted, fixtureInfo.Name, testInfo.Name, i);
                 }
 
                 //Start sim timer (it is not really started: simulation timer is paused)
@@ -218,7 +218,7 @@ namespace Brumba.SimulationTester
                 yield return (subscribeRq.NotificationPort as BrTimerPxy.TimerOperations).P4.Receive(u => dt = u.Body.Delta);
                 subscribeRq.NotificationShutdownPort.Post(new Shutdown());
                 //yield return TimeoutPort(5000).Receive();
-                LogInfo(SimulationTesterLogCategory.TestEstimatedTimeElapsed, fixtureInfo.Name, testInfo.Name, i, dt);
+                LogInfo(SimulationTestRunnerLogCategory.TestEstimatedTimeElapsed, fixtureInfo.Name, testInfo.Name, i, dt);
 
                 //Pause all, so that sim state will not differ from state from services due to delays between queries
                 yield return To.Exec(PauseExecution, true);
@@ -228,26 +228,26 @@ namespace Brumba.SimulationTester
                 yield return To.Exec(GetAndDeserializeEntityPxies,
                         (IEnumerable<MrsePxy.VisualEntity> ens) => testeeEntitiesPxies = ens,
                         (Func<XmlElement, bool>) (xe => testInfo.TestAllEntities || IsTesteeXmlNode(xe)));
-                LogInfo(SimulationTesterLogCategory.TestTesteeEntitiesDeserialized, fixtureInfo.Name, testInfo.Name, i, testeeEntitiesPxies.Count());
+                LogInfo(SimulationTestRunnerLogCategory.TestTesteeEntitiesDeserialized, fixtureInfo.Name, testInfo.Name, i, testeeEntitiesPxies.Count());
 
                 //Check test's result
                 var testSucceed = false;
                 if (testInfo.Test != null)
                 {
                     yield return To.Exec(testInfo.Test, b => testSucceed = b, testeeEntitiesPxies, dt);
-                    LogInfo(SimulationTesterLogCategory.TestResultsAssessed, fixtureInfo.Name, testInfo.Name, i, testSucceed);
+                    LogInfo(SimulationTestRunnerLogCategory.TestResultsAssessed, fixtureInfo.Name, testInfo.Name, i, testSucceed);
                 }
 
                 OnTestTryEnded(testInfo, testSucceed);
                 if (testSucceed) ++successful;
-                LogInfo(SimulationTesterLogCategory.TestRunningResult, fixtureInfo.Name, testInfo.Name, (float)successful / i);
+                LogInfo(SimulationTestRunnerLogCategory.TestRunningResult, fixtureInfo.Name, testInfo.Name, (float)successful / i);
 
 	            //Drop services that need to be restarted
 				yield return To.Exec(DropServices, (Func<Uri, bool>)(uri => uri.LocalPath.Contains(RESET_SYMBOL)));
-                LogInfo(SimulationTesterLogCategory.TestServicesDropped, fixtureInfo.Name, testInfo.Name, i);
+                LogInfo(SimulationTestRunnerLogCategory.TestServicesDropped, fixtureInfo.Name, testInfo.Name, i);
             }
 
-            LogInfo(SimulationTesterLogCategory.TestFinished, fixtureInfo.Name, testInfo.Name, (float)successful / i);
+            LogInfo(SimulationTestRunnerLogCategory.TestFinished, fixtureInfo.Name, testInfo.Name, (float)successful / i);
             @return((float)successful / i);
         }
 

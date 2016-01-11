@@ -1,7 +1,7 @@
 using Brumba.GenericTimer.Proxy;
 using Microsoft.Ccr.Core;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
     public static class SimulatedTimerUtils
     {

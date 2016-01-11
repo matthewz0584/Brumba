@@ -3,7 +3,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
 	public sealed class Contract
 	{
@@ -12,7 +12,7 @@ namespace Brumba.SimulationTester
 	}
 	
 	[DataContract]
-	public class SimulationTesterState
+	public class SimulationTestRunnerState
 	{
         [DataMember]
         public string TestsAssembly { get; set; }
@@ -27,11 +27,11 @@ namespace Brumba.SimulationTester
 	}
 	
 	[ServicePort]
-	public class SimulationTesterOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
+	public class SimulationTestRunnerOperations : PortSet<DsspDefaultLookup, DsspDefaultDrop, Get>
 	{
 	}
 	
-	public class Get : Get<GetRequestType, PortSet<SimulationTesterState, Fault>>
+	public class Get : Get<GetRequestType, PortSet<SimulationTestRunnerState, Fault>>
 	{
 		public Get()
 		{
@@ -42,7 +42,7 @@ namespace Brumba.SimulationTester
 		{
 		}
 		
-		public Get(GetRequestType body, PortSet<SimulationTesterState, Fault> responsePort)
+		public Get(GetRequestType body, PortSet<SimulationTestRunnerState, Fault> responsePort)
 			: base(body, responsePort)
 		{
 		}

@@ -4,10 +4,10 @@ using interop = System.Runtime.InteropServices;
 
 [assembly: dss.ServiceDeclaration(dss.DssServiceDeclaration.ServiceBehavior)]
 [assembly: interop.ComVisible(false)]
-[assembly: AssemblyTitle("SimulationTester")]
+[assembly: AssemblyTitle("SimulationTestRunner")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("SimulationTester")]
+[assembly: AssemblyProduct("SimulationTestRunner")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

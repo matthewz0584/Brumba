@@ -4,7 +4,7 @@ using System.Linq;
 using Brumba.Common;
 using Brumba.Simulation;
 using Brumba.Simulation.Common;
-using Brumba.SimulationTester;
+using Brumba.SimulationTestRunner;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.Simulation.Engine;
@@ -26,7 +26,7 @@ namespace Brumba.SimulationTests
         public DwaNavigatorPxy.DwaNavigatorOperations DwaNavigatorPort { get; set; }
 
         [SetUp]
-        public void SetUp(SimulationTesterService testerService)
+        public void SetUp(SimulationTestRunnerService testerService)
         {
             DwaNavigatorPort = testerService.ForwardTo<DwaNavigatorPxy.DwaNavigatorOperations>("dwa_navigator@");
         }

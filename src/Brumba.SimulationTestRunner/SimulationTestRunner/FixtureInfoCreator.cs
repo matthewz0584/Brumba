@@ -6,7 +6,7 @@ using Microsoft.Ccr.Core;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
     public class FixtureInfoCreator
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class SimTestFixtureAttribute : Attribute

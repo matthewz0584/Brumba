@@ -6,8 +6,8 @@ using System.Security.Principal;
 using Brumba.Common;
 using Brumba.Simulation;
 using Brumba.Simulation.Common;
-using Brumba.SimulationTester;
 using Brumba.Simulation.EnvironmentBuilder;
+using Brumba.SimulationTestRunner;
 using Brumba.Utils;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;
@@ -30,7 +30,7 @@ namespace Brumba.SimulationTests
     [SimTestFixture("diff_drive_odometry")]
 	public class DiffDriveOdometryTests
 	{
-		public SimulationTesterService TesterService { get; private set; }
+        public SimulationTestRunnerService TesterService { get; private set; }
 		public Microsoft.Robotics.Services.Drive.Proxy.DriveOperations RefPlDrivePort { get; private set; }
 		public DiffDriveOdometry.Proxy.DiffDriveOdometryOperations OdometryPort { get; set; }
 
@@ -44,7 +44,7 @@ namespace Brumba.SimulationTests
         }
 
 		[SetUp]
-		public void SetUp(SimulationTesterService testerService)
+        public void SetUp(SimulationTestRunnerService testerService)
 		{
 			TesterService = testerService;
 			RefPlDrivePort = testerService.ForwardTo<Microsoft.Robotics.Services.Drive.Proxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");

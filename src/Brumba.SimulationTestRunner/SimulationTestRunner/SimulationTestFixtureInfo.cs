@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
     public class SimulationTestFixtureInfo
     {
@@ -14,7 +14,7 @@ namespace Brumba.SimulationTester
         public string Name { get; set; }
         public bool Wip { get; set; }
         public ICollection<SimulationTestInfo> TestInfos { get; private set; }
-        public Action<SimulationTesterService> SetUp { get; set; }
+        public Action<SimulationTestRunnerService> SetUp { get; set; }
         public object Object { get; set; }
 	    public float PhysicsTimeStep { get; set; }
     }

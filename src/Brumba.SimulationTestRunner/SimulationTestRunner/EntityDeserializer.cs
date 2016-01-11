@@ -10,7 +10,7 @@ using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
     public class EntityDeserializer
     {

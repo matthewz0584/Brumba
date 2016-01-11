@@ -4,11 +4,11 @@ using Microsoft.Ccr.Core;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
     public interface ISetUp
     {
-        void SetUp(SimulationTesterService testerService);
+        void SetUp(SimulationTestRunnerService testerService);
     }
 
     public interface IFixture<T>

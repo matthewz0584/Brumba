@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Brumba.SimulationTestRunner;
 using Brumba.Utils;
-using Brumba.SimulationTester;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.PhysicalModel;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
@@ -17,7 +17,7 @@ namespace Brumba.SimulationTests
         public Simulation.SimulatedTurret.Proxy.SimulatedTurretOperations TurretPort { get; set; }
 
         [SetUp]
-		public void SetUp(SimulationTesterService hostService)
+        public void SetUp(SimulationTestRunnerService hostService)
         {
             TurretPort = hostService.ForwardTo<Simulation.SimulatedTurret.Proxy.SimulatedTurretOperations>("testee_turret");
         }

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Brumba.Common;
+using Brumba.SimulationTestRunner;
 using Brumba.Utils;
-using Brumba.SimulationTester;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.PhysicalModel;
@@ -17,12 +17,12 @@ namespace Brumba.SimulationTests
     [SimTestFixture("ref_platform")]
     public class RefPlatformTests
     {
-		public SimulationTesterService TesterService { get; private set; }
+		public SimulationTestRunnerService TesterService { get; private set; }
         public DrivePxy.DriveOperations RefPlDrivePort { get; private set; }
         public SickLrfPxy.SickLRFOperations SickLrfPort { get; private set; }
 
         [SetUp]
-		public void SetUp(SimulationTesterService testerService)
+        public void SetUp(SimulationTestRunnerService testerService)
         {
             TesterService = testerService;
             RefPlDrivePort = testerService.ForwardTo<DrivePxy.DriveOperations>("stupid_waiter_ref_platform/differentialdrive");

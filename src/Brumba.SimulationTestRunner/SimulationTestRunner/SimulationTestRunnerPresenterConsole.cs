@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Brumba.SimulationTester
+namespace Brumba.SimulationTestRunner
 {
-	class SimulationTesterPresenterConsole
+	class SimulationTestRunnerPresenterConsole
 	{
         Stopwatch _sw = new Stopwatch(); 
 
-        public void Setup(SimulationTesterService tester)
+        public void Setup(SimulationTestRunnerService tester)
 		{
 			tester.OnFixtureStarted += fi => Console.WriteLine("Fixture {0}", fi.Object.GetType().Name);
 			tester.OnTestStarted += t => Console.Write("{0,40} ", t.Name);

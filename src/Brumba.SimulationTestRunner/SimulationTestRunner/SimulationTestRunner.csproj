@@ -11,8 +11,8 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Brumba.SimulationTester</AssemblyName>
-    <RootNamespace>Brumba.SimulationTester</RootNamespace>
+    <AssemblyName>Brumba.SimulationTestRunner</AssemblyName>
+    <RootNamespace>Brumba.SimulationTestRunner</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
@@ -78,9 +78,17 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Brumba.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42845b81308dc266, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Brumba.GenericTimer.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42845b81308dc266, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.GenericTimer.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Simulation.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42845b81308dc266, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\bin\Brumba.Simulation.Common.dll</HintPath>
     </Reference>
     <Reference Include="Brumba.Simulation.Common.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42845b81308dc266, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -149,26 +157,16 @@
     <Compile Include="FixtureInfoCreator.cs" />
     <Compile Include="ServiceUriComparer.cs" />
     <Compile Include="SimulatedTimerUtils.cs" />
-    <Compile Include="SimulationTesterLogCategory.cs" />
+    <Compile Include="SimulationTestRunnerLogCategory.cs" />
     <Compile Include="SimulationTestInfo.cs" />
-    <Compile Include="SimulationTesterPresenterConsole.cs" />
+    <Compile Include="SimulationTestRunnerPresenterConsole.cs" />
     <Compile Include="SimulationTestAttributesInterfaces.cs" />
     <Compile Include="SimulationTestFixtureInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimulationTesterService.cs" />
-    <Compile Include="SimulationTesterTypes.cs" />
+    <Compile Include="SimulationTestRunnerService.cs" />
+    <Compile Include="SimulationTestRunnerTypes.cs" />
     <AppDesigner Include="Properties" />
     <Compile Include="SimulationTestAttributes.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Simulation.Common\Simulation.Common.csproj">
-      <Project>{2b85f51d-c023-41b1-be02-bd99d67e7225}</Project>
-      <Name>Simulation.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Starters\simulationtester_fastcheck.config.xml" />
