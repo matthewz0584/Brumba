@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using Brumba.Entities.Timer;
+using Brumba.GenericTimer;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;

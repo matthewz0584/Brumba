@@ -21,7 +21,7 @@ using W3C.Soap;
 using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
-using BrTimerPxy = Brumba.Entities.Timer.Proxy;
+using BrTimerPxy = Brumba.GenericTimer.Proxy;
 using SimTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
 
 namespace Brumba.SimulationTester

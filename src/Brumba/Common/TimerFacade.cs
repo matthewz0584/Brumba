@@ -4,7 +4,7 @@ using Brumba.DsspUtils;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
-using timerPxy = Brumba.Entities.Timer.Proxy;
+using timerPxy = Brumba.GenericTimer.Proxy;
 using DC = System.Diagnostics.Contracts;
 
 namespace Brumba.Common

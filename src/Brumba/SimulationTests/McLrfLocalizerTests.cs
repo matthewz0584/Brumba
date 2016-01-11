@@ -14,7 +14,7 @@ using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using McLocalizationPxy = Brumba.McLrfLocalizer.Proxy;
 using bPose = Brumba.Common.Pose;
 using rPose = Microsoft.Robotics.PhysicalModel.Pose;
-using BrTimerPxy = Brumba.Entities.Timer.Proxy;
+using BrTimerPxy = Brumba.GenericTimer.Proxy;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Brumba.SimulationTests

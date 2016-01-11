@@ -1,15 +1,16 @@
+using Brumba.GenericTimer.Proxy;
 using Microsoft.Ccr.Core;
 
 namespace Brumba.SimulationTester
 {
     public static class SimulatedTimerUtils
     {
-        public static Entities.Timer.Proxy.Subscribe Subscribe(this Entities.Timer.Proxy.TimerOperations me, float interval)
+        public static Subscribe Subscribe(this TimerOperations me, float interval)
         {
-            var subscribeRq = new Entities.Timer.Proxy.Subscribe
+            var subscribeRq = new Subscribe
                 {
-                    Body = new Entities.Timer.Proxy.SubscribeRequest(interval),
-                    NotificationPort = new Entities.Timer.Proxy.TimerOperations(),
+                    Body = new SubscribeRequest(interval),
+                    NotificationPort = new TimerOperations(),
                     NotificationShutdownPort = new Port<Shutdown>()
                 };
             me.Post(subscribeRq);

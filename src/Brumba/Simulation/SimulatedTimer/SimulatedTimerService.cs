@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Brumba.Entities.Timer;
+using Brumba.GenericTimer;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using System.ComponentModel;
@@ -31,7 +31,7 @@ namespace Brumba.Simulation.SimulatedTimer
         [ServicePort("/SimulatedTimer", AllowMultipleInstances = true)]
         SimulatedTimerOperations _mainPort = new SimulatedTimerOperations();
 
-        [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = Entities.Timer.Contract.Identifier)]
+        [AlternateServicePort(AllowMultipleInstances = true, AlternateContract = GenericTimer.Contract.Identifier)]
         TimerOperations _timerPort = new TimerOperations();
 
         [SubscriptionManagerPartner("SubMgr")]
@@ -102,7 +102,7 @@ namespace Brumba.Simulation.SimulatedTimer
         }
 
         [ServiceHandler(ServiceHandlerBehavior.Concurrent, PortFieldName = "_timerPort")]
-        public void OnGet(Entities.Timer.Get getRequest)
+        public void OnGet(GenericTimer.Get getRequest)
         {
 			if (IsConnected)
 				_state.Time = TimerEntity.Time;

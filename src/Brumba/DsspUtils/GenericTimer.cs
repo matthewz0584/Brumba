@@ -4,7 +4,7 @@ using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Ccr.Core;
 using W3C.Soap;
 
-namespace Brumba.Entities.Timer
+namespace Brumba.GenericTimer
 {
     public sealed class Contract
     {
@@ -16,7 +16,7 @@ namespace Brumba.Entities.Timer
     public class TimerState
     {
         [DataMember]
-        [Description("Simulation time")]
+        [Description("Time")]
         public double Time { get; set; }
 
         [DataMember]

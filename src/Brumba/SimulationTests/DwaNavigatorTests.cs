@@ -15,7 +15,7 @@ using xVector3 = Microsoft.Xna.Framework.Vector3;
 using rVector2 = Microsoft.Robotics.PhysicalModel.Vector2;
 using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using DwaNavigatorPxy = Brumba.DwaNavigator.Proxy;
-using BrTimerPxy = Brumba.Entities.Timer.Proxy;
+using BrTimerPxy = Brumba.GenericTimer.Proxy;
 
 namespace Brumba.SimulationTests
 {
