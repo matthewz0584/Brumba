@@ -5,6 +5,23 @@ using System.Runtime.InteropServices;
 
 namespace Brumba.DsspUtils
 {
+    //Place it in the main service start method
+    //static DsspServiceExposing()
+    //{
+    //    System.Diagnostics.Contracts.Contract.ContractFailed += (sender, e) =>
+    //    {
+    //        try
+    //        {
+    //            //Throw system exception, manual throw is not good enough for Marshal.GetExceptionPointers()
+    //            ((string) null).ToString();
+    //        }
+    //        catch (Exception)
+    //        {
+    //            DumpMaker.CreateMiniDump();  
+    //        }
+    //    };
+    //}
+
     public static class DumpMaker
     {
         private static class MINIDUMP_TYPE
