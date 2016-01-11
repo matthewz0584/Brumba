@@ -244,10 +244,6 @@
       <Project>{f84e44c8-5728-4643-96e8-496b508086ae}</Project>
       <Name>AckermanVehicle</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DwaNavigator\DwaNavigator.csproj">
-      <Project>{6293A5DA-4179-4B3D-93B5-84239B65C1A7}</Project>
-      <Name>DwaNavigator</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <PropertyGroup Condition="'$(DelaySign)'=='true'">

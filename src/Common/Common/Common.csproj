@@ -124,10 +124,6 @@
     <Compile Include="Velocity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GenericTimer\GenericTimer.csproj">
-      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
-      <Name>GenericTimer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97c76c15-eed3-45cf-ac3e-e6a5f7445397}</Project>
       <Name>Utils</Name>

@@ -58,46 +58,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Ccr.Core, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Ccr.Core\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Ccr.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Dss.Base, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Base\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Runtime\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="NSubstitute">
-      <HintPath>..\..\..\utils\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.2.12296, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\utils\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="RoboticsCommon">
-      <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
-    </Reference>
-    <Reference Include="SimulationCommon">
-      <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
-    </Reference>
-    <Reference Include="SimulationEngine">
-      <HintPath>..\..\..\..\bin\SimulationEngine.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DiffDriveOdometryCalculatorTests.cs" />
@@ -108,14 +78,6 @@
     <ProjectReference Include="..\DiffDriveOdometry\DiffDriveOdometry.csproj">
       <Project>{4372fad1-d6ce-404d-8738-7a7014b0623a}</Project>
       <Name>DiffDriveOdometry</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EnvironmentBuilder\EnvironmentBuilder.csproj">
-      <Project>{bf9957ab-2a19-4904-b423-bd0a09d0eb01}</Project>
-      <Name>EnvironmentBuilder</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MapProvider\MapProvider.csproj">
-      <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
-      <Name>MapProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

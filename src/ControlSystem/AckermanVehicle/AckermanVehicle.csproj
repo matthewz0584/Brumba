@@ -100,18 +100,6 @@
       <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SimulationCommon">
-      <HintPath>..\..\..\..\bin\SimulationCommon.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulationEngine">
-      <HintPath>..\..\..\..\bin\SimulationEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SimulationEngine.proxy">
-      <HintPath>..\..\..\..\bin\SimulationEngine.proxy.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
