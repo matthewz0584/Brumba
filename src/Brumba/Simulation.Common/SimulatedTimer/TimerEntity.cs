@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.Robotics.Simulation.Engine;
 using Microsoft.Dss.Core.Attributes;
+using Microsoft.Robotics.Simulation.Engine;
 
-namespace Brumba.Simulation.SimulatedTimer
+namespace Brumba.Simulation.Common.SimulatedTimer
 {
     [DataContract]
     public class TimerEntity : VisualEntity

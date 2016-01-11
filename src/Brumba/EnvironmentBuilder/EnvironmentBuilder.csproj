@@ -80,7 +80,11 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Brumba.Simulation.Proxy">
+    <Reference Include="Brumba.Simulation.Common.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.Simulation.Common.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.Simulation.Proxy, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42845b81308dc266, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\Brumba.Simulation.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0">
@@ -150,6 +154,10 @@
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2D37BDFC-A8F0-4356-ABCF-487A4A350038}</Project>
       <Name>MapProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simulation.Common\Simulation.Common.csproj">
+      <Project>{2b85f51d-c023-41b1-be02-bd99d67e7225}</Project>
+      <Name>Simulation.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Simulation\Simulation.csproj">
       <Project>{d789e6f1-ff0f-441d-afd4-3f879a49bd1f}</Project>

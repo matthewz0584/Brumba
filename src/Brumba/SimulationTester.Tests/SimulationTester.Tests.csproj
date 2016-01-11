@@ -85,6 +85,10 @@
       <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Simulation.Common\Simulation.Common.csproj">
+      <Project>{2b85f51d-c023-41b1-be02-bd99d67e7225}</Project>
+      <Name>Simulation.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimulationTester\SimulationTester.csproj">
       <Project>{105800af-f412-413d-8d51-a417e39b6960}</Project>
       <Name>SimulationTester</Name>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.Simulation.SimulatedTimer
+namespace Brumba.Simulation.Common.SimulatedTimer
 {
     public class MultiTimer
     {

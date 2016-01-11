@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Principal;
 using Brumba.Common;
 using Brumba.Simulation;
+using Brumba.Simulation.Common;
 using Brumba.SimulationTester;
 using Brumba.Simulation.EnvironmentBuilder;
 using Brumba.Utils;

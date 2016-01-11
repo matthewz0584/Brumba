@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using Brumba.Common;
-using Brumba.Simulation.SimulatedTimer;
+using Brumba.Simulation.Common.SimulatedTimer;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.Diagnostics;
@@ -22,7 +22,7 @@ using Mrse = Microsoft.Robotics.Simulation.Engine;
 using MrsePxy = Microsoft.Robotics.Simulation.Engine.Proxy;
 using MrsPxy = Microsoft.Robotics.Simulation.Proxy;
 using BrTimerPxy = Brumba.GenericTimer.Proxy;
-using SimTimerPxy = Brumba.Simulation.SimulatedTimer.Proxy;
+using SimTimerPxy = Brumba.Simulation.Common.SimulatedTimer.Proxy;
 
 namespace Brumba.SimulationTester
 {

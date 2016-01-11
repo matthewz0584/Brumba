@@ -5,7 +5,7 @@ using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 using W3C.Soap;
 
-namespace Brumba.Simulation.SimulatedTimer
+namespace Brumba.Simulation.Common.SimulatedTimer
 {
     public sealed class Contract
     {

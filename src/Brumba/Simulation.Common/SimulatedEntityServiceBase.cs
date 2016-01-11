@@ -5,7 +5,7 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Engine;
 using W3C.Soap;
 
-namespace Brumba.Simulation
+namespace Brumba.Simulation.Common
 {
 	public abstract class SimulatedEntityServiceBase : DsspServiceBase
 	{

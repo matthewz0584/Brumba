@@ -1,4 +1,4 @@
-﻿namespace Brumba.Simulation
+﻿namespace Brumba.Simulation.Common
 {
     public interface IConnectable
     {

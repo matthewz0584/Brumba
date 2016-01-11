@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Brumba.Common;
 using Brumba.GenericFixedWheelVelocimeter;
 using Brumba.GenericLocalizer;
+using Brumba.Simulation.Common;
 using Brumba.Utils;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;

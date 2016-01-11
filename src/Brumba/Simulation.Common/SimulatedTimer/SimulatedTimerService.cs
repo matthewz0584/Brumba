@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Brumba.GenericTimer;
+using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
-using System.ComponentModel;
-using Microsoft.Ccr.Core;
 using Microsoft.Dss.Services.SubscriptionManager;
 using Microsoft.Robotics.Simulation.Engine;
 using W3C.Soap;
 
-namespace Brumba.Simulation.SimulatedTimer
+namespace Brumba.Simulation.Common.SimulatedTimer
 {
     [Contract(Contract.Identifier)]
     [DisplayName("Brumba Simulated Timer")]
     [Description("SimulatedTimerService service (no description provided)")]
-    class SimulatedTimerService : SimulatedEntityServiceBase
+    public class SimulatedTimerService : SimulatedEntityServiceBase
     {
         public static float GetElapsedTime(FrameUpdate frameUpdate)
         {

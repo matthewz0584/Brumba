@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Brumba.Simulation.SimulatedTimer;
+using Brumba.Simulation.Common.SimulatedTimer;
 using NUnit.Framework;
 
 namespace Brumba.SimulationTester.Tests

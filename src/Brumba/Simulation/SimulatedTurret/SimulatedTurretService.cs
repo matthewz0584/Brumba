@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using Brumba.Simulation.Common;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 

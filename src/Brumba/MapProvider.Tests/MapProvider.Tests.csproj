@@ -110,6 +110,10 @@
       <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
       <Name>MapProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Simulation.Common\Simulation.Common.csproj">
+      <Project>{2b85f51d-c023-41b1-be02-bd99d67e7225}</Project>
+      <Name>Simulation.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Simulation\Simulation.csproj">
       <Project>{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}</Project>
       <Name>Simulation</Name>

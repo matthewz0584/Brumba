@@ -11,7 +11,7 @@ using Brumba.Simulation.SimulatedInfraredRfRing;
 using Brumba.Simulation.SimulatedLrf;
 using Brumba.Simulation.SimulatedReferencePlatform2011;
 using Brumba.Simulation.SimulatedTail;
-using Brumba.Simulation.SimulatedTimer;
+using Brumba.Simulation.Common.SimulatedTimer;
 using Brumba.Simulation.SimulatedTurret;
 using Microsoft.Ccr.Core;
 using Microsoft.Dss.Core;

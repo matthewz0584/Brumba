@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Brumba.Common;
 using Brumba.Simulation;
+using Brumba.Simulation.Common;
 using Brumba.SimulationTester;
 using MathNet.Numerics;
 using Microsoft.Ccr.Core;

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Brumba.AckermanVehicle;
+using Brumba.Simulation.Common;
 using Microsoft.Dss.Core.Attributes;
 using Microsoft.Dss.ServiceModel.Dssp;
 

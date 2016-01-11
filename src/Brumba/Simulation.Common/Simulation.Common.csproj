@@ -4,15 +4,15 @@
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D789E6F1-FF0F-441D-AFD4-3F879A49BD1F}</ProjectGuid>
+    <ProjectGuid>{2B85F51D-C023-41B1-BE02-BD99D67E7225}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>Brumba.Simulation</AssemblyName>
-    <RootNamespace>Brumba.Simulation</RootNamespace>
+    <AssemblyName>Brumba.Simulation.Common</AssemblyName>
+    <RootNamespace>Brumba.Simulation.Common</RootNamespace>
     <AssemblyOriginatorKeyFile>..\..\..\..\samples\mrisamples.snk</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
@@ -122,23 +122,11 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\..\libs\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Dss.Runtime, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.Dss.Runtime.proxy, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.Dss.Runtime.Proxy\v4.0_4.0.261.0__31bf3856ad364e35\Microsoft.Dss.Runtime.proxy.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Microsoft.Xna.Framework.Graphics.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="mscorlib">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
@@ -151,24 +139,10 @@
       <SpecificVersion>true</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PhysicsEngine, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\PhysicsEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="RoboticsCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\bin\RoboticsCommon.dll</HintPath>
       <Private>False</Private>
-    </Reference>
-    <Reference Include="RoboticsCommon.proxy">
-      <HintPath>..\..\..\..\bin\RoboticsCommon.proxy.dll</HintPath>
-    </Reference>
-    <Reference Include="SickLRF.Y2005.M12">
-      <HintPath>..\..\..\..\bin\SickLRF.Y2005.M12.dll</HintPath>
-    </Reference>
-    <Reference Include="SickLRF.Y2005.M12.proxy">
-      <HintPath>..\..\..\..\bin\SickLRF.Y2005.M12.proxy.dll</HintPath>
     </Reference>
     <Reference Include="SimulationCommon, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -186,74 +160,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleEntity.cs" />
-    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleEntityBuilder.cs" />
-    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleExEntity.cs" />
-    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleEntityBase.cs" />
-    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleExEntityBuilder.cs" />
-    <Compile Include="SimulatedAckermanVehicle\AckermanVehicleProperties.cs" />
-    <Compile Include="SimulatedAckermanVehicle\AckermanVehicles.cs" />
-    <Compile Include="SimulatedAckermanVehicle\CompositeWheel.cs" />
-    <Compile Include="SimulatedAckermanVehicle\CompositeWheelBuilder.cs" />
-    <Compile Include="SimulatedAckermanVehicle\CompositeWheelProperties.cs" />
-    <Compile Include="SimulatedInfraredRfRing\InfraredRfEntity.cs" />
-    <Compile Include="SimulatedInfraredRfRing\InfraredRfHelper.cs" />
-    <Compile Include="SimulatedInfraredRfRing\InfraredRfProperties.cs" />
-    <Compile Include="SimulatedInfraredRfRing\InfraredRfRingEntity.cs" />
-    <Compile Include="SimulatedAckermanVehicle\SimulatedAckermanVehicleTypes.cs" />
+    <Compile Include="IConnectable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <AppDesigner Include="Properties" />
-    <Compile Include="SimulatedAckermanVehicle\SimulatedAckermanVehicleService.cs" />
-    <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingService.cs" />
-    <Compile Include="SimulatedInfraredRfRing\SimulatedInfraredRfRingTypes.cs" />
-    <Compile Include="SimulatedLocalizer\SimulatedLocalizerService.cs" />
-    <Compile Include="SimulatedLocalizer\SimulatedLocalizerTypes.cs" />
-    <Compile Include="SimulatedLrf\LaserRangeFinderExEntity.cs" />
-    <Compile Include="SimulatedLrf\SimulatedLrfService.cs" />
-    <Compile Include="SimulatedLrf\SimulatedLrfTypes.cs" />
-    <Compile Include="SimulatedReferencePlatform2011\SimulatedReferencePlatform2011Service.cs" />
-    <Compile Include="SimulatedReferencePlatform2011\ReferencePlatform2011Entity.cs" />
-    <Compile Include="SimulatedReferencePlatform2011\SimulatedReferencePlatform2011Types.cs" />
-    <Compile Include="SimulatedReferencePlatform2011\SimulatedReferencePlatform2011Service.Battery.cs" />
-    <Compile Include="SimulatedReferencePlatform2011\SimulatedReferencePlatform2011Service.Drive.cs" />
-    <Compile Include="SimulatedTail\SimulatedTailService.cs" />
-    <Compile Include="SimulatedTail\SimulatedTailTypes.cs" />
-    <Compile Include="HamsterBuilder.cs" />
-    <Compile Include="SimulatedTurret\SimulatedTurretService.cs" />
-    <Compile Include="SimulatedTurret\SimulatedTurretTypes.cs" />
-    <Compile Include="SimulatedTail\TailEntity.cs" />
-    <Compile Include="SimulatedTurret\TurretEntity.cs" />
-    <Compile Include="SimulatedTurret\TurretProperties.cs" />
+    <Compile Include="SimToMapTransformations.cs" />
+    <Compile Include="SimulatedTimer\MultiTimer.cs" />
+    <Compile Include="SimulatedTimer\SimulatedTimerTypes.cs" />
+    <Compile Include="SimulatedTimer\SimulatedTimerService.cs" />
+    <Compile Include="SimulatedEntityServiceBase.cs" />
+    <Compile Include="SimulatedTimer\TimerEntity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SimulatedAckermanVehicle.manifest.xml">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AckermanVehicle\AckermanVehicle.csproj">
-      <Project>{f84e44c8-5728-4643-96e8-496b508086ae}</Project>
-      <Name>AckermanVehicle</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DwaNavigator\DwaNavigator.csproj">
-      <Project>{6293A5DA-4179-4B3D-93B5-84239B65C1A7}</Project>
-      <Name>DwaNavigator</Name>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
+      <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\GenericTimer\GenericTimer.csproj">
       <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
       <Name>GenericTimer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Simulation.Common\Simulation.Common.csproj">
-      <Project>{2b85f51d-c023-41b1-be02-bd99d67e7225}</Project>
-      <Name>Simulation.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97C76C15-EED3-45CF-AC3E-E6A5F7445397}</Project>
       <Name>Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}</Project>
-      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
