@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{8B767A0E-F966-4B60-BF0C-3B646B6ACA31}"
+	ProjectSection(ProjectDependencies) = postProject
+		{14C5DB20-FEC2-4F39-A4D5-B18885EA1133} = {14C5DB20-FEC2-4F39-A4D5-B18885EA1133}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericTimer", "GenericTimer\GenericTimer.csproj", "{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}"
 EndProject

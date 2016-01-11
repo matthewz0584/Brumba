@@ -182,7 +182,7 @@ namespace Brumba.AcceptanceTests
         }
 	}
 
-    [CategoryNamespace("http://brumba.ru/contracts/2012/11/simulationtester.html/odometrytests")]
+    [CategoryNamespace("http://brumba.ru/contracts/2012/11/simulationtestrunner.html/odometrytests")]
     public enum LogCategory
     {
         [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]

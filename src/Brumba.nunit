@@ -2,7 +2,7 @@
   <Settings activeconfig="Debug" />
   <Config name="Debug" binpathtype="None">
     <assembly path="Common\Utils.Tests\bin\x86\Debug\Brumba.Utils.Tests.dll" />
-    <assembly path="SimulationTestRunner\SimulationTestRunner.Tests\bin\x86\Debug\Brumba.SimulationTester.Tests.dll" />
+    <assembly path="SimulationTestRunner\SimulationTestRunner.Tests\bin\x86\Debug\Brumba.SimulationTestRunner.Tests.dll" />
     <assembly path="ControlSystem\MapProvider.Tests\bin\x86\Debug\Brumba.MapProvider.Tests.dll" />
     <assembly path="ControlSystem\McLrfLocalizer.Tests\bin\x86\Debug\Brumba.McLrfLocalizer.Tests.dll" />
     <assembly path="ControlSystem\DiffDriveOdometry.Tests\bin\x86\Debug\Brumba.DiffDriveOdometry.Tests.dll" />

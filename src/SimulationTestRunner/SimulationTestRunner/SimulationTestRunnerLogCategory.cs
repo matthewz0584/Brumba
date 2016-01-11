@@ -3,7 +3,7 @@ using Microsoft.Dss.Diagnostics;
 
 namespace Brumba.SimulationTestRunner
 {
-    [CategoryNamespace("http://brumba.ru/contracts/2012/11/simulationtester.html")]
+    [CategoryNamespace("http://brumba.ru/contracts/2012/11/simulationtestrunner.html")]
     public enum SimulationTestRunnerLogCategory
     {
         [OperationalCategory(TraceLevel.Info, LogCategoryFlags.None)]

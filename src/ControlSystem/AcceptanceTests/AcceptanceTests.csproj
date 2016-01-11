@@ -275,14 +275,14 @@
     <Content Include="..\..\..\tests\turret.Manifest.xml">
       <Link>Manifests\turret.Manifest.xml</Link>
     </Content>
-    <Content Include="..\..\..\utils\TestRunnerStarters\simulationTester_fastcheck.manifest.xml">
-      <Link>Starters\simulationTester_fastcheck.manifest.xml</Link>
+    <Content Include="..\..\..\utils\TestRunnerStarters\simulationtestrunner_fastcheck.manifest.xml">
+      <Link>Starters\simulationtestrunner_fastcheck.manifest.xml</Link>
     </Content>
-    <Content Include="..\..\..\utils\TestRunnerStarters\SimulationTester_nonvisual.manifest.xml">
-      <Link>Starters\SimulationTester_nonvisual.manifest.xml</Link>
+    <Content Include="..\..\..\utils\TestRunnerStarters\simulationtestrunner_nonvisual.manifest.xml">
+      <Link>Starters\simulationtestrunner_nonvisual.manifest.xml</Link>
     </Content>
-    <Content Include="..\..\..\utils\TestRunnerStarters\SimulationTester_visual.manifest.xml">
-      <Link>Starters\SimulationTester_visual.manifest.xml</Link>
+    <Content Include="..\..\..\utils\TestRunnerStarters\simulationtestrunner_visual.manifest.xml">
+      <Link>Starters\simulationtestrunner_visual.manifest.xml</Link>
     </Content>
   </ItemGroup>
   <ItemGroup />

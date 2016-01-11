@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Brumba.Simulation.Common.SimulatedTimer;
 using NUnit.Framework;
 
-namespace Brumba.SimulationTester.Tests
+namespace Brumba.SimulationTestRunner.Tests
 {
     [TestFixture]
     public class MultiTimerTests
