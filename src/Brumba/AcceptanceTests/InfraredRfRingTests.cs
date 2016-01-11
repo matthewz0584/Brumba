@@ -5,7 +5,7 @@ using Brumba.Utils;
 using Microsoft.Ccr.Core;
 using Microsoft.Robotics.Simulation.Engine.Proxy;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
     [SimTestFixture("infrared_rf_ring")]
     public class InfraredRfRingTests

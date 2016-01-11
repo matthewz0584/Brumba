@@ -18,7 +18,7 @@ using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using DwaNavigatorPxy = Brumba.DwaNavigator.Proxy;
 using BrTimerPxy = Brumba.GenericTimer.Proxy;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
     [SimTestFixture("dwa_navigator", PhysicsTimeStep = 0.005f/*, Wip = true*/)]
     public class DwaNavigatorTests

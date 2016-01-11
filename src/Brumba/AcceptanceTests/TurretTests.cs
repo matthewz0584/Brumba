@@ -9,7 +9,7 @@ using Microsoft.Robotics.Simulation.Engine.Proxy;
 using Microsoft.Robotics.Simulation.Physics;
 using Microsoft.Ccr.Core;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
     [SimTestFixture("turret")]
     public class TurretTests

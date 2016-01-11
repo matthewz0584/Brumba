@@ -10,7 +10,7 @@ using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using Microsoft.Robotics.Simulation.Physics;
 using VisualEntity = Microsoft.Robotics.Simulation.Engine.VisualEntity;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
     [SimTestFixture("ackerman_vehicle_ex_on_terrain03")]
     public class AckermanVehicleExTests

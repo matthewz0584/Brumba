@@ -12,7 +12,7 @@ using DrivePxy = Microsoft.Robotics.Services.Drive.Proxy;
 using SickLrfPxy = Microsoft.Robotics.Services.Sensors.SickLRF.Proxy;
 using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
     [SimTestFixture("ref_platform")]
     public class RefPlatformTests

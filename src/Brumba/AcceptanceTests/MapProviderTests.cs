@@ -8,7 +8,7 @@ using Microsoft.Robotics.Simulation.Engine.Proxy;
 using Microsoft.Xna.Framework;
 using MapPxy = Brumba.MapProvider.Proxy;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
 	[SimTestFixture("map_provider")]
 	public class MapProviderTests

@@ -21,7 +21,7 @@ using Vector2 = Microsoft.Xna.Framework.Vector2;
 using MapPxy = Brumba.MapProvider.Proxy;
 using PathPxy = Brumba.PathPlanner.Proxy;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
     [SimTestFixture("path_planner")]
 	public class PathPlannerTests

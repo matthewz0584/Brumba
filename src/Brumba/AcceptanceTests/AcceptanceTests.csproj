@@ -7,8 +7,8 @@
     <ProjectGuid>{EB31787C-74FB-4DF8-9F0C-BA656971C021}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brumba.SimulationTests</RootNamespace>
-    <AssemblyName>Brumba.SimulationTests</AssemblyName>
+    <RootNamespace>Brumba.AcceptanceTests</RootNamespace>
+    <AssemblyName>Brumba.AcceptanceTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

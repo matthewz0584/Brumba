@@ -18,7 +18,7 @@ using rPose = Microsoft.Robotics.PhysicalModel.Pose;
 using BrTimerPxy = Brumba.GenericTimer.Proxy;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
     [SimTestFixture("mc_lrf_localizer", PhysicsTimeStep = -1)]
 	public class McLrfLocalizerTests

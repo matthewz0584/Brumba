@@ -25,7 +25,7 @@ using rVector2 = Microsoft.Robotics.PhysicalModel.Vector2;
 using rVector3 = Microsoft.Robotics.PhysicalModel.Vector3;
 using rQuaternion = Microsoft.Robotics.PhysicalModel.Quaternion;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
     [SimTestFixture("diff_drive_odometry")]
 	public class DiffDriveOdometryTests

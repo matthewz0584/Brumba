@@ -13,7 +13,7 @@ using SingleShapeEntity = Microsoft.Robotics.Simulation.Engine.Proxy.SingleShape
 using VisualEntity = Microsoft.Robotics.Simulation.Engine.Proxy.VisualEntity;
 using EnvBuilderPxy = Brumba.Simulation.EnvironmentBuilder.Proxy;
 
-namespace Brumba.SimulationTests
+namespace Brumba.AcceptanceTests
 {
     [SimTestFixture("environment_builder")]
 	public class EnvironmentBuilderTests
