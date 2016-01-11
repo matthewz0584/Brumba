@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Brumba.Common;
-using Brumba.DsspUtils;
 using Brumba.GenericFixedWheelVelocimeter;
 using Brumba.Utils;
 using Microsoft.Ccr.Core;

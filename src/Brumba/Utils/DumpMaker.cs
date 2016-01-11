@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace Brumba.DsspUtils
+namespace Brumba.Utils
 {
     //Place it in the main service start method
     //static DsspServiceExposing()

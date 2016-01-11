@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Brumba.Common;
-using Brumba.DsspUtils;
 using Brumba.GenericLocalizer;
 using Brumba.MapProvider;
 using MathNet.Numerics;

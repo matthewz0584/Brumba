@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Ccr.Core;
 using W3C.Soap;
-using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.DsspUtils
+namespace Brumba.Common
 {
     public static class To
     {
-        [DC.ContractAbbreviator]
+        [System.Diagnostics.Contracts.ContractAbbreviator]
         [Conditional("CONTRACTS_FULL")]
         static void AssertActionCall(object call)
         {
-            DC.Contract.Requires(call != null);
+            System.Diagnostics.Contracts.Contract.Requires(call != null);
         }
 
         class ActionCall
@@ -96,12 +95,12 @@ namespace Brumba.DsspUtils
             }
         }
 
-        [DC.ContractAbbreviator]
+        [System.Diagnostics.Contracts.ContractAbbreviator]
         [Conditional("CONTRACTS_FULL")]
         static void AssertFuncCall<TRet>(object call, Action<TRet> @return)
         {
-            DC.Contract.Requires(call != null);
-            DC.Contract.Requires(@return != null);
+            System.Diagnostics.Contracts.Contract.Requires(call != null);
+            System.Diagnostics.Contracts.Contract.Requires(@return != null);
         }
 
         class FuncCall<TRet>
@@ -192,19 +191,19 @@ namespace Brumba.DsspUtils
             }
         }
 
-        [DC.ContractAbbreviator]
+        [System.Diagnostics.Contracts.ContractAbbreviator]
         static void AssertExecReturnContract<TRet>(object call, Action<TRet> @return)
         {
-            DC.Contract.Requires(call != null);
-            DC.Contract.Requires(@return != null);
-            DC.Contract.Ensures(DC.Contract.Result<ITask>() != null);
+            System.Diagnostics.Contracts.Contract.Requires(call != null);
+            System.Diagnostics.Contracts.Contract.Requires(@return != null);
+            System.Diagnostics.Contracts.Contract.Ensures(System.Diagnostics.Contracts.Contract.Result<ITask>() != null);
         }
 
-        [DC.ContractAbbreviator]
+        [System.Diagnostics.Contracts.ContractAbbreviator]
         static void AssertExecContract(object call)
         {
-            DC.Contract.Requires(call != null);
-            DC.Contract.Ensures(DC.Contract.Result<ITask>() != null);
+            System.Diagnostics.Contracts.Contract.Requires(call != null);
+            System.Diagnostics.Contracts.Contract.Ensures(System.Diagnostics.Contracts.Contract.Result<ITask>() != null);
         }
 
         public static ITask Exec<T1, T2, TRet>(Func<Action<TRet>, T1, T2, IEnumerator<ITask>> call, Action<TRet> @return, T1 param1, T2 param2)

@@ -5,7 +5,7 @@ using Microsoft.Dss.ServiceModel.Dssp;
 using Microsoft.Dss.ServiceModel.DsspServiceBase;
 using DC = System.Diagnostics.Contracts;
 
-namespace Brumba.DsspUtils
+namespace Brumba.Common
 {
 	public class DsspServiceExposing : DsspServiceBase
 	{

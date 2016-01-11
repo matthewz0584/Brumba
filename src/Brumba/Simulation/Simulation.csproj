@@ -242,13 +242,13 @@
       <Project>{f84e44c8-5728-4643-96e8-496b508086ae}</Project>
       <Name>AckermanVehicle</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
-      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
-      <Name>DsspUtils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DwaNavigator\DwaNavigator.csproj">
       <Project>{6293A5DA-4179-4B3D-93B5-84239B65C1A7}</Project>
       <Name>DwaNavigator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GenericTimer\GenericTimer.csproj">
+      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
+      <Name>GenericTimer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{97C76C15-EED3-45CF-AC3E-E6A5F7445397}</Project>

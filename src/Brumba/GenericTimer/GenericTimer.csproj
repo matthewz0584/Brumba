@@ -7,8 +7,8 @@
     <ProjectGuid>{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brumba.DsspUtils</RootNamespace>
-    <AssemblyName>Brumba.DsspUtils</AssemblyName>
+    <RootNamespace>Brumba.GenericTimer</RootNamespace>
+    <AssemblyName>Brumba.GenericTimer</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
@@ -98,12 +98,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContractExtensions.cs" />
-    <Compile Include="DsspServiceExposing.cs" />
-    <Compile Include="DumpMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GenericTimer.cs" />
-    <Compile Include="To.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

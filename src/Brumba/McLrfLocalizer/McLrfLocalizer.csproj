@@ -137,10 +137,6 @@
     <Compile Include="ResamplingWheel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
-      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
-      <Name>DsspUtils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2d37bdfc-a8f0-4356-abcf-487a4a350038}</Project>
       <Name>MapProvider</Name>

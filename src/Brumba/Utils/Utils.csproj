@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrossCountryGenerator.cs" />
+    <Compile Include="DumpMaker.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="IFreezable.cs" />
     <Compile Include="MathHelper2.cs" />

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Principal;
-using Brumba.DsspUtils;
+using Brumba.Common;
 using Brumba.Simulation;
 using Brumba.SimulationTester;
 using Brumba.Simulation.EnvironmentBuilder;

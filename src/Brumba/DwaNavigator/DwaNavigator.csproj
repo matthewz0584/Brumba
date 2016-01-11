@@ -142,10 +142,6 @@
       <Project>{4372FAD1-D6CE-404D-8738-7A7014B0623A}</Project>
       <Name>DiffDriveOdometry</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
-      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
-      <Name>DsspUtils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\McLrfLocalizer\McLrfLocalizer.csproj">
       <Project>{3D1F586F-6408-49E2-83BC-C80716D1C62D}</Project>
       <Name>McLrfLocalizer</Name>

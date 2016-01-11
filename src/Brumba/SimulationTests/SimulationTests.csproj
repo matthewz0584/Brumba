@@ -58,14 +58,14 @@
     <Reference Include="Brumba.DiffDriveOdometry.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.DiffDriveOdometry.Proxy.dll</HintPath>
     </Reference>
-    <Reference Include="Brumba.DsspUtils.Proxy">
-      <HintPath>..\..\..\..\bin\Brumba.DsspUtils.Proxy.dll</HintPath>
-    </Reference>
     <Reference Include="Brumba.DwaNavigator.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.DwaNavigator.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="Brumba.EnvironmentBuilder.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.EnvironmentBuilder.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Brumba.GenericTimer.Proxy">
+      <HintPath>..\..\..\..\bin\Brumba.GenericTimer.Proxy.dll</HintPath>
     </Reference>
     <Reference Include="Brumba.MapProvider.Proxy">
       <HintPath>..\..\..\..\bin\Brumba.MapProvider.Proxy.dll</HintPath>
@@ -149,10 +149,6 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
       <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
-      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
-      <Name>DsspUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\EnvironmentBuilder\EnvironmentBuilder.csproj">
       <Project>{bf9957ab-2a19-4904-b423-bd0a09d0eb01}</Project>

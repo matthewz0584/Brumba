@@ -103,10 +103,6 @@
       <Project>{4372fad1-d6ce-404d-8738-7a7014b0623a}</Project>
       <Name>DiffDriveOdometry</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
-      <Project>{14c5db20-fec2-4f39-a4d5-b18885ea1133}</Project>
-      <Name>DsspUtils</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EnvironmentBuilder\EnvironmentBuilder.csproj">
       <Project>{bf9957ab-2a19-4904-b423-bd0a09d0eb01}</Project>
       <Name>EnvironmentBuilder</Name>

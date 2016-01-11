@@ -87,9 +87,9 @@
     <Compile Include="TouringRomaniaProblem.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DsspUtils\DsspUtils.csproj">
-      <Project>{14C5DB20-FEC2-4F39-A4D5-B18885EA1133}</Project>
-      <Name>DsspUtils</Name>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{8b767a0e-f966-4b60-bf0c-3b646b6aca31}</Project>
+      <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\MapProvider\MapProvider.csproj">
       <Project>{2D37BDFC-A8F0-4356-ABCF-487A4A350038}</Project>
