@@ -360,8 +360,8 @@ namespace Brumba.Simulation.SimulatedReferencePlatform2011
 
         WheelEntity ConstructDriveWheel(string name, string mesh, Vector3 position, Vector3 meshTranslation)
         {
-            //Simulator simulates wheels entirely nonphysical: axle angular acceleration is proportional to motor torque and
-            //inversly proportional to wheel mass (http://www.ogre3d.org/addonforums/viewtopic.php?f=6&t=7682&start=15).
+            //Simulator simulates wheels in entirely nonphysical way: axle angular acceleration is proportional to motor torque
+            //and inversly proportional to wheel mass (http://www.ogre3d.org/addonforums/viewtopic.php?f=6&t=7682&start=15).
             //Nothing more, for example the mass of the system, participates in the calculation.
             //That's why changing robot mass with given electrical current does not influence the robot acceleration.
             //And vica versa, wheel mass is not counted as part of a robot mass.

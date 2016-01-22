@@ -83,7 +83,7 @@ namespace Brumba.DiffDriveOdometry
         {
             DC.Contract.Ensures(DC.Contract.Result<Pose>().Position.Y == 0 && DC.Contract.Result<Pose>().Bearing == 0);
 
-            return PredictPoseDelta((_linearVelocity * dt));
+            return PredictPoseDelta(_linearVelocity * dt);
         }
 
         public Pose PredictPoseDeltaAsForDistance()
